@@ -22,6 +22,7 @@
 	"scripts": {
 		"build": "vite build && tsc --emitDeclarationOnly --outDir dist",
 		"dev": "vite build --watch",
+		"gen-schema": "node --experimental-strip-types scripts/gen-schema.mts",
 		"test": "vitest run",
 		"test:ui": "vitest --ui",
 		"test:coverage": "vitest run --coverage"

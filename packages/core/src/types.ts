@@ -1,4 +1,4 @@
-import type { ComponentType } from "react"
+import type { ComponentType, ReactNode } from "react"
 
 export interface A2Node {
 	type: string
@@ -15,4 +15,5 @@ export type ComponentRegistry = Map<string, ComponentEntry>
 export interface A2RendererProps {
 	node: A2Node
 	registry?: ComponentRegistry
+	fallback?: ReactNode
 }
