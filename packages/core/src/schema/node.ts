@@ -18,6 +18,8 @@ export function parseNode(input: unknown): A2NodeInput {
 	return A2NodeSchema.parse(input) as A2NodeInput
 }
 
-export function safeParseNode(input: unknown): z.SafeParseReturnType<unknown, A2NodeInput> {
-	return A2NodeSchema.safeParse(input) as z.SafeParseReturnType<unknown, A2NodeInput>
+export function safeParseNode(
+	input: unknown,
+): ReturnType<typeof A2NodeSchema.safeParse> {
+	return A2NodeSchema.safeParse(input)
 }

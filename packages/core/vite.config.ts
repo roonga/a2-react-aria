@@ -1,4 +1,4 @@
-import react from "@vitejs/plugin-react"
+import react from "@vitejs/plugin-react-swc"
 import { defineConfig } from "vitest/config"
 
 export default defineConfig({
@@ -12,7 +12,7 @@ export default defineConfig({
 			entry: "./src/index.ts",
 			name: "A2UICore",
 			fileName: "index",
-			formats: ["es", "cjs"],
+			formats: ["es"],
 		},
 		rollupOptions: {
 			external: ["react", "react-dom", "react-aria-components", "zod"],
