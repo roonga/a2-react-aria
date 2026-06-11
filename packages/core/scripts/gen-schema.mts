@@ -21,5 +21,5 @@ const output = {
 }
 
 const outPath = resolve(__dirname, "../schema.json")
-writeFileSync(outPath, JSON.stringify(output, null, 2) + "\n")
+writeFileSync(outPath, `${JSON.stringify(output, null, 2)}\n`)
 console.log(`Written: ${outPath}`)
