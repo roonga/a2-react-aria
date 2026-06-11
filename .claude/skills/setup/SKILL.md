@@ -18,7 +18,7 @@ If any step fails, stop and explain what went wrong before continuing.
 
 Run the following and report the versions found:
 
-```
+```text
 !node --version
 !pnpm --version
 ```
@@ -54,7 +54,7 @@ Report success or any build errors.
 
 Check whether `.env.local` exists:
 
-```
+```text
 !test -f .env.local && echo "EXISTS" || echo "MISSING"
 ```
 
@@ -79,7 +79,7 @@ Claude Code calls Biome through `pnpm lint` and `pnpm format` directly.
 
 Verify Biome will be available once packages are installed:
 
-```
+```text
 !test -f package.json && echo "READY_AFTER_INSTALL" || echo "NOT_SCAFFOLDED_YET"
 ```
 
@@ -92,7 +92,7 @@ If `READY_AFTER_INSTALL` or packages already installed: confirm `pnpm lint` will
 
 Show the current state of all configured MCP servers:
 
-```
+```text
 !claude mcp list
 ```
 
@@ -122,14 +122,15 @@ Expected servers (all defined in `.mcp.json`):
 
 Check whether VS Code is available:
 
-```
+```text
 !code --version 2>/dev/null && echo "VSCODE_FOUND" || echo "VSCODE_NOT_FOUND"
 ```
 
 If **VSCODE_FOUND**: tell the user:
 > Open this project in VS Code (`code .`) and click **"Install All"** when prompted with the recommended extensions banner.
 >
-> Extensions installed: Biome, Tailwind IntelliSense, Vitest, axe Accessibility Linter, Error Lens, Pretty TypeScript Errors, GitLens, Import Cost, markdownlint.
+> Extensions installed: Biome, Tailwind IntelliSense, Vitest, axe Accessibility Linter, Error Lens,
+> Pretty TypeScript Errors, GitLens, Import Cost, markdownlint.
 
 If **VSCODE_NOT_FOUND**: skip this step silently.
 
