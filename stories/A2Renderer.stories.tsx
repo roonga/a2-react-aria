@@ -8,6 +8,29 @@ const meta = {
 	component: A2Renderer,
 	parameters: { layout: "centered" },
 	args: { registry },
+	decorators: [
+		(Story, context) => (
+			<div>
+				<Story />
+				<div style={{ marginTop: "2rem", paddingTop: "1rem", borderTop: "1px solid #eee" }}>
+					<details style={{ fontSize: "0.875rem", color: "#666" }}>
+						<summary style={{ cursor: "pointer", fontWeight: "bold" }}>a2UI JSON</summary>
+						<pre
+							style={{
+								background: "#f5f5f5",
+								padding: "1rem",
+								borderRadius: "4px",
+								overflow: "auto",
+								marginTop: "0.5rem",
+							}}
+						>
+							{JSON.stringify(context.args.node, null, 2)}
+						</pre>
+					</details>
+				</div>
+			</div>
+		),
+	],
 } satisfies Meta<typeof A2Renderer>
 
 export default meta
