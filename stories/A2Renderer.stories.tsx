@@ -1,4 +1,4 @@
-import { A2Renderer, createRegistry } from "@a2ui/core"
+import { A2Renderer, createRegistry } from "../packages/core/src/index"
 import type { Meta, StoryObj } from "@storybook/react"
 
 const DemoButton = ({ children, variant }: { children: React.ReactNode; variant?: string }) => (
