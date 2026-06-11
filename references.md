@@ -13,7 +13,8 @@ Key projects, protocols, and prior art relevant to a2-react-aria.
 
 ### What it is
 
-AG-UI is an open, lightweight, event-based protocol that standardises how AI agents connect to user-facing applications. It fills the gap between:
+AG-UI is an open, lightweight, event-based protocol that standardises how AI agents connect to user-facing
+applications. It fills the gap between:
 
 - **MCP** — gives agents tools
 - **A2A** — agent-to-agent communication
@@ -40,7 +41,7 @@ AG-UI's **Generative UI** feature is the direct integration point.
 An AI agent can emit a2UI JSON as its generative UI payload over the AG-UI protocol.  
 `A2Renderer` is then the rendering layer that turns that JSON into accessible React Aria components.
 
-```
+```text
 AI Agent
    │  (AG-UI protocol — SSE / WebSocket)
    ▼
@@ -53,7 +54,8 @@ AG-UI event stream
 Accessible React Aria component
 ```
 
-This makes a2-react-aria a natural AG-UI UI adapter — agents get a schema-driven, accessible component set without needing to know React.
+This makes a2-react-aria a natural AG-UI UI adapter — agents get a schema-driven, accessible component set
+without needing to know React.
 
 ---
 
@@ -66,7 +68,9 @@ This makes a2-react-aria a natural AG-UI UI adapter — agents get a schema-driv
 
 ### What it is
 
-CopilotKit is a full-stack SDK for building **agent-native applications** — generative UI systems, agentic chat interfaces, and human-in-the-loop workflows deployable across React, Angular, Vue, React Native, Slack, and Teams.
+CopilotKit is a full-stack SDK for building **agent-native applications** — generative UI systems, agentic
+chat interfaces, and human-in-the-loop workflows deployable across React, Angular, Vue, React Native,
+Slack, and Teams.
 
 CopilotKit is also the **creator of the AG-UI Protocol**, which was adopted by Google, LangChain, AWS, and Microsoft.
 
@@ -82,9 +86,10 @@ CopilotKit is also the **creator of the AG-UI Protocol**, which was adopted by G
 ### Relevance to a2-react-aria
 
 CopilotKit's **Generative UI** layer is where a2UI JSON fits naturally.  
-Instead of agents returning raw React JSX (tightly coupled, non-portable), they can emit a2UI JSON — a portable, schema-validated, accessible component description that `A2Renderer` renders.
+Instead of agents returning raw React JSX (tightly coupled, non-portable), they can emit a2UI JSON — a
+portable, schema-validated, accessible component description that `A2Renderer` renders.
 
-```
+```text
 CopilotKit Agent (LangGraph, CrewAI, etc.)
    │
    │  emits: { type: "Button", props: { children: "Approve", variant: "primary" } }
@@ -106,7 +111,7 @@ Benefits of pairing:
 
 ## Relationship Map
 
-```
+```text
                     ┌─────────────────────┐
                     │   AI Agent           │
                     │  (LangGraph, CrewAI, │
@@ -170,11 +175,13 @@ claude mcp add react-aria -- npx @react-aria/mcp@latest
 ```
 
 Works with Claude Code, Cursor, VS Code, Codex, and Gemini CLI.  
-This is the single most impactful MCP for this project — Claude can browse the full RAC API while writing component wrappers without hallucinating props.
+This is the single most impactful MCP for this project — Claude can browse the full RAC API while writing
+component wrappers without hallucinating props.
 
 ### VS Code extension opportunity
 
-The React Aria MCP + Vitest MCP can be surfaced inside the **a2UI VS Code extension** as bundled MCP connections — consumers of the library get Claude-aware tooling out of the box when they install the extension.
+The React Aria MCP + Vitest MCP can be surfaced inside the **a2UI VS Code extension** as bundled MCP
+connections — consumers of the library get Claude-aware tooling out of the box when they install the extension.
 
 ### Not yet available
 
