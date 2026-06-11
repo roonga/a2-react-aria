@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 import { Input, Label, TextField as RACTextField } from "react-aria-components"
 import type { TextFieldNode } from "./text-field.schema"
+import { getTextFieldStyles } from "./text-field.styles"
 
 interface TextFieldProps extends Omit<Required<TextFieldNode>["props"], "type"> {
 	children?: ReactNode
@@ -22,6 +23,8 @@ export function TextField({
 	value,
 	onChange,
 }: TextFieldProps) {
+	const styles = getTextFieldStyles()
+
 	return (
 		<RACTextField
 			type={type}
@@ -29,18 +32,15 @@ export function TextField({
 			isRequired={required}
 			value={value}
 			onChange={onChange}
-			className="flex flex-col gap-2"
+			className={styles.container}
 		>
 			{label && (
-				<Label className="text-sm font-medium text-gray-700">
+				<Label className={styles.label}>
 					{label}
-					{required && <span className="text-red-600">*</span>}
+					{required && <span className={styles.requiredIndicator}>*</span>}
 				</Label>
 			)}
-			<Input
-				placeholder={placeholder}
-				className="px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-			/>
+			<Input placeholder={placeholder} className={styles.input} />
 		</RACTextField>
 	)
 }

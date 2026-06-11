@@ -20,7 +20,7 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 			render(<A2Renderer node={node} registry={registry} />)
 			const btn = screen.getByRole("button", { name: /submit/i })
 			expect(btn).toBeDefined()
-			expect(btn.className).toContain("bg-blue-600") // primary variant
+			expect(btn.className).toContain("bg-[var(--color-primary)]")
 		})
 
 		it("renders disabled button from a2UI JSON", () => {
@@ -42,7 +42,7 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 			}
 			render(<A2Renderer node={node} registry={registry} />)
 			const btn = screen.getByRole("button", { name: /delete/i })
-			expect(btn.className).toContain("bg-red-600") // danger variant
+			expect(btn.className).toContain("bg-[var(--color-danger)]")
 		})
 	})
 
@@ -82,7 +82,7 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 			}
 			render(<A2Renderer node={node} registry={registry} />)
 			const label = screen.getByText(/required field/i)
-			expect(label.textContent).toContain("*") // required indicator
+			expect(label.textContent).toContain("*")
 		})
 
 		it("renders disabled textfield from a2UI JSON", () => {
