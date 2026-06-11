@@ -1,15 +1,8 @@
-import { A2Renderer, createRegistry } from "../packages/core/src/index"
 import type { Meta, StoryObj } from "@storybook/react"
-
-const DemoButton = ({ children, variant }: { children: React.ReactNode; variant?: string }) => (
-	// biome-ignore lint/a11y/useButtonType: demo-only component, not used in production
-	<button data-variant={variant} style={{ borderRadius: 4, cursor: "pointer", padding: "8px 16px" }}>
-		{children}
-	</button>
-)
+import { A2Renderer, Button, createRegistry } from "../packages/core/src/index"
 
 const registry = createRegistry({
-	Button: { component: DemoButton as Parameters<typeof createRegistry>[0][string]["component"] },
+	Button: { component: Button as Parameters<typeof createRegistry>[0][string]["component"] },
 })
 
 const meta = {
@@ -22,9 +15,33 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const BasicButton: Story = {
+export const PrimaryButton: Story = {
 	args: {
-		node: { type: "Button", props: { variant: "primary" }, children: "Click me" },
+		node: {
+			type: "Button",
+			props: { variant: "primary", size: "md" },
+			children: "Click me",
+		},
+	},
+}
+
+export const SecondaryButton: Story = {
+	args: {
+		node: {
+			type: "Button",
+			props: { variant: "secondary", size: "lg" },
+			children: "Secondary",
+		},
+	},
+}
+
+export const DangerButton: Story = {
+	args: {
+		node: {
+			type: "Button",
+			props: { variant: "danger", size: "sm", disabled: true },
+			children: "Disabled",
+		},
 	},
 }
 
