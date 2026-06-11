@@ -31,25 +31,11 @@ export const Primary: Story = {
 			children: "Click me",
 		},
 	},
-	parameters: {
-		a2ui: {
-			type: "Button",
-			props: { variant: "primary", size: "md" },
-			children: "Click me",
-		},
-	},
 }
 
 export const Secondary: Story = {
 	args: {
 		node: {
-			type: "Button",
-			props: { variant: "secondary", size: "lg" },
-			children: "Secondary",
-		},
-	},
-	parameters: {
-		a2ui: {
 			type: "Button",
 			props: { variant: "secondary", size: "lg" },
 			children: "Secondary",
@@ -65,13 +51,6 @@ export const Danger: Story = {
 			children: "Delete",
 		},
 	},
-	parameters: {
-		a2ui: {
-			type: "Button",
-			props: { variant: "danger", size: "sm" },
-			children: "Delete",
-		},
-	},
 }
 
 export const Disabled: Story = {
@@ -82,25 +61,11 @@ export const Disabled: Story = {
 			children: "Disabled",
 		},
 	},
-	parameters: {
-		a2ui: {
-			type: "Button",
-			props: { variant: "primary", disabled: true },
-			children: "Disabled",
-		},
-	},
 }
 
 export const Ghost: Story = {
 	args: {
 		node: {
-			type: "Button",
-			props: { variant: "ghost", size: "lg" },
-			children: "Ghost Button",
-		},
-	},
-	parameters: {
-		a2ui: {
 			type: "Button",
 			props: { variant: "ghost", size: "lg" },
 			children: "Ghost Button",

@@ -17,7 +17,4 @@ export const UnknownType: Story = {
 	args: {
 		node: { type: "Unknown" },
 	},
-	parameters: {
-		a2ui: { type: "Unknown" },
-	},
 }

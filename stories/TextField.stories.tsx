@@ -27,32 +27,11 @@ export const Email: Story = {
 			},
 		},
 	},
-	parameters: {
-		a2ui: {
-			type: "TextField",
-			props: {
-				label: "Email",
-				placeholder: "you@example.com",
-				type: "email",
-				required: true,
-			},
-		},
-	},
 }
 
 export const Password: Story = {
 	args: {
 		node: {
-			type: "TextField",
-			props: {
-				label: "Password",
-				type: "password",
-				required: true,
-			},
-		},
-	},
-	parameters: {
-		a2ui: {
 			type: "TextField",
 			props: {
 				label: "Password",
@@ -74,31 +53,11 @@ export const Optional: Story = {
 			},
 		},
 	},
-	parameters: {
-		a2ui: {
-			type: "TextField",
-			props: {
-				label: "Optional Notes",
-				placeholder: "Add notes...",
-				type: "text",
-			},
-		},
-	},
 }
 
 export const Disabled: Story = {
 	args: {
 		node: {
-			type: "TextField",
-			props: {
-				label: "Disabled Field",
-				value: "Cannot edit",
-				disabled: true,
-			},
-		},
-	},
-	parameters: {
-		a2ui: {
 			type: "TextField",
 			props: {
 				label: "Disabled Field",
