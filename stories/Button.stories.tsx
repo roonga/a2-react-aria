@@ -18,29 +18,6 @@ const meta = {
 		},
 	},
 	args: { registry },
-	decorators: [
-		(Story, context) => (
-			<div>
-				<Story />
-				<div style={{ marginTop: "2rem", paddingTop: "1rem", borderTop: "1px solid #eee" }}>
-					<details style={{ fontSize: "0.875rem", color: "#666" }}>
-						<summary style={{ cursor: "pointer", fontWeight: "bold" }}>a2UI JSON</summary>
-						<pre
-							style={{
-								background: "#f5f5f5",
-								padding: "1rem",
-								borderRadius: "4px",
-								overflow: "auto",
-								marginTop: "0.5rem",
-							}}
-						>
-							{JSON.stringify(context.args.node, null, 2)}
-						</pre>
-					</details>
-				</div>
-			</div>
-		),
-	],
 } satisfies Meta<typeof A2Renderer>
 
 export default meta
@@ -49,6 +26,13 @@ type Story = StoryObj<typeof meta>
 export const Primary: Story = {
 	args: {
 		node: {
+			type: "Button",
+			props: { variant: "primary", size: "md" },
+			children: "Click me",
+		},
+	},
+	parameters: {
+		a2ui: {
 			type: "Button",
 			props: { variant: "primary", size: "md" },
 			children: "Click me",
@@ -64,11 +48,25 @@ export const Secondary: Story = {
 			children: "Secondary",
 		},
 	},
+	parameters: {
+		a2ui: {
+			type: "Button",
+			props: { variant: "secondary", size: "lg" },
+			children: "Secondary",
+		},
+	},
 }
 
 export const Danger: Story = {
 	args: {
 		node: {
+			type: "Button",
+			props: { variant: "danger", size: "sm" },
+			children: "Delete",
+		},
+	},
+	parameters: {
+		a2ui: {
 			type: "Button",
 			props: { variant: "danger", size: "sm" },
 			children: "Delete",
@@ -84,11 +82,25 @@ export const Disabled: Story = {
 			children: "Disabled",
 		},
 	},
+	parameters: {
+		a2ui: {
+			type: "Button",
+			props: { variant: "primary", disabled: true },
+			children: "Disabled",
+		},
+	},
 }
 
 export const Ghost: Story = {
 	args: {
 		node: {
+			type: "Button",
+			props: { variant: "ghost", size: "lg" },
+			children: "Ghost Button",
+		},
+	},
+	parameters: {
+		a2ui: {
 			type: "Button",
 			props: { variant: "ghost", size: "lg" },
 			children: "Ghost Button",
