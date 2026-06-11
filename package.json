@@ -1,6 +1,12 @@
 {
 	"name": "a2-react-aria",
 	"private": true,
+	"author": {
+		"name": "Ravi Mohan",
+		"email": "a2-react-aria@roonga.com.au",
+		"url": "https://github.com/roonga"
+	},
+	"license": "MIT",
 	"packageManager": "pnpm@10.33.0",
 	"engines": {
 		"node": ">=20",

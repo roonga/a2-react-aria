@@ -2,6 +2,12 @@
 	"name": "@a2ui/core",
 	"version": "0.1.0",
 	"private": false,
+	"author": {
+		"name": "Ravi Mohan",
+		"email": "a2-react-aria@roonga.com.au",
+		"url": "https://github.com/roonga"
+	},
+	"license": "MIT",
 	"type": "module",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
