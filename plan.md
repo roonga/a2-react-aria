@@ -34,7 +34,7 @@ A dedicated **VS Code extension** gives consumers IntelliSense, live preview, an
 
 ### How it works
 
-```
+```text
 Consumer project
       │
       ▼
@@ -129,7 +129,7 @@ Component source files are **not published to npm** — they live in the GitHub 
 
 ### Extension architecture
 
-```
+```text
 packages/vscode/
 ├── src/
 │   ├── extension.ts          # Entry point — activates LSP + registers commands
@@ -152,7 +152,7 @@ packages/vscode/
 
 ### LSP server responsibilities
 
-```
+```text
 .a2ui.json file open in editor
            │
            ▼
@@ -167,7 +167,7 @@ Autocomplete  Hover       Diagnostics
 
 ### Webview preview panel
 
-```
+```text
 ┌─────────────────────────────────────────────────────┐
 │  VS Code Editor                                      │
 │                                                      │
@@ -210,7 +210,7 @@ Three-layer approach:
 
 ### Layer 2 — Live JSON Playground
 
-```
+```text
 ┌──────────────────────┬──────────────────────┐
 │   JSON Editor        │   Live Preview        │
 │   (Monaco Editor)    │   <A2Renderer>        │
@@ -241,7 +241,7 @@ Three-layer approach:
 
 ## GitHub Actions CI/CD Pipeline
 
-```
+```text
 push to main / tag
         │
         ▼
@@ -268,7 +268,7 @@ push to main / tag
 
 ## Architecture
 
-```
+```text
 a2UI JSON (input)
        │
        ▼
@@ -294,7 +294,7 @@ a2UI JSON (input)
 
 ## Monorepo Structure
 
-```
+```text
 a2-react-aria/                     # pnpm workspaces + Turborepo
 ├── packages/
 │   ├── core/                      # @a2ui/core (npm published)
@@ -488,7 +488,7 @@ End-to-end and accessibility tests that validate the full rendering pipeline.
 
 **Tech:** Playwright (Microsoft, 70k+ stars), `@axe-core/playwright` (official Deque Systems).
 
-```
+```text
 apps/test-harness/
 ├── src/
 │   ├── components/   # Per-component: render, keyboard nav, ARIA attributes
@@ -520,7 +520,7 @@ A runnable reference integration showing the full agent → UI pipeline.
 | Renderer | `@a2ui/core` A2Renderer | Turns a2UI JSON into accessible React Aria UI |
 | Styling | Tailwind CSS 4 | Same tokens as the component library |
 
-```
+```text
 apps/sample-adk/
 ├── agent/            # Python — not a pnpm workspace member
 │   ├── pyproject.toml
@@ -535,7 +535,7 @@ apps/sample-adk/
 
 **What the demo shows:**
 
-```
+```text
 User types: "Show me a login form"
         │
         ▼
@@ -565,19 +565,24 @@ Accessible React Aria Form (Label, TextField, Button)
 ## Key Decisions & Rationale
 
 **shadcn registry over traditional npm package**  
-Users own the component source — they can restyle, extend, or fork any component without fighting library internals. `react-aria-components` and `@a2ui/core` are the only true dependencies. Updates are opt-in via `a2ui diff` + `a2ui update`. This mirrors how the best design systems work in 2026.
+Users own the component source — they can restyle, extend, or fork any component without fighting library internals.
+`react-aria-components` and `@a2ui/core` are the only true dependencies. Updates are opt-in via `a2ui diff` +
+`a2ui update`. This mirrors how the best design systems work in 2026.
 
 **Monorepo (pnpm + Turborepo)**  
-Three outputs (`@a2ui/core`, `a2ui` CLI, VS Code extension) share types and the component source. Turborepo caches builds — CI only rebuilds what changed.
+Three outputs (`@a2ui/core`, `a2ui` CLI, VS Code extension) share types and the component source.
+Turborepo caches builds — CI only rebuilds what changed.
 
 **VS Code extension with LSP**  
-The JSON language server approach (not just schema) enables dynamic completions — e.g. showing only the props valid for the selected `type`, not all props from all components. Schema-only approach can't do this.
+The JSON language server approach (not just schema) enables dynamic completions — e.g. showing only the props valid for
+the selected `type`, not all props from all components. Schema-only approach can't do this.
 
 **Biome over ESLint + Prettier (and over Vite+ for now)**  
 New project, no legacy config. One `biome.json`. Vite+ (MIT, free for OSS) is the future — migrate when it hits 1.0.
 
 **Starlight over VitePress / Docusaurus**  
-Astro islands = live React demos natively. Pagefind search needs no account. `starlight-typedoc` wires TypeDoc output in with zero glue.
+Astro islands = live React demos natively. Pagefind search needs no account.
+`starlight-typedoc` wires TypeDoc output in with zero glue.
 
 **TypeDoc for API auto-docs**  
 Reads TypeScript source + JSDoc, emits markdown. Runs in CI — always current.
