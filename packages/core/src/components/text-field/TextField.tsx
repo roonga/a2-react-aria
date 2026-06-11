@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { Label, TextField as RACTextField } from "react-aria-components"
+import { Input, Label, TextField as RACTextField } from "react-aria-components"
 import type { TextFieldNode } from "./text-field.schema"
 
 interface TextFieldProps extends Omit<Required<TextFieldNode>["props"], "type"> {
@@ -37,13 +37,8 @@ export function TextField({
 					{required && <span className="text-red-600">*</span>}
 				</Label>
 			)}
-			<input
-				type={type}
+			<Input
 				placeholder={placeholder}
-				disabled={disabled}
-				required={required}
-				value={value}
-				onChange={(e) => onChange?.(e.target.value)}
 				className="px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
 			/>
 		</RACTextField>
