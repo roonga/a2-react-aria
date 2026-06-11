@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+storybook-static/
+docs/.astro/
+docs/src/api/
+docs/src/content/docs/api/
+docs/dist/
+
+# Environment — never commit real secrets
+.env.local
+.env.*.local
+
+# Editor
+.DS_Store
+Thumbs.db
+
+# TypeDoc generated output (rebuilt in CI)
+packages/core/schema.json
+
+# Turbo cache
+.turbo/

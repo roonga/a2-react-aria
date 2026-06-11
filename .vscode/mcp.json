@@ -1,0 +1,28 @@
+{
+	"servers": {
+		"react-aria": {
+			"command": "npx",
+			"args": ["-y", "@react-aria/mcp@latest"]
+		},
+		"github": {
+			"type": "http",
+			"url": "https://api.githubcopilot.com/mcp"
+		},
+		"copilotkit": {
+			"type": "http",
+			"url": "https://mcp.copilotkit.ai/sse"
+		},
+		"storybook": {
+			"type": "http",
+			"url": "http://localhost:6006/mcp"
+		},
+		"vitest": {
+			"command": "npx",
+			"args": ["-y", "@djankies/vitest-mcp"]
+		},
+		"npm-registry": {
+			"command": "npx",
+			"args": ["-y", "@pinkpixel/npm-helper-mcp"]
+		}
+	}
+}

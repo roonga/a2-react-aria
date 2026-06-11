@@ -1,0 +1,19 @@
+{
+	"name": "@a2ui/docs",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "astro build",
+		"dev": "astro dev",
+		"preview": "astro preview",
+		"typedoc": "typedoc"
+	},
+	"dependencies": {
+		"@astrojs/starlight": "^0.34.0",
+		"astro": "^5.9.0",
+		"starlight-typedoc": "^0.20.0",
+		"typedoc": "^0.28.19",
+		"typedoc-plugin-markdown": "^4.6.0"
+	}
+}

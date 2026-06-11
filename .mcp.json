@@ -1,0 +1,34 @@
+{
+	"mcpServers": {
+		"react-aria": {
+			"command": "npx",
+			"args": ["-y", "@react-aria/mcp@latest"],
+			"description": "OFFICIAL (Adobe) — browse all React Aria Components docs, fetch component markdown, preview page structure"
+		},
+		"github": {
+			"type": "http",
+			"url": "https://api.githubcopilot.com/mcp",
+			"description": "OFFICIAL (GitHub) — repo, issues, PRs, CI management. Hosted by GitHub, no local install. Requires GitHub login in VS Code or GITHUB_PERSONAL_ACCESS_TOKEN."
+		},
+		"copilotkit": {
+			"type": "sse",
+			"url": "https://mcp.copilotkit.ai/sse",
+			"description": "OFFICIAL (CopilotKit) — AG-UI / CopilotKit live API signatures and code examples. No auth required."
+		},
+		"storybook": {
+			"type": "http",
+			"url": "http://localhost:6006/mcp",
+			"description": "OFFICIAL (Storybook team) — list stories, capture screenshots, generate stories. Requires: pnpm storybook + @storybook/addon-mcp installed."
+		},
+		"vitest": {
+			"command": "npx",
+			"args": ["-y", "@djankies/vitest-mcp"],
+			"description": "COMMUNITY (djankies) — AI-safe Vitest runner, structured output, coverage analysis, prevents full-suite runs. Not official Vitest team."
+		},
+		"npm-registry": {
+			"command": "npx",
+			"args": ["-y", "@pinkpixel/npm-helper-mcp"],
+			"description": "COMMUNITY (pinkpixel-dev) — search npm packages, check versions, audit vulnerabilities. Not official npm."
+		}
+	}
+}

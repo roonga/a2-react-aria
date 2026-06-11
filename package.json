@@ -1,0 +1,45 @@
+{
+	"name": "a2-react-aria",
+	"private": true,
+	"packageManager": "pnpm@10.33.0",
+	"engines": {
+		"node": ">=20",
+		"pnpm": ">=10"
+	},
+	"scripts": {
+		"build": "turbo run build",
+		"build:storybook": "storybook build",
+		"dev": "turbo run dev --parallel",
+		"test": "turbo run test",
+		"storybook": "storybook dev -p 6006",
+		"lint": "biome check .",
+		"format": "biome format . --write",
+		"lint:md": "markdownlint-cli2 \"**/*.md\" \"!**/node_modules/**\"",
+		"format:md": "markdownlint-cli2 --fix \"**/*.md\" \"!**/node_modules/**\"",
+		"typedoc": "typedoc"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"@swc/core",
+			"esbuild",
+			"sharp"
+		]
+	},
+	"devDependencies": {
+		"@a2ui/core": "workspace:*",
+		"@biomejs/biome": "2.4.16",
+		"@storybook/addon-a11y": "^10.4.4",
+		"@storybook/addon-docs": "^10.4.4",
+		"@storybook/addon-mcp": "^0.6.0",
+		"@storybook/react-vite": "^10.4.4",
+		"@types/react": "^19.0.0",
+		"@types/react-dom": "^19.0.0",
+		"markdownlint-cli2": "^0.17.2",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
+		"storybook": "^10.4.4",
+		"turbo": "latest",
+		"typedoc": "^0.28.19",
+		"typescript": "6.0.3"
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"recommendations": [
+		"biomejs.biome",
+		"bradlc.vscode-tailwindcss",
+		"vitest.explorer",
+		"deque-systems.vscode-axe-linter",
+		"usernamehw.errorlens",
+		"yoavbls.pretty-ts-errors",
+		"eamodio.gitlens",
+		"wix.vscode-import-cost",
+		"DavidAnson.vscode-markdownlint"
+	]
+}
