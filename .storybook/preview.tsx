@@ -2,12 +2,10 @@ import type { Decorator, Preview } from "@storybook/react"
 import "./tailwind.css"
 
 const withDarkClass: Decorator = (Story, context) => {
-	const bg = context.globals.backgrounds?.value
-	if (bg === "dark") {
-		document.documentElement.classList.add("dark")
-	} else {
-		document.documentElement.classList.remove("dark")
-	}
+	// Storybook 10: globals.backgrounds is the option key string or { value: key }
+	const data = context.globals.backgrounds
+	const name = typeof data === "string" ? data : data?.value
+	document.documentElement.classList.toggle("dark", name === "dark")
 	return <Story />
 }
 
@@ -16,8 +14,8 @@ const preview: Preview = {
 	parameters: {
 		backgrounds: {
 			options: {
-				light: { name: "Light", value: "light" },
-				dark: { name: "Dark", value: "dark" },
+				light: { name: "Light", value: "#ffffff" },
+				dark: { name: "Dark", value: "#111827" },
 			},
 		},
 		controls: {
