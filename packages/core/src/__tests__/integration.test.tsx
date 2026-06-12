@@ -100,6 +100,24 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 		})
 	})
 
+	describe("unknown component type", () => {
+		it("renders fallback when node type is not in registry", () => {
+			render(
+				<A2Renderer
+					node={{ type: "Unknown" }}
+					registry={registry}
+					fallback={<span>unknown fallback</span>}
+				/>,
+			)
+			expect(screen.getByText("unknown fallback")).toBeDefined()
+		})
+
+		it("renders nothing when node type is not in registry and no fallback", () => {
+			const { container } = render(<A2Renderer node={{ type: "Unknown" }} registry={registry} />)
+			expect(container.firstChild).toBeNull()
+		})
+	})
+
 	describe("nested a2UI JSON", () => {
 		it("renders button inside form structure", () => {
 			const node = {

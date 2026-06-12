@@ -18,8 +18,7 @@ function A2RendererInner({ node, registry, fallback }: A2RendererProps): ReactEl
 	const entry = reg.get(node.type)
 
 	if (!entry) {
-		console.warn(`[A2Renderer] Unknown component type: "${node.type}"`)
-		return null
+		throw new Error(`[A2Renderer] Unknown component type: "${node.type}"`)
 	}
 
 	const { component: Component } = entry
