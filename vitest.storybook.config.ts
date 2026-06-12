@@ -9,7 +9,6 @@ const dirname = typeof __dirname !== "undefined" ? __dirname : path.dirname(file
 export default defineConfig({
 	plugins: [storybookTest({ configDir: path.join(dirname, ".storybook") })],
 	test: {
-		name: "storybook",
 		browser: {
 			enabled: true,
 			headless: true,

@@ -11,7 +11,7 @@ Components are distributed shadcn-style — consumers own the source via `npx a2
 you MUST verify it meets one of these criteria:**
 
 | Criteria | Threshold |
-|---|---|
+| --- | --- |
 | **Official** | Maintained by the primary org/company behind the tool (e.g. Adobe for `@react-aria/mcp`, GitHub for their MCP server) |
 | **Popular — npm package** | ≥ 5,000 GitHub stars AND/OR ≥ 500,000 weekly npm downloads |
 | **Popular — MCP server** | ≥ 1,000 GitHub stars (MCP ecosystem is newer, lower bar applies) |
@@ -25,9 +25,23 @@ Do not assume popularity. Check GitHub stars or npm downloads before recommendin
 #### Approved community packages (explicitly reviewed)
 
 | Package | Stars / Installs | Approved reason |
-|---|---|---|
+| --- | --- | --- |
 | `@djankies/vitest-mcp` | community MCP | Reviewed and approved — best available vitest MCP |
 | `@pinkpixel/npm-helper-mcp` | community MCP | Reviewed and approved — no official npm MCP exists |
+
+### Storybook MCP — component authoring
+
+When `pnpm storybook` is running the `storybook` MCP server is live at `http://localhost:6006/mcp`.
+
+**Never invent component props or story variants.** Always verify against the live docs before writing code:
+
+1. Call `list-all-documentation` at the start of any component or story task to discover available IDs.
+2. Call `get-documentation` with the ID to read actual props, variants, and usage examples.
+3. Call `get-storybook-story-instructions` before creating or editing a story.
+4. Call `preview-stories` after every change and include the returned URLs in your response.
+5. Call `run-story-tests` after every change and fix failures before reporting success.
+
+If the storybook server is not running, state that clearly rather than guessing.
 
 ### Markdown
 
@@ -99,11 +113,11 @@ pnpm typedoc          # Generate API reference docs
 MCP servers are pre-configured in `.mcp.json` and activate automatically when you open this project in Claude Code.
 
 | Server | Status | What it gives Claude |
-|---|---|---|
+| --- | --- | --- |
 | `react-aria` | Official (Adobe) | Full RAC docs — use before writing any component wrapper |
 | `github` | Official (GitHub hosted) | Repo, PR, CI management — VS Code: GitHub login; standalone: `GITHUB_PERSONAL_ACCESS_TOKEN` |
 | `copilotkit` | Official (CopilotKit) | AG-UI / CopilotKit API signatures and integration patterns |
-| `storybook` | Official (Storybook team) | Story listing and screenshots — needs `pnpm storybook` running first |
+| `storybook` | Official (Storybook team) | Story listing, screenshots, component docs — needs `pnpm storybook` running first |
 | `vitest` | Community (approved) | AI-safe test runner, structured output, coverage analysis |
 | `npm-registry` | Community (approved) | Package search, version checks, vulnerability audits |
 
