@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react"
+import { expect, userEvent, within } from "storybook/test"
 import { A2Renderer, Button, createRegistry } from "../packages/core/src/index"
 
 const registry = createRegistry({
@@ -31,6 +32,13 @@ export const Primary: Story = {
 			children: "Click me",
 		},
 	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement)
+		const button = canvas.getByRole("button", { name: "Click me" })
+		await expect(button).toBeInTheDocument()
+		await expect(button).not.toBeDisabled()
+		await userEvent.click(button)
+	},
 }
 
 export const Secondary: Story = {
@@ -60,6 +68,11 @@ export const Disabled: Story = {
 			props: { variant: "primary", disabled: true },
 			children: "Disabled",
 		},
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement)
+		const button = canvas.getByRole("button", { name: "Disabled" })
+		await expect(button).toBeDisabled()
 	},
 }
 

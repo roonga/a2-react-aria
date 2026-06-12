@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react"
+import { expect, userEvent, within } from "storybook/test"
 import { A2Renderer, createRegistry, TextField } from "../packages/core/src/index"
 
 const registry = createRegistry({
@@ -26,6 +27,13 @@ export const Email: Story = {
 				required: true,
 			},
 		},
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement)
+		const input = canvas.getByRole("textbox", { name: /email/i })
+		await expect(input).toBeInTheDocument()
+		await userEvent.type(input, "test@example.com")
+		await expect(input).toHaveValue("test@example.com")
 	},
 }
 
@@ -65,5 +73,10 @@ export const Disabled: Story = {
 				disabled: true,
 			},
 		},
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement)
+		const input = canvas.getByRole("textbox", { name: /disabled field/i })
+		await expect(input).toBeDisabled()
 	},
 }
