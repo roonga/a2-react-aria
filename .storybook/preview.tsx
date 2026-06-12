@@ -12,6 +12,11 @@ const withDarkClass: Decorator = (Story, context) => {
 const preview: Preview = {
 	decorators: [withDarkClass],
 	parameters: {
+		options: {
+			storySort: {
+				order: ["Components", "Core"],
+			},
+		},
 		backgrounds: {
 			options: {
 				light: { name: "Light", value: "#ffffff" },
