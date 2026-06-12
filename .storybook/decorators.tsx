@@ -24,7 +24,13 @@ export const withTheme: Decorator = (Story, context) => {
 	useTheme(theme)
 
 	return (
-		<div style={{ backgroundColor: `var(--color-background)`, color: `var(--color-text)`, minHeight: "100vh" }}>
+		<div
+			style={{
+				backgroundColor: `var(--color-background)`,
+				color: `var(--color-text)`,
+				minHeight: "100vh",
+			}}
+		>
 			<Story />
 		</div>
 	)
