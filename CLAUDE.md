@@ -219,7 +219,7 @@ Implement in roughly this order — simpler form controls first, complex overlay
 | 3 | Checkbox / CheckboxGroup | ✅ Done |
 | 4 | RadioGroup | ✅ Done |
 | 5 | Switch | ✅ Done |
-| 6 | Select / ComboBox | ⬜ Todo |
+| 6 | Select / ComboBox | ✅ Done |
 | 7 | Form (layout container) | ⬜ Todo |
 | 8 | Dialog / Modal | ⬜ Todo |
 | 9 | Tooltip / Popover | ⬜ Todo |
