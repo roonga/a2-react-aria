@@ -453,10 +453,7 @@ describe("Accessibility — axe-core", () => {
 	describe("Popover", () => {
 		it("has no axe violations (trigger button)", async () => {
 			const { container } = render(
-				<A2Renderer
-					node={{ type: "Popover", props: { triggerLabel: "Settings" } }}
-					registry={registry}
-				/>,
+				<A2Renderer node={{ type: "Popover", props: { triggerLabel: "Settings" } }} registry={registry} />,
 			)
 			const { violations } = await axe.run(container, AXE_CONFIG)
 			expect(violations).toHaveLength(0)
