@@ -216,7 +216,7 @@ Implement in roughly this order — simpler form controls first, complex overlay
 | --- | --- | --- |
 | 1 | Button | ✅ Done |
 | 2 | TextField | ✅ Done |
-| 3 | Checkbox / CheckboxGroup | ⬜ Todo |
+| 3 | Checkbox / CheckboxGroup | ✅ Done |
 | 4 | RadioGroup | ⬜ Todo |
 | 5 | Switch | ⬜ Todo |
 | 6 | Select / ComboBox | ⬜ Todo |

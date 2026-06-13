@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react"
 import axe from "axe-core"
 import { describe, expect, it } from "vitest"
 import { Button } from "../components/button"
+import { Checkbox, CheckboxGroup } from "../components/checkbox"
 import { TextField } from "../components/text-field"
 import { A2Renderer, createRegistry } from "../index"
 
@@ -10,6 +11,8 @@ const AXE_CONFIG: axe.RunOptions = { rules: { "color-contrast": { enabled: false
 
 const registry = createRegistry({
 	Button: { component: Button },
+	Checkbox: { component: Checkbox },
+	CheckboxGroup: { component: CheckboxGroup },
 	TextField: { component: TextField },
 })
 
@@ -172,6 +175,99 @@ describe("Accessibility — axe-core", () => {
 			const { container } = render(
 				<A2Renderer
 					node={{ type: "TextField", props: { label: "Read only", disabled: true, value: "locked" } }}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("Checkbox", () => {
+		it("has no axe violations (default unchecked)", async () => {
+			const { container } = render(
+				<A2Renderer node={{ type: "Checkbox", props: { label: "Accept terms" } }} registry={registry} />,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("has no axe violations (checked)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{ type: "Checkbox", props: { label: "Remember me", defaultSelected: true } }}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("has no axe violations (indeterminate)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{ type: "Checkbox", props: { label: "Select all", isIndeterminate: true } }}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("has no axe violations (disabled)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{ type: "Checkbox", props: { label: "Not available", isDisabled: true } }}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("CheckboxGroup", () => {
+		it("has no axe violations (labelled group)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "CheckboxGroup",
+						props: { label: "Fruits" },
+						children: [
+							{ type: "Checkbox", props: { label: "Apple", value: "apple" } },
+							{ type: "Checkbox", props: { label: "Banana", value: "banana" } },
+						],
+					}}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("has no axe violations (disabled group)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "CheckboxGroup",
+						props: { label: "Options", isDisabled: true },
+						children: [{ type: "Checkbox", props: { label: "Option A", value: "a" } }],
+					}}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("has no axe violations (invalid group with error message)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "CheckboxGroup",
+						props: { label: "Agree", isInvalid: true, errorMessage: "Required" },
+						children: [{ type: "Checkbox", props: { label: "I agree", value: "agree" } }],
+					}}
 					registry={registry}
 				/>,
 			)

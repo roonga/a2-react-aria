@@ -1,5 +1,7 @@
 export type { ButtonNode } from "./components/button"
 export { Button, ButtonSchema } from "./components/button"
+export type { CheckboxGroupNode, CheckboxNode } from "./components/checkbox"
+export { Checkbox, CheckboxGroup, CheckboxGroupSchema, CheckboxSchema } from "./components/checkbox"
 export type { TextFieldNode } from "./components/text-field"
 export { TextField, TextFieldSchema } from "./components/text-field"
 // ↑ Component schemas are exported for consumers to validate a2UI JSON before

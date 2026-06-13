@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { ButtonSchema } from "../components/button"
+import { CheckboxGroupSchema, CheckboxSchema } from "../components/checkbox"
 import { TextFieldSchema } from "../components/text-field"
 import { parseNode, safeParseNode } from "../schema"
 
@@ -102,5 +103,70 @@ describe("TextFieldSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(TextFieldSchema.safeParse({ type: "text-field" }).success).toBe(false)
+	})
+})
+
+describe("CheckboxSchema", () => {
+	it("parses a minimal checkbox node", () => {
+		expect(CheckboxSchema.safeParse({ type: "Checkbox" }).success).toBe(true)
+	})
+
+	it("parses a checkbox with all props", () => {
+		expect(
+			CheckboxSchema.safeParse({
+				type: "Checkbox",
+				props: {
+					label: "Accept",
+					value: "accept",
+					isSelected: true,
+					defaultSelected: false,
+					isDisabled: false,
+					isRequired: true,
+					isIndeterminate: false,
+				},
+			}).success,
+		).toBe(true)
+	})
+
+	it("rejects a non-boolean isSelected", () => {
+		expect(CheckboxSchema.safeParse({ type: "Checkbox", props: { isSelected: "yes" } }).success).toBe(false)
+	})
+
+	it("rejects a non-string label", () => {
+		expect(CheckboxSchema.safeParse({ type: "Checkbox", props: { label: 123 } }).success).toBe(false)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(CheckboxSchema.safeParse({ type: "checkbox" }).success).toBe(false)
+	})
+})
+
+describe("CheckboxGroupSchema", () => {
+	it("parses a minimal group node", () => {
+		expect(CheckboxGroupSchema.safeParse({ type: "CheckboxGroup" }).success).toBe(true)
+	})
+
+	it("parses both valid orientations", () => {
+		for (const orientation of ["horizontal", "vertical"]) {
+			expect(CheckboxGroupSchema.safeParse({ type: "CheckboxGroup", props: { orientation } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid orientation", () => {
+		expect(CheckboxGroupSchema.safeParse({ type: "CheckboxGroup", props: { orientation: "diagonal" } }).success).toBe(false)
+	})
+
+	it("parses value as string array", () => {
+		expect(
+			CheckboxGroupSchema.safeParse({ type: "CheckboxGroup", props: { value: ["a", "b"] } }).success,
+		).toBe(true)
+	})
+
+	it("rejects value as non-array", () => {
+		expect(CheckboxGroupSchema.safeParse({ type: "CheckboxGroup", props: { value: "a" } }).success).toBe(false)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(CheckboxGroupSchema.safeParse({ type: "checkboxGroup" }).success).toBe(false)
 	})
 })
