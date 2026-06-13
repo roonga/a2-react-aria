@@ -25,7 +25,7 @@ export const UnregisteredComponent: Story = {
 	parameters: {
 		docs: {
 			description: {
-				story: 'Shows the fallback when the node type has no matching entry in the registry.',
+				story: "Shows the fallback when the node type has no matching entry in the registry.",
 			},
 		},
 	},

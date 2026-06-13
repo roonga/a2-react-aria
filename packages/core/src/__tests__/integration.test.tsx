@@ -102,13 +102,7 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 
 	describe("unknown component type", () => {
 		it("renders fallback when node type is not in registry", () => {
-			render(
-				<A2Renderer
-					node={{ type: "Unknown" }}
-					registry={registry}
-					fallback={<span>unknown fallback</span>}
-				/>,
-			)
+			render(<A2Renderer node={{ type: "Unknown" }} registry={registry} fallback={<span>unknown fallback</span>} />)
 			expect(screen.getByText("unknown fallback")).toBeDefined()
 		})
 
