@@ -8,6 +8,7 @@ import { PopoverSchema } from "../components/popover"
 import { RadioGroupSchema, RadioSchema } from "../components/radio"
 import { SelectSchema } from "../components/select"
 import { SwitchSchema } from "../components/switch"
+import { TabsSchema } from "../components/tabs"
 import { TextFieldSchema } from "../components/text-field"
 import { TooltipSchema } from "../components/tooltip"
 import { parseNode, safeParseNode } from "../schema"
@@ -352,7 +353,12 @@ describe("MenuSchema", () => {
 		expect(
 			MenuSchema.safeParse({
 				type: "Menu",
-				props: { items: [{ id: "a", label: "Item A" }, { id: "b", label: "Item B", isDisabled: true }] },
+				props: {
+					items: [
+						{ id: "a", label: "Item A" },
+						{ id: "b", label: "Item B", isDisabled: true },
+					],
+				},
 			}).success,
 		).toBe(true)
 	})
@@ -453,5 +459,53 @@ describe("SelectSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(SelectSchema.safeParse({ type: "select" }).success).toBe(false)
+	})
+})
+
+describe("TabsSchema", () => {
+	it("parses a minimal tabs node", () => {
+		expect(TabsSchema.safeParse({ type: "Tabs" }).success).toBe(true)
+	})
+
+	it("parses tabs with tab items", () => {
+		expect(
+			TabsSchema.safeParse({
+				type: "Tabs",
+				props: {
+					tabs: [
+						{ id: "tab1", label: "Tab 1" },
+						{ id: "tab2", label: "Tab 2", isDisabled: true },
+					],
+				},
+			}).success,
+		).toBe(true)
+	})
+
+	it("parses all valid orientation values", () => {
+		for (const orientation of ["horizontal", "vertical"]) {
+			expect(TabsSchema.safeParse({ type: "Tabs", props: { orientation } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid orientation", () => {
+		expect(TabsSchema.safeParse({ type: "Tabs", props: { orientation: "diagonal" } }).success).toBe(false)
+	})
+
+	it("parses all valid keyboardActivation values", () => {
+		for (const keyboardActivation of ["automatic", "manual"]) {
+			expect(TabsSchema.safeParse({ type: "Tabs", props: { keyboardActivation } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid keyboardActivation", () => {
+		expect(TabsSchema.safeParse({ type: "Tabs", props: { keyboardActivation: "instant" } }).success).toBe(false)
+	})
+
+	it("rejects a tab item missing id", () => {
+		expect(TabsSchema.safeParse({ type: "Tabs", props: { tabs: [{ label: "No id" }] } }).success).toBe(false)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(TabsSchema.safeParse({ type: "tabs" }).success).toBe(false)
 	})
 })

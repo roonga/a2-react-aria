@@ -224,7 +224,7 @@ Implement in roughly this order — simpler form controls first, complex overlay
 | 8 | Dialog / Modal | ✅ Done |
 | 9 | Tooltip / Popover | ✅ Done |
 | 10 | Menu / MenuTrigger | ✅ Done |
-| 11 | Tabs | ⬜ Todo |
+| 11 | Tabs | ✅ Done |
 | 12 | Breadcrumb | ⬜ Todo |
 | 13 | DatePicker / DateRangePicker | ⬜ Todo |
 | 14 | Table | ⬜ Todo |

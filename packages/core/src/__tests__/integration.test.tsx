@@ -10,6 +10,7 @@ import { Popover } from "../components/popover"
 import { Radio, RadioGroup } from "../components/radio"
 import { Select } from "../components/select"
 import { Switch } from "../components/switch"
+import { Tabs } from "../components/tabs"
 import { TextField } from "../components/text-field"
 import { Tooltip } from "../components/tooltip"
 import { A2Renderer, createRegistry } from "../index"
@@ -29,6 +30,7 @@ const registry = createRegistry({
 	RadioGroup: { component: RadioGroup },
 	Select: { component: Select },
 	Switch: { component: Switch },
+	Tabs: { component: Tabs },
 	TextField: { component: TextField },
 	Tooltip: { component: Tooltip },
 })
@@ -121,6 +123,59 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 			render(<A2Renderer node={node} registry={registry} />)
 			const input = screen.getByLabelText(/disabled/i) as HTMLInputElement
 			expect(input.disabled).toBe(true)
+		})
+	})
+
+	describe("Tabs component", () => {
+		it("renders tab list with labelled tabs", () => {
+			const node = {
+				type: "Tabs" as const,
+				props: {
+					ariaLabel: "Sections",
+					tabs: [
+						{ id: "tab1", label: "First" },
+						{ id: "tab2", label: "Second" },
+					],
+				},
+			}
+			render(<A2Renderer node={node} registry={registry} />)
+			expect(screen.getByRole("tab", { name: /first/i })).toBeDefined()
+			expect(screen.getByRole("tab", { name: /second/i })).toBeDefined()
+		})
+
+		it("renders first tab panel by default", () => {
+			const node = {
+				type: "Tabs" as const,
+				props: {
+					ariaLabel: "Nav",
+					tabs: [
+						{ id: "a", label: "Alpha" },
+						{ id: "b", label: "Beta" },
+					],
+				},
+				children: [
+					{ type: "Button", props: { variant: "primary" as const }, children: "Panel A" },
+					{ type: "Button", props: { variant: "secondary" as const }, children: "Panel B" },
+				],
+			}
+			render(<A2Renderer node={node} registry={registry} />)
+			expect(screen.getByRole("button", { name: /panel a/i })).toBeDefined()
+		})
+
+		it("reflects disabled tab in DOM", () => {
+			const node = {
+				type: "Tabs" as const,
+				props: {
+					ariaLabel: "Nav",
+					tabs: [
+						{ id: "t1", label: "Active" },
+						{ id: "t2", label: "Locked", isDisabled: true },
+					],
+				},
+			}
+			render(<A2Renderer node={node} registry={registry} />)
+			const lockedTab = screen.getByRole("tab", { name: /locked/i })
+			expect(lockedTab.getAttribute("aria-disabled")).toBe("true")
 		})
 	})
 
@@ -509,6 +564,46 @@ describe("Accessibility — axe-core", () => {
 			const { container } = render(
 				<A2Renderer
 					node={{ type: "Select", props: { label: "Fruit", items, isDisabled: true } }}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("Tabs", () => {
+		it("has no axe violations (horizontal tabs)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "Tabs",
+						props: {
+							ariaLabel: "Settings",
+							tabs: [
+								{ id: "general", label: "General" },
+								{ id: "privacy", label: "Privacy" },
+							],
+						},
+					}}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("has no axe violations (vertical tabs)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "Tabs",
+						props: {
+							ariaLabel: "Nav",
+							orientation: "vertical",
+							tabs: [{ id: "home", label: "Home" }],
+						},
+					}}
 					registry={registry}
 				/>,
 			)
