@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest"
 import { Button } from "../components/button"
 import { Checkbox, CheckboxGroup } from "../components/checkbox"
 import { Radio, RadioGroup } from "../components/radio"
+import { Switch } from "../components/switch"
 import { TextField } from "../components/text-field"
 import { A2Renderer, createRegistry } from "../index"
 
@@ -16,6 +17,7 @@ const registry = createRegistry({
 	CheckboxGroup: { component: CheckboxGroup },
 	Radio: { component: Radio },
 	RadioGroup: { component: RadioGroup },
+	Switch: { component: Switch },
 	TextField: { component: TextField },
 })
 
@@ -344,6 +346,32 @@ describe("Accessibility — axe-core", () => {
 					}}
 					registry={registry}
 				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("Switch", () => {
+		it("has no axe violations (default off)", async () => {
+			const { container } = render(
+				<A2Renderer node={{ type: "Switch", props: { label: "Dark mode" } }} registry={registry} />,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("has no axe violations (selected)", async () => {
+			const { container } = render(
+				<A2Renderer node={{ type: "Switch", props: { label: "Dark mode", defaultSelected: true } }} registry={registry} />,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("has no axe violations (disabled)", async () => {
+			const { container } = render(
+				<A2Renderer node={{ type: "Switch", props: { label: "Locked", isDisabled: true } }} registry={registry} />,
 			)
 			const { violations } = await axe.run(container, AXE_CONFIG)
 			expect(violations).toHaveLength(0)

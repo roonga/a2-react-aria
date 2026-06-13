@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 import { ButtonSchema } from "../components/button"
 import { CheckboxGroupSchema, CheckboxSchema } from "../components/checkbox"
 import { RadioGroupSchema, RadioSchema } from "../components/radio"
+import { SwitchSchema } from "../components/switch"
 import { TextFieldSchema } from "../components/text-field"
 import { parseNode, safeParseNode } from "../schema"
 
@@ -221,5 +222,32 @@ describe("RadioGroupSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(RadioGroupSchema.safeParse({ type: "radioGroup" }).success).toBe(false)
+	})
+})
+
+describe("SwitchSchema", () => {
+	it("parses a minimal switch node", () => {
+		expect(SwitchSchema.safeParse({ type: "Switch" }).success).toBe(true)
+	})
+
+	it("parses a switch with all boolean props", () => {
+		expect(
+			SwitchSchema.safeParse({
+				type: "Switch",
+				props: { label: "Dark mode", isSelected: true, isDisabled: false, isRequired: false, isInvalid: false },
+			}).success,
+		).toBe(true)
+	})
+
+	it("rejects a non-boolean isSelected", () => {
+		expect(SwitchSchema.safeParse({ type: "Switch", props: { isSelected: "on" } }).success).toBe(false)
+	})
+
+	it("rejects a non-string label", () => {
+		expect(SwitchSchema.safeParse({ type: "Switch", props: { label: 99 } }).success).toBe(false)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(SwitchSchema.safeParse({ type: "switch" }).success).toBe(false)
 	})
 })
