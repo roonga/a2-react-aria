@@ -56,7 +56,7 @@ export function Select({
 			className={styles.field}
 		>
 			{label && <Label className={styles.label}>{label}</Label>}
-			<Button className={({ isDisabled: dis, isInvalid: inv }) => styles.trigger({ isDisabled: dis, isInvalid: inv })}>
+			<Button className={({ isDisabled: dis }) => styles.trigger({ isDisabled: dis, isInvalid })}>
 				<SelectValue>
 					{({ selectedText, isPlaceholder }) => (
 						<span className={isPlaceholder ? styles.placeholder : styles.value}>

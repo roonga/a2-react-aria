@@ -5,10 +5,12 @@ import { Button } from "../components/button"
 import { Checkbox, CheckboxGroup } from "../components/checkbox"
 import { Dialog } from "../components/dialog"
 import { Form } from "../components/form"
+import { Popover } from "../components/popover"
 import { Radio, RadioGroup } from "../components/radio"
 import { Select } from "../components/select"
 import { Switch } from "../components/switch"
 import { TextField } from "../components/text-field"
+import { Tooltip } from "../components/tooltip"
 import { A2Renderer, createRegistry } from "../index"
 
 // Color contrast requires real CSS rendering — jsdom cannot compute it.
@@ -20,11 +22,13 @@ const registry = createRegistry({
 	CheckboxGroup: { component: CheckboxGroup },
 	Dialog: { component: Dialog },
 	Form: { component: Form },
+	Popover: { component: Popover },
 	Radio: { component: Radio },
 	RadioGroup: { component: RadioGroup },
 	Select: { component: Select },
 	Switch: { component: Switch },
 	TextField: { component: TextField },
+	Tooltip: { component: Tooltip },
 })
 
 describe("A2Renderer — a2UI to React Aria integration", () => {
@@ -438,6 +442,32 @@ describe("Accessibility — axe-core", () => {
 							{ type: "Button", props: { variant: "primary" }, children: "Submit" },
 						],
 					}}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("Popover", () => {
+		it("has no axe violations (trigger button)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{ type: "Popover", props: { triggerLabel: "Settings" } }}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("Tooltip", () => {
+		it("has no axe violations (trigger button)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{ type: "Tooltip", props: { content: "Helpful text", triggerLabel: "Help" } }}
 					registry={registry}
 				/>,
 			)

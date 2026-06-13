@@ -3,10 +3,12 @@ import { ButtonSchema } from "../components/button"
 import { CheckboxGroupSchema, CheckboxSchema } from "../components/checkbox"
 import { DialogSchema } from "../components/dialog"
 import { FormSchema } from "../components/form"
+import { PopoverSchema } from "../components/popover"
 import { RadioGroupSchema, RadioSchema } from "../components/radio"
 import { SelectSchema } from "../components/select"
 import { SwitchSchema } from "../components/switch"
 import { TextFieldSchema } from "../components/text-field"
+import { TooltipSchema } from "../components/tooltip"
 import { parseNode, safeParseNode } from "../schema"
 
 describe("A2NodeSchema", () => {
@@ -337,6 +339,54 @@ describe("FormSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(FormSchema.safeParse({ type: "form" }).success).toBe(false)
+	})
+})
+
+describe("PopoverSchema", () => {
+	it("parses a minimal popover node", () => {
+		expect(PopoverSchema.safeParse({ type: "Popover" }).success).toBe(true)
+	})
+
+	it("parses all valid placement values", () => {
+		for (const placement of ["top", "bottom", "left", "right"]) {
+			expect(PopoverSchema.safeParse({ type: "Popover", props: { placement } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid placement", () => {
+		expect(PopoverSchema.safeParse({ type: "Popover", props: { placement: "center" } }).success).toBe(false)
+	})
+
+	it("rejects a non-string triggerLabel", () => {
+		expect(PopoverSchema.safeParse({ type: "Popover", props: { triggerLabel: 42 } }).success).toBe(false)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(PopoverSchema.safeParse({ type: "popover" }).success).toBe(false)
+	})
+})
+
+describe("TooltipSchema", () => {
+	it("parses a minimal tooltip node", () => {
+		expect(TooltipSchema.safeParse({ type: "Tooltip" }).success).toBe(true)
+	})
+
+	it("parses all valid placement values", () => {
+		for (const placement of ["top", "bottom", "left", "right"]) {
+			expect(TooltipSchema.safeParse({ type: "Tooltip", props: { placement } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid placement", () => {
+		expect(TooltipSchema.safeParse({ type: "Tooltip", props: { placement: "center" } }).success).toBe(false)
+	})
+
+	it("rejects a non-string content", () => {
+		expect(TooltipSchema.safeParse({ type: "Tooltip", props: { content: 99 } }).success).toBe(false)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(TooltipSchema.safeParse({ type: "tooltip" }).success).toBe(false)
 	})
 })
 

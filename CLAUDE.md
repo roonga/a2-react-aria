@@ -222,7 +222,7 @@ Implement in roughly this order — simpler form controls first, complex overlay
 | 6 | Select / ComboBox | ✅ Done |
 | 7 | Form (layout container) | ✅ Done |
 | 8 | Dialog / Modal | ✅ Done |
-| 9 | Tooltip / Popover | ⬜ Todo |
+| 9 | Tooltip / Popover | ✅ Done |
 | 10 | Menu / MenuTrigger | ⬜ Todo |
 | 11 | Tabs | ⬜ Todo |
 | 12 | Breadcrumb | ⬜ Todo |
