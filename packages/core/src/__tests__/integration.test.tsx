@@ -12,6 +12,7 @@ import { Popover } from "../components/popover"
 import { Radio, RadioGroup } from "../components/radio"
 import { Select } from "../components/select"
 import { Switch } from "../components/switch"
+import { Table } from "../components/table"
 import { Tabs } from "../components/tabs"
 import { TextField } from "../components/text-field"
 import { Tooltip } from "../components/tooltip"
@@ -35,6 +36,7 @@ const registry = createRegistry({
 	RadioGroup: { component: RadioGroup },
 	Select: { component: Select },
 	Switch: { component: Switch },
+	Table: { component: Table },
 	Tabs: { component: Tabs },
 	TextField: { component: TextField },
 	Tooltip: { component: Tooltip },
@@ -188,6 +190,37 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 			const node = { type: "Breadcrumb" as const, props: { items: [] } }
 			const { container } = render(<A2Renderer node={node} registry={registry} />)
 			expect(container.querySelector("ol")).toBeDefined()
+		})
+	})
+
+	describe("Table component", () => {
+		const columns = [
+			{ id: "name", label: "Name", isRowHeader: true as const },
+			{ id: "role", label: "Role" },
+		]
+		const rows = [
+			{ id: "1", data: { name: "Alice", role: "Engineer" } },
+			{ id: "2", data: { name: "Bob", role: "Designer" } },
+		]
+
+		it("renders column headers", () => {
+			const node = { type: "Table" as const, props: { ariaLabel: "Users", columns, rows } }
+			render(<A2Renderer node={node} registry={registry} />)
+			expect(screen.getByRole("columnheader", { name: /name/i })).toBeDefined()
+			expect(screen.getByRole("columnheader", { name: /role/i })).toBeDefined()
+		})
+
+		it("renders row data", () => {
+			const node = { type: "Table" as const, props: { ariaLabel: "Users", columns, rows } }
+			render(<A2Renderer node={node} registry={registry} />)
+			expect(screen.getByText("Alice")).toBeDefined()
+			expect(screen.getByText("Engineer")).toBeDefined()
+		})
+
+		it("renders empty table with no rows", () => {
+			const node = { type: "Table" as const, props: { ariaLabel: "Empty", columns, rows: [] } }
+			render(<A2Renderer node={node} registry={registry} />)
+			expect(screen.getByRole("grid", { name: /empty/i })).toBeDefined()
 		})
 	})
 
@@ -702,6 +735,50 @@ describe("Accessibility — axe-core", () => {
 								{ id: "home", label: "Home", href: "/" },
 								{ id: "page", label: "Current" },
 							],
+						},
+					}}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("Table", () => {
+		it("has no axe violations (data table)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "Table",
+						props: {
+							ariaLabel: "Team",
+							columns: [
+								{ id: "name", label: "Name", isRowHeader: true },
+								{ id: "role", label: "Role" },
+							],
+							rows: [
+								{ id: "1", data: { name: "Alice", role: "Engineer" } },
+								{ id: "2", data: { name: "Bob", role: "Designer" } },
+							],
+						},
+					}}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("has no axe violations (empty table)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "Table",
+						props: {
+							ariaLabel: "Empty table",
+							columns: [{ id: "col", label: "Column", isRowHeader: true }],
+							rows: [],
 						},
 					}}
 					registry={registry}

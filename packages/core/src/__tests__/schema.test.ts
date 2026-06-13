@@ -10,6 +10,7 @@ import { PopoverSchema } from "../components/popover"
 import { RadioGroupSchema, RadioSchema } from "../components/radio"
 import { SelectSchema } from "../components/select"
 import { SwitchSchema } from "../components/switch"
+import { TableSchema } from "../components/table"
 import { TabsSchema } from "../components/tabs"
 import { TextFieldSchema } from "../components/text-field"
 import { TooltipSchema } from "../components/tooltip"
@@ -605,5 +606,45 @@ describe("DateRangePickerSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(DateRangePickerSchema.safeParse({ type: "daterangepicker" }).success).toBe(false)
+	})
+})
+
+describe("TableSchema", () => {
+	it("parses a minimal table node", () => {
+		expect(TableSchema.safeParse({ type: "Table" }).success).toBe(true)
+	})
+
+	it("parses a table with columns and rows", () => {
+		expect(
+			TableSchema.safeParse({
+				type: "Table",
+				props: {
+					ariaLabel: "Users",
+					columns: [
+						{ id: "name", label: "Name", isRowHeader: true },
+						{ id: "role", label: "Role" },
+					],
+					rows: [{ id: "1", data: { name: "Alice", role: "Admin" } }],
+				},
+			}).success,
+		).toBe(true)
+	})
+
+	it("parses all valid selectionMode values", () => {
+		for (const selectionMode of ["none", "single", "multiple"]) {
+			expect(TableSchema.safeParse({ type: "Table", props: { selectionMode } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid selectionMode", () => {
+		expect(TableSchema.safeParse({ type: "Table", props: { selectionMode: "all" } }).success).toBe(false)
+	})
+
+	it("rejects a row missing data", () => {
+		expect(TableSchema.safeParse({ type: "Table", props: { rows: [{ id: "1" }] } }).success).toBe(false)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(TableSchema.safeParse({ type: "table" }).success).toBe(false)
 	})
 })
