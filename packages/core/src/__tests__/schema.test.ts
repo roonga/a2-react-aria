@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { ButtonSchema } from "../components/button"
 import { CheckboxGroupSchema, CheckboxSchema } from "../components/checkbox"
+import { FormSchema } from "../components/form"
 import { RadioGroupSchema, RadioSchema } from "../components/radio"
 import { SelectSchema } from "../components/select"
 import { SwitchSchema } from "../components/switch"
@@ -250,6 +251,46 @@ describe("SwitchSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(SwitchSchema.safeParse({ type: "switch" }).success).toBe(false)
+	})
+})
+
+describe("FormSchema", () => {
+	it("parses a minimal form node", () => {
+		expect(FormSchema.safeParse({ type: "Form" }).success).toBe(true)
+	})
+
+	it("parses all valid gap values", () => {
+		for (const gap of ["sm", "md", "lg"]) {
+			expect(FormSchema.safeParse({ type: "Form", props: { gap } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid gap value", () => {
+		expect(FormSchema.safeParse({ type: "Form", props: { gap: "xl" } }).success).toBe(false)
+	})
+
+	it("parses all valid validationBehavior values", () => {
+		for (const validationBehavior of ["aria", "native"]) {
+			expect(FormSchema.safeParse({ type: "Form", props: { validationBehavior } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid validationBehavior", () => {
+		expect(FormSchema.safeParse({ type: "Form", props: { validationBehavior: "custom" } }).success).toBe(false)
+	})
+
+	it("parses all valid method values", () => {
+		for (const method of ["get", "post"]) {
+			expect(FormSchema.safeParse({ type: "Form", props: { method } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid method", () => {
+		expect(FormSchema.safeParse({ type: "Form", props: { method: "put" } }).success).toBe(false)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(FormSchema.safeParse({ type: "form" }).success).toBe(false)
 	})
 })
 

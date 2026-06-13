@@ -3,6 +3,7 @@ import axe from "axe-core"
 import { describe, expect, it } from "vitest"
 import { Button } from "../components/button"
 import { Checkbox, CheckboxGroup } from "../components/checkbox"
+import { Form } from "../components/form"
 import { Radio, RadioGroup } from "../components/radio"
 import { Select } from "../components/select"
 import { Switch } from "../components/switch"
@@ -16,6 +17,7 @@ const registry = createRegistry({
 	Button: { component: Button },
 	Checkbox: { component: Checkbox },
 	CheckboxGroup: { component: CheckboxGroup },
+	Form: { component: Form },
 	Radio: { component: Radio },
 	RadioGroup: { component: RadioGroup },
 	Select: { component: Select },
@@ -377,6 +379,32 @@ describe("Accessibility — axe-core", () => {
 		it("has no axe violations (disabled)", async () => {
 			const { container } = render(
 				<A2Renderer node={{ type: "Switch", props: { label: "Locked", isDisabled: true } }} registry={registry} />,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("Form", () => {
+		it("has no axe violations (empty form)", async () => {
+			const { container } = render(<A2Renderer node={{ type: "Form" }} registry={registry} />)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("has no axe violations (form with fields)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "Form",
+						props: { gap: "md" },
+						children: [
+							{ type: "TextField", props: { label: "Name" } },
+							{ type: "Button", props: { variant: "primary" }, children: "Submit" },
+						],
+					}}
+					registry={registry}
+				/>,
 			)
 			const { violations } = await axe.run(container, AXE_CONFIG)
 			expect(violations).toHaveLength(0)

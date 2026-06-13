@@ -220,7 +220,7 @@ Implement in roughly this order — simpler form controls first, complex overlay
 | 4 | RadioGroup | ✅ Done |
 | 5 | Switch | ✅ Done |
 | 6 | Select / ComboBox | ✅ Done |
-| 7 | Form (layout container) | ⬜ Todo |
+| 7 | Form (layout container) | ✅ Done |
 | 8 | Dialog / Modal | ⬜ Todo |
 | 9 | Tooltip / Popover | ⬜ Todo |
 | 10 | Menu / MenuTrigger | ⬜ Todo |
