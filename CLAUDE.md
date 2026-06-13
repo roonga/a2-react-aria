@@ -208,6 +208,30 @@ pnpm lint --fix    # Fix auto-fixable issues
 pnpm format        # Format all files
 ```
 
+## Component backlog
+
+Implement in roughly this order — simpler form controls first, complex overlays and layout last.
+
+| # | Component | Status |
+| --- | --- | --- |
+| 1 | Button | ✅ Done |
+| 2 | TextField | ✅ Done |
+| 3 | Checkbox / CheckboxGroup | ⬜ Todo |
+| 4 | RadioGroup | ⬜ Todo |
+| 5 | Switch | ⬜ Todo |
+| 6 | Select / ComboBox | ⬜ Todo |
+| 7 | Form (layout container) | ⬜ Todo |
+| 8 | Dialog / Modal | ⬜ Todo |
+| 9 | Tooltip / Popover | ⬜ Todo |
+| 10 | Menu / MenuTrigger | ⬜ Todo |
+| 11 | Tabs | ⬜ Todo |
+| 12 | Breadcrumb | ⬜ Todo |
+| 13 | DatePicker / DateRangePicker | ⬜ Todo |
+| 14 | Table | ⬜ Todo |
+| 15 | Grid / Flex layout nodes | ⬜ Todo |
+
+Update the status column to ✅ Done when a component passes all 10 workflow steps.
+
 ## Adding a new component
 
 One component at a time, in this exact order. Do not skip steps or batch multiple components.
