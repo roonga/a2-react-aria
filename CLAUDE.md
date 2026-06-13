@@ -45,16 +45,51 @@ If the storybook server is not running, state that clearly rather than guessing.
 
 ### Component theming — no hardcoded styles
 
-All component styles must use CSS custom properties (design tokens), never hardcoded Tailwind color or spacing values.
+All component styles must use CSS custom properties (design tokens), never hardcoded Tailwind color values.
 
-- ✅ `text-[var(--color-danger)]`
-- ✅ `bg-[var(--color-primary)]`
-- ❌ `text-red-500`
-- ❌ `bg-blue-600`
+- ✅ `text-[var(--color-danger)]`, `bg-[var(--color-primary)]`, `border-[var(--color-border)]`
+- ❌ `text-red-500`, `bg-blue-600`, `border-gray-300`
 
 Spacing and layout utilities (`flex`, `gap-2`, `px-3`, `rounded`) are allowed as structural primitives.
 Color, background, border-color, and text-color must always reference a `var(--color-*)` token.
 This ensures components respect consumer themes and work correctly in dark mode.
+
+### Component code quality
+
+**Interface:** Use a plain `interface ComponentProps` — never derive props from the schema type with
+`Omit<Required<Schema>["props"], ...>`. The schema and the component props are separate concerns.
+
+**RAC prop names:** Match React Aria's API exactly — `onPress` not `onClick`, `isDisabled` not `disabled`,
+`isRequired` not `required`. Do not alias RAC prop names to DOM equivalents.
+
+**No unused props:** Every prop declared in the interface must be used in the component body.
+
+**No style duplication:** All base styles (layout, focus rings, disabled states, transitions) belong in the
+`*.styles.ts` file. The component `className` should only call style functions — never repeat classes
+that are already returned by those functions.
+
+### Accessibility
+
+React Aria Components handle WCAG compliance by default — do not fight it.
+
+**Always:**
+
+- Use RAC's a11y props (`isDisabled`, `isRequired`, `isInvalid`) — not HTML attributes — so RAC manages
+  the corresponding ARIA states correctly
+- Every interactive component must have a visible `<Label>` or an explicit `aria-label` — never render
+  an unlabeled input or button
+- Validation errors must use RAC's `<Text slot="errorMessage">` so the message is programmatically
+  associated with the field (not a raw `<span>`)
+- Color contrast: all `var(--color-*)` token pairs used for text on background must meet WCAG AA (4.5:1)
+
+**Never:**
+
+- Suppress or override `:focus-visible` styles — keyboard users depend on them
+- Add `tabIndex={-1}` or `role` overrides unless you have a documented reason
+- Pass raw `disabled` or `aria-disabled` HTML attributes to RAC components — use `isDisabled`
+
+**Storybook axe gate:** `@storybook/addon-a11y` runs axe-core on every story. Call `run-story-tests`
+after writing stories — all axe violations must be resolved before the component is considered done.
 
 ### GitHub tasks — use `gh` CLI
 
@@ -178,14 +213,17 @@ One component at a time, in this exact order. Do not skip steps or batch multipl
 
 ### 2. Styles — `packages/core/src/components/<name>/<name>.styles.ts`
 
-- Define Tailwind class variants as a plain function or typed constant
-- Keep style logic out of the component file
+- Define all Tailwind class variants as plain functions or typed constants
+- Include all base styles here (layout, transitions, disabled states, focus rings) — not in the component
+- No hardcoded color values — see theming rule above
 
 ### 3. Component — `packages/core/src/components/<name>/<Name>.tsx`
 
-- Wrap the correct React Aria Components primitive
-- Props typed from the Zod schema type
-- Consult `react-aria` MCP for the correct RAC import and prop API
+- Wrap the correct React Aria Components primitive (consult `react-aria` MCP first)
+- Use a plain `interface ComponentProps` — do not derive from the schema type
+- Use RAC prop names exactly: `onPress`, `isDisabled`, `isRequired`, `isInvalid`
+- Every interactive element must be labeled (see accessibility rule above)
+- `className` calls style functions only — no inline class strings that duplicate the styles file
 
 ### 4. Barrel — `packages/core/src/components/<name>/index.ts`
 
@@ -216,10 +254,21 @@ Fix all issues before continuing. Do not proceed with failing lint.
 
 ### 8. Tests — `packages/core/src/__tests__/`
 
-Add to the existing test files or create `<name>.test.ts`:
+Add to `schema.test.ts` and `integration.test.tsx` (or create `<name>.test.ts` for larger components).
 
-- Schema tests: valid inputs parse correctly; invalid inputs are rejected with the right error shape
-- Integration tests: `A2Renderer` renders the component from a2UI JSON and produces the expected DOM
+**Schema tests — minimum coverage:**
+
+- Valid minimal node (`{ type: "ComponentName" }`) parses successfully
+- Every valid enum value is accepted
+- Every invalid enum value is rejected
+- Wrong `type` literal is rejected (e.g. `"button"` when schema expects `"Button"`)
+- Invalid prop type is rejected (e.g. number where string is expected)
+
+**Integration tests — minimum coverage:**
+
+- Renders via `A2Renderer` with correct DOM output
+- Key props are reflected in the DOM (label text, input type, disabled state)
+- Fallback renders when type is unregistered
 
 ### 9. Run tests
 
@@ -232,10 +281,3 @@ All tests must pass before committing. Fix failures — do not skip or comment t
 ### 10. Commit
 
 One commit per component.
-
-## Markdown rules
-
-- All `.md` files are linted with markdownlint (rules in `.markdownlint.json`)
-- Format with Prettier via `pnpm format:md`
-- Line length: 120 chars max
-- No trailing spaces, consistent heading levels, fenced code blocks must specify language
