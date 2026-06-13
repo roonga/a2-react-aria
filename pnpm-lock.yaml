@@ -83,6 +83,9 @@ importers:
 
   packages/core:
     dependencies:
+      '@internationalized/date':
+        specifier: ^3.12.2
+        version: 3.12.2
       react-aria-components:
         specifier: ^1.18.0
         version: 1.18.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)

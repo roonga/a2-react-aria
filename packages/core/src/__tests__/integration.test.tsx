@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest"
 import { Breadcrumb } from "../components/breadcrumb"
 import { Button } from "../components/button"
 import { Checkbox, CheckboxGroup } from "../components/checkbox"
+import { DatePicker, DateRangePicker } from "../components/date-picker"
 import { Dialog } from "../components/dialog"
 import { Form } from "../components/form"
 import { Menu } from "../components/menu"
@@ -22,6 +23,8 @@ const AXE_CONFIG: axe.RunOptions = { rules: { "color-contrast": { enabled: false
 const registry = createRegistry({
 	Breadcrumb: { component: Breadcrumb },
 	Button: { component: Button },
+	DatePicker: { component: DatePicker },
+	DateRangePicker: { component: DateRangePicker },
 	Checkbox: { component: Checkbox },
 	CheckboxGroup: { component: CheckboxGroup },
 	Dialog: { component: Dialog },
@@ -125,6 +128,27 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 			render(<A2Renderer node={node} registry={registry} />)
 			const input = screen.getByLabelText(/disabled/i) as HTMLInputElement
 			expect(input.disabled).toBe(true)
+		})
+	})
+
+	describe("DatePicker component", () => {
+		it("renders datepicker with label", () => {
+			render(<A2Renderer node={{ type: "DatePicker", props: { label: "Pick a date" } }} registry={registry} />)
+			expect(screen.getByText(/pick a date/i)).toBeDefined()
+		})
+
+		it("renders disabled datepicker", () => {
+			const { container } = render(
+				<A2Renderer node={{ type: "DatePicker", props: { label: "Locked", isDisabled: true } }} registry={registry} />,
+			)
+			expect(container.querySelector("group[data-disabled]") ?? container.firstChild).toBeDefined()
+		})
+	})
+
+	describe("DateRangePicker component", () => {
+		it("renders daterangepicker with label", () => {
+			render(<A2Renderer node={{ type: "DateRangePicker", props: { label: "Date range" } }} registry={registry} />)
+			expect(screen.getByText(/date range/i)).toBeDefined()
 		})
 	})
 
@@ -607,6 +631,37 @@ describe("Accessibility — axe-core", () => {
 					node={{ type: "Select", props: { label: "Fruit", items, isDisabled: true } }}
 					registry={registry}
 				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("DatePicker", () => {
+		it("has no axe violations (labelled datepicker)", async () => {
+			const { container } = render(
+				<A2Renderer node={{ type: "DatePicker", props: { label: "Appointment" } }} registry={registry} />,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("has no axe violations (disabled datepicker)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{ type: "DatePicker", props: { label: "Locked date", isDisabled: true } }}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("DateRangePicker", () => {
+		it("has no axe violations (labelled range picker)", async () => {
+			const { container } = render(
+				<A2Renderer node={{ type: "DateRangePicker", props: { label: "Stay period" } }} registry={registry} />,
 			)
 			const { violations } = await axe.run(container, AXE_CONFIG)
 			expect(violations).toHaveLength(0)

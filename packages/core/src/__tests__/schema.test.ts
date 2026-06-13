@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 import { BreadcrumbSchema } from "../components/breadcrumb"
 import { ButtonSchema } from "../components/button"
 import { CheckboxGroupSchema, CheckboxSchema } from "../components/checkbox"
+import { DatePickerSchema, DateRangePickerSchema } from "../components/date-picker"
 import { DialogSchema } from "../components/dialog"
 import { FormSchema } from "../components/form"
 import { MenuSchema } from "../components/menu"
@@ -550,5 +551,59 @@ describe("BreadcrumbSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(BreadcrumbSchema.safeParse({ type: "breadcrumb" }).success).toBe(false)
+	})
+})
+
+describe("DatePickerSchema", () => {
+	it("parses a minimal datepicker node", () => {
+		expect(DatePickerSchema.safeParse({ type: "DatePicker" }).success).toBe(true)
+	})
+
+	it("parses a datepicker with label and defaultValue", () => {
+		expect(
+			DatePickerSchema.safeParse({ type: "DatePicker", props: { label: "Date", defaultValue: "2024-06-15" } }).success,
+		).toBe(true)
+	})
+
+	it("parses a disabled required datepicker", () => {
+		expect(
+			DatePickerSchema.safeParse({ type: "DatePicker", props: { isDisabled: true, isRequired: true } }).success,
+		).toBe(true)
+	})
+
+	it("rejects a non-string label", () => {
+		expect(DatePickerSchema.safeParse({ type: "DatePicker", props: { label: 42 } }).success).toBe(false)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(DatePickerSchema.safeParse({ type: "datepicker" }).success).toBe(false)
+	})
+})
+
+describe("DateRangePickerSchema", () => {
+	it("parses a minimal daterangepicker node", () => {
+		expect(DateRangePickerSchema.safeParse({ type: "DateRangePicker" }).success).toBe(true)
+	})
+
+	it("parses a daterangepicker with a defaultValue range", () => {
+		expect(
+			DateRangePickerSchema.safeParse({
+				type: "DateRangePicker",
+				props: { label: "Period", defaultValue: { start: "2024-07-01", end: "2024-07-14" } },
+			}).success,
+		).toBe(true)
+	})
+
+	it("rejects a defaultValue missing end", () => {
+		expect(
+			DateRangePickerSchema.safeParse({
+				type: "DateRangePicker",
+				props: { defaultValue: { start: "2024-07-01" } },
+			}).success,
+		).toBe(false)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(DateRangePickerSchema.safeParse({ type: "daterangepicker" }).success).toBe(false)
 	})
 })
