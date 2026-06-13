@@ -19,6 +19,9 @@ docs/dist/
 .DS_Store
 Thumbs.db
 
+# Log files
+*.log
+
 # TypeDoc generated output (rebuilt in CI)
 packages/core/schema.json
 

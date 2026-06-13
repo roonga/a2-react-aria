@@ -1,5 +1,9 @@
 import { z } from "zod"
 
+// Generic envelope schema only — validates shape, not per-component props.
+// Component schemas (ButtonSchema, TextFieldSchema, …) are separate and intended
+// for consumer-side validation; they are deliberately not composed here so that
+// A2NodeSchema stays open to unknown component types at render time.
 export const A2NodeSchema: z.ZodType = z.lazy(() =>
 	z.object({
 		type: z.string().min(1),
