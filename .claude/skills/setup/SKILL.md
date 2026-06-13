@@ -65,7 +65,7 @@ cp .env.example .env.local
 ```
 
 Then tell the user:
-> `.env.local` created. Open it and fill in `GITHUB_PERSONAL_ACCESS_TOKEN` to enable the GitHub MCP server.
+> `.env.local` created. No secrets are required for the current MCP servers.
 
 If **EXISTS**: skip — do not overwrite.
 
@@ -110,7 +110,6 @@ Expected servers (all defined in `.mcp.json`):
 | Server | Transport | Notes |
 |---|---|---|
 | `react-aria` | stdio (npx) | Official Adobe — always available |
-| `github` | http (remote) | Official GitHub — needs GitHub login or `GITHUB_PERSONAL_ACCESS_TOKEN` |
 | `copilotkit` | sse (remote) | Official CopilotKit — always available |
 | `storybook` | http (local) | Needs `pnpm storybook` running first |
 | `vitest` | stdio (npx) | Community (approved) — always available |

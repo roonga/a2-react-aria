@@ -43,6 +43,20 @@ When `pnpm storybook` is running the `storybook` MCP server is live at `http://l
 
 If the storybook server is not running, state that clearly rather than guessing.
 
+### GitHub tasks — use `gh` CLI
+
+For all GitHub operations (PRs, issues, CI status, releases) use the `gh` CLI via Bash.
+Do not use the GitHub MCP server — it has been removed from `.mcp.json`.
+
+```bash
+gh pr list
+gh pr create --title "..." --body "..."
+gh pr view <number>
+gh run list
+gh run view <run-id>
+gh release create v1.0.0
+```
+
 ### Markdown
 
 - All `.md` files must pass `markdownlint` (rules in `.markdownlint.json`)
@@ -80,7 +94,7 @@ pnpm run build
 `.mcp.json` is committed to the repo. Claude Code reads it automatically when you open this project.
 On first use each server shows a **⏸ Pending approval** prompt — approve each one once.
 
-The `react-aria`, `copilotkit`, and `github` servers start immediately (no local service needed).
+The `react-aria`, `copilotkit`, `vitest`, and `npm-registry` servers start immediately (no local service needed).
 The `storybook` server only works when `pnpm storybook` is running.
 
 ### 4. VS Code extensions — semi-automatic
@@ -89,13 +103,6 @@ Open the project in VS Code. You will see a prompt:
 **"Do you want to install the recommended extensions?"** → click **Install All**.
 
 This installs: Biome, Tailwind IntelliSense, Vitest, axe linter, Error Lens, Pretty TS Errors, GitLens, Import Cost, markdownlint.
-
-### 5. GitHub MCP authentication
-
-The GitHub MCP server uses `https://api.githubcopilot.com/mcp`.
-
-- **VS Code**: sign in with your GitHub account — no token needed.
-- **Claude Code standalone**: set `GITHUB_PERSONAL_ACCESS_TOKEN` in your shell env or `.env.local`.
 
 ## Key commands
 
@@ -115,7 +122,6 @@ MCP servers are pre-configured in `.mcp.json` and activate automatically when yo
 | Server | Status | What it gives Claude |
 | --- | --- | --- |
 | `react-aria` | Official (Adobe) | Full RAC docs — use before writing any component wrapper |
-| `github` | Official (GitHub hosted) | Repo, PR, CI management — VS Code: GitHub login; standalone: `GITHUB_PERSONAL_ACCESS_TOKEN` |
 | `copilotkit` | Official (CopilotKit) | AG-UI / CopilotKit API signatures and integration patterns |
 | `storybook` | Official (Storybook team) | Story listing, screenshots, component docs — needs `pnpm storybook` running first |
 | `vitest` | Community (approved) | AI-safe test runner, structured output, coverage analysis |
@@ -134,10 +140,6 @@ No third-party plugin marketplace is needed.
 Copy `.env.example` to `.env.local` for local secrets.
 Never commit tokens — `.env.local` is gitignored.
 
-```text
-GITHUB_PERSONAL_ACCESS_TOKEN=   # Required for github MCP server
-```
-
 ## Linting and formatting
 
 Biome handles all linting, formatting, and import sorting. One config file: `biome.json`.
@@ -153,12 +155,70 @@ pnpm format        # Format all files
 
 ## Adding a new component
 
-1. Create the component in `registry/components/<name>/`
-2. Add the Zod schema in `packages/core/src/schema/components/<name>.ts`
-3. Register it in `packages/core/src/registry/index.ts`
-4. Add a Storybook story in `stories/<name>.stories.tsx`
-5. Update `registry/registry.json` with the new entry
-6. Run `pnpm typedoc` to regenerate API docs
+One component at a time, in this exact order. Do not skip steps or batch multiple components.
+
+### 1. Schema — `packages/core/src/components/<name>/<name>.schema.ts`
+
+- Define a Zod schema (e.g. `ButtonSchema`)
+- Export a TypeScript type inferred from it (e.g. `export type ButtonNode = z.infer<typeof ButtonSchema>`)
+- Consult `react-aria` MCP before defining props — never invent prop names
+
+### 2. Styles — `packages/core/src/components/<name>/<name>.styles.ts`
+
+- Define Tailwind class variants as a plain function or typed constant
+- Keep style logic out of the component file
+
+### 3. Component — `packages/core/src/components/<name>/<Name>.tsx`
+
+- Wrap the correct React Aria Components primitive
+- Props typed from the Zod schema type
+- Consult `react-aria` MCP for the correct RAC import and prop API
+
+### 4. Barrel — `packages/core/src/components/<name>/index.ts`
+
+Export component, schema, and type:
+
+```ts
+export { Name } from "./<Name>"
+export type { NameNode } from "./<name>.schema"
+export { NameSchema } from "./<name>.schema"
+```
+
+### 5. Core index — `packages/core/src/index.ts`
+
+Add the three exports (component, schema, type) following the existing pattern.
+
+### 6. Storybook story — `stories/<Name>.stories.tsx`
+
+Call `get-storybook-story-instructions` from the Storybook MCP first. After writing the story,
+call `preview-stories` and include the returned URLs in your response.
+
+### 7. Lint
+
+```bash
+pnpm lint
+```
+
+Fix all issues before continuing. Do not proceed with failing lint.
+
+### 8. Tests — `packages/core/src/__tests__/`
+
+Add to the existing test files or create `<name>.test.ts`:
+
+- Schema tests: valid inputs parse correctly; invalid inputs are rejected with the right error shape
+- Integration tests: `A2Renderer` renders the component from a2UI JSON and produces the expected DOM
+
+### 9. Run tests
+
+```bash
+pnpm test
+```
+
+All tests must pass before committing. Fix failures — do not skip or comment them out.
+
+### 10. Commit
+
+One commit per component.
 
 ## Markdown rules
 
