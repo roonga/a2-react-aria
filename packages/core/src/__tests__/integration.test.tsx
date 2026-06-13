@@ -1,8 +1,12 @@
 import { render, screen } from "@testing-library/react"
+import axe from "axe-core"
 import { describe, expect, it } from "vitest"
 import { Button } from "../components/button"
 import { TextField } from "../components/text-field"
 import { A2Renderer, createRegistry } from "../index"
+
+// Color contrast requires real CSS rendering — jsdom cannot compute it.
+const AXE_CONFIG: axe.RunOptions = { rules: { "color-contrast": { enabled: false } } }
 
 const registry = createRegistry({
 	Button: { component: Button },
@@ -121,6 +125,58 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 			}
 			render(<A2Renderer node={node} registry={registry} />)
 			expect(screen.getByRole("button", { name: /nested button/i })).toBeDefined()
+		})
+	})
+})
+
+describe("Accessibility — axe-core", () => {
+	describe("Button", () => {
+		it("has no axe violations (primary)", async () => {
+			const { container } = render(
+				<A2Renderer node={{ type: "Button", props: { variant: "primary" }, children: "Submit" }} registry={registry} />,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("has no axe violations (disabled)", async () => {
+			const { container } = render(
+				<A2Renderer node={{ type: "Button", props: { disabled: true }, children: "Disabled" }} registry={registry} />,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("TextField", () => {
+		it("has no axe violations (labelled input)", async () => {
+			const { container } = render(
+				<A2Renderer node={{ type: "TextField", props: { label: "Email", type: "email" } }} registry={registry} />,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("has no axe violations (required field)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{ type: "TextField", props: { label: "Password", type: "password", required: true } }}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("has no axe violations (disabled field)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{ type: "TextField", props: { label: "Read only", disabled: true, value: "locked" } }}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
 		})
 	})
 })

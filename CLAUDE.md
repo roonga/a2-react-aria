@@ -88,8 +88,15 @@ React Aria Components handle WCAG compliance by default — do not fight it.
 - Add `tabIndex={-1}` or `role` overrides unless you have a documented reason
 - Pass raw `disabled` or `aria-disabled` HTML attributes to RAC components — use `isDisabled`
 
-**Storybook axe gate:** `@storybook/addon-a11y` runs axe-core on every story. Call `run-story-tests`
-after writing stories — all axe violations must be resolved before the component is considered done.
+**Two axe gates — both must pass:**
+
+1. **Vitest** (`pnpm test`) — `axe-core` runs on every component render in `integration.test.tsx`.
+   Color-contrast is disabled here because jsdom cannot compute CSS. All other axe rules run.
+
+2. **Storybook** (`run-story-tests`) — `@storybook/addon-a11y` runs full axe after every story
+   via an `afterEach` hook. `parameters.a11y.test` is set to `'error'` in `preview.tsx`, so
+   any axe violation fails the story test. Color-contrast runs here because the CSS tokens are
+   defined in `.storybook/tailwind.css`. Call `run-story-tests` after every story change.
 
 ### GitHub tasks — use `gh` CLI
 
