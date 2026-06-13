@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { ButtonSchema } from "../components/button"
 import { CheckboxGroupSchema, CheckboxSchema } from "../components/checkbox"
+import { DialogSchema } from "../components/dialog"
 import { FormSchema } from "../components/form"
 import { RadioGroupSchema, RadioSchema } from "../components/radio"
 import { SelectSchema } from "../components/select"
@@ -251,6 +252,51 @@ describe("SwitchSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(SwitchSchema.safeParse({ type: "switch" }).success).toBe(false)
+	})
+})
+
+describe("DialogSchema", () => {
+	it("parses a minimal dialog node", () => {
+		expect(DialogSchema.safeParse({ type: "Dialog" }).success).toBe(true)
+	})
+
+	it("parses both valid role values", () => {
+		for (const role of ["dialog", "alertdialog"]) {
+			expect(DialogSchema.safeParse({ type: "Dialog", props: { role } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid role", () => {
+		expect(DialogSchema.safeParse({ type: "Dialog", props: { role: "tooltip" } }).success).toBe(false)
+	})
+
+	it("parses a dialog with all props", () => {
+		expect(
+			DialogSchema.safeParse({
+				type: "Dialog",
+				props: {
+					title: "Hello",
+					description: "World",
+					triggerLabel: "Open",
+					isDismissable: true,
+					isKeyboardDismissDisabled: false,
+					role: "dialog",
+					isOpen: false,
+				},
+			}).success,
+		).toBe(true)
+	})
+
+	it("rejects a non-boolean isDismissable", () => {
+		expect(DialogSchema.safeParse({ type: "Dialog", props: { isDismissable: "yes" } }).success).toBe(false)
+	})
+
+	it("rejects a non-string title", () => {
+		expect(DialogSchema.safeParse({ type: "Dialog", props: { title: 42 } }).success).toBe(false)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(DialogSchema.safeParse({ type: "dialog" }).success).toBe(false)
 	})
 })
 

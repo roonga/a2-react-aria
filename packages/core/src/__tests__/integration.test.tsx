@@ -3,6 +3,7 @@ import axe from "axe-core"
 import { describe, expect, it } from "vitest"
 import { Button } from "../components/button"
 import { Checkbox, CheckboxGroup } from "../components/checkbox"
+import { Dialog } from "../components/dialog"
 import { Form } from "../components/form"
 import { Radio, RadioGroup } from "../components/radio"
 import { Select } from "../components/select"
@@ -17,6 +18,7 @@ const registry = createRegistry({
 	Button: { component: Button },
 	Checkbox: { component: Checkbox },
 	CheckboxGroup: { component: CheckboxGroup },
+	Dialog: { component: Dialog },
 	Form: { component: Form },
 	Radio: { component: Radio },
 	RadioGroup: { component: RadioGroup },
@@ -381,6 +383,39 @@ describe("Accessibility — axe-core", () => {
 				<A2Renderer node={{ type: "Switch", props: { label: "Locked", isDisabled: true } }} registry={registry} />,
 			)
 			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("Dialog", () => {
+		it("has no axe violations (open dialog with title)", async () => {
+			render(
+				<A2Renderer
+					node={{
+						type: "Dialog",
+						props: { title: "Test dialog", isOpen: true },
+						children: [{ type: "Button", props: { variant: "primary" }, children: "OK" }],
+					}}
+					registry={registry}
+				/>,
+			)
+			// Dialog renders via React portal — axe must run on document.body
+			const { violations } = await axe.run(document.body, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("has no axe violations (alertdialog)", async () => {
+			render(
+				<A2Renderer
+					node={{
+						type: "Dialog",
+						props: { title: "Confirm", isOpen: true, role: "alertdialog" },
+						children: [{ type: "Button", props: { variant: "danger" }, children: "Delete" }],
+					}}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(document.body, AXE_CONFIG)
 			expect(violations).toHaveLength(0)
 		})
 	})
