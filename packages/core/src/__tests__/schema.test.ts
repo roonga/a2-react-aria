@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest"
+import { BreadcrumbSchema } from "../components/breadcrumb"
 import { ButtonSchema } from "../components/button"
 import { CheckboxGroupSchema, CheckboxSchema } from "../components/checkbox"
 import { DialogSchema } from "../components/dialog"
@@ -507,5 +508,47 @@ describe("TabsSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(TabsSchema.safeParse({ type: "tabs" }).success).toBe(false)
+	})
+})
+
+describe("BreadcrumbSchema", () => {
+	it("parses a minimal breadcrumb node", () => {
+		expect(BreadcrumbSchema.safeParse({ type: "Breadcrumb" }).success).toBe(true)
+	})
+
+	it("parses a breadcrumb with items", () => {
+		expect(
+			BreadcrumbSchema.safeParse({
+				type: "Breadcrumb",
+				props: {
+					items: [
+						{ id: "home", label: "Home", href: "/" },
+						{ id: "page", label: "Current" },
+					],
+				},
+			}).success,
+		).toBe(true)
+	})
+
+	it("parses a breadcrumb with isDisabled", () => {
+		expect(BreadcrumbSchema.safeParse({ type: "Breadcrumb", props: { isDisabled: true } }).success).toBe(true)
+	})
+
+	it("rejects an item missing id", () => {
+		expect(BreadcrumbSchema.safeParse({ type: "Breadcrumb", props: { items: [{ label: "No id" }] } }).success).toBe(
+			false,
+		)
+	})
+
+	it("rejects an item missing label", () => {
+		expect(BreadcrumbSchema.safeParse({ type: "Breadcrumb", props: { items: [{ id: "a" }] } }).success).toBe(false)
+	})
+
+	it("rejects a non-string ariaLabel", () => {
+		expect(BreadcrumbSchema.safeParse({ type: "Breadcrumb", props: { ariaLabel: 42 } }).success).toBe(false)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(BreadcrumbSchema.safeParse({ type: "breadcrumb" }).success).toBe(false)
 	})
 })

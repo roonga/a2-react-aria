@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import axe from "axe-core"
 import { describe, expect, it } from "vitest"
+import { Breadcrumb } from "../components/breadcrumb"
 import { Button } from "../components/button"
 import { Checkbox, CheckboxGroup } from "../components/checkbox"
 import { Dialog } from "../components/dialog"
@@ -19,6 +20,7 @@ import { A2Renderer, createRegistry } from "../index"
 const AXE_CONFIG: axe.RunOptions = { rules: { "color-contrast": { enabled: false } } }
 
 const registry = createRegistry({
+	Breadcrumb: { component: Breadcrumb },
 	Button: { component: Button },
 	Checkbox: { component: Checkbox },
 	CheckboxGroup: { component: CheckboxGroup },
@@ -123,6 +125,45 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 			render(<A2Renderer node={node} registry={registry} />)
 			const input = screen.getByLabelText(/disabled/i) as HTMLInputElement
 			expect(input.disabled).toBe(true)
+		})
+	})
+
+	describe("Breadcrumb component", () => {
+		it("renders breadcrumb links from items", () => {
+			const node = {
+				type: "Breadcrumb" as const,
+				props: {
+					ariaLabel: "Page navigation",
+					items: [
+						{ id: "home", label: "Home", href: "/" },
+						{ id: "current", label: "About" },
+					],
+				},
+			}
+			render(<A2Renderer node={node} registry={registry} />)
+			expect(screen.getByRole("link", { name: /home/i })).toBeDefined()
+			expect(screen.getByRole("link", { name: /about/i })).toBeDefined()
+		})
+
+		it("marks the last item as current", () => {
+			const node = {
+				type: "Breadcrumb" as const,
+				props: {
+					items: [
+						{ id: "home", label: "Home", href: "/" },
+						{ id: "page", label: "Contact" },
+					],
+				},
+			}
+			render(<A2Renderer node={node} registry={registry} />)
+			const currentLink = screen.getByRole("link", { name: /contact/i })
+			expect(currentLink.getAttribute("data-current")).toBe("true")
+		})
+
+		it("renders empty list with no items", () => {
+			const node = { type: "Breadcrumb" as const, props: { items: [] } }
+			const { container } = render(<A2Renderer node={node} registry={registry} />)
+			expect(container.querySelector("ol")).toBeDefined()
 		})
 	})
 
@@ -564,6 +605,50 @@ describe("Accessibility — axe-core", () => {
 			const { container } = render(
 				<A2Renderer
 					node={{ type: "Select", props: { label: "Fruit", items, isDisabled: true } }}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("Breadcrumb", () => {
+		it("has no axe violations (multi-item breadcrumb)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "Breadcrumb",
+						props: {
+							ariaLabel: "Page navigation",
+							items: [
+								{ id: "home", label: "Home", href: "/" },
+								{ id: "products", label: "Products", href: "/products" },
+								{ id: "current", label: "Headphones" },
+							],
+						},
+					}}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("has no axe violations (disabled breadcrumb)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "Breadcrumb",
+						props: {
+							ariaLabel: "Navigation",
+							isDisabled: true,
+							items: [
+								{ id: "home", label: "Home", href: "/" },
+								{ id: "page", label: "Current" },
+							],
+						},
+					}}
 					registry={registry}
 				/>,
 			)

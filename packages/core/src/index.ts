@@ -1,3 +1,5 @@
+export type { BreadcrumbItem, BreadcrumbNode } from "./components/breadcrumb"
+export { Breadcrumb, BreadcrumbSchema } from "./components/breadcrumb"
 export type { ButtonNode } from "./components/button"
 export { Button, ButtonSchema } from "./components/button"
 export type { CheckboxGroupNode, CheckboxNode } from "./components/checkbox"
