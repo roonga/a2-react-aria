@@ -43,6 +43,19 @@ When `pnpm storybook` is running the `storybook` MCP server is live at `http://l
 
 If the storybook server is not running, state that clearly rather than guessing.
 
+### Component theming — no hardcoded styles
+
+All component styles must use CSS custom properties (design tokens), never hardcoded Tailwind color or spacing values.
+
+- ✅ `text-[var(--color-danger)]`
+- ✅ `bg-[var(--color-primary)]`
+- ❌ `text-red-500`
+- ❌ `bg-blue-600`
+
+Spacing and layout utilities (`flex`, `gap-2`, `px-3`, `rounded`) are allowed as structural primitives.
+Color, background, border-color, and text-color must always reference a `var(--color-*)` token.
+This ensures components respect consumer themes and work correctly in dark mode.
+
 ### GitHub tasks — use `gh` CLI
 
 For all GitHub operations (PRs, issues, CI status, releases) use the `gh` CLI via Bash.

@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest"
+import { ButtonSchema } from "../components/button"
+import { TextFieldSchema } from "../components/text-field"
 import { parseNode, safeParseNode } from "../schema"
 
 describe("A2NodeSchema", () => {
@@ -46,5 +48,59 @@ describe("A2NodeSchema", () => {
 	it("rejects a node missing type", () => {
 		const result = safeParseNode({ props: {} })
 		expect(result.success).toBe(false)
+	})
+})
+
+describe("ButtonSchema", () => {
+	it("parses a minimal button node", () => {
+		expect(ButtonSchema.safeParse({ type: "Button" }).success).toBe(true)
+	})
+
+	it("parses all valid variants", () => {
+		for (const variant of ["primary", "secondary", "danger", "ghost"]) {
+			expect(ButtonSchema.safeParse({ type: "Button", props: { variant } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid variant", () => {
+		expect(ButtonSchema.safeParse({ type: "Button", props: { variant: "outline" } }).success).toBe(false)
+	})
+
+	it("parses all valid sizes", () => {
+		for (const size of ["sm", "md", "lg"]) {
+			expect(ButtonSchema.safeParse({ type: "Button", props: { size } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid size", () => {
+		expect(ButtonSchema.safeParse({ type: "Button", props: { size: "xl" } }).success).toBe(false)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(ButtonSchema.safeParse({ type: "button" }).success).toBe(false)
+	})
+})
+
+describe("TextFieldSchema", () => {
+	it("parses a minimal text field node", () => {
+		expect(TextFieldSchema.safeParse({ type: "TextField" }).success).toBe(true)
+	})
+
+	it("parses all valid input types", () => {
+		for (const type of ["text", "email", "password", "number", "tel", "url"]) {
+			expect(TextFieldSchema.safeParse({ type: "TextField", props: { type } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid input type", () => {
+		expect(TextFieldSchema.safeParse({ type: "TextField", props: { type: "date" } }).success).toBe(false)
+	})
+
+	it("rejects a non-string label", () => {
+		expect(TextFieldSchema.safeParse({ type: "TextField", props: { label: 42 } }).success).toBe(false)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(TextFieldSchema.safeParse({ type: "text-field" }).success).toBe(false)
 	})
 })

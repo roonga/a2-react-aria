@@ -1,13 +1,10 @@
-import type { ReactNode } from "react"
 import { Input, Label, TextField as RACTextField } from "react-aria-components"
-import type { TextFieldNode } from "./text-field.schema"
 import { getTextFieldStyles } from "./text-field.styles"
 
-interface TextFieldProps extends Omit<Required<TextFieldNode>["props"], "type"> {
-	children?: ReactNode
-	disabled?: boolean
+interface TextFieldProps {
 	label?: string
 	placeholder?: string
+	disabled?: boolean
 	required?: boolean
 	type?: "text" | "email" | "password" | "number" | "tel" | "url"
 	value?: string
