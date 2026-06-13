@@ -3,6 +3,7 @@ import { ButtonSchema } from "../components/button"
 import { CheckboxGroupSchema, CheckboxSchema } from "../components/checkbox"
 import { DialogSchema } from "../components/dialog"
 import { FormSchema } from "../components/form"
+import { MenuSchema } from "../components/menu"
 import { PopoverSchema } from "../components/popover"
 import { RadioGroupSchema, RadioSchema } from "../components/radio"
 import { SelectSchema } from "../components/select"
@@ -339,6 +340,39 @@ describe("FormSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(FormSchema.safeParse({ type: "form" }).success).toBe(false)
+	})
+})
+
+describe("MenuSchema", () => {
+	it("parses a minimal menu node", () => {
+		expect(MenuSchema.safeParse({ type: "Menu" }).success).toBe(true)
+	})
+
+	it("parses a menu with items", () => {
+		expect(
+			MenuSchema.safeParse({
+				type: "Menu",
+				props: { items: [{ id: "a", label: "Item A" }, { id: "b", label: "Item B", isDisabled: true }] },
+			}).success,
+		).toBe(true)
+	})
+
+	it("rejects an item missing id", () => {
+		expect(MenuSchema.safeParse({ type: "Menu", props: { items: [{ label: "No id" }] } }).success).toBe(false)
+	})
+
+	it("parses all valid selectionMode values", () => {
+		for (const selectionMode of ["none", "single", "multiple"]) {
+			expect(MenuSchema.safeParse({ type: "Menu", props: { selectionMode } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid selectionMode", () => {
+		expect(MenuSchema.safeParse({ type: "Menu", props: { selectionMode: "all" } }).success).toBe(false)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(MenuSchema.safeParse({ type: "menu" }).success).toBe(false)
 	})
 })
 

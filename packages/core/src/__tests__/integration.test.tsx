@@ -5,6 +5,7 @@ import { Button } from "../components/button"
 import { Checkbox, CheckboxGroup } from "../components/checkbox"
 import { Dialog } from "../components/dialog"
 import { Form } from "../components/form"
+import { Menu } from "../components/menu"
 import { Popover } from "../components/popover"
 import { Radio, RadioGroup } from "../components/radio"
 import { Select } from "../components/select"
@@ -22,6 +23,7 @@ const registry = createRegistry({
 	CheckboxGroup: { component: CheckboxGroup },
 	Dialog: { component: Dialog },
 	Form: { component: Form },
+	Menu: { component: Menu },
 	Popover: { component: Popover },
 	Radio: { component: Radio },
 	RadioGroup: { component: RadioGroup },
@@ -441,6 +443,22 @@ describe("Accessibility — axe-core", () => {
 							{ type: "TextField", props: { label: "Name" } },
 							{ type: "Button", props: { variant: "primary" }, children: "Submit" },
 						],
+					}}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("Menu", () => {
+		it("has no axe violations (trigger button)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "Menu",
+						props: { triggerLabel: "Actions", items: [{ id: "a", label: "Option A" }] },
 					}}
 					registry={registry}
 				/>,
