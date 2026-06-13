@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { ButtonSchema } from "../components/button"
 import { CheckboxGroupSchema, CheckboxSchema } from "../components/checkbox"
+import { RadioGroupSchema, RadioSchema } from "../components/radio"
 import { TextFieldSchema } from "../components/text-field"
 import { parseNode, safeParseNode } from "../schema"
 
@@ -153,13 +154,13 @@ describe("CheckboxGroupSchema", () => {
 	})
 
 	it("rejects an invalid orientation", () => {
-		expect(CheckboxGroupSchema.safeParse({ type: "CheckboxGroup", props: { orientation: "diagonal" } }).success).toBe(false)
+		expect(CheckboxGroupSchema.safeParse({ type: "CheckboxGroup", props: { orientation: "diagonal" } }).success).toBe(
+			false,
+		)
 	})
 
 	it("parses value as string array", () => {
-		expect(
-			CheckboxGroupSchema.safeParse({ type: "CheckboxGroup", props: { value: ["a", "b"] } }).success,
-		).toBe(true)
+		expect(CheckboxGroupSchema.safeParse({ type: "CheckboxGroup", props: { value: ["a", "b"] } }).success).toBe(true)
 	})
 
 	it("rejects value as non-array", () => {
@@ -168,5 +169,57 @@ describe("CheckboxGroupSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(CheckboxGroupSchema.safeParse({ type: "checkboxGroup" }).success).toBe(false)
+	})
+})
+
+describe("RadioSchema", () => {
+	it("parses a minimal radio node", () => {
+		expect(RadioSchema.safeParse({ type: "Radio", props: { value: "opt" } }).success).toBe(true)
+	})
+
+	it("parses a radio with all props", () => {
+		expect(
+			RadioSchema.safeParse({ type: "Radio", props: { label: "Option A", value: "a", isDisabled: false } }).success,
+		).toBe(true)
+	})
+
+	it("rejects a non-boolean isDisabled", () => {
+		expect(RadioSchema.safeParse({ type: "Radio", props: { value: "a", isDisabled: "yes" } }).success).toBe(false)
+	})
+
+	it("rejects a non-string label", () => {
+		expect(RadioSchema.safeParse({ type: "Radio", props: { value: "a", label: 42 } }).success).toBe(false)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(RadioSchema.safeParse({ type: "radio" }).success).toBe(false)
+	})
+})
+
+describe("RadioGroupSchema", () => {
+	it("parses a minimal radio group node", () => {
+		expect(RadioGroupSchema.safeParse({ type: "RadioGroup" }).success).toBe(true)
+	})
+
+	it("parses both valid orientations", () => {
+		for (const orientation of ["horizontal", "vertical"]) {
+			expect(RadioGroupSchema.safeParse({ type: "RadioGroup", props: { orientation } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid orientation", () => {
+		expect(RadioGroupSchema.safeParse({ type: "RadioGroup", props: { orientation: "diagonal" } }).success).toBe(false)
+	})
+
+	it("parses a string value", () => {
+		expect(RadioGroupSchema.safeParse({ type: "RadioGroup", props: { value: "opt1" } }).success).toBe(true)
+	})
+
+	it("rejects a non-string value", () => {
+		expect(RadioGroupSchema.safeParse({ type: "RadioGroup", props: { value: 42 } }).success).toBe(false)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(RadioGroupSchema.safeParse({ type: "radioGroup" }).success).toBe(false)
 	})
 })

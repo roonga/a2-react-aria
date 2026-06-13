@@ -3,6 +3,7 @@ import axe from "axe-core"
 import { describe, expect, it } from "vitest"
 import { Button } from "../components/button"
 import { Checkbox, CheckboxGroup } from "../components/checkbox"
+import { Radio, RadioGroup } from "../components/radio"
 import { TextField } from "../components/text-field"
 import { A2Renderer, createRegistry } from "../index"
 
@@ -13,6 +14,8 @@ const registry = createRegistry({
 	Button: { component: Button },
 	Checkbox: { component: Checkbox },
 	CheckboxGroup: { component: CheckboxGroup },
+	Radio: { component: Radio },
+	RadioGroup: { component: RadioGroup },
 	TextField: { component: TextField },
 })
 
@@ -267,6 +270,77 @@ describe("Accessibility — axe-core", () => {
 						type: "CheckboxGroup",
 						props: { label: "Agree", isInvalid: true, errorMessage: "Required" },
 						children: [{ type: "Checkbox", props: { label: "I agree", value: "agree" } }],
+					}}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("RadioGroup", () => {
+		it("has no axe violations (labelled group)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "RadioGroup",
+						props: { label: "Favourite pet" },
+						children: [
+							{ type: "Radio", props: { label: "Dog", value: "dog" } },
+							{ type: "Radio", props: { label: "Cat", value: "cat" } },
+						],
+					}}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("has no axe violations (preselected)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "RadioGroup",
+						props: { label: "Size", defaultValue: "md" },
+						children: [
+							{ type: "Radio", props: { label: "Small", value: "sm" } },
+							{ type: "Radio", props: { label: "Medium", value: "md" } },
+						],
+					}}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("has no axe violations (disabled group)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "RadioGroup",
+						props: { label: "Locked", isDisabled: true },
+						children: [{ type: "Radio", props: { label: "Option A", value: "a" } }],
+					}}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("has no axe violations (invalid group with error message)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "RadioGroup",
+						props: { label: "Plan", isInvalid: true, errorMessage: "Please select a plan." },
+						children: [
+							{ type: "Radio", props: { label: "Free", value: "free" } },
+							{ type: "Radio", props: { label: "Pro", value: "pro" } },
+						],
 					}}
 					registry={registry}
 				/>,
