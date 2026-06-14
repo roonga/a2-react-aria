@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import dynamic from "next/dynamic"
 
 const A2UIBlock = dynamic(
@@ -74,6 +74,7 @@ export default function Chat() {
   const [streamingThought, setStreamingThought] = useState("")
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const sessionId = useRef<string | null>(null)
+  const isLoadingRef = useRef(false)
 
   useEffect(() => {
     const rid = genReqId()
@@ -96,8 +97,9 @@ export default function Chat() {
 
   const sendMessage = async (overrideText?: string) => {
     const userMessage = (overrideText ?? input).trim()
-    if (!userMessage || isLoading || !sessionId.current) return
+    if (!userMessage || isLoadingRef.current || !sessionId.current) return
 
+    isLoadingRef.current = true
     const rid = genReqId()
     setMessages((prev) => [...prev, { role: "user", content: userMessage }])
     setInput("")
@@ -222,11 +224,19 @@ export default function Chat() {
         },
       ])
     } finally {
+      isLoadingRef.current = false
       setIsLoading(false)
       setStreamingText("")
       setStreamingThought("")
     }
   }
+
+  const sendMessageRef = useRef(sendMessage)
+  sendMessageRef.current = sendMessage
+
+  const handleAction = useCallback((text: string) => {
+    void sendMessageRef.current(text)
+  }, [])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -262,7 +272,7 @@ export default function Chat() {
             >
               {msg.thought && <ThinkingBlock text={msg.thought} />}
               {msg.content && <p className="whitespace-pre-wrap">{msg.content}</p>}
-              {msg.a2uiJson && <A2UIBlock nodes={msg.a2uiJson} />}
+              {msg.a2uiJson && <A2UIBlock nodes={msg.a2uiJson} onAction={handleAction} />}
             </div>
           </div>
         ))}

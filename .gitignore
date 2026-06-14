@@ -5,11 +5,17 @@ node_modules/
 # Build outputs
 dist/
 build/
+.next/
+out/
 storybook-static/
 docs/.astro/
 docs/src/api/
 docs/src/content/docs/api/
 docs/dist/
+
+# Playwright
+test-results/
+playwright-report/
 
 # Environment — never commit real secrets
 .env.local

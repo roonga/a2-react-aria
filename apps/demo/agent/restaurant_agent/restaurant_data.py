@@ -131,6 +131,7 @@ def build_search_results(restaurants: list[dict]) -> list:
                     _text(r["name"], **{"as": "h3", "weight": "semibold"}),
                     _text(f"{r['cuisine']} · {r['suburb']}", size="sm", color="muted"),
                     _text(f"⭐ {r['rating']} · {r['price_range']}", size="sm"),
+                    {"type": "Button", "props": {"variant": "primary", "size": "sm"}, "children": f"Book {r['name']}"},
                 ],
                 padding="md",
                 shadow="sm",
@@ -156,7 +157,10 @@ def build_search_results(restaurants: list[dict]) -> list:
 
 
 def build_slots_card(restaurant: dict, date: str, party_size: int) -> list:
-    slot_labels = [_text(slot, weight="medium") for slot in restaurant["time_slots"]]
+    slot_buttons = [
+        {"type": "Button", "props": {"variant": "ghost", "size": "sm"}, "children": slot}
+        for slot in restaurant["time_slots"]
+    ]
 
     return [
         _card(
@@ -173,10 +177,10 @@ def build_slots_card(restaurant: dict, date: str, party_size: int) -> list:
                 {
                     "type": "Flex",
                     "props": {"gap": "sm", "wrap": True},
-                    "children": slot_labels,
+                    "children": slot_buttons,
                 },
                 _text(
-                    "Reply with your preferred time, then your name, email, and phone number.",
+                    "Select a time above, then reply with your name, email, and phone.",
                     size="sm",
                     color="muted",
                 ),

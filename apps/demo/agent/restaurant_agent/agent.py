@@ -26,31 +26,20 @@ def _before_model(
 ) -> LlmResponse | None:
     """Bypass the LLM when a tool that returns a2UI JSON has just responded.
 
-    The tool result already contains the complete response text (including the
-    <a2ui-json> block). Returning it directly prevents the model from paraphrasing
-    or dropping the JSON payload.
+    Checks all content roles (user/tool) because LiteLLM may map function
+    responses to role="tool" instead of the Gemini-native role="user".
     """
     for content in reversed(llm_request.contents or []):
-        if content.role != "user":
-            continue
         for part in content.parts or []:
             if part.function_response and part.function_response.name in _A2UI_TOOLS:
                 result = (part.function_response.response or {}).get("result", "")
-                _log.info(
-                    "intercept: %s result → returning directly",
-                    part.function_response.name,
-                )
+                _log.info("intercept: %s → pass through", part.function_response.name)
                 return LlmResponse(
                     content=types.Content(
                         role="model",
                         parts=[types.Part(text=result)],
                     )
                 )
-        text = " ".join(
-            p.text for p in (content.parts or []) if p.text
-        ).strip()
-        _log.info('→ LLM  user="%s"', text[:120])
-        break
     return None
 
 
@@ -119,21 +108,21 @@ def confirm_booking(
 
 
 _INSTRUCTION = """\
-You are a friendly restaurant booking assistant for Australia.
+You are a restaurant booking assistant for Australia.
 
-Tools available:
-- search_restaurants: finds restaurants by location, cuisine, and party size
-- get_available_slots: shows available times for a specific restaurant and date
-- confirm_booking: finalises a booking with guest details and returns a confirmation
+Tools:
+- search_restaurants(location, cuisine, party_size)
+- get_available_slots(restaurant_name, date, party_size)
+- confirm_booking(restaurant_name, date, time_slot, party_size, guest_name, email, phone)
 
-Rules:
-1. User asks to find or browse restaurants → call search_restaurants.
-2. User picks a restaurant and specifies a date → call get_available_slots.
-3. User provides a time slot, name, and email → call confirm_booking.
-4. Anything else (greetings, general questions) → answer directly without calling a tool.
+Rules — follow exactly:
+1. User wants to find restaurants → call search_restaurants immediately. No preamble.
+2. User picks a restaurant or asks to book one → call get_available_slots immediately. No preamble.
+3. User provides a time slot plus name and email → call confirm_booking immediately. No preamble.
+4. Anything else → reply in 1-2 sentences. Do not call a tool.
 
-Always output tool results verbatim — do not paraphrase or summarise them.
-Keep all other responses short and friendly.
+Critical: Never write a plan, summary, or explanation before calling a tool.
+Call the tool first. Output tool results verbatim without modification.
 """
 
 root_agent = Agent(
