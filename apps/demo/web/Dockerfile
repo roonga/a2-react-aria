@@ -18,6 +18,10 @@ COPY apps/demo/web ./apps/demo/web
 # Install deps for both packages (core is a peer of the web app)
 RUN pnpm install --filter=@a2ui/core --filter=a2ui-demo-web --frozen-lockfile
 
+# Build @a2ui/core so dist/index.js has the latest renderer (vite run directly, no pnpm TTY)
+WORKDIR /repo/packages/core
+RUN node_modules/.bin/vite build
+
 WORKDIR /repo/apps/demo/web
 EXPOSE 6001
 CMD ["pnpm", "dev", "--port", "6001", "--hostname", "0.0.0.0"]
