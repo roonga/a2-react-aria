@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { BreadcrumbSchema } from "../components/breadcrumb"
 import { ButtonSchema } from "../components/button"
+import { CardSchema } from "../components/card"
 import { CheckboxGroupSchema, CheckboxSchema } from "../components/checkbox"
 import { DatePickerSchema, DateRangePickerSchema } from "../components/date-picker"
 import { DialogSchema } from "../components/dialog"
@@ -93,6 +94,51 @@ describe("ButtonSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(ButtonSchema.safeParse({ type: "button" }).success).toBe(false)
+	})
+})
+
+describe("CardSchema", () => {
+	it("parses a minimal card node", () => {
+		expect(CardSchema.safeParse({ type: "Card" }).success).toBe(true)
+	})
+
+	it("parses all valid padding values", () => {
+		for (const padding of ["none", "sm", "md", "lg"]) {
+			expect(CardSchema.safeParse({ type: "Card", props: { padding } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid padding value", () => {
+		expect(CardSchema.safeParse({ type: "Card", props: { padding: "xl" } }).success).toBe(false)
+	})
+
+	it("parses all valid shadow values", () => {
+		for (const shadow of ["none", "sm", "md", "lg"]) {
+			expect(CardSchema.safeParse({ type: "Card", props: { shadow } }).success).toBe(true)
+		}
+	})
+
+	it("parses all valid radius values", () => {
+		for (const radius of ["none", "sm", "md", "lg"]) {
+			expect(CardSchema.safeParse({ type: "Card", props: { radius } }).success).toBe(true)
+		}
+	})
+
+	it("parses border as boolean", () => {
+		expect(CardSchema.safeParse({ type: "Card", props: { border: true } }).success).toBe(true)
+		expect(CardSchema.safeParse({ type: "Card", props: { border: false } }).success).toBe(true)
+	})
+
+	it("rejects border as non-boolean", () => {
+		expect(CardSchema.safeParse({ type: "Card", props: { border: "yes" } }).success).toBe(false)
+	})
+
+	it("parses a card with children", () => {
+		expect(CardSchema.safeParse({ type: "Card", children: [{ type: "Text" }] }).success).toBe(true)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(CardSchema.safeParse({ type: "card" }).success).toBe(false)
 	})
 })
 

@@ -3,6 +3,7 @@ import axe from "axe-core"
 import { describe, expect, it } from "vitest"
 import { Breadcrumb } from "../components/breadcrumb"
 import { Button } from "../components/button"
+import { Card } from "../components/card"
 import { Checkbox, CheckboxGroup } from "../components/checkbox"
 import { DatePicker, DateRangePicker } from "../components/date-picker"
 import { Dialog } from "../components/dialog"
@@ -26,6 +27,7 @@ const AXE_CONFIG: axe.RunOptions = { rules: { "color-contrast": { enabled: false
 const registry = createRegistry({
 	Breadcrumb: { component: Breadcrumb },
 	Button: { component: Button },
+	Card: { component: Card },
 	DatePicker: { component: DatePicker },
 	DateRangePicker: { component: DateRangePicker },
 	Checkbox: { component: Checkbox },
@@ -913,6 +915,51 @@ describe("Accessibility — axe-core", () => {
 						props: { columns: 2 },
 						children: [{ type: "Button", children: "Item" }],
 					}}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("Card component", () => {
+		it("renders a div container", () => {
+			const { container } = render(<A2Renderer node={{ type: "Card" }} registry={registry} />)
+			expect(container.querySelector("div")).toBeDefined()
+		})
+
+		it("renders children inside the card", () => {
+			render(
+				<A2Renderer
+					node={{ type: "Card", children: [{ type: "Text", children: "Card content" }] }}
+					registry={registry}
+				/>,
+			)
+			expect(screen.getByText("Card content")).toBeDefined()
+		})
+
+		it("applies shadow class", () => {
+			const { container } = render(<A2Renderer node={{ type: "Card", props: { shadow: "lg" } }} registry={registry} />)
+			expect((container.firstChild as HTMLElement).className).toContain("shadow-lg")
+		})
+
+		it("applies radius class", () => {
+			const { container } = render(<A2Renderer node={{ type: "Card", props: { radius: "lg" } }} registry={registry} />)
+			expect((container.firstChild as HTMLElement).className).toContain("rounded-lg")
+		})
+
+		it("applies border class when border is true", () => {
+			const { container } = render(
+				<A2Renderer node={{ type: "Card", props: { border: true } }} registry={registry} />,
+			)
+			expect((container.firstChild as HTMLElement).className).toContain("border")
+		})
+
+		it("has no axe violations", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{ type: "Card", props: { padding: "md", border: true }, children: [{ type: "Text", children: "Content" }] }}
 					registry={registry}
 				/>,
 			)
