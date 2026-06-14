@@ -15,7 +15,7 @@ export default defineConfig({
 			formats: ["es"],
 		},
 		rollupOptions: {
-			external: ["react", "react-dom", "react-aria-components", "zod"],
+			external: ["react", "react-dom", "react-aria-components", "zod", "@internationalized/date"],
 			output: {
 				globals: {
 					react: "React",

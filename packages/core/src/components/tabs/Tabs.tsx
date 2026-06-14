@@ -1,5 +1,4 @@
-import type { ReactNode } from "react"
-import React from "react"
+import { Children, type ReactNode } from "react"
 import { Tabs as RACTabs, Tab, TabList, TabPanel } from "react-aria-components"
 import type { TabItem } from "./tabs.schema"
 import { getTabsStyles } from "./tabs.styles"
@@ -26,7 +25,7 @@ export function Tabs({
 	children,
 }: TabsProps) {
 	const styles = getTabsStyles(orientation)
-	const panels = React.Children.toArray(children)
+	const panels = Children.toArray(children)
 
 	return (
 		<RACTabs
