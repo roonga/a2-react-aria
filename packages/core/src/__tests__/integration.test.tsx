@@ -7,6 +7,7 @@ import { Checkbox, CheckboxGroup } from "../components/checkbox"
 import { DatePicker, DateRangePicker } from "../components/date-picker"
 import { Dialog } from "../components/dialog"
 import { Form } from "../components/form"
+import { Flex, Grid } from "../components/layout"
 import { Menu } from "../components/menu"
 import { Popover } from "../components/popover"
 import { Radio, RadioGroup } from "../components/radio"
@@ -29,7 +30,9 @@ const registry = createRegistry({
 	Checkbox: { component: Checkbox },
 	CheckboxGroup: { component: CheckboxGroup },
 	Dialog: { component: Dialog },
+	Flex: { component: Flex },
 	Form: { component: Form },
+	Grid: { component: Grid },
 	Menu: { component: Menu },
 	Popover: { component: Popover },
 	Radio: { component: Radio },
@@ -820,6 +823,93 @@ describe("Accessibility — axe-core", () => {
 							orientation: "vertical",
 							tabs: [{ id: "home", label: "Home" }],
 						},
+					}}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("Flex component", () => {
+		it("renders children in a flex container", () => {
+			render(
+				<A2Renderer
+					node={{
+						type: "Flex",
+						props: { direction: "row", gap: "md" },
+						children: [
+							{ type: "Button", children: "Alpha" },
+							{ type: "Button", children: "Beta" },
+						],
+					}}
+					registry={registry}
+				/>,
+			)
+			expect(screen.getByText("Alpha")).toBeDefined()
+			expect(screen.getByText("Beta")).toBeDefined()
+		})
+
+		it("applies flex-col class for column direction", () => {
+			const { container } = render(
+				<A2Renderer node={{ type: "Flex", props: { direction: "column" } }} registry={registry} />,
+			)
+			expect((container.firstChild as HTMLElement).className).toContain("flex-col")
+		})
+
+		it("applies flex-wrap class when wrap is true", () => {
+			const { container } = render(<A2Renderer node={{ type: "Flex", props: { wrap: true } }} registry={registry} />)
+			expect((container.firstChild as HTMLElement).className).toContain("flex-wrap")
+		})
+
+		it("has no axe violations", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "Flex",
+						props: { direction: "row", gap: "md" },
+						children: [{ type: "Button", children: "OK" }],
+					}}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("Grid component", () => {
+		it("renders children in a grid container", () => {
+			render(
+				<A2Renderer
+					node={{
+						type: "Grid",
+						props: { columns: 2, gap: "md" },
+						children: [
+							{ type: "Button", children: "Cell One" },
+							{ type: "Button", children: "Cell Two" },
+						],
+					}}
+					registry={registry}
+				/>,
+			)
+			expect(screen.getByText("Cell One")).toBeDefined()
+			expect(screen.getByText("Cell Two")).toBeDefined()
+		})
+
+		it("applies grid-cols-3 class for 3 columns", () => {
+			const { container } = render(<A2Renderer node={{ type: "Grid", props: { columns: 3 } }} registry={registry} />)
+			expect((container.firstChild as HTMLElement).className).toContain("grid-cols-3")
+		})
+
+		it("has no axe violations", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "Grid",
+						props: { columns: 2 },
+						children: [{ type: "Button", children: "Item" }],
 					}}
 					registry={registry}
 				/>,

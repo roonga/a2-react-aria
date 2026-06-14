@@ -5,6 +5,7 @@ import { CheckboxGroupSchema, CheckboxSchema } from "../components/checkbox"
 import { DatePickerSchema, DateRangePickerSchema } from "../components/date-picker"
 import { DialogSchema } from "../components/dialog"
 import { FormSchema } from "../components/form"
+import { FlexSchema, GridSchema } from "../components/layout"
 import { MenuSchema } from "../components/menu"
 import { PopoverSchema } from "../components/popover"
 import { RadioGroupSchema, RadioSchema } from "../components/radio"
@@ -646,5 +647,112 @@ describe("TableSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(TableSchema.safeParse({ type: "table" }).success).toBe(false)
+	})
+})
+
+describe("FlexSchema", () => {
+	it("parses a minimal flex node", () => {
+		expect(FlexSchema.safeParse({ type: "Flex" }).success).toBe(true)
+	})
+
+	it("parses all valid direction values", () => {
+		for (const direction of ["row", "column", "row-reverse", "column-reverse"]) {
+			expect(FlexSchema.safeParse({ type: "Flex", props: { direction } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid direction", () => {
+		expect(FlexSchema.safeParse({ type: "Flex", props: { direction: "diagonal" } }).success).toBe(false)
+	})
+
+	it("parses all valid gap values", () => {
+		for (const gap of ["none", "xs", "sm", "md", "lg", "xl"]) {
+			expect(FlexSchema.safeParse({ type: "Flex", props: { gap } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid gap value", () => {
+		expect(FlexSchema.safeParse({ type: "Flex", props: { gap: "2xl" } }).success).toBe(false)
+	})
+
+	it("parses all valid align values", () => {
+		for (const align of ["start", "center", "end", "stretch", "baseline"]) {
+			expect(FlexSchema.safeParse({ type: "Flex", props: { align } }).success).toBe(true)
+		}
+	})
+
+	it("parses all valid justify values", () => {
+		for (const justify of ["start", "center", "end", "between", "around", "evenly"]) {
+			expect(FlexSchema.safeParse({ type: "Flex", props: { justify } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid justify value", () => {
+		expect(FlexSchema.safeParse({ type: "Flex", props: { justify: "left" } }).success).toBe(false)
+	})
+
+	it("parses wrap as boolean", () => {
+		expect(FlexSchema.safeParse({ type: "Flex", props: { wrap: true } }).success).toBe(true)
+	})
+
+	it("rejects wrap as non-boolean", () => {
+		expect(FlexSchema.safeParse({ type: "Flex", props: { wrap: "yes" } }).success).toBe(false)
+	})
+
+	it("parses flex with children array", () => {
+		expect(FlexSchema.safeParse({ type: "Flex", children: [{ type: "Button" }] }).success).toBe(true)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(FlexSchema.safeParse({ type: "flex" }).success).toBe(false)
+	})
+})
+
+describe("GridSchema", () => {
+	it("parses a minimal grid node", () => {
+		expect(GridSchema.safeParse({ type: "Grid" }).success).toBe(true)
+	})
+
+	it("parses a grid with columns 1-12", () => {
+		for (const columns of [1, 6, 12]) {
+			expect(GridSchema.safeParse({ type: "Grid", props: { columns } }).success).toBe(true)
+		}
+	})
+
+	it("rejects columns out of range", () => {
+		expect(GridSchema.safeParse({ type: "Grid", props: { columns: 0 } }).success).toBe(false)
+		expect(GridSchema.safeParse({ type: "Grid", props: { columns: 13 } }).success).toBe(false)
+	})
+
+	it("parses all valid gap values", () => {
+		for (const gap of ["none", "xs", "sm", "md", "lg", "xl"]) {
+			expect(GridSchema.safeParse({ type: "Grid", props: { gap } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid gap value", () => {
+		expect(GridSchema.safeParse({ type: "Grid", props: { gap: "huge" } }).success).toBe(false)
+	})
+
+	it("parses all valid align values", () => {
+		for (const align of ["start", "center", "end", "stretch"]) {
+			expect(GridSchema.safeParse({ type: "Grid", props: { align } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid align value", () => {
+		expect(GridSchema.safeParse({ type: "Grid", props: { align: "baseline" } }).success).toBe(false)
+	})
+
+	it("parses a grid with children array", () => {
+		expect(GridSchema.safeParse({ type: "Grid", children: [{ type: "Button" }] }).success).toBe(true)
+	})
+
+	it("rejects columns as non-integer", () => {
+		expect(GridSchema.safeParse({ type: "Grid", props: { columns: 2.5 } }).success).toBe(false)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(GridSchema.safeParse({ type: "grid" }).success).toBe(false)
 	})
 })
