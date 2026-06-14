@@ -950,16 +950,18 @@ describe("Accessibility — axe-core", () => {
 		})
 
 		it("applies border class when border is true", () => {
-			const { container } = render(
-				<A2Renderer node={{ type: "Card", props: { border: true } }} registry={registry} />,
-			)
+			const { container } = render(<A2Renderer node={{ type: "Card", props: { border: true } }} registry={registry} />)
 			expect((container.firstChild as HTMLElement).className).toContain("border")
 		})
 
 		it("has no axe violations", async () => {
 			const { container } = render(
 				<A2Renderer
-					node={{ type: "Card", props: { padding: "md", border: true }, children: [{ type: "Text", children: "Content" }] }}
+					node={{
+						type: "Card",
+						props: { padding: "md", border: true },
+						children: [{ type: "Text", children: "Content" }],
+					}}
 					registry={registry}
 				/>,
 			)
