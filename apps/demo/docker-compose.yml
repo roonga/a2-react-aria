@@ -1,0 +1,40 @@
+name: a2ui-restaurant-demo
+
+services:
+  agent:
+    build: ./agent
+    ports:
+      - "9080:9080"
+    environment:
+      - OPENAI_API_KEY=lm-studio
+      - OPENAI_BASE_URL=http://host.docker.internal:1234/v1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - agent-sessions:/app/data
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ../..
+      dockerfile: apps/demo/web/Dockerfile
+    ports:
+      - "9001:9001"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:9080
+    depends_on:
+      - agent
+    restart: unless-stopped
+
+  dozzle:
+    image: amir20/dozzle:latest
+    ports:
+      - "9888:8080"
+    environment:
+      - DOZZLE_FILTER=label=com.docker.compose.project=a2ui-restaurant-demo
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+volumes:
+  agent-sessions:

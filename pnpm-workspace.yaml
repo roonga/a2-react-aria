@@ -1,6 +1,6 @@
 packages:
   - "packages/*"
   - "apps/test-harness"
-  - "apps/sample-adk/web"
+  - "apps/demo/web"
   - "docs"
   - "catalog"
