@@ -149,10 +149,11 @@ export default function Chat() {
             if (event.content?.parts) {
               if (event.partial === false) {
                 let turnText = ""
+                let finalThought = ""
                 for (const part of event.content.parts) {
                   if (!part.text) continue
                   if (part.thought) {
-                    accumulatedThought += part.text
+                    finalThought += part.text
                   } else {
                     turnText += part.text
                   }
@@ -160,6 +161,11 @@ export default function Chat() {
                 if (turnText !== "") {
                   accumulated = turnText
                   setStreamingText(accumulated)
+                }
+                // Replace (not append) — the partial=false event carries the complete
+                // thought text, which duplicates the partial=true streaming chunks.
+                if (finalThought !== "") {
+                  accumulatedThought = finalThought
                 }
                 setStreamingThought(accumulatedThought)
               } else {
