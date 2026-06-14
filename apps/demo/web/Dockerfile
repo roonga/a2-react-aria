@@ -9,7 +9,7 @@ RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
 WORKDIR /repo
 
 # Copy workspace manifests so pnpm can resolve the workspace graph
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml tsconfig.json ./
 
 # Copy only the packages needed (core + this app)
 COPY packages/core ./packages/core
