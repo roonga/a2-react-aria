@@ -30,6 +30,7 @@ interface DatePickerProps {
 	defaultValue?: string
 	minValue?: string
 	maxValue?: string
+	onChange?: (value: string) => void
 }
 
 export function DatePicker({
@@ -43,6 +44,7 @@ export function DatePicker({
 	defaultValue,
 	minValue,
 	maxValue,
+	onChange,
 }: DatePickerProps) {
 	const styles = getDatePickerStyles()
 	return (
@@ -54,6 +56,7 @@ export function DatePicker({
 			isRequired={isRequired}
 			isInvalid={isInvalid}
 			isReadOnly={isReadOnly}
+			onChange={(date) => onChange?.(date?.toString() ?? "")}
 			className={styles.root}
 		>
 			{label && <Label className={styles.label}>{label}</Label>}

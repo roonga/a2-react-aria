@@ -79,6 +79,8 @@ _RESTAURANTS = [
     },
 ]
 
+_CUISINES = ["Italian", "Japanese", "Thai", "Modern Australian"]
+
 
 def find_restaurants(location: str, cuisine: str = "any", party_size: int = 2) -> list[dict]:
     """Filter restaurants by cuisine. Location is accepted but not filtered (demo data)."""
@@ -98,7 +100,7 @@ def find_restaurant_by_name(name: str) -> dict | None:
 
 def generate_confirmation_number() -> str:
     suffix = "".join(random.choices(string.digits, k=4))
-    return f"RB-20260614-{suffix}"
+    return f"RB-20260615-{suffix}"
 
 
 # ── a2UI JSON builders ────────────────────────────────────────────────────────
@@ -117,6 +119,78 @@ def _card(children: list, **props) -> dict:
         node["props"] = props
     node["children"] = children
     return node
+
+
+def build_search_form() -> list:
+    """Initial search form shown on welcome. No LLM call needed."""
+    cuisine_items = [{"label": "Any cuisine", "value": "any"}] + [
+        {"label": c, "value": c} for c in _CUISINES
+    ]
+    return [
+        _card(
+            [
+                _text("Find Your Table", **{"as": "h2", "size": "xl", "weight": "bold"}),
+                _text(
+                    "Powered by a2UI + Google ADK",
+                    **{"as": "p", "size": "sm", "color": "muted"},
+                ),
+                {
+                    "type": "Grid",
+                    "props": {"columns": 2, "gap": "md"},
+                    "children": [
+                        {
+                            "type": "TextField",
+                            "props": {
+                                "label": "Location",
+                                "placeholder": "e.g. Sydney CBD",
+                                "isRequired": True,
+                            },
+                        },
+                        {
+                            "type": "Select",
+                            "props": {
+                                "label": "Cuisine",
+                                "items": cuisine_items,
+                                "defaultValue": "any",
+                            },
+                        },
+                        {
+                            "type": "NumberField",
+                            "props": {
+                                "label": "Guests",
+                                "minValue": 1,
+                                "maxValue": 20,
+                                "defaultValue": 2,
+                                "isRequired": True,
+                            },
+                        },
+                        {
+                            "type": "DatePicker",
+                            "props": {
+                                "label": "Date",
+                                "isRequired": True,
+                            },
+                        },
+                    ],
+                },
+                {
+                    "type": "Flex",
+                    "props": {"justify": "end", "gap": "sm"},
+                    "children": [
+                        {
+                            "type": "Button",
+                            "props": {"variant": "primary"},
+                            "children": "Find Restaurants",
+                        }
+                    ],
+                },
+            ],
+            padding="lg",
+            shadow="sm",
+            radius="lg",
+            border=True,
+        )
+    ]
 
 
 def build_search_results(restaurants: list[dict]) -> list:
@@ -157,8 +231,12 @@ def build_search_results(restaurants: list[dict]) -> list:
 
 
 def build_slots_card(restaurant: dict, date: str, party_size: int) -> list:
-    slot_buttons = [
-        {"type": "Button", "props": {"variant": "ghost", "size": "sm"}, "children": slot}
+    """Time-slot picker using RadioGroup so the selection is a proper form field."""
+    radio_items = [
+        {
+            "type": "Radio",
+            "props": {"value": slot, "label": slot},
+        }
         for slot in restaurant["time_slots"]
     ]
 
@@ -175,15 +253,87 @@ def build_slots_card(restaurant: dict, date: str, party_size: int) -> list:
                     color="muted",
                 ),
                 {
-                    "type": "Flex",
-                    "props": {"gap": "sm", "wrap": True},
-                    "children": slot_buttons,
+                    "type": "RadioGroup",
+                    "props": {
+                        "label": "Time",
+                        "orientation": "horizontal",
+                        "isRequired": True,
+                    },
+                    "children": radio_items,
                 },
+                {
+                    "type": "Flex",
+                    "props": {"justify": "end", "gap": "sm"},
+                    "children": [
+                        {
+                            "type": "Button",
+                            "props": {"variant": "primary"},
+                            "children": "Continue",
+                        }
+                    ],
+                },
+            ],
+            padding="lg",
+            shadow="sm",
+            radius="md",
+            border=True,
+        )
+    ]
+
+
+def build_guest_form(restaurant_name: str, date: str, time_slot: str, party_size: int) -> list:
+    """Guest details form shown after time slot selection."""
+    return [
+        _card(
+            [
+                _text("Your Details", **{"as": "h3", "weight": "bold"}),
                 _text(
-                    "Select a time above, then reply with your name, email, and phone.",
+                    f"{restaurant_name} · {date} · {time_slot} · {party_size} {'guest' if party_size == 1 else 'guests'}",
                     size="sm",
                     color="muted",
                 ),
+                {
+                    "type": "Grid",
+                    "props": {"columns": 2, "gap": "md"},
+                    "children": [
+                        {
+                            "type": "TextField",
+                            "props": {
+                                "label": "Name",
+                                "placeholder": "Full name",
+                                "isRequired": True,
+                            },
+                        },
+                        {
+                            "type": "TextField",
+                            "props": {
+                                "label": "Email",
+                                "placeholder": "you@example.com",
+                                "type": "email",
+                                "isRequired": True,
+                            },
+                        },
+                    ],
+                },
+                {
+                    "type": "TextField",
+                    "props": {
+                        "label": "Phone",
+                        "placeholder": "Optional",
+                        "type": "tel",
+                    },
+                },
+                {
+                    "type": "Flex",
+                    "props": {"justify": "end", "gap": "sm"},
+                    "children": [
+                        {
+                            "type": "Button",
+                            "props": {"variant": "primary"},
+                            "children": "Confirm Booking",
+                        }
+                    ],
+                },
             ],
             padding="lg",
             shadow="sm",
@@ -236,6 +386,17 @@ def build_confirmation_card(
                     "type": "Grid",
                     "props": {"columns": 2, "gap": "sm"},
                     "children": detail_cells,
+                },
+                {
+                    "type": "Flex",
+                    "props": {"justify": "center", "gap": "md"},
+                    "children": [
+                        {
+                            "type": "Button",
+                            "props": {"variant": "secondary"},
+                            "children": "Book Another Table",
+                        }
+                    ],
                 },
             ],
             padding="lg",

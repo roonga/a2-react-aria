@@ -10,6 +10,7 @@ import { Dialog } from "../components/dialog"
 import { Form } from "../components/form"
 import { Flex, Grid } from "../components/layout"
 import { Menu } from "../components/menu"
+import { NumberField } from "../components/number-field"
 import { Popover } from "../components/popover"
 import { Radio, RadioGroup } from "../components/radio"
 import { Select } from "../components/select"
@@ -37,6 +38,7 @@ const registry = createRegistry({
 	Form: { component: Form },
 	Grid: { component: Grid },
 	Menu: { component: Menu },
+	NumberField: { component: NumberField },
 	Popover: { component: Popover },
 	Radio: { component: Radio },
 	RadioGroup: { component: RadioGroup },
@@ -158,6 +160,51 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 		it("renders daterangepicker with label", () => {
 			render(<A2Renderer node={{ type: "DateRangePicker", props: { label: "Date range" } }} registry={registry} />)
 			expect(screen.getByText(/date range/i)).toBeDefined()
+		})
+	})
+
+	describe("NumberField component", () => {
+		it("renders with label via A2Renderer", () => {
+			render(
+				<A2Renderer
+					node={{ type: "NumberField", props: { label: "Party Size", defaultValue: 2 } }}
+					registry={registry}
+				/>,
+			)
+			// RAC NumberField renders as role="textbox" with aria-roledescription="Number field"
+			expect(screen.getByRole("textbox", { name: /party size/i })).toBeDefined()
+		})
+
+		it("renders decrement and increment buttons", () => {
+			render(<A2Renderer node={{ type: "NumberField", props: { label: "Qty" } }} registry={registry} />)
+			// RAC names the buttons "Decrease Qty" / "Increase Qty"
+			expect(screen.getByRole("button", { name: /decrease/i })).toBeDefined()
+			expect(screen.getByRole("button", { name: /increase/i })).toBeDefined()
+		})
+
+		it("renders disabled number field", () => {
+			render(
+				<A2Renderer
+					node={{ type: "NumberField", props: { label: "Fixed", defaultValue: 5, isDisabled: true } }}
+					registry={registry}
+				/>,
+			)
+			const input = screen.getByRole("textbox", { name: /fixed/i }) as HTMLInputElement
+			expect(input.disabled).toBe(true)
+		})
+
+		it("passes axe accessibility rules", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "NumberField",
+						props: { label: "Guests", minValue: 1, maxValue: 8, defaultValue: 2, isRequired: true },
+					}}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
 		})
 	})
 

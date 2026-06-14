@@ -9,6 +9,8 @@ from google.genai import types
 
 from .restaurant_data import (
     build_confirmation_card,
+    build_guest_form,
+    build_search_form,
     build_search_results,
     build_slots_card,
     find_restaurant_by_name,
@@ -21,40 +23,75 @@ _log = logging.getLogger(__name__)
 
 _A2UI_TOOLS = {"search_restaurants", "get_available_slots", "confirm_booking"}
 
+_FIND_RE = re.compile(r"^Find Restaurants", re.IGNORECASE)
+_BOOK_ANOTHER_RE = re.compile(r"^Book Another Table$", re.IGNORECASE)
 _BOOK_RE = re.compile(r"^Book (.+)$", re.IGNORECASE)
-_DAY_RE = re.compile(r"\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b", re.IGNORECASE)
-_SIZE_RE = re.compile(r"\bfor (\d+)\b", re.IGNORECASE)
+_CONTINUE_RE = re.compile(r"^Continue", re.IGNORECASE)
+_CONFIRM_RE = re.compile(r"^Confirm Booking", re.IGNORECASE)
 
 
-def _extract_context(llm_request: LlmRequest) -> tuple[str, int]:
-    """Scan conversation history for date (day name) and party size."""
-    date = "Saturday"
-    party_size = 2
+def _parse_action(text: str) -> tuple[str, dict[str, str]]:
+    """Parse 'ButtonLabel | Key: value | Key: value' into (label, fields)."""
+    parts = [p.strip() for p in text.split("|")]
+    label = parts[0]
+    fields: dict[str, str] = {}
+    for part in parts[1:]:
+        if ": " in part:
+            k, v = part.split(": ", 1)
+            fields[k.strip()] = v.strip()
+    return label, fields
+
+
+def _extract_context(llm_request: LlmRequest) -> dict:
+    """Extract booking context (restaurant, date, party_size, time_slot) from history."""
+    ctx: dict = {
+        "restaurant_name": None,
+        "date": "Saturday",
+        "party_size": 2,
+        "time_slot": None,
+    }
     for content in llm_request.contents or []:
         for part in content.parts or []:
-            if part.text:
-                m = _DAY_RE.search(part.text)
-                if m:
-                    date = m.group(1).title()
-                m = _SIZE_RE.search(part.text)
-                if m:
-                    party_size = int(m.group(1))
-    return date, party_size
+            if not part.text:
+                continue
+            text = part.text.strip()
+            if _FIND_RE.match(text):
+                _, fields = _parse_action(text)
+                if "Guests" in fields:
+                    try:
+                        ctx["party_size"] = int(fields["Guests"])
+                    except ValueError:
+                        pass
+                if "Date" in fields and fields["Date"]:
+                    ctx["date"] = fields["Date"]
+            # "Book Another Table" must be checked before the generic "Book <name>"
+            if _BOOK_ANOTHER_RE.match(text):
+                continue
+            m = _BOOK_RE.match(text)
+            if m:
+                ctx["restaurant_name"] = m.group(1)
+            if _CONTINUE_RE.match(text):
+                _, fields = _parse_action(text)
+                if "Time" in fields:
+                    ctx["time_slot"] = fields["Time"]
+    return ctx
+
+
+def _llm_response(text: str) -> LlmResponse:
+    return LlmResponse(content=types.Content(role="model", parts=[types.Part(text=text)]))
 
 
 def _before_model(
     callback_context: CallbackContext, *, llm_request: LlmRequest
 ) -> LlmResponse | None:
-    """Bypass the LLM for two cases:
+    """Bypass the LLM for all a2UI form actions — deterministic routing.
 
-    1. A tool that returns a2UI JSON has just responded — pass its result
-       straight to the client without re-invoking the LLM.
-
-    2. The latest user message is a "Book <name>" button click — route
-       deterministically to get_available_slots so small models can't misfire.
-
-    Only the LATEST content is checked for case 1.  Scanning the entire
-    history would re-intercept old function responses on subsequent turns.
+    Case 1: A2UI tool response pass-through (function_response in latest content).
+    Case 2: "Find Restaurants | ..." — call search_restaurants.
+    Case 3: "Book Another Table" — return search form.
+    Case 4: "Book <name>" — call get_available_slots.
+    Case 5: "Continue | Time: X" — build and return guest form.
+    Case 6: "Confirm Booking | ..." — call confirm_booking.
     """
     contents = llm_request.contents or []
     if not contents:
@@ -62,38 +99,71 @@ def _before_model(
 
     latest = contents[-1]
 
-    # Case 1 — latest content is an a2UI tool response
+    # Case 1 — a2UI tool response
     for part in latest.parts or []:
         if part.function_response and part.function_response.name in _A2UI_TOOLS:
             result = (part.function_response.response or {}).get("result", "")
             _log.info("intercept: %s → pass through", part.function_response.name)
-            return LlmResponse(
-                content=types.Content(
-                    role="model",
-                    parts=[types.Part(text=result)],
-                )
-            )
+            return _llm_response(result)
 
-    # Case 2 — "Book <name>" button click → get_available_slots directly
+    # Form action routing — check text parts in latest content
     for part in latest.parts or []:
-        if part.text:
-            m = _BOOK_RE.match(part.text.strip())
-            if m:
-                restaurant_name = m.group(1)
-                date, party_size = _extract_context(llm_request)
-                result = get_available_slots(restaurant_name, date, party_size)
-                _log.info(
-                    "intercept: Book → get_available_slots(%s, %s, %d)",
-                    restaurant_name,
-                    date,
-                    party_size,
-                )
-                return LlmResponse(
-                    content=types.Content(
-                        role="model",
-                        parts=[types.Part(text=result)],
-                    )
-                )
+        if not part.text:
+            continue
+        text = part.text.strip()
+
+        # Case 2 — search form submitted
+        if _FIND_RE.match(text):
+            _, fields = _parse_action(text)
+            location = fields.get("Location", "Sydney")
+            cuisine = fields.get("Cuisine", "any")
+            try:
+                party_size = int(fields.get("Guests", "2"))
+            except ValueError:
+                party_size = 2
+            _log.info("intercept: Find Restaurants(%s, %s, %d)", location, cuisine, party_size)
+            return _llm_response(search_restaurants(location, cuisine, party_size))
+
+        # Case 3 — restart flow
+        if _BOOK_ANOTHER_RE.match(text):
+            _log.info("intercept: Book Another Table → search form")
+            nodes = build_search_form()
+            return _llm_response(f"<a2ui-json>{serialize(nodes)}</a2ui-json>")
+
+        # Case 4 — time slot picker
+        m = _BOOK_RE.match(text)
+        if m:
+            restaurant_name = m.group(1)
+            ctx = _extract_context(llm_request)
+            _log.info("intercept: Book %s → get_available_slots", restaurant_name)
+            return _llm_response(get_available_slots(restaurant_name, ctx["date"], ctx["party_size"]))
+
+        # Case 5 — guest details form
+        if _CONTINUE_RE.match(text):
+            _, fields = _parse_action(text)
+            time_slot = fields.get("Time", "7:00 PM")
+            ctx = _extract_context(llm_request)
+            restaurant_name = ctx["restaurant_name"] or "the restaurant"
+            _log.info("intercept: Continue → guest form (%s, %s, %s)", restaurant_name, ctx["date"], time_slot)
+            nodes = build_guest_form(restaurant_name, ctx["date"], time_slot, ctx["party_size"])
+            return _llm_response(f"<a2ui-json>{serialize(nodes)}</a2ui-json>")
+
+        # Case 6 — confirmation
+        if _CONFIRM_RE.match(text):
+            _, fields = _parse_action(text)
+            ctx = _extract_context(llm_request)
+            restaurant_name = ctx["restaurant_name"] or "the restaurant"
+            time_slot = ctx["time_slot"] or "7:00 PM"
+            guest_name = fields.get("Name", "Guest")
+            email = fields.get("Email", "")
+            phone = fields.get("Phone", "")
+            _log.info(
+                "intercept: Confirm Booking → confirm(%s, %s, %s, %s)",
+                restaurant_name, ctx["date"], time_slot, guest_name,
+            )
+            return _llm_response(
+                confirm_booking(restaurant_name, ctx["date"], time_slot, ctx["party_size"], guest_name, email, phone)
+            )
 
     return None
 

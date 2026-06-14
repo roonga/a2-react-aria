@@ -1,65 +1,70 @@
 /**
  * Full-flow E2E test against the live Docker compose stack.
- * No mocks — hits the real ADK agent and LM Studio inference.
+ * No mocks — hits the real ADK agent; _before_model intercepts all form actions
+ * deterministically so no LLM inference is needed.
  *
  * Prerequisites:
  *   docker compose up --build   (from apps/demo/)
- *   LM Studio serving google/gemma-4-12b-qat on :1234
  *
  * Run: npx playwright test --config playwright.docker.config.ts
  */
 import { expect, test } from "@playwright/test"
 
-const LLM_TIMEOUT = 60_000 // generous — LM Studio CPU inference can be slow
+const AGENT_TIMEOUT = 30_000 // agent response via _before_model is deterministic (no LLM)
 
-test("complete restaurant booking: search → book → slot → confirm", async ({ page }) => {
-	// ── 1. Load the app ────────────────────────────────────────────────────────
+test("complete booking flow: search form → results → slots → guest form → confirmation", async ({ page }) => {
+	// ── 1. Load app — initial a2UI search form is shown ───────────────────────
 	await page.goto("/")
-	await expect(page.getByText("Welcome!")).toBeVisible()
-	const input = page.getByPlaceholder("Type your message…")
-	const sendBtn = page.getByRole("button", { name: "Send" })
+	await expect(page.getByRole("heading", { name: "Find Your Table" })).toBeVisible({
+		timeout: AGENT_TIMEOUT,
+	})
 
-	// ── 2. Search for Italian restaurants ─────────────────────────────────────
-	// Explicit cuisine + location + date so the LLM has all params for the tool call
-	await input.fill("Italian restaurants for 2 in Sydney on Saturday")
-	await sendBtn.click()
+	// ── 2. Fill search form ────────────────────────────────────────────────────
+	await page.getByLabel("Location").fill("Sydney CBD")
 
-	// before_model_callback intercepts search_restaurants → returns A2UI cards
+	// RAC Select trigger button shows the current selection ("Any cuisine")
+	await page.getByRole("button", { name: /any cuisine/i }).click()
+	await page.getByRole("option", { name: "Italian" }).click()
+
+	// ── 3. Submit → _before_model intercepts "Find Restaurants | …" ───────────
+	await page.getByRole("button", { name: "Find Restaurants" }).click()
+
 	await expect(page.getByRole("heading", { name: "La Dolce Vita" })).toBeVisible({
-		timeout: LLM_TIMEOUT,
+		timeout: AGENT_TIMEOUT,
 	})
 	await expect(page.getByRole("button", { name: "Book La Dolce Vita" })).toBeVisible()
 	await expect(page.getByRole("heading", { name: "Osteria Roma" })).toBeVisible()
 
-	// ── 3. Click Book → slot card ─────────────────────────────────────────────
-	// Button auto-sends "Book La Dolce Vita"; LLM calls get_available_slots
+	// ── 4. Book → _before_model intercepts "Book La Dolce Vita" ───────────────
 	await page.getByRole("button", { name: "Book La Dolce Vita" }).click()
 
-	// before_model_callback intercepts get_available_slots → returns slot buttons
 	await expect(page.getByText("La Dolce Vita — Available Times")).toBeVisible({
-		timeout: LLM_TIMEOUT,
+		timeout: AGENT_TIMEOUT,
 	})
-	await expect(page.getByRole("button", { name: "7:00 PM" })).toBeVisible()
+	await expect(page.getByRole("radio", { name: "7:00 PM" })).toBeVisible()
 
-	// ── 4. Select time slot ────────────────────────────────────────────────────
-	// Button auto-sends "7:00 PM"; LLM sees it lacks name+email so asks for details
-	await page.getByRole("button", { name: "7:00 PM" }).click()
+	// ── 5. Select time and continue → _before_model intercepts "Continue | …" ─
+	// RAC hides the native radio input; dispatch click directly to avoid smooth-scroll pointer interception
+	await page.getByRole("radio", { name: "7:00 PM" }).dispatchEvent("click")
+	await page.getByRole("button", { name: "Continue" }).click()
 
-	// Wait for loading to complete (input re-enabled after LLM responds)
-	await expect(input).toBeEnabled({ timeout: LLM_TIMEOUT })
+	// ── 6. Fill guest form ─────────────────────────────────────────────────────
+	await expect(page.getByRole("heading", { name: "Your Details" })).toBeVisible({
+		timeout: AGENT_TIMEOUT,
+	})
+	await page.getByLabel("Name").fill("Jane Doe")
+	await page.getByLabel("Email").fill("jane@example.com")
 
-	// ── 5. Provide guest details → confirmation card ──────────────────────────
-	await input.fill("John Smith, john@example.com")
-	await expect(sendBtn).toBeEnabled()
-	await sendBtn.click()
+	// ── 7. Confirm → _before_model intercepts "Confirm Booking | …" ───────────
+	await page.getByRole("button", { name: "Confirm Booking" }).click()
 
-	// before_model_callback intercepts confirm_booking → returns confirmation card
-	const confirmHeading = page.getByRole("heading", { name: "Booking Confirmed!" })
-	await expect(confirmHeading).toBeVisible({ timeout: LLM_TIMEOUT })
+	const confirmHeading = page.getByRole("heading", { name: /Booking Confirmed/i })
+	await expect(confirmHeading).toBeVisible({ timeout: AGENT_TIMEOUT })
 
-	// Scope detail assertions to the Card containing the heading — avoids strict-mode
-	// violations from "La Dolce Vita" / "7:00 PM" appearing in earlier messages too
+	// Scope detail assertions to the confirmation Card — avoids strict-mode
+	// violations from earlier messages also containing "La Dolce Vita"
 	const confirmCard = page.locator("div").filter({ has: confirmHeading }).last()
 	await expect(confirmCard).toContainText("La Dolce Vita")
 	await expect(confirmCard).toContainText("7:00 PM")
+	await expect(confirmCard).toContainText("Jane Doe")
 })

@@ -8,6 +8,7 @@ import { DialogSchema } from "../components/dialog"
 import { FormSchema } from "../components/form"
 import { FlexSchema, GridSchema } from "../components/layout"
 import { MenuSchema } from "../components/menu"
+import { NumberFieldSchema } from "../components/number-field"
 import { PopoverSchema } from "../components/popover"
 import { RadioGroupSchema, RadioSchema } from "../components/radio"
 import { SelectSchema } from "../components/select"
@@ -163,6 +164,35 @@ describe("TextFieldSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(TextFieldSchema.safeParse({ type: "text-field" }).success).toBe(false)
+	})
+})
+
+describe("NumberFieldSchema", () => {
+	it("parses a minimal number field node", () => {
+		expect(NumberFieldSchema.safeParse({ type: "NumberField" }).success).toBe(true)
+	})
+
+	it("parses with all numeric props", () => {
+		expect(
+			NumberFieldSchema.safeParse({
+				type: "NumberField",
+				props: { minValue: 1, maxValue: 10, step: 1, defaultValue: 2 },
+			}).success,
+		).toBe(true)
+	})
+
+	it("rejects a non-number minValue", () => {
+		expect(NumberFieldSchema.safeParse({ type: "NumberField", props: { minValue: "1" } }).success).toBe(false)
+	})
+
+	it("parses isRequired and isDisabled as booleans", () => {
+		expect(
+			NumberFieldSchema.safeParse({ type: "NumberField", props: { isRequired: true, isDisabled: false } }).success,
+		).toBe(true)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(NumberFieldSchema.safeParse({ type: "numberfield" }).success).toBe(false)
 	})
 })
 
