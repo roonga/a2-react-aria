@@ -32,7 +32,7 @@ _data_dir.mkdir(exist_ok=True)
 app = get_fast_api_app(
     agents_dir=str(_root),
     session_service_uri=f"sqlite+aiosqlite:///{_data_dir}/sessions.db",
-    allow_origins=["http://localhost:9001"],
+    allow_origins=["http://localhost:6001"],
     web=False,
 )
 
@@ -54,4 +54,4 @@ async def _request_logging(request: Request, call_next):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=9080)
+    uvicorn.run(app, host="0.0.0.0", port=6080)

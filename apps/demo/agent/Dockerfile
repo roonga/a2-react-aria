@@ -16,5 +16,5 @@ COPY restaurant_agent ./restaurant_agent
 
 RUN mkdir -p /app/data
 
-EXPOSE 9080
+EXPOSE 6080
 CMD ["uv", "run", "--no-sync", "python", "main.py"]

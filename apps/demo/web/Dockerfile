@@ -19,5 +19,5 @@ COPY apps/demo/web ./apps/demo/web
 RUN pnpm install --filter=@a2ui/core --filter=a2ui-demo-web --frozen-lockfile
 
 WORKDIR /repo/apps/demo/web
-EXPOSE 9001
-CMD ["pnpm", "dev", "--port", "9001", "--hostname", "0.0.0.0"]
+EXPOSE 6001
+CMD ["pnpm", "dev", "--port", "6001", "--hostname", "0.0.0.0"]

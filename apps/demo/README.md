@@ -22,9 +22,9 @@ docker compose up --build
 
 | Service | URL | Purpose |
 | --- | --- | --- |
-| Web UI | <http://localhost:9001> | Chat interface |
-| Agent API | <http://localhost:9080> | ADK FastAPI server |
-| Logs | <http://localhost:9888> | Dozzle log viewer |
+| Web UI | <http://localhost:6001> | Chat interface |
+| Agent API | <http://localhost:6080> | ADK FastAPI server |
+| Logs | <http://localhost:6888> | Dozzle log viewer |
 
 ## Try it
 
@@ -75,4 +75,4 @@ uv sync
 uv run python main.py
 ```
 
-Agent API at <http://localhost:9080>.
+Agent API at <http://localhost:6080>.
