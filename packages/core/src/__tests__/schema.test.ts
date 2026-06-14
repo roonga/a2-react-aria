@@ -13,6 +13,7 @@ import { SelectSchema } from "../components/select"
 import { SwitchSchema } from "../components/switch"
 import { TableSchema } from "../components/table"
 import { TabsSchema } from "../components/tabs"
+import { TextSchema } from "../components/text"
 import { TextFieldSchema } from "../components/text-field"
 import { TooltipSchema } from "../components/tooltip"
 import { parseNode, safeParseNode } from "../schema"
@@ -754,5 +755,73 @@ describe("GridSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(GridSchema.safeParse({ type: "grid" }).success).toBe(false)
+	})
+})
+
+describe("TextSchema", () => {
+	it("parses a minimal text node", () => {
+		expect(TextSchema.safeParse({ type: "Text" }).success).toBe(true)
+	})
+
+	it("parses a text node with all props", () => {
+		expect(
+			TextSchema.safeParse({
+				type: "Text",
+				props: { as: "h2", size: "xl", weight: "bold", color: "primary" },
+				children: "Hello",
+			}).success,
+		).toBe(true)
+	})
+
+	it("parses all valid as values", () => {
+		for (const as of ["h1", "h2", "h3", "h4", "p", "span", "label"]) {
+			expect(TextSchema.safeParse({ type: "Text", props: { as } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid as value", () => {
+		expect(TextSchema.safeParse({ type: "Text", props: { as: "div" } }).success).toBe(false)
+	})
+
+	it("parses all valid size values", () => {
+		for (const size of ["xs", "sm", "md", "lg", "xl", "2xl"]) {
+			expect(TextSchema.safeParse({ type: "Text", props: { size } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid size value", () => {
+		expect(TextSchema.safeParse({ type: "Text", props: { size: "3xl" } }).success).toBe(false)
+	})
+
+	it("parses all valid weight values", () => {
+		for (const weight of ["normal", "medium", "semibold", "bold"]) {
+			expect(TextSchema.safeParse({ type: "Text", props: { weight } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid weight value", () => {
+		expect(TextSchema.safeParse({ type: "Text", props: { weight: "light" } }).success).toBe(false)
+	})
+
+	it("parses all valid color values", () => {
+		for (const color of ["default", "muted", "primary", "danger"]) {
+			expect(TextSchema.safeParse({ type: "Text", props: { color } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid color value", () => {
+		expect(TextSchema.safeParse({ type: "Text", props: { color: "success" } }).success).toBe(false)
+	})
+
+	it("parses children as a string", () => {
+		expect(TextSchema.safeParse({ type: "Text", children: "Hello world" }).success).toBe(true)
+	})
+
+	it("parses children as an array", () => {
+		expect(TextSchema.safeParse({ type: "Text", children: [{ type: "Button" }] }).success).toBe(true)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(TextSchema.safeParse({ type: "text" }).success).toBe(false)
 	})
 })

@@ -15,6 +15,7 @@ import { Select } from "../components/select"
 import { Switch } from "../components/switch"
 import { Table } from "../components/table"
 import { Tabs } from "../components/tabs"
+import { Text } from "../components/text"
 import { TextField } from "../components/text-field"
 import { Tooltip } from "../components/tooltip"
 import { A2Renderer, createRegistry } from "../index"
@@ -41,6 +42,7 @@ const registry = createRegistry({
 	Switch: { component: Switch },
 	Table: { component: Table },
 	Tabs: { component: Tabs },
+	Text: { component: Text },
 	TextField: { component: TextField },
 	Tooltip: { component: Tooltip },
 })
@@ -913,6 +915,43 @@ describe("Accessibility — axe-core", () => {
 					}}
 					registry={registry}
 				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("Text component", () => {
+		it("renders a paragraph by default", () => {
+			const { container } = render(<A2Renderer node={{ type: "Text", children: "Hello world" }} registry={registry} />)
+			expect(container.querySelector("p")).toBeDefined()
+			expect(screen.getByText("Hello world")).toBeDefined()
+		})
+
+		it("renders an h1 when as=h1", () => {
+			const { container } = render(
+				<A2Renderer node={{ type: "Text", props: { as: "h1" }, children: "Page title" }} registry={registry} />,
+			)
+			expect(container.querySelector("h1")).toBeDefined()
+		})
+
+		it("applies size class from styles", () => {
+			const { container } = render(
+				<A2Renderer node={{ type: "Text", props: { size: "xl" }, children: "Large" }} registry={registry} />,
+			)
+			expect((container.firstChild as HTMLElement).className).toContain("text-xl")
+		})
+
+		it("applies weight class from styles", () => {
+			const { container } = render(
+				<A2Renderer node={{ type: "Text", props: { weight: "bold" }, children: "Bold" }} registry={registry} />,
+			)
+			expect((container.firstChild as HTMLElement).className).toContain("font-bold")
+		})
+
+		it("has no axe violations", async () => {
+			const { container } = render(
+				<A2Renderer node={{ type: "Text", props: { as: "p" }, children: "Accessible text" }} registry={registry} />,
 			)
 			const { violations } = await axe.run(container, AXE_CONFIG)
 			expect(violations).toHaveLength(0)
