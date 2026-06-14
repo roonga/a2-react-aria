@@ -859,6 +859,26 @@ describe("TextSchema", () => {
 		expect(TextSchema.safeParse({ type: "Text", props: { color: "success" } }).success).toBe(false)
 	})
 
+	it("parses all valid align values", () => {
+		for (const align of ["left", "center", "right", "justify"]) {
+			expect(TextSchema.safeParse({ type: "Text", props: { align } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid align value", () => {
+		expect(TextSchema.safeParse({ type: "Text", props: { align: "middle" } }).success).toBe(false)
+	})
+
+	it("parses italic as a boolean", () => {
+		expect(TextSchema.safeParse({ type: "Text", props: { italic: true } }).success).toBe(true)
+		expect(TextSchema.safeParse({ type: "Text", props: { italic: false } }).success).toBe(true)
+	})
+
+	it("parses truncate as a boolean", () => {
+		expect(TextSchema.safeParse({ type: "Text", props: { truncate: true } }).success).toBe(true)
+		expect(TextSchema.safeParse({ type: "Text", props: { truncate: false } }).success).toBe(true)
+	})
+
 	it("parses children as a string", () => {
 		expect(TextSchema.safeParse({ type: "Text", children: "Hello world" }).success).toBe(true)
 	})

@@ -8,6 +8,9 @@ export const TextSchema = z.object({
 			size: z.enum(["xs", "sm", "md", "lg", "xl", "2xl"]).optional(),
 			weight: z.enum(["normal", "medium", "semibold", "bold"]).optional(),
 			color: z.enum(["default", "muted", "primary", "danger"]).optional(),
+			align: z.enum(["left", "center", "right", "justify"]).optional(),
+			italic: z.boolean().optional(),
+			truncate: z.boolean().optional(),
 		})
 		.optional(),
 	children: z.union([z.string(), z.array(z.unknown())]).optional(),

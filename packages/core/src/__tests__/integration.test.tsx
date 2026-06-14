@@ -998,6 +998,27 @@ describe("Accessibility — axe-core", () => {
 			expect((container.firstChild as HTMLElement).className).toContain("font-bold")
 		})
 
+		it("applies align class from styles", () => {
+			const { container } = render(
+				<A2Renderer node={{ type: "Text", props: { align: "center" }, children: "Centered" }} registry={registry} />,
+			)
+			expect((container.firstChild as HTMLElement).className).toContain("text-center")
+		})
+
+		it("applies italic class when italic is true", () => {
+			const { container } = render(
+				<A2Renderer node={{ type: "Text", props: { italic: true }, children: "Italic" }} registry={registry} />,
+			)
+			expect((container.firstChild as HTMLElement).className).toContain("italic")
+		})
+
+		it("applies truncate class when truncate is true", () => {
+			const { container } = render(
+				<A2Renderer node={{ type: "Text", props: { truncate: true }, children: "Long text" }} registry={registry} />,
+			)
+			expect((container.firstChild as HTMLElement).className).toContain("truncate")
+		})
+
 		it("has no axe violations", async () => {
 			const { container } = render(
 				<A2Renderer node={{ type: "Text", props: { as: "p" }, children: "Accessible text" }} registry={registry} />,

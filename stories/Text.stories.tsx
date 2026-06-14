@@ -66,3 +66,26 @@ export const DangerColor: Story = {
 		node: { type: "Text", props: { as: "p", size: "sm", color: "danger" }, children: "Error or danger message" },
 	},
 }
+
+export const Centered: Story = {
+	args: {
+		node: { type: "Text", props: { as: "p", align: "center" }, children: "This text is centered." },
+	},
+}
+
+export const Italic: Story = {
+	args: {
+		node: { type: "Text", props: { as: "p", italic: true }, children: "This text is italic." },
+	},
+}
+
+export const Truncated: Story = {
+	args: {
+		node: {
+			type: "Text",
+			props: { as: "p", truncate: true },
+			children:
+				"This is a very long line of text that will be truncated with an ellipsis when it overflows its container.",
+		},
+	},
+}

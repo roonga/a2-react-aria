@@ -21,8 +21,28 @@ const colorMap = {
 	danger: "text-[var(--color-danger)]",
 }
 
+const alignMap = {
+	left: "text-left",
+	center: "text-center",
+	right: "text-right",
+	justify: "text-justify",
+}
+
 export const getTextStyles = (
 	size: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" = "md",
 	weight: "normal" | "medium" | "semibold" | "bold" = "normal",
 	color: "default" | "muted" | "primary" | "danger" = "default",
-) => [sizeMap[size], weightMap[weight], colorMap[color]].join(" ")
+	align?: "left" | "center" | "right" | "justify",
+	italic?: boolean,
+	truncate?: boolean,
+) =>
+	[
+		sizeMap[size],
+		weightMap[weight],
+		colorMap[color],
+		align ? alignMap[align] : "",
+		italic ? "italic" : "",
+		truncate ? "truncate" : "",
+	]
+		.filter(Boolean)
+		.join(" ")
