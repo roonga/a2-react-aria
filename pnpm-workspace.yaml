@@ -4,3 +4,7 @@ packages:
   - "apps/demo/web"
   - "docs"
   - "catalog"
+allowBuilds:
+  '@swc/core': true
+  esbuild: true
+  sharp: true

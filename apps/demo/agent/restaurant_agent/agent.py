@@ -1,4 +1,5 @@
 import logging
+import re
 
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.agents.llm_agent import Agent
@@ -20,26 +21,80 @@ _log = logging.getLogger(__name__)
 
 _A2UI_TOOLS = {"search_restaurants", "get_available_slots", "confirm_booking"}
 
+_BOOK_RE = re.compile(r"^Book (.+)$", re.IGNORECASE)
+_DAY_RE = re.compile(r"\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b", re.IGNORECASE)
+_SIZE_RE = re.compile(r"\bfor (\d+)\b", re.IGNORECASE)
+
+
+def _extract_context(llm_request: LlmRequest) -> tuple[str, int]:
+    """Scan conversation history for date (day name) and party size."""
+    date = "Saturday"
+    party_size = 2
+    for content in llm_request.contents or []:
+        for part in content.parts or []:
+            if part.text:
+                m = _DAY_RE.search(part.text)
+                if m:
+                    date = m.group(1).title()
+                m = _SIZE_RE.search(part.text)
+                if m:
+                    party_size = int(m.group(1))
+    return date, party_size
+
 
 def _before_model(
     callback_context: CallbackContext, *, llm_request: LlmRequest
 ) -> LlmResponse | None:
-    """Bypass the LLM when a tool that returns a2UI JSON has just responded.
+    """Bypass the LLM for two cases:
 
-    Checks all content roles (user/tool) because LiteLLM may map function
-    responses to role="tool" instead of the Gemini-native role="user".
+    1. A tool that returns a2UI JSON has just responded — pass its result
+       straight to the client without re-invoking the LLM.
+
+    2. The latest user message is a "Book <name>" button click — route
+       deterministically to get_available_slots so small models can't misfire.
+
+    Only the LATEST content is checked for case 1.  Scanning the entire
+    history would re-intercept old function responses on subsequent turns.
     """
-    for content in reversed(llm_request.contents or []):
-        for part in content.parts or []:
-            if part.function_response and part.function_response.name in _A2UI_TOOLS:
-                result = (part.function_response.response or {}).get("result", "")
-                _log.info("intercept: %s → pass through", part.function_response.name)
+    contents = llm_request.contents or []
+    if not contents:
+        return None
+
+    latest = contents[-1]
+
+    # Case 1 — latest content is an a2UI tool response
+    for part in latest.parts or []:
+        if part.function_response and part.function_response.name in _A2UI_TOOLS:
+            result = (part.function_response.response or {}).get("result", "")
+            _log.info("intercept: %s → pass through", part.function_response.name)
+            return LlmResponse(
+                content=types.Content(
+                    role="model",
+                    parts=[types.Part(text=result)],
+                )
+            )
+
+    # Case 2 — "Book <name>" button click → get_available_slots directly
+    for part in latest.parts or []:
+        if part.text:
+            m = _BOOK_RE.match(part.text.strip())
+            if m:
+                restaurant_name = m.group(1)
+                date, party_size = _extract_context(llm_request)
+                result = get_available_slots(restaurant_name, date, party_size)
+                _log.info(
+                    "intercept: Book → get_available_slots(%s, %s, %d)",
+                    restaurant_name,
+                    date,
+                    party_size,
+                )
                 return LlmResponse(
                     content=types.Content(
                         role="model",
                         parts=[types.Part(text=result)],
                     )
                 )
+
     return None
 
 
@@ -110,19 +165,39 @@ def confirm_booking(
 _INSTRUCTION = """\
 You are a restaurant booking assistant for Australia.
 
-Tools:
-- search_restaurants(location, cuisine, party_size)
-- get_available_slots(restaurant_name, date, party_size)
-- confirm_booking(restaurant_name, date, time_slot, party_size, guest_name, email, phone)
+Tools available:
+  search_restaurants(location, cuisine, party_size)
+  get_available_slots(restaurant_name, date, party_size)
+  confirm_booking(restaurant_name, date, time_slot, party_size, guest_name, email, phone)
 
-Rules — follow exactly:
-1. User wants to find restaurants → call search_restaurants immediately. No preamble.
-2. User picks a restaurant or asks to book one → call get_available_slots immediately. No preamble.
-3. User provides a time slot plus name and email → call confirm_booking immediately. No preamble.
-4. Anything else → reply in 1-2 sentences. Do not call a tool.
+Decision rules — apply the FIRST matching rule:
 
-Critical: Never write a plan, summary, or explanation before calling a tool.
-Call the tool first. Output tool results verbatim without modification.
+RULE 1 — Search:
+  Trigger: user asks to find, show, or list restaurants.
+  Action: call search_restaurants immediately.
+
+RULE 2 — Show available times:
+  Trigger: message is "Book <name>", "Reserve <name>", "I want to book <name>",
+           or any variant where the user names a specific restaurant.
+  Action: call get_available_slots(restaurant_name=<name>, date=<date from context>,
+          party_size=<size from context>) immediately.
+  NOTE: "Book La Dolce Vita" means show times for La Dolce Vita — do NOT search again.
+
+RULE 3 — Confirm booking:
+  Trigger: user has selected a time slot AND provided a name AND provided an email.
+  Action: call confirm_booking immediately with all fields from context.
+
+RULE 4 — Ask for missing details:
+  Trigger: user provided a time slot but no name or email yet.
+  Action: reply "What name and email should I use for the reservation?"
+
+RULE 5 — General:
+  Action: reply in 1-2 sentences. Do not call a tool.
+
+Strict requirements:
+- Never write a plan, summary, or preamble before calling a tool. Call the tool first.
+- Never call search_restaurants when the user is booking or selecting a restaurant.
+- Output tool results exactly as returned. Do not paraphrase or summarise.
 """
 
 root_agent = Agent(
