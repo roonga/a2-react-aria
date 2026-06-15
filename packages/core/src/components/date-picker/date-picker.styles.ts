@@ -22,7 +22,7 @@ export const getDatePickerStyles = () => ({
 	].join(" "),
 	description: "text-sm text-[var(--color-textMuted)]",
 	error: "text-sm text-[var(--color-danger)]",
-	popover: "shadow-lg rounded bg-[var(--color-surface)] border border-[var(--color-border)] p-3",
+	popover: "z-50 shadow-lg rounded bg-[var(--color-surface)] border border-[var(--color-border)] p-3",
 	calendar: "flex flex-col gap-2",
 	calendarHeader: "flex items-center justify-between mb-1",
 	calendarHeading: "text-sm font-medium text-[var(--color-text)]",

@@ -82,7 +82,7 @@ export function Select({
 			)}
 			<FieldError className={styles.errorMessage}>{errorMessage}</FieldError>
 			<Popover className={styles.popover}>
-				<ListBox>
+				<ListBox className={styles.listbox}>
 					{items.map((item) => (
 						<ListBoxItem key={item.value} id={item.value} isDisabled={item.isDisabled} className={styles.item}>
 							{item.label}
