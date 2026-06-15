@@ -8,6 +8,6 @@ interface GridProps {
 	children?: ReactNode
 }
 
-export function Grid({ columns = 1, gap = "md", align = "stretch", children }: GridProps) {
+export function Grid({ columns = 1, gap = "md", align = "start", children }: GridProps) {
 	return <div className={getGridStyles(columns, gap, align)}>{children}</div>
 }

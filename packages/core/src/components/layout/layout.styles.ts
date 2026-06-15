@@ -65,5 +65,5 @@ export const getFlexStyles = (
 export const getGridStyles = (
 	columns = 1,
 	gap: "none" | "xs" | "sm" | "md" | "lg" | "xl" = "md",
-	align: "start" | "center" | "end" | "stretch" = "stretch",
+	align: "start" | "center" | "end" | "stretch" = "start",
 ) => ["grid", gridColsMap[columns] ?? "grid-cols-1", gapMap[gap], alignMap[align]].join(" ")
