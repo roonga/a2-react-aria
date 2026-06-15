@@ -231,6 +231,7 @@ Implement in roughly this order — simpler form controls first, complex overlay
 | 15 | Grid / Flex layout nodes | ✅ Done |
 | 16 | Text | ✅ Done |
 | 17 | Card | ✅ Done |
+| 18 | NumberField | ✅ Done |
 
 Update the status column to ✅ Done when a component passes all 10 workflow steps.
 
