@@ -16,14 +16,14 @@ export default defineConfig({
 		},
 		rollupOptions: {
 			external: [
-					"react",
-					"react/jsx-runtime",
-					"react/jsx-dev-runtime",
-					"react-dom",
-					"react-aria-components",
-					"zod",
-					"@internationalized/date",
-				],
+				"react",
+				"react/jsx-runtime",
+				"react/jsx-dev-runtime",
+				"react-dom",
+				"react-aria-components",
+				"zod",
+				"@internationalized/date",
+			],
 			output: {
 				globals: {
 					react: "React",

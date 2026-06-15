@@ -156,9 +156,10 @@ test("clicking Book button sends restaurant name as message", async ({ page }) =
 		route.fulfill({
 			status: 200,
 			contentType: "text/event-stream",
-			body: sentMessages.length === 1
-				? sseBody(`Here are 2 restaurants:\n<a2ui-json>${SEARCH_A2UI}</a2ui-json>`)
-				: sseBody(`Available times at La Dolce Vita:\n<a2ui-json>${SLOTS_A2UI}</a2ui-json>`),
+			body:
+				sentMessages.length === 1
+					? sseBody(`Here are 2 restaurants:\n<a2ui-json>${SEARCH_A2UI}</a2ui-json>`)
+					: sseBody(`Available times at La Dolce Vita:\n<a2ui-json>${SLOTS_A2UI}</a2ui-json>`),
 		})
 	})
 
