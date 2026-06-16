@@ -249,7 +249,7 @@ def build_search_results(restaurants: list[dict]) -> list:
     ]
 
 
-def build_slots_card(restaurant: dict, date: str, party_size: int) -> list:
+def build_slots_card(restaurant: dict, date: str, party_size: int, time_error: str = "") -> list:
     """Time-slot picker using RadioGroup so the selection is a proper form field."""
     radio_items = [
         {
@@ -258,6 +258,15 @@ def build_slots_card(restaurant: dict, date: str, party_size: int) -> list:
         }
         for slot in restaurant["time_slots"]
     ]
+
+    radio_props: dict = {
+        "label": "Time",
+        "orientation": "horizontal",
+        "isRequired": True,
+    }
+    if time_error:
+        radio_props["isInvalid"] = True
+        radio_props["errorMessage"] = time_error
 
     return [
         _card(
@@ -274,11 +283,7 @@ def build_slots_card(restaurant: dict, date: str, party_size: int) -> list:
                     ),
                     {
                         "type": "RadioGroup",
-                        "props": {
-                            "label": "Time",
-                            "orientation": "horizontal",
-                            "isRequired": True,
-                        },
+                        "props": radio_props,
                         "children": radio_items,
                     },
                     {

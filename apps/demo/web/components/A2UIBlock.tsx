@@ -143,12 +143,16 @@ function FormRadioGroup({
 	orientation,
 	isRequired,
 	isDisabled,
+	isInvalid,
+	errorMessage,
 	children,
 }: {
 	label?: string
 	orientation?: "horizontal" | "vertical"
 	isRequired?: boolean
 	isDisabled?: boolean
+	isInvalid?: boolean
+	errorMessage?: string
 	children?: ReactNode
 }) {
 	const ctx = useContext(FormStateContext)
@@ -158,6 +162,8 @@ function FormRadioGroup({
 			orientation={orientation}
 			isRequired={isRequired}
 			isDisabled={isDisabled}
+			isInvalid={isInvalid}
+			errorMessage={errorMessage}
 			onChange={(v) => label && ctx?.setValue(label, v)}
 		>
 			{children}

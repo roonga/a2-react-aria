@@ -165,9 +165,20 @@ def _before_model(
         # Case 5 — guest details form
         if _CONTINUE_RE.match(text):
             _, fields = _parse_action(text)
-            time_slot = fields.get("Time", "7:00 PM")
+            time_slot = fields.get("Time", "").strip()
             ctx = _extract_context(llm_request)
             restaurant_name = ctx["restaurant_name"] or "the restaurant"
+
+            if not time_slot:
+                _log.info("intercept: Continue → time validation error (%s)", restaurant_name)
+                restaurant = find_restaurant_by_name(restaurant_name)
+                if restaurant:
+                    nodes = build_slots_card(
+                        restaurant, ctx["date"], ctx["party_size"],
+                        time_error="Please select a time slot",
+                    )
+                    return _llm_response(f"<a2ui-json>{serialize(nodes)}</a2ui-json>")
+
             _log.info("intercept: Continue → guest form (%s, %s, %s)", restaurant_name, ctx["date"], time_slot)
             nodes = build_guest_form(restaurant_name, ctx["date"], time_slot, ctx["party_size"])
             return _llm_response(f"<a2ui-json>{serialize(nodes)}</a2ui-json>")
