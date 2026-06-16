@@ -33,12 +33,16 @@ function FormTextField({
 	type,
 	isRequired,
 	isDisabled,
+	isInvalid,
+	errorMessage,
 }: {
 	label?: string
 	placeholder?: string
 	type?: "text" | "email" | "password" | "number" | "tel" | "url"
 	isRequired?: boolean
 	isDisabled?: boolean
+	isInvalid?: boolean
+	errorMessage?: string
 }) {
 	const ctx = useContext(FormStateContext)
 	return (
@@ -46,8 +50,10 @@ function FormTextField({
 			label={label}
 			placeholder={placeholder}
 			type={type}
-			required={isRequired}
-			disabled={isDisabled}
+			isRequired={isRequired}
+			isDisabled={isDisabled}
+			isInvalid={isInvalid}
+			errorMessage={errorMessage}
 			onChange={(v) => label && ctx?.setValue(label, v)}
 		/>
 	)
@@ -148,6 +154,8 @@ function FormDatePicker({
 	label,
 	isRequired,
 	isDisabled,
+	isInvalid,
+	errorMessage,
 	minValue,
 	maxValue,
 	defaultValue,
@@ -155,6 +163,8 @@ function FormDatePicker({
 	label?: string
 	isRequired?: boolean
 	isDisabled?: boolean
+	isInvalid?: boolean
+	errorMessage?: string
 	minValue?: string
 	maxValue?: string
 	defaultValue?: string
@@ -165,6 +175,8 @@ function FormDatePicker({
 			label={label}
 			isRequired={isRequired}
 			isDisabled={isDisabled}
+			isInvalid={isInvalid}
+			errorMessage={errorMessage}
 			minValue={minValue}
 			maxValue={maxValue}
 			defaultValue={defaultValue}

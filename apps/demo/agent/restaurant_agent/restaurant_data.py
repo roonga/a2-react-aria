@@ -125,11 +125,26 @@ def _vflex(children: list, gap: str = "md") -> dict:
     return {"type": "Flex", "props": {"direction": "column", "gap": gap}, "children": children}
 
 
-def build_search_form() -> list:
-    """Initial search form shown on welcome. No LLM call needed."""
+def build_search_form(location_error: str = "", date_error: str = "") -> list:
+    """Search form shown on welcome (and re-shown with errors on failed validation)."""
     cuisine_items = [{"label": "Any cuisine", "value": "any"}] + [
         {"label": c, "value": c} for c in _CUISINES
     ]
+
+    location_props: dict = {
+        "label": "Location",
+        "placeholder": "e.g. Sydney CBD",
+        "isRequired": True,
+    }
+    if location_error:
+        location_props["isInvalid"] = True
+        location_props["errorMessage"] = location_error
+
+    date_props: dict = {"label": "Date", "isRequired": True}
+    if date_error:
+        date_props["isInvalid"] = True
+        date_props["errorMessage"] = date_error
+
     return [
         _card(
             [
@@ -143,14 +158,7 @@ def build_search_form() -> list:
                         "type": "Grid",
                         "props": {"columns": 2, "gap": "md"},
                         "children": [
-                            {
-                                "type": "TextField",
-                                "props": {
-                                    "label": "Location",
-                                    "placeholder": "e.g. Sydney CBD",
-                                    "isRequired": True,
-                                },
-                            },
+                            {"type": "TextField", "props": location_props},
                             {
                                 "type": "Select",
                                 "props": {
@@ -169,13 +177,7 @@ def build_search_form() -> list:
                                     "isRequired": True,
                                 },
                             },
-                            {
-                                "type": "DatePicker",
-                                "props": {
-                                    "label": "Date",
-                                    "isRequired": True,
-                                },
-                            },
+                            {"type": "DatePicker", "props": date_props},
                         ],
                     },
                     {

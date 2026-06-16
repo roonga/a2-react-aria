@@ -122,12 +122,22 @@ def _before_model(
         # Case 2 — search form submitted
         if _FIND_RE.match(text):
             _, fields = _parse_action(text)
-            location = fields.get("Location", "Sydney")
+            location = fields.get("Location", "").strip()
+            date_val = fields.get("Date", "").strip()
             cuisine = fields.get("Cuisine", "any")
             try:
                 party_size = int(fields.get("Guests", "2"))
             except ValueError:
                 party_size = 2
+
+            location_error = "Please enter a location" if not location else ""
+            date_error = "Please pick a date" if not date_val else ""
+
+            if location_error or date_error:
+                _log.info("intercept: Find Restaurants → validation errors (loc=%r, date=%r)", location_error, date_error)
+                nodes = build_search_form(location_error=location_error, date_error=date_error)
+                return _llm_response(f"<a2ui-json>{serialize(nodes)}</a2ui-json>")
+
             _log.info("intercept: Find Restaurants(%s, %s, %d)", location, cuisine, party_size)
             return _llm_response(search_restaurants(location, cuisine, party_size))
 
