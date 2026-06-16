@@ -1,23 +1,41 @@
-import { Input, Label, TextField as RACTextField } from "react-aria-components"
+import { FieldError, Input, Label, TextField as RACTextField, Text } from "react-aria-components"
 import { getTextFieldStyles } from "./text-field.styles"
 
 interface TextFieldProps {
 	label?: string
 	placeholder?: string
-	disabled?: boolean
-	required?: boolean
 	type?: "text" | "email" | "password" | "number" | "tel" | "url"
+	name?: string
 	value?: string
+	defaultValue?: string
+	isDisabled?: boolean
+	isRequired?: boolean
+	isReadOnly?: boolean
+	isInvalid?: boolean
+	minLength?: number
+	maxLength?: number
+	pattern?: string
+	description?: string
+	errorMessage?: string
 	onChange?: (value: string) => void
 }
 
 export function TextField({
 	label,
 	placeholder,
-	disabled = false,
-	required = false,
 	type = "text",
+	name,
 	value,
+	defaultValue,
+	isDisabled = false,
+	isRequired = false,
+	isReadOnly = false,
+	isInvalid = false,
+	minLength,
+	maxLength,
+	pattern,
+	description,
+	errorMessage,
 	onChange,
 }: TextFieldProps) {
 	const styles = getTextFieldStyles()
@@ -25,19 +43,32 @@ export function TextField({
 	return (
 		<RACTextField
 			type={type}
-			isDisabled={disabled}
-			isRequired={required}
+			name={name}
 			value={value}
+			defaultValue={defaultValue}
+			isDisabled={isDisabled}
+			isRequired={isRequired}
+			isReadOnly={isReadOnly}
+			isInvalid={isInvalid}
+			minLength={minLength}
+			maxLength={maxLength}
+			pattern={pattern}
 			onChange={onChange}
 			className={styles.container}
 		>
 			{label && (
 				<Label className={styles.label}>
 					{label}
-					{required && <span className={styles.requiredIndicator}>*</span>}
+					{isRequired && <span className={styles.requiredIndicator}> *</span>}
 				</Label>
 			)}
 			<Input placeholder={placeholder} className={styles.input} />
+			{description && (
+				<Text slot="description" className={styles.description}>
+					{description}
+				</Text>
+			)}
+			<FieldError className={styles.errorMessage}>{errorMessage}</FieldError>
 		</RACTextField>
 	)
 }

@@ -13,6 +13,8 @@ export const NumberFieldSchema = z.object({
 			isRequired: z.boolean().optional(),
 			isDisabled: z.boolean().optional(),
 			isReadOnly: z.boolean().optional(),
+			isInvalid: z.boolean().optional(),
+			name: z.string().optional(),
 			description: z.string().optional(),
 			errorMessage: z.string().optional(),
 		})

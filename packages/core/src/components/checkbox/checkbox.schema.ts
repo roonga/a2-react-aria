@@ -6,11 +6,14 @@ export const CheckboxSchema = z.object({
 		.object({
 			label: z.string().optional(),
 			value: z.string().optional(),
+			name: z.string().optional(),
 			isSelected: z.boolean().optional(),
 			defaultSelected: z.boolean().optional(),
 			isDisabled: z.boolean().optional(),
 			isRequired: z.boolean().optional(),
 			isIndeterminate: z.boolean().optional(),
+			isInvalid: z.boolean().optional(),
+			errorMessage: z.string().optional(),
 		})
 		.optional(),
 })

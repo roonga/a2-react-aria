@@ -10,6 +10,8 @@ const indicatorBase = "w-4 h-4 shrink-0 rounded border-2 flex items-center justi
 export const getCheckboxStyles = () => ({
 	field: "flex flex-col gap-1",
 	button: "flex items-center gap-2 text-sm text-[var(--color-text)] cursor-pointer select-none",
+	description: "text-xs text-[var(--color-textMuted)]",
+	errorMessage: "text-xs text-[var(--color-danger)]",
 	indicator({ isSelected, isIndeterminate, isDisabled, isInvalid }: IndicatorState) {
 		if (isDisabled) {
 			return `${indicatorBase} bg-[var(--color-backgroundMuted)] border-[var(--color-border)] opacity-50`

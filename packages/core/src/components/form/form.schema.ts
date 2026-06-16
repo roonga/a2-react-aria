@@ -6,6 +6,7 @@ export const FormSchema = z.object({
 		.object({
 			gap: z.enum(["sm", "md", "lg"]).optional(),
 			validationBehavior: z.enum(["aria", "native"]).optional(),
+			validationErrors: z.record(z.string(), z.union([z.string(), z.array(z.string())])).optional(),
 			action: z.string().optional(),
 			method: z.enum(["get", "post"]).optional(),
 		})

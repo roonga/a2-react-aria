@@ -119,7 +119,7 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 				type: "TextField" as const,
 				props: {
 					label: "Required Field",
-					required: true,
+					isRequired: true,
 				},
 			}
 			render(<A2Renderer node={node} registry={registry} />)
@@ -132,7 +132,7 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 				type: "TextField" as const,
 				props: {
 					label: "Disabled",
-					disabled: true,
+					isDisabled: true,
 					value: "readonly",
 				},
 			}

@@ -6,10 +6,19 @@ export const TextFieldSchema = z.object({
 		.object({
 			label: z.string().optional(),
 			placeholder: z.string().optional(),
-			disabled: z.boolean().optional(),
-			required: z.boolean().optional(),
 			type: z.enum(["text", "email", "password", "number", "tel", "url"]).optional(),
+			name: z.string().optional(),
 			value: z.string().optional(),
+			defaultValue: z.string().optional(),
+			isDisabled: z.boolean().optional(),
+			isRequired: z.boolean().optional(),
+			isReadOnly: z.boolean().optional(),
+			isInvalid: z.boolean().optional(),
+			minLength: z.number().optional(),
+			maxLength: z.number().optional(),
+			pattern: z.string().optional(),
+			description: z.string().optional(),
+			errorMessage: z.string().optional(),
 		})
 		.optional(),
 })

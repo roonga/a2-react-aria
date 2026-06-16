@@ -5,6 +5,7 @@ export const DatePickerSchema = z.object({
 	props: z
 		.object({
 			label: z.string().optional(),
+			name: z.string().optional(),
 			description: z.string().optional(),
 			errorMessage: z.string().optional(),
 			isDisabled: z.boolean().optional(),
@@ -25,6 +26,7 @@ export const DateRangePickerSchema = z.object({
 	props: z
 		.object({
 			label: z.string().optional(),
+			name: z.string().optional(),
 			description: z.string().optional(),
 			errorMessage: z.string().optional(),
 			isDisabled: z.boolean().optional(),

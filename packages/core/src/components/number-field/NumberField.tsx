@@ -11,6 +11,8 @@ interface NumberFieldProps {
 	isRequired?: boolean
 	isDisabled?: boolean
 	isReadOnly?: boolean
+	isInvalid?: boolean
+	name?: string
 	description?: string
 	errorMessage?: string
 	onChange?: (value: number) => void
@@ -26,6 +28,8 @@ export function NumberField({
 	isRequired = false,
 	isDisabled = false,
 	isReadOnly = false,
+	isInvalid = false,
+	name,
 	description,
 	errorMessage,
 	onChange,
@@ -41,6 +45,8 @@ export function NumberField({
 			isRequired={isRequired}
 			isDisabled={isDisabled}
 			isReadOnly={isReadOnly}
+			isInvalid={isInvalid}
+			name={name}
 			onChange={onChange}
 			className={styles.container}
 		>

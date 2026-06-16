@@ -1,25 +1,31 @@
-import { CheckboxButton, CheckboxField } from "react-aria-components"
+import { CheckboxButton, CheckboxField, FieldError } from "react-aria-components"
 import { getCheckboxStyles } from "./checkbox.styles"
 
 interface CheckboxProps {
 	label?: string
 	value?: string
+	name?: string
 	isSelected?: boolean
 	defaultSelected?: boolean
 	isDisabled?: boolean
 	isRequired?: boolean
 	isIndeterminate?: boolean
+	isInvalid?: boolean
+	errorMessage?: string
 	onChange?: (isSelected: boolean) => void
 }
 
 export function Checkbox({
 	label,
 	value,
+	name,
 	isSelected,
 	defaultSelected,
 	isDisabled = false,
 	isRequired = false,
 	isIndeterminate = false,
+	isInvalid = false,
+	errorMessage,
 	onChange,
 }: CheckboxProps) {
 	const styles = getCheckboxStyles()
@@ -27,11 +33,13 @@ export function Checkbox({
 	return (
 		<CheckboxField
 			value={value}
+			name={name}
 			isSelected={isSelected}
 			defaultSelected={defaultSelected}
 			isDisabled={isDisabled}
 			isRequired={isRequired}
 			isIndeterminate={isIndeterminate}
+			isInvalid={isInvalid}
 			onChange={onChange}
 			className={styles.field}
 		>
@@ -66,6 +74,7 @@ export function Checkbox({
 					</>
 				)}
 			</CheckboxButton>
+			<FieldError className={styles.errorMessage}>{errorMessage}</FieldError>
 		</CheckboxField>
 	)
 }
