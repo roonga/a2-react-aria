@@ -4,7 +4,7 @@ interface TriggerState {
 }
 
 const triggerBase =
-	"flex w-full min-w-40 cursor-pointer items-center justify-between gap-2 rounded border px-3 py-2 text-sm transition-colors"
+	"flex w-full min-w-40 min-h-11 cursor-pointer items-center justify-between gap-2 rounded border px-3 py-2 text-sm transition-colors"
 
 export const getSelectStyles = () => ({
 	field: "flex flex-col gap-1",

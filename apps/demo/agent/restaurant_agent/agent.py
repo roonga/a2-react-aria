@@ -97,6 +97,13 @@ def _before_model(
     if not contents:
         return None
 
+    # Case 0: First user message → show search form (no prior model turn)
+    has_prior_model = any(c.role == "model" for c in contents)
+    if not has_prior_model:
+        _log.info("intercept: first message → search form")
+        nodes = build_search_form()
+        return _llm_response(f"<a2ui-json>{serialize(nodes)}</a2ui-json>")
+
     latest = contents[-1]
 
     # Case 1 — a2UI tool response

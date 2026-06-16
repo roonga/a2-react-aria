@@ -13,8 +13,10 @@ import { expect, test } from "@playwright/test"
 const AGENT_TIMEOUT = 30_000 // agent response via _before_model is deterministic (no LLM)
 
 test("complete booking flow: search form → results → slots → guest form → confirmation", async ({ page }) => {
-	// ── 1. Load app — initial a2UI search form is shown ───────────────────────
+	// ── 1. Load app — send first message; agent returns search form ───────────
 	await page.goto("/")
+	await page.getByPlaceholder("Or type a message…").fill("find me a table")
+	await page.getByRole("button", { name: "Send" }).click()
 	await expect(page.getByRole("heading", { name: "Find Your Table" })).toBeVisible({
 		timeout: AGENT_TIMEOUT,
 	})

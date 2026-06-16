@@ -32,59 +32,10 @@ const A2UI_RE = /<a2ui-json>([\s\S]*?)<\/a2ui-json>/
 
 const genReqId = () => Math.random().toString(36).slice(2, 10)
 
-const INITIAL_NODES: unknown[] = [
-	{
-		type: "Card",
-		props: { padding: "lg", shadow: "sm", radius: "lg", border: true },
-		children: [
-			{ type: "Text", props: { as: "h2", size: "xl", weight: "bold" }, children: "Find Your Table" },
-			{
-				type: "Text",
-				props: { as: "p", size: "sm", color: "muted" },
-				children: "Powered by a2UI + Google ADK",
-			},
-			{
-				type: "Grid",
-				props: { columns: 2, gap: "md" },
-				children: [
-					{
-						type: "TextField",
-						props: { label: "Location", placeholder: "e.g. Sydney CBD", isRequired: true },
-					},
-					{
-						type: "Select",
-						props: {
-							label: "Cuisine",
-							items: [
-								{ label: "Any cuisine", value: "any" },
-								{ label: "Italian", value: "Italian" },
-								{ label: "Japanese", value: "Japanese" },
-								{ label: "Thai", value: "Thai" },
-								{ label: "Modern Australian", value: "Modern Australian" },
-							],
-							defaultValue: "any",
-						},
-					},
-					{
-						type: "NumberField",
-						props: { label: "Guests", minValue: 1, maxValue: 20, defaultValue: 2, isRequired: true },
-					},
-					{
-						type: "DatePicker",
-						props: { label: "Date", isRequired: true },
-					},
-				],
-			},
-			{
-				type: "Flex",
-				props: { justify: "end", gap: "sm" },
-				children: [{ type: "Button", props: { variant: "primary" }, children: "Find Restaurants" }],
-			},
-		],
-	},
-]
-
-const INITIAL_MESSAGE: Message = { role: "assistant", content: "", a2uiJson: INITIAL_NODES }
+const INITIAL_MESSAGE: Message = {
+	role: "assistant",
+	content: "Hi! I can help you find and book a restaurant in Australia. What are you looking for?",
+}
 
 function extractA2ui(text: string): { plainText: string; a2uiJson: unknown[] | null } {
 	const match = A2UI_RE.exec(text)
@@ -368,18 +319,19 @@ export default function Chat() {
 				<div className="flex gap-2">
 					<input
 						type="text"
+						name="chat-message"
 						value={input}
 						onChange={(e) => setInput(e.target.value)}
 						onKeyDown={handleKeyDown}
 						placeholder="Or type a message…"
 						disabled={isLoading}
-						className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:bg-gray-100 disabled:cursor-not-allowed"
+						className="flex-1 px-4 py-3 border border-[var(--color-border)] rounded-lg text-[var(--color-text)] placeholder:text-[var(--color-textMuted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent disabled:bg-[var(--color-backgroundMuted)] disabled:cursor-not-allowed"
 					/>
 					<button
 						type="button"
 						onClick={() => void sendMessage()}
 						disabled={isLoading || !input.trim()}
-						className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"
+						className="px-6 py-3 bg-[var(--color-primary)] text-white rounded-lg font-medium hover:bg-[var(--color-primaryHover)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] disabled:bg-[var(--color-backgroundMuted)] disabled:text-[var(--color-textMuted)] disabled:cursor-not-allowed transition-colors"
 					>
 						{isLoading ? "Sending…" : "Send"}
 					</button>

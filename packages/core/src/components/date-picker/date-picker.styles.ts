@@ -16,7 +16,7 @@ export const getDatePickerStyles = () => ({
 		"data-[type=literal]:text-[var(--color-textMuted)]",
 	].join(" "),
 	button: [
-		"p-1 rounded text-[var(--color-textMuted)] outline-none",
+		"min-h-11 min-w-11 flex items-center justify-center rounded text-[var(--color-textMuted)] outline-none",
 		"hover:text-[var(--color-text)]",
 		"focus-visible:outline-2 focus-visible:outline-[var(--color-primary)]",
 	].join(" "),
