@@ -7,13 +7,13 @@ const A2UIBlock = dynamic(
 	() =>
 		import("./A2UIBlock").catch((err: unknown) => {
 			console.error("[Chat] A2UIBlock import failed:", err)
-			const Fallback = () => <p className="text-xs text-red-500">A2UI load error: {String(err)}</p>
+			const Fallback = () => <p className="text-xs text-[var(--color-danger)]">A2UI load error: {String(err)}</p>
 			Fallback.displayName = "A2UIBlockFallback"
 			return { default: Fallback }
 		}),
 	{
 		ssr: false,
-		loading: () => <p className="text-xs text-gray-400 mt-1">Loading components…</p>,
+		loading: () => <p className="text-xs text-[var(--color-textMuted)] mt-1">Loading components…</p>,
 	},
 )
 
@@ -56,13 +56,13 @@ function ThinkingBlock({ text }: { text: string }) {
 		<details
 			open={open}
 			onToggle={(e) => setOpen((e.currentTarget as HTMLDetailsElement).open)}
-			className="mb-2 rounded-md border border-purple-200 bg-purple-50 text-xs"
+			className="mb-2 rounded-md border border-[var(--color-border)] bg-[var(--color-backgroundMuted)] text-xs"
 		>
-			<summary className="cursor-pointer select-none px-3 py-1.5 font-medium text-purple-600 list-none flex items-center gap-1.5">
-				<span className="text-purple-400">{open ? "▾" : "▸"}</span>
+			<summary className="cursor-pointer select-none px-3 py-1.5 font-medium text-[var(--color-textMuted)] list-none flex items-center gap-1.5">
+				<span>{open ? "▾" : "▸"}</span>
 				Thinking
 			</summary>
-			<p className="px-3 pb-2 pt-1 whitespace-pre-wrap text-purple-700 italic leading-relaxed">{text.trim()}</p>
+			<p className="px-3 pb-2 pt-1 whitespace-pre-wrap text-[var(--color-text)] italic leading-relaxed">{text.trim()}</p>
 		</details>
 	)
 }
@@ -266,18 +266,18 @@ export default function Chat() {
 	}
 
 	return (
-		<div className="bg-white rounded-lg shadow-2xl overflow-hidden">
-			<div className="h-[600px] overflow-y-auto p-6 space-y-4 bg-gray-50">
+		<div className="bg-[var(--color-surface)] rounded-lg shadow-2xl overflow-hidden">
+			<div className="h-[600px] overflow-y-auto p-6 space-y-4 bg-[var(--color-backgroundMuted)]">
 				{messages.map((msg, idx) => (
 					// biome-ignore lint/suspicious/noArrayIndexKey: chat messages have no stable IDs
 					<div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
 						<div
 							className={`max-w-[85%] rounded-lg px-4 py-3 ${
 								msg.role === "user"
-									? "bg-blue-600 text-white"
+									? "bg-[var(--color-primary)] text-white"
 									: msg.content.startsWith("Error:")
-										? "bg-red-50 text-red-800 border border-red-200 shadow-sm"
-										: "bg-white text-gray-900 shadow-md"
+										? "bg-[var(--color-backgroundMuted)] text-[var(--color-danger)] border border-[var(--color-danger)] shadow-sm"
+										: "bg-[var(--color-surface)] text-[var(--color-text)] shadow-md"
 							}`}
 						>
 							{msg.thought && <ThinkingBlock text={msg.thought} />}
@@ -291,20 +291,20 @@ export default function Chat() {
 					<div className="flex justify-start">
 						<div className="max-w-[85%] space-y-1">
 							{streamingThought && (
-								<div className="rounded-md border border-purple-200 bg-purple-50 px-3 py-2 text-xs text-purple-600 flex items-center gap-2">
+								<div className="rounded-md border border-[var(--color-border)] bg-[var(--color-backgroundMuted)] px-3 py-2 text-xs text-[var(--color-textMuted)] flex items-center gap-2">
 									<span className="flex gap-0.5">
-										<span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-bounce [animation-delay:0ms]" />
-										<span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-bounce [animation-delay:150ms]" />
-										<span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-bounce [animation-delay:300ms]" />
+										<span className="w-1.5 h-1.5 rounded-full bg-[var(--color-textMuted)] animate-bounce [animation-delay:0ms]" />
+										<span className="w-1.5 h-1.5 rounded-full bg-[var(--color-textMuted)] animate-bounce [animation-delay:150ms]" />
+										<span className="w-1.5 h-1.5 rounded-full bg-[var(--color-textMuted)] animate-bounce [animation-delay:300ms]" />
 									</span>
 									<span className="font-medium">Thinking…</span>
 								</div>
 							)}
 							{streamingText.trim() && (
-								<div className="rounded-lg px-4 py-3 bg-white text-gray-900 shadow-md">
+								<div className="rounded-lg px-4 py-3 bg-[var(--color-surface)] text-[var(--color-text)] shadow-md">
 									<p className="whitespace-pre-wrap">
 										{streamingText}
-										<span className="inline-block w-2 h-5 bg-gray-700 ml-1 animate-pulse" />
+										<span className="inline-block w-2 h-5 bg-[var(--color-text)] ml-1 animate-pulse" />
 									</p>
 								</div>
 							)}
@@ -315,7 +315,7 @@ export default function Chat() {
 				<div ref={messagesEndRef} />
 			</div>
 
-			<div className="border-t border-gray-200 p-4 bg-white">
+			<div className="border-t border-[var(--color-border)] p-4 bg-[var(--color-surface)]">
 				<div className="flex gap-2">
 					<input
 						type="text"

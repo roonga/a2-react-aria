@@ -9,7 +9,7 @@ export const getCardStyles = (
 	border = false,
 ) =>
 	[
-		"bg-[var(--color-background)]",
+		"bg-[var(--color-surface)]",
 		paddingMap[padding],
 		shadowMap[shadow],
 		radiusMap[radius],
