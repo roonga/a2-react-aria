@@ -68,7 +68,9 @@ export function TextField({
 					{description}
 				</Text>
 			)}
-			<FieldError className={styles.errorMessage}>{errorMessage}</FieldError>
+			<FieldError className={styles.errorMessage}>
+				{({ validationErrors }) => errorMessage ?? validationErrors.join(", ")}
+			</FieldError>
 		</RACTextField>
 	)
 }

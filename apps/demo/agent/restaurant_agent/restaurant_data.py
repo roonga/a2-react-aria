@@ -289,8 +289,37 @@ def build_slots_card(restaurant: dict, date: str, party_size: int) -> list:
     ]
 
 
-def build_guest_form(restaurant_name: str, date: str, time_slot: str, party_size: int) -> list:
-    """Guest details form shown after time slot selection."""
+def build_guest_form(
+    restaurant_name: str,
+    date: str,
+    time_slot: str,
+    party_size: int,
+    name_error: str = "",
+    email_error: str = "",
+) -> list:
+    """Guest details form shown after time slot selection.
+
+    Pass name_error / email_error to surface validation failures inline.
+    """
+    name_props: dict = {
+        "label": "Name",
+        "placeholder": "Full name",
+        "isRequired": True,
+    }
+    if name_error:
+        name_props["isInvalid"] = True
+        name_props["errorMessage"] = name_error
+
+    email_props: dict = {
+        "label": "Email",
+        "placeholder": "you@example.com",
+        "type": "email",
+        "isRequired": True,
+    }
+    if email_error:
+        email_props["isInvalid"] = True
+        email_props["errorMessage"] = email_error
+
     return [
         _card(
             [
@@ -305,23 +334,8 @@ def build_guest_form(restaurant_name: str, date: str, time_slot: str, party_size
                         "type": "Grid",
                         "props": {"columns": 2, "gap": "md"},
                         "children": [
-                            {
-                                "type": "TextField",
-                                "props": {
-                                    "label": "Name",
-                                    "placeholder": "Full name",
-                                    "isRequired": True,
-                                },
-                            },
-                            {
-                                "type": "TextField",
-                                "props": {
-                                    "label": "Email",
-                                    "placeholder": "you@example.com",
-                                    "type": "email",
-                                    "isRequired": True,
-                                },
-                            },
+                            {"type": "TextField", "props": name_props},
+                            {"type": "TextField", "props": email_props},
                         ],
                     },
                     {

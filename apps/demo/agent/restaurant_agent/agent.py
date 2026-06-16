@@ -161,9 +161,21 @@ def _before_model(
             ctx = _extract_context(llm_request)
             restaurant_name = ctx["restaurant_name"] or "the restaurant"
             time_slot = ctx["time_slot"] or "7:00 PM"
-            guest_name = fields.get("Name", "Guest")
-            email = fields.get("Email", "")
-            phone = fields.get("Phone", "")
+            guest_name = fields.get("Name", "").strip()
+            email = fields.get("Email", "").strip()
+            phone = fields.get("Phone", "").strip()
+
+            name_error = "Please enter your full name" if not guest_name else ""
+            email_error = "Please enter your email address" if not email else ""
+
+            if name_error or email_error:
+                _log.info("intercept: Confirm Booking → validation errors (name=%r, email=%r)", name_error, email_error)
+                nodes = build_guest_form(
+                    restaurant_name, ctx["date"], time_slot, ctx["party_size"],
+                    name_error=name_error, email_error=email_error,
+                )
+                return _llm_response(f"<a2ui-json>{serialize(nodes)}</a2ui-json>")
+
             _log.info(
                 "intercept: Confirm Booking → confirm(%s, %s, %s, %s)",
                 restaurant_name, ctx["date"], time_slot, guest_name,

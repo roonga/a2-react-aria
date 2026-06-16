@@ -140,6 +140,47 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 			const input = screen.getByLabelText(/disabled/i) as HTMLInputElement
 			expect(input.disabled).toBe(true)
 		})
+
+		it("renders description text", () => {
+			render(
+				<A2Renderer
+					node={{ type: "TextField", props: { label: "Email", description: "We'll never share it" } }}
+					registry={registry}
+				/>,
+			)
+			expect(screen.getByText(/we'll never share it/i)).toBeDefined()
+		})
+
+		it("renders error message when isInvalid is set", () => {
+			render(
+				<A2Renderer
+					node={{
+						type: "TextField",
+						props: { label: "Email", isInvalid: true, errorMessage: "Invalid email address" },
+					}}
+					registry={registry}
+				/>,
+			)
+			expect(screen.getByText(/invalid email address/i)).toBeDefined()
+		})
+
+		it("sets name attribute on the input", () => {
+			render(<A2Renderer node={{ type: "TextField", props: { label: "Email", name: "email" } }} registry={registry} />)
+			const input = screen.getByLabelText(/email/i) as HTMLInputElement
+			expect(input.name).toBe("email")
+		})
+
+		it("sets minLength and maxLength on the input", () => {
+			render(
+				<A2Renderer
+					node={{ type: "TextField", props: { label: "Username", minLength: 3, maxLength: 20 } }}
+					registry={registry}
+				/>,
+			)
+			const input = screen.getByLabelText(/username/i) as HTMLInputElement
+			expect(input.minLength).toBe(3)
+			expect(input.maxLength).toBe(20)
+		})
 	})
 
 	describe("DatePicker component", () => {
@@ -205,6 +246,30 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 			)
 			const { violations } = await axe.run(container, AXE_CONFIG)
 			expect(violations).toHaveLength(0)
+		})
+
+		it("renders error message when isInvalid is set", () => {
+			render(
+				<A2Renderer
+					node={{
+						type: "NumberField",
+						props: { label: "Qty", isInvalid: true, errorMessage: "Must be at least 1" },
+					}}
+					registry={registry}
+				/>,
+			)
+			expect(screen.getByText(/must be at least 1/i)).toBeDefined()
+		})
+
+		it("sets name on the hidden input", () => {
+			const { container } = render(
+				<A2Renderer
+					node={{ type: "NumberField", props: { label: "Amount", name: "amount", defaultValue: 5 } }}
+					registry={registry}
+				/>,
+			)
+			const hidden = container.querySelector('input[name="amount"]')
+			expect(hidden).not.toBeNull()
 		})
 	})
 
@@ -398,7 +463,21 @@ describe("Accessibility — axe-core", () => {
 		it("has no axe violations (disabled field)", async () => {
 			const { container } = render(
 				<A2Renderer
-					node={{ type: "TextField", props: { label: "Read only", disabled: true, value: "locked" } }}
+					node={{ type: "TextField", props: { label: "Read only", isDisabled: true, value: "locked" } }}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("has no axe violations (invalid field with error message)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "TextField",
+						props: { label: "Email", isInvalid: true, errorMessage: "Enter a valid email address" },
+					}}
 					registry={registry}
 				/>,
 			)
@@ -442,6 +521,33 @@ describe("Accessibility — axe-core", () => {
 			const { container } = render(
 				<A2Renderer
 					node={{ type: "Checkbox", props: { label: "Not available", isDisabled: true } }}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("renders error message when isInvalid is set", () => {
+			render(
+				<A2Renderer
+					node={{
+						type: "Checkbox",
+						props: { label: "I agree to terms", isInvalid: true, errorMessage: "You must agree to continue" },
+					}}
+					registry={registry}
+				/>,
+			)
+			expect(screen.getByText(/you must agree to continue/i)).toBeDefined()
+		})
+
+		it("has no axe violations (invalid with error message)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "Checkbox",
+						props: { label: "I agree", isInvalid: true, errorMessage: "Required" },
+					}}
 					registry={registry}
 				/>,
 			)
@@ -650,6 +756,47 @@ describe("Accessibility — axe-core", () => {
 							{ type: "TextField", props: { label: "Name" } },
 							{ type: "Button", props: { variant: "primary" }, children: "Submit" },
 						],
+					}}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+
+		it("passes validationErrors and validationBehavior to the form", () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "Form",
+						props: {
+							validationBehavior: "aria",
+							validationErrors: { email: "This email is already taken" },
+						},
+						children: [
+							{ type: "TextField", props: { label: "Email", name: "email" } },
+							{ type: "Button", props: { variant: "primary" }, children: "Submit" },
+						],
+					}}
+					registry={registry}
+				/>,
+			)
+			// RAC adds novalidate when validationBehavior="aria"
+			expect(container.querySelector("form[novalidate]")).not.toBeNull()
+			// The named field is present in the DOM
+			expect(container.querySelector("input[name='email']")).not.toBeNull()
+		})
+
+		it("has no axe violations (form with validationErrors)", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "Form",
+						props: {
+							validationBehavior: "aria",
+							validationErrors: { username: "Username is unavailable" },
+						},
+						children: [{ type: "TextField", props: { label: "Username", name: "username" } }],
 					}}
 					registry={registry}
 				/>,

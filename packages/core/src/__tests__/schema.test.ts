@@ -158,6 +158,48 @@ describe("TextFieldSchema", () => {
 		expect(TextFieldSchema.safeParse({ type: "TextField", props: { type: "date" } }).success).toBe(false)
 	})
 
+	it("parses isRequired, isDisabled, isReadOnly, isInvalid as booleans", () => {
+		expect(
+			TextFieldSchema.safeParse({
+				type: "TextField",
+				props: { isRequired: true, isDisabled: false, isReadOnly: false, isInvalid: true },
+			}).success,
+		).toBe(true)
+	})
+
+	it("rejects old DOM prop name 'disabled'", () => {
+		// Zod strips unknown keys by default — 'disabled' is not in the schema
+		const parsed = TextFieldSchema.parse({ type: "TextField", props: { disabled: true } })
+		expect((parsed.props as Record<string, unknown>)?.disabled).toBeUndefined()
+	})
+
+	it("rejects old DOM prop name 'required'", () => {
+		const parsed = TextFieldSchema.parse({ type: "TextField", props: { required: true } })
+		expect((parsed.props as Record<string, unknown>)?.required).toBeUndefined()
+	})
+
+	it("parses validation constraint props", () => {
+		expect(
+			TextFieldSchema.safeParse({
+				type: "TextField",
+				props: { minLength: 3, maxLength: 50, pattern: "^[a-z]+$" },
+			}).success,
+		).toBe(true)
+	})
+
+	it("rejects non-number minLength", () => {
+		expect(TextFieldSchema.safeParse({ type: "TextField", props: { minLength: "3" } }).success).toBe(false)
+	})
+
+	it("parses name, description, errorMessage", () => {
+		expect(
+			TextFieldSchema.safeParse({
+				type: "TextField",
+				props: { name: "email", description: "We'll never share it", errorMessage: "Invalid email" },
+			}).success,
+		).toBe(true)
+	})
+
 	it("rejects a non-string label", () => {
 		expect(TextFieldSchema.safeParse({ type: "TextField", props: { label: 42 } }).success).toBe(false)
 	})
@@ -191,6 +233,19 @@ describe("NumberFieldSchema", () => {
 		).toBe(true)
 	})
 
+	it("parses isInvalid and name", () => {
+		expect(
+			NumberFieldSchema.safeParse({
+				type: "NumberField",
+				props: { isInvalid: true, name: "quantity", errorMessage: "Must be at least 1" },
+			}).success,
+		).toBe(true)
+	})
+
+	it("rejects non-boolean isInvalid", () => {
+		expect(NumberFieldSchema.safeParse({ type: "NumberField", props: { isInvalid: "yes" } }).success).toBe(false)
+	})
+
 	it("rejects wrong type literal", () => {
 		expect(NumberFieldSchema.safeParse({ type: "numberfield" }).success).toBe(false)
 	})
@@ -216,6 +271,19 @@ describe("CheckboxSchema", () => {
 				},
 			}).success,
 		).toBe(true)
+	})
+
+	it("parses isInvalid, errorMessage, and name", () => {
+		expect(
+			CheckboxSchema.safeParse({
+				type: "Checkbox",
+				props: { isInvalid: true, errorMessage: "You must agree", name: "terms" },
+			}).success,
+		).toBe(true)
+	})
+
+	it("rejects non-boolean isInvalid", () => {
+		expect(CheckboxSchema.safeParse({ type: "Checkbox", props: { isInvalid: "yes" } }).success).toBe(false)
 	})
 
 	it("rejects a non-boolean isSelected", () => {
@@ -408,6 +476,24 @@ describe("FormSchema", () => {
 
 	it("rejects an invalid validationBehavior", () => {
 		expect(FormSchema.safeParse({ type: "Form", props: { validationBehavior: "custom" } }).success).toBe(false)
+	})
+
+	it("parses validationErrors as a record of string or string[]", () => {
+		expect(
+			FormSchema.safeParse({
+				type: "Form",
+				props: {
+					validationErrors: {
+						email: "Invalid email address",
+						password: ["Too short", "Must contain a number"],
+					},
+				},
+			}).success,
+		).toBe(true)
+	})
+
+	it("rejects validationErrors with non-string values", () => {
+		expect(FormSchema.safeParse({ type: "Form", props: { validationErrors: { field: 42 } } }).success).toBe(false)
 	})
 
 	it("parses all valid method values", () => {
@@ -650,6 +736,15 @@ describe("DatePickerSchema", () => {
 		).toBe(true)
 	})
 
+	it("parses isInvalid, errorMessage, and name", () => {
+		expect(
+			DatePickerSchema.safeParse({
+				type: "DatePicker",
+				props: { isInvalid: true, errorMessage: "Date is required", name: "appointment" },
+			}).success,
+		).toBe(true)
+	})
+
 	it("rejects a non-string label", () => {
 		expect(DatePickerSchema.safeParse({ type: "DatePicker", props: { label: 42 } }).success).toBe(false)
 	})
@@ -669,6 +764,15 @@ describe("DateRangePickerSchema", () => {
 			DateRangePickerSchema.safeParse({
 				type: "DateRangePicker",
 				props: { label: "Period", defaultValue: { start: "2024-07-01", end: "2024-07-14" } },
+			}).success,
+		).toBe(true)
+	})
+
+	it("parses isInvalid and errorMessage", () => {
+		expect(
+			DateRangePickerSchema.safeParse({
+				type: "DateRangePicker",
+				props: { isInvalid: true, errorMessage: "Invalid date range" },
 			}).success,
 		).toBe(true)
 	})

@@ -21,7 +21,6 @@ import { getDatePickerStyles } from "./date-picker.styles"
 
 interface DateRangePickerProps {
 	label?: string
-	name?: string
 	description?: string
 	errorMessage?: string
 	isDisabled?: boolean
@@ -35,7 +34,6 @@ interface DateRangePickerProps {
 
 export function DateRangePicker({
 	label,
-	name,
 	description,
 	errorMessage,
 	isDisabled,
@@ -54,7 +52,6 @@ export function DateRangePicker({
 			}
 			minValue={minValue ? parseDate(minValue) : undefined}
 			maxValue={maxValue ? parseDate(maxValue) : undefined}
-			name={name}
 			isDisabled={isDisabled}
 			isRequired={isRequired}
 			isInvalid={isInvalid}
