@@ -2,22 +2,88 @@
 @source "../../../../packages/core/src";
 
 :root {
-	--color-primary: #2563eb;
-	--color-primaryHover: #1d4ed8;
-	--color-primaryActive: #1e40af;
-	--color-secondary: #64748b;
-	--color-secondaryHover: #475569;
-	--color-secondaryActive: #334155;
-	--color-danger: #dc2626;
-	--color-dangerHover: #b91c1c;
-	--color-dangerActive: #991b1b;
+	/* ── Shadcn design tokens (light) ──────────────────────── */
+	--background: oklch(1 0 0);
+	--foreground: oklch(0.145 0 0);
+	--card: oklch(1 0 0);
+	--card-foreground: oklch(0.145 0 0);
+	--popover: oklch(1 0 0);
+	--popover-foreground: oklch(0.145 0 0);
+	--primary: oklch(0.525 0.223 3.958);
+	--primary-foreground: oklch(0.985 0 0);
+	--secondary: oklch(0.967 0.001 286.375);
+	--secondary-foreground: oklch(0.21 0.006 285.885);
+	--muted: oklch(0.97 0 0);
+	--muted-foreground: oklch(0.556 0 0);
+	--accent: oklch(0.97 0 0);
+	--accent-foreground: oklch(0.21 0.006 285.885);
+	--destructive: oklch(0.577 0.245 27.325);
+	--border: oklch(0.922 0 0);
+	--input: oklch(0.922 0 0);
+	--ring: oklch(0.525 0.223 3.958);
+	--radius: 0.625rem;
+
+	/* ── a2UI component tokens (mapped from shadcn) ─────────── */
+	--color-primary: var(--primary);
+	--color-primaryHover: oklch(0.47 0.223 3.958);
+	--color-primaryActive: oklch(0.41 0.223 3.958);
+	/* secondary-foreground (dark slate) so text-white stays legible */
+	--color-secondary: var(--secondary-foreground);
+	--color-secondaryHover: oklch(0.31 0.006 285.885);
+	--color-secondaryActive: oklch(0.39 0.006 285.885);
+	--color-danger: var(--destructive);
+	--color-dangerHover: oklch(0.52 0.245 27.325);
+	--color-dangerActive: oklch(0.46 0.245 27.325);
 	--color-ghost: transparent;
-	--color-ghostHover: #f1f5f9;
-	--color-ghostActive: #e2e8f0;
-	--color-text: #1f2937;
-	--color-textMuted: #6b7280;
-	--color-border: #e5e7eb;
-	--color-background: #ffffff;
-	--color-backgroundMuted: #f9fafb;
-	--color-surface: #ffffff;
+	--color-ghostHover: var(--accent);
+	--color-ghostActive: var(--border);
+	--color-text: var(--foreground);
+	--color-textMuted: var(--muted-foreground);
+	--color-border: var(--border);
+	--color-background: var(--background);
+	--color-backgroundMuted: var(--muted);
+	--color-surface: var(--card);
+}
+
+.dark {
+	/* ── Shadcn design tokens (dark) ───────────────────────── */
+	--background: oklch(0.145 0 0);
+	--foreground: oklch(0.985 0 0);
+	--card: oklch(0.205 0 0);
+	--card-foreground: oklch(0.985 0 0);
+	--popover: oklch(0.205 0 0);
+	--popover-foreground: oklch(0.985 0 0);
+	--primary: oklch(0.459 0.187 3.815);
+	--primary-foreground: oklch(0.985 0 0);
+	--secondary: oklch(0.269 0 0);
+	--secondary-foreground: oklch(0.985 0 0);
+	--muted: oklch(0.269 0 0);
+	--muted-foreground: oklch(0.708 0 0);
+	--accent: oklch(0.269 0 0);
+	--accent-foreground: oklch(0.985 0 0);
+	--destructive: oklch(0.704 0.191 22.216);
+	--border: oklch(1 0 0 / 10%);
+	--input: oklch(1 0 0 / 15%);
+	--ring: oklch(0.459 0.187 3.815);
+
+	/* ── a2UI component tokens (dark, mapped from shadcn) ───── */
+	--color-primary: var(--primary);
+	--color-primaryHover: oklch(0.40 0.187 3.815);
+	--color-primaryActive: oklch(0.34 0.187 3.815);
+	/* secondary in dark mode is already dark enough for text-white */
+	--color-secondary: var(--secondary);
+	--color-secondaryHover: oklch(0.34 0 0);
+	--color-secondaryActive: oklch(0.40 0 0);
+	--color-danger: var(--destructive);
+	--color-dangerHover: oklch(0.64 0.191 22.216);
+	--color-dangerActive: oklch(0.58 0.191 22.216);
+	--color-ghost: transparent;
+	--color-ghostHover: var(--accent);
+	--color-ghostActive: oklch(1 0 0 / 15%);
+	--color-text: var(--foreground);
+	--color-textMuted: var(--muted-foreground);
+	--color-border: var(--border);
+	--color-background: var(--background);
+	--color-backgroundMuted: var(--muted);
+	--color-surface: var(--card);
 }
