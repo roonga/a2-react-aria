@@ -135,7 +135,14 @@ def _before_model(
 
             if location_error or date_error:
                 _log.info("intercept: Find Restaurants → validation errors (loc=%r, date=%r)", location_error, date_error)
-                nodes = build_search_form(location_error=location_error, date_error=date_error)
+                nodes = build_search_form(
+                    location_error=location_error,
+                    date_error=date_error,
+                    location_value=location,
+                    cuisine_value=cuisine,
+                    guests_value=party_size,
+                    date_value=date_val,
+                )
                 return _llm_response(f"<a2ui-json>{serialize(nodes)}</a2ui-json>")
 
             _log.info("intercept: Find Restaurants(%s, %s, %d)", location, cuisine, party_size)

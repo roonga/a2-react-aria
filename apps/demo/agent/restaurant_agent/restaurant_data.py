@@ -125,8 +125,15 @@ def _vflex(children: list, gap: str = "md") -> dict:
     return {"type": "Flex", "props": {"direction": "column", "gap": gap}, "children": children}
 
 
-def build_search_form(location_error: str = "", date_error: str = "") -> list:
-    """Search form shown on welcome (and re-shown with errors on failed validation)."""
+def build_search_form(
+    location_error: str = "",
+    date_error: str = "",
+    location_value: str = "",
+    cuisine_value: str = "any",
+    guests_value: int = 2,
+    date_value: str = "",
+) -> list:
+    """Search form shown on welcome (and re-shown with errors + prior values on failed validation)."""
     cuisine_items = [{"label": "Any cuisine", "value": "any"}] + [
         {"label": c, "value": c} for c in _CUISINES
     ]
@@ -136,11 +143,15 @@ def build_search_form(location_error: str = "", date_error: str = "") -> list:
         "placeholder": "e.g. Sydney CBD",
         "isRequired": True,
     }
+    if location_value:
+        location_props["defaultValue"] = location_value
     if location_error:
         location_props["isInvalid"] = True
         location_props["errorMessage"] = location_error
 
     date_props: dict = {"label": "Date", "isRequired": True}
+    if date_value:
+        date_props["defaultValue"] = date_value
     if date_error:
         date_props["isInvalid"] = True
         date_props["errorMessage"] = date_error
@@ -164,7 +175,7 @@ def build_search_form(location_error: str = "", date_error: str = "") -> list:
                                 "props": {
                                     "label": "Cuisine",
                                     "items": cuisine_items,
-                                    "defaultValue": "any",
+                                    "defaultValue": cuisine_value,
                                 },
                             },
                             {
@@ -173,7 +184,7 @@ def build_search_form(location_error: str = "", date_error: str = "") -> list:
                                     "label": "Guests",
                                     "minValue": 1,
                                     "maxValue": 20,
-                                    "defaultValue": 2,
+                                    "defaultValue": guests_value,
                                     "isRequired": True,
                                 },
                             },

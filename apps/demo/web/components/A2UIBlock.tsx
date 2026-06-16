@@ -2,7 +2,7 @@
 
 import type { A2Node } from "@a2ui/core"
 import { A2Renderer, createRegistry, DatePicker, NumberField, Radio, RadioGroup, Select, TextField } from "@a2ui/core"
-import { createContext, type ReactNode, useCallback, useContext, useMemo, useRef } from "react"
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useRef } from "react"
 import { Button } from "./ui/Button"
 import { Card } from "./ui/Card"
 import { Flex } from "./ui/Flex"
@@ -31,6 +31,7 @@ function FormTextField({
 	label,
 	placeholder,
 	type,
+	defaultValue,
 	isRequired,
 	isDisabled,
 	isInvalid,
@@ -39,17 +40,23 @@ function FormTextField({
 	label?: string
 	placeholder?: string
 	type?: "text" | "email" | "password" | "number" | "tel" | "url"
+	defaultValue?: string
 	isRequired?: boolean
 	isDisabled?: boolean
 	isInvalid?: boolean
 	errorMessage?: string
 }) {
 	const ctx = useContext(FormStateContext)
+	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional mount-only seed — defaultValue is uncontrolled
+	useEffect(() => {
+		if (defaultValue && label) ctx?.setValue(label, defaultValue)
+	}, [])
 	return (
 		<TextField
 			label={label}
 			placeholder={placeholder}
 			type={type}
+			defaultValue={defaultValue}
 			isRequired={isRequired}
 			isDisabled={isDisabled}
 			isInvalid={isInvalid}
@@ -75,6 +82,10 @@ function FormSelect({
 	isDisabled?: boolean
 }) {
 	const ctx = useContext(FormStateContext)
+	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional mount-only seed — defaultValue is uncontrolled
+	useEffect(() => {
+		if (defaultValue && label) ctx?.setValue(label, defaultValue)
+	}, [])
 	return (
 		<Select
 			label={label}
@@ -108,6 +119,10 @@ function FormNumberField({
 	isDisabled?: boolean
 }) {
 	const ctx = useContext(FormStateContext)
+	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional mount-only seed — defaultValue is uncontrolled
+	useEffect(() => {
+		if (defaultValue !== undefined && label) ctx?.setValue(label, String(defaultValue))
+	}, [])
 	return (
 		<NumberField
 			label={label}
@@ -170,6 +185,10 @@ function FormDatePicker({
 	defaultValue?: string
 }) {
 	const ctx = useContext(FormStateContext)
+	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional mount-only seed — defaultValue is uncontrolled
+	useEffect(() => {
+		if (defaultValue && label) ctx?.setValue(label, defaultValue)
+	}, [])
 	return (
 		<DatePicker
 			label={label}
