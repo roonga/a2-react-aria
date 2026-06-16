@@ -121,6 +121,10 @@ def _card(children: list, **props) -> dict:
     return node
 
 
+def _vflex(children: list, gap: str = "md") -> dict:
+    return {"type": "Flex", "props": {"direction": "column", "gap": gap}, "children": children}
+
+
 def build_search_form() -> list:
     """Initial search form shown on welcome. No LLM call needed."""
     cuisine_items = [{"label": "Any cuisine", "value": "any"}] + [
@@ -129,61 +133,63 @@ def build_search_form() -> list:
     return [
         _card(
             [
-                _text("Find Your Table", **{"as": "h2", "size": "xl", "weight": "bold"}),
-                _text(
-                    "Powered by a2UI + Google ADK",
-                    **{"as": "p", "size": "sm", "color": "muted"},
-                ),
-                {
-                    "type": "Grid",
-                    "props": {"columns": 2, "gap": "md"},
-                    "children": [
-                        {
-                            "type": "TextField",
-                            "props": {
-                                "label": "Location",
-                                "placeholder": "e.g. Sydney CBD",
-                                "isRequired": True,
+                _vflex([
+                    _text("Find Your Table", **{"as": "h2", "size": "xl", "weight": "bold"}),
+                    _text(
+                        "Powered by a2UI + Google ADK",
+                        **{"as": "p", "size": "sm", "color": "muted"},
+                    ),
+                    {
+                        "type": "Grid",
+                        "props": {"columns": 2, "gap": "md"},
+                        "children": [
+                            {
+                                "type": "TextField",
+                                "props": {
+                                    "label": "Location",
+                                    "placeholder": "e.g. Sydney CBD",
+                                    "isRequired": True,
+                                },
                             },
-                        },
-                        {
-                            "type": "Select",
-                            "props": {
-                                "label": "Cuisine",
-                                "items": cuisine_items,
-                                "defaultValue": "any",
+                            {
+                                "type": "Select",
+                                "props": {
+                                    "label": "Cuisine",
+                                    "items": cuisine_items,
+                                    "defaultValue": "any",
+                                },
                             },
-                        },
-                        {
-                            "type": "NumberField",
-                            "props": {
-                                "label": "Guests",
-                                "minValue": 1,
-                                "maxValue": 20,
-                                "defaultValue": 2,
-                                "isRequired": True,
+                            {
+                                "type": "NumberField",
+                                "props": {
+                                    "label": "Guests",
+                                    "minValue": 1,
+                                    "maxValue": 20,
+                                    "defaultValue": 2,
+                                    "isRequired": True,
+                                },
                             },
-                        },
-                        {
-                            "type": "DatePicker",
-                            "props": {
-                                "label": "Date",
-                                "isRequired": True,
+                            {
+                                "type": "DatePicker",
+                                "props": {
+                                    "label": "Date",
+                                    "isRequired": True,
+                                },
                             },
-                        },
-                    ],
-                },
-                {
-                    "type": "Flex",
-                    "props": {"justify": "end", "gap": "sm"},
-                    "children": [
-                        {
-                            "type": "Button",
-                            "props": {"variant": "primary"},
-                            "children": "Find Restaurants",
-                        }
-                    ],
-                },
+                        ],
+                    },
+                    {
+                        "type": "Flex",
+                        "props": {"justify": "end", "gap": "sm"},
+                        "children": [
+                            {
+                                "type": "Button",
+                                "props": {"variant": "primary"},
+                                "children": "Find Restaurants",
+                            }
+                        ],
+                    },
+                ])
             ],
             padding="lg",
             shadow="sm",
@@ -243,35 +249,37 @@ def build_slots_card(restaurant: dict, date: str, party_size: int) -> list:
     return [
         _card(
             [
-                _text(
-                    f"{restaurant['name']} — Available Times",
-                    **{"as": "h3", "weight": "bold"},
-                ),
-                _text(
-                    f"{date} · {party_size} {'guest' if party_size == 1 else 'guests'}",
-                    size="sm",
-                    color="muted",
-                ),
-                {
-                    "type": "RadioGroup",
-                    "props": {
-                        "label": "Time",
-                        "orientation": "horizontal",
-                        "isRequired": True,
+                _vflex([
+                    _text(
+                        f"{restaurant['name']} — Available Times",
+                        **{"as": "h3", "weight": "bold"},
+                    ),
+                    _text(
+                        f"{date} · {party_size} {'guest' if party_size == 1 else 'guests'}",
+                        size="sm",
+                        color="muted",
+                    ),
+                    {
+                        "type": "RadioGroup",
+                        "props": {
+                            "label": "Time",
+                            "orientation": "horizontal",
+                            "isRequired": True,
+                        },
+                        "children": radio_items,
                     },
-                    "children": radio_items,
-                },
-                {
-                    "type": "Flex",
-                    "props": {"justify": "end", "gap": "sm"},
-                    "children": [
-                        {
-                            "type": "Button",
-                            "props": {"variant": "primary"},
-                            "children": "Continue",
-                        }
-                    ],
-                },
+                    {
+                        "type": "Flex",
+                        "props": {"justify": "end", "gap": "sm"},
+                        "children": [
+                            {
+                                "type": "Button",
+                                "props": {"variant": "primary"},
+                                "children": "Continue",
+                            }
+                        ],
+                    },
+                ])
             ],
             padding="lg",
             shadow="sm",
@@ -286,54 +294,56 @@ def build_guest_form(restaurant_name: str, date: str, time_slot: str, party_size
     return [
         _card(
             [
-                _text("Your Details", **{"as": "h3", "weight": "bold"}),
-                _text(
-                    f"{restaurant_name} · {date} · {time_slot} · {party_size} {'guest' if party_size == 1 else 'guests'}",
-                    size="sm",
-                    color="muted",
-                ),
-                {
-                    "type": "Grid",
-                    "props": {"columns": 2, "gap": "md"},
-                    "children": [
-                        {
-                            "type": "TextField",
-                            "props": {
-                                "label": "Name",
-                                "placeholder": "Full name",
-                                "isRequired": True,
+                _vflex([
+                    _text("Your Details", **{"as": "h3", "weight": "bold"}),
+                    _text(
+                        f"{restaurant_name} · {date} · {time_slot} · {party_size} {'guest' if party_size == 1 else 'guests'}",
+                        size="sm",
+                        color="muted",
+                    ),
+                    {
+                        "type": "Grid",
+                        "props": {"columns": 2, "gap": "md"},
+                        "children": [
+                            {
+                                "type": "TextField",
+                                "props": {
+                                    "label": "Name",
+                                    "placeholder": "Full name",
+                                    "isRequired": True,
+                                },
                             },
-                        },
-                        {
-                            "type": "TextField",
-                            "props": {
-                                "label": "Email",
-                                "placeholder": "you@example.com",
-                                "type": "email",
-                                "isRequired": True,
+                            {
+                                "type": "TextField",
+                                "props": {
+                                    "label": "Email",
+                                    "placeholder": "you@example.com",
+                                    "type": "email",
+                                    "isRequired": True,
+                                },
                             },
-                        },
-                    ],
-                },
-                {
-                    "type": "TextField",
-                    "props": {
-                        "label": "Phone",
-                        "placeholder": "Optional",
-                        "type": "tel",
+                        ],
                     },
-                },
-                {
-                    "type": "Flex",
-                    "props": {"justify": "end", "gap": "sm"},
-                    "children": [
-                        {
-                            "type": "Button",
-                            "props": {"variant": "primary"},
-                            "children": "Confirm Booking",
-                        }
-                    ],
-                },
+                    {
+                        "type": "TextField",
+                        "props": {
+                            "label": "Phone",
+                            "placeholder": "Optional",
+                            "type": "tel",
+                        },
+                    },
+                    {
+                        "type": "Flex",
+                        "props": {"justify": "end", "gap": "sm"},
+                        "children": [
+                            {
+                                "type": "Button",
+                                "props": {"variant": "primary"},
+                                "children": "Confirm Booking",
+                            }
+                        ],
+                    },
+                ])
             ],
             padding="lg",
             shadow="sm",
@@ -374,30 +384,32 @@ def build_confirmation_card(
     return [
         _card(
             [
-                _text(
-                    "Booking Confirmed! 🎉",
-                    **{"as": "h2", "size": "xl", "weight": "bold", "color": "primary", "align": "center"},
-                ),
-                _text(
-                    "See you soon! A confirmation email has been sent.",
-                    **{"as": "p", "color": "muted", "align": "center"},
-                ),
-                {
-                    "type": "Grid",
-                    "props": {"columns": 2, "gap": "sm"},
-                    "children": detail_cells,
-                },
-                {
-                    "type": "Flex",
-                    "props": {"justify": "center", "gap": "md"},
-                    "children": [
-                        {
-                            "type": "Button",
-                            "props": {"variant": "secondary"},
-                            "children": "Book Another Table",
-                        }
-                    ],
-                },
+                _vflex([
+                    _text(
+                        "Booking Confirmed! 🎉",
+                        **{"as": "h2", "size": "xl", "weight": "bold", "color": "primary", "align": "center"},
+                    ),
+                    _text(
+                        "See you soon! A confirmation email has been sent.",
+                        **{"as": "p", "color": "muted", "align": "center"},
+                    ),
+                    {
+                        "type": "Grid",
+                        "props": {"columns": 2, "gap": "sm"},
+                        "children": detail_cells,
+                    },
+                    {
+                        "type": "Flex",
+                        "props": {"justify": "center", "gap": "md"},
+                        "children": [
+                            {
+                                "type": "Button",
+                                "props": {"variant": "secondary"},
+                                "children": "Book Another Table",
+                            }
+                        ],
+                    },
+                ])
             ],
             padding="lg",
             shadow="md",
