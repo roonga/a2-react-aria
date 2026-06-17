@@ -2,7 +2,7 @@ export const getNumberFieldStyles = () => ({
 	container: "flex flex-col gap-2",
 	label: "text-sm font-medium text-[var(--color-text)]",
 	inputGroup:
-		"flex items-center border border-[var(--color-border)] rounded bg-[var(--color-background)] focus-within:ring-2 focus-within:ring-[var(--color-primary)] focus-within:border-transparent",
+		"flex items-center border border-[var(--color-border)] rounded overflow-hidden bg-[var(--color-background)] focus-within:ring-2 focus-within:ring-[var(--color-primary)] focus-within:border-transparent",
 	input:
 		"self-stretch flex-1 px-3 text-sm bg-transparent text-[var(--color-text)] placeholder-[var(--color-textMuted)] focus:outline-none disabled:cursor-not-allowed",
 	stepper:
