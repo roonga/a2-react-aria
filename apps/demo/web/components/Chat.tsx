@@ -289,7 +289,7 @@ export default function Chat() {
 					</div>
 				))}
 
-				{(streamingThought || streamingText) && (
+				{(streamingThought || streamingText.replace(/<a2ui-json>[\s\S]*$/, "").trim()) && (
 					<div className="flex justify-start">
 						<div className="max-w-[85%] space-y-1">
 							{streamingThought && (
@@ -302,10 +302,10 @@ export default function Chat() {
 									<span className="font-medium">Thinking…</span>
 								</div>
 							)}
-							{streamingText.trim() && (
+							{streamingText.replace(/<a2ui-json>[\s\S]*$/, "").trim() && (
 								<div className="rounded-lg px-4 py-3 bg-[var(--color-surface)] text-[var(--color-text)] shadow-md">
 									<p className="whitespace-pre-wrap">
-										{streamingText}
+										{streamingText.replace(/<a2ui-json>[\s\S]*$/, "")}
 										<span className="inline-block w-2 h-5 bg-[var(--color-text)] ml-1 animate-pulse" />
 									</p>
 								</div>
