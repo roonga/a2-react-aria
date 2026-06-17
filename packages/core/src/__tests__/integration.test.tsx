@@ -303,14 +303,11 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 
 		it("stepper buttons are first and last children of the group for correct corner rounding", () => {
 			render(
-				<A2Renderer
-					node={{ type: "NumberField", props: { label: "Guests", defaultValue: 2 } }}
-					registry={registry}
-				/>,
+				<A2Renderer node={{ type: "NumberField", props: { label: "Guests", defaultValue: 2 } }} registry={registry} />,
 			)
 			const decrementBtn = screen.getByRole("button", { name: /decrease/i })
 			const incrementBtn = screen.getByRole("button", { name: /increase/i })
-			const group = decrementBtn.parentElement!
+			const group = decrementBtn.parentElement as HTMLElement
 
 			// Decrement must be first child so first:rounded-l applies to its corners
 			expect(group.firstElementChild).toBe(decrementBtn)
@@ -328,7 +325,7 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 
 			// Input must have min-w-0 so flex-1 can shrink in narrow grid cells
 			// (without it the browser's default min-width pushes + outside the border)
-			const input = group.querySelector("input")!
+			const input = group.querySelector("input") as HTMLInputElement
 			expect(input.className).toContain("min-w-0")
 		})
 	})

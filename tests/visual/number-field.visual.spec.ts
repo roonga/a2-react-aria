@@ -1,8 +1,7 @@
 import { expect, test } from "@playwright/test"
 
 // Storybook iframe URL for the NumberField GuestCount story
-const STORY_URL =
-	"/iframe.html?id=components-numberfield--guest-count&viewMode=story&globals=backgrounds:light"
+const STORY_URL = "/iframe.html?id=components-numberfield--guest-count&viewMode=story&globals=backgrounds:light"
 
 test.describe("NumberField — visual", () => {
 	test.beforeEach(async ({ page }) => {
