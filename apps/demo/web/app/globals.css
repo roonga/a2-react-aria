@@ -68,12 +68,12 @@
 
 	/* ── a2UI component tokens (dark, mapped from shadcn) ───── */
 	--color-primary: var(--primary);
-	--color-primaryHover: oklch(0.40 0.187 3.815);
+	--color-primaryHover: oklch(0.4 0.187 3.815);
 	--color-primaryActive: oklch(0.34 0.187 3.815);
 	/* secondary in dark mode is already dark enough for text-white */
 	--color-secondary: var(--secondary);
 	--color-secondaryHover: oklch(0.34 0 0);
-	--color-secondaryActive: oklch(0.40 0 0);
+	--color-secondaryActive: oklch(0.4 0 0);
 	--color-danger: var(--destructive);
 	--color-dangerHover: oklch(0.64 0.191 22.216);
 	--color-dangerActive: oklch(0.58 0.191 22.216);

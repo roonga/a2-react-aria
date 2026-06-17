@@ -62,7 +62,9 @@ function ThinkingBlock({ text }: { text: string }) {
 				<span>{open ? "▾" : "▸"}</span>
 				Thinking
 			</summary>
-			<p className="px-3 pb-2 pt-1 whitespace-pre-wrap text-[var(--color-text)] italic leading-relaxed">{text.trim()}</p>
+			<p className="px-3 pb-2 pt-1 whitespace-pre-wrap text-[var(--color-text)] italic leading-relaxed">
+				{text.trim()}
+			</p>
 		</details>
 	)
 }
