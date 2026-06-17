@@ -245,7 +245,7 @@ const REGISTRY = createRegistry({
 	Flex: { component: Flex as RegComp },
 	Grid: { component: Grid as RegComp },
 	NumberField: { component: FormNumberField as RegComp },
-	Radio: { component: Radio as RegComp },
+	Radio: { component: Radio as unknown as RegComp },
 	RadioGroup: { component: FormRadioGroup as RegComp },
 	Select: { component: FormSelect as RegComp },
 	Text: { component: Text as RegComp },
