@@ -1,5 +1,6 @@
 import logging
 import re
+from datetime import date, timedelta
 
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.agents.llm_agent import Agent
@@ -10,6 +11,7 @@ from google.genai import types
 from .restaurant_data import (
     build_confirmation_card,
     build_guest_form,
+    build_intent_confirmation,
     build_search_form,
     build_search_results,
     build_slots_card,
@@ -28,6 +30,64 @@ _BOOK_ANOTHER_RE = re.compile(r"^Book Another Table$", re.IGNORECASE)
 _BOOK_RE = re.compile(r"^Book (.+)$", re.IGNORECASE)
 _CONTINUE_RE = re.compile(r"^Continue", re.IGNORECASE)
 _CONFIRM_RE = re.compile(r"^Confirm Booking", re.IGNORECASE)
+_EDIT_SEARCH_RE = re.compile(r"^Edit Search", re.IGNORECASE)
+
+# Natural language extraction — used in Case 0
+_CUISINE_EXTRACT_RE = re.compile(
+    r"\b(italian|japanese|thai|modern australian)\b", re.IGNORECASE
+)
+_LOCATION_IN_RE = re.compile(
+    r"\bin\s+([\w\s]+?)(?=\s+for\b|\s+table\b|\s+on\b|\s*,"
+    r"|\s+tomorrow\b|\s+today\b"
+    r"|\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b|\s*$)",
+    re.IGNORECASE,
+)
+_TOMORROW_RE = re.compile(r"\btomorrow\b", re.IGNORECASE)
+_TODAY_RE = re.compile(r"\btoday\b", re.IGNORECASE)
+_WEEKDAY_RE = re.compile(
+    r"\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b", re.IGNORECASE
+)
+
+
+def _extract_initial_params(text: str) -> dict:
+    """Extract search params from a natural language opening message."""
+    params: dict = {}
+
+    m = _CUISINE_EXTRACT_RE.search(text)
+    if m:
+        c = m.group(1).lower()
+        params["cuisine"] = "Modern Australian" if "australian" in c else c.title()
+
+    m = _LOCATION_IN_RE.search(text)
+    if m:
+        params["location"] = m.group(1).strip()
+
+    # First digit 1-20 not immediately followed by am/pm (avoids "7pm" → 7)
+    for m in re.finditer(r"\b(\d+)\b(?!\s*(?:pm|am)\b)", text, re.IGNORECASE):
+        n = int(m.group(1))
+        if 1 <= n <= 20:
+            params["party_size"] = n
+            break
+
+    today = date.today()
+    if _TOMORROW_RE.search(text):
+        d = today + timedelta(days=1)
+        params["date"] = d.isoformat()
+        params["date_display"] = f"{d.strftime('%A')} {d.day} {d.strftime('%B')}"
+    elif _TODAY_RE.search(text):
+        params["date"] = today.isoformat()
+        params["date_display"] = f"{today.strftime('%A')} {today.day} {today.strftime('%B')}"
+    else:
+        m = _WEEKDAY_RE.search(text)
+        if m:
+            days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+            target_dow = days.index(m.group(1).lower())
+            days_ahead = (target_dow - today.weekday()) % 7 or 7
+            d = today + timedelta(days=days_ahead)
+            params["date"] = d.isoformat()
+            params["date_display"] = f"{d.strftime('%A')} {d.day} {d.strftime('%B')}"
+
+    return params
 
 
 def _parse_action(text: str) -> tuple[str, dict[str, str]]:
@@ -97,11 +157,37 @@ def _before_model(
     if not contents:
         return None
 
-    # Case 0: First user message → show search form (no prior model turn)
+    # Case 0: First user message — extract intent, then confirm or pre-fill form
     has_prior_model = any(c.role == "model" for c in contents)
     if not has_prior_model:
-        _log.info("intercept: first message → search form")
-        nodes = build_search_form()
+        first_text = next(
+            (p.text.strip() for c in contents if c.role == "user" for p in (c.parts or []) if p.text),
+            "",
+        )
+        params = _extract_initial_params(first_text) if first_text else {}
+        location = params.get("location", "")
+        cuisine = params.get("cuisine", "any")
+        party_size = params.get("party_size", 2)
+        date_iso = params.get("date", "")
+        date_display = params.get("date_display", "")
+
+        if location and date_iso:
+            _log.info(
+                "intercept: first message → intent confirmation (loc=%r, cuisine=%r, guests=%d, date=%r)",
+                location, cuisine, party_size, date_iso,
+            )
+            nodes = build_intent_confirmation(location, cuisine, party_size, date_iso, date_display)
+        else:
+            _log.info(
+                "intercept: first message → pre-filled form (loc=%r, cuisine=%r, guests=%d, date=%r)",
+                location, cuisine, party_size, date_iso,
+            )
+            nodes = build_search_form(
+                location_value=location,
+                cuisine_value=cuisine,
+                guests_value=party_size,
+                date_value=date_iso,
+            )
         return _llm_response(f"<a2ui-json>{serialize(nodes)}</a2ui-json>")
 
     latest = contents[-1]
@@ -118,6 +204,25 @@ def _before_model(
         if not part.text:
             continue
         text = part.text.strip()
+
+        # Case: Edit Search — user wants to adjust auto-extracted params
+        if _EDIT_SEARCH_RE.match(text):
+            _, fields = _parse_action(text)
+            location = fields.get("Location", "")
+            cuisine = fields.get("Cuisine", "any")
+            date_val = fields.get("Date", "")
+            try:
+                party_size = int(fields.get("Guests", "2"))
+            except ValueError:
+                party_size = 2
+            _log.info("intercept: Edit Search → pre-filled form (loc=%r, cuisine=%r)", location, cuisine)
+            nodes = build_search_form(
+                location_value=location,
+                cuisine_value=cuisine,
+                guests_value=party_size,
+                date_value=date_val,
+            )
+            return _llm_response(f"<a2ui-json>{serialize(nodes)}</a2ui-json>")
 
         # Case 2 — search form submitted
         if _FIND_RE.match(text):

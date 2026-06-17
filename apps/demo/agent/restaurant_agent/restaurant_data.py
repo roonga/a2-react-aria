@@ -125,6 +125,64 @@ def _vflex(children: list, gap: str = "md") -> dict:
     return {"type": "Flex", "props": {"direction": "column", "gap": gap}, "children": children}
 
 
+def build_intent_confirmation(
+    location: str,
+    cuisine: str,
+    guests: int,
+    date_iso: str,
+    date_display: str,
+) -> list:
+    """Confirmation card shown when all search params are extracted from natural language."""
+    cuisine_label = "Any cuisine" if cuisine == "any" else cuisine
+    guest_label = f"{guests} {'guest' if guests == 1 else 'guests'}"
+    find_action = f"Find Restaurants | Location: {location} | Cuisine: {cuisine} | Guests: {guests} | Date: {date_iso}"
+    edit_action = f"Edit Search | Location: {location} | Cuisine: {cuisine} | Guests: {guests} | Date: {date_iso}"
+
+    return [
+        _card(
+            [
+                _vflex([
+                    _text("Got it! Here's what I heard:", **{"as": "h3", "weight": "bold"}),
+                    {
+                        "type": "Grid",
+                        "props": {"columns": 2, "gap": "sm"},
+                        "children": [
+                            _text("Location", weight="semibold"),
+                            _text(location),
+                            _text("Cuisine", weight="semibold"),
+                            _text(cuisine_label),
+                            _text("Guests", weight="semibold"),
+                            _text(guest_label),
+                            _text("Date", weight="semibold"),
+                            _text(date_display),
+                        ],
+                    },
+                    {
+                        "type": "Flex",
+                        "props": {"justify": "end", "gap": "sm"},
+                        "children": [
+                            {
+                                "type": "Button",
+                                "props": {"variant": "secondary", "value": edit_action},
+                                "children": "Edit Details",
+                            },
+                            {
+                                "type": "Button",
+                                "props": {"variant": "primary", "value": find_action},
+                                "children": "Search Restaurants",
+                            },
+                        ],
+                    },
+                ])
+            ],
+            padding="lg",
+            shadow="sm",
+            radius="lg",
+            border=True,
+        )
+    ]
+
+
 def build_search_form(
     location_error: str = "",
     date_error: str = "",

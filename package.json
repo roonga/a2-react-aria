@@ -19,6 +19,8 @@
 		"test": "turbo run test",
 		"test:visual": "playwright test",
 		"test:visual:update": "playwright test --update-snapshots",
+		"test:e2e": "playwright test --config playwright.e2e.config.ts",
+		"test:e2e:headed": "HEADED=1 playwright test --config playwright.e2e.config.ts",
 		"storybook": "storybook dev -p 6006",
 		"lint": "biome check .",
 		"format": "biome format . --write",

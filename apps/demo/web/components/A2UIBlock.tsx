@@ -215,11 +215,13 @@ function ActionButton({
 	variant,
 	size,
 	disabled,
+	value,
 }: {
 	children?: ReactNode
 	variant?: "primary" | "secondary" | "danger" | "ghost"
 	size?: "sm" | "md" | "lg"
 	disabled?: boolean
+	value?: string
 }) {
 	const ctx = useContext(ActionContext)
 	return (
@@ -228,7 +230,11 @@ function ActionButton({
 			size={size}
 			disabled={disabled}
 			onPress={() => {
-				if (typeof children === "string") ctx?.fire(ctx.buildAction(children))
+				if (value) {
+					ctx?.fire(value)
+				} else if (typeof children === "string") {
+					ctx?.fire(ctx.buildAction(children))
+				}
 			}}
 		>
 			{children}

@@ -1,0 +1,17 @@
+# Node / build artifacts — reinstalled/rebuilt inside the image
+**/node_modules/
+**/.next/
+**/dist/
+**/build/
+**/.turbo/
+
+# Test output
+**/coverage/
+**/test-results/
+**/__snapshots__/
+**/tests/visual/__snapshots__/
+
+# Dev tools
+**/.git/
+**/.vscode/
+**/storybook-static/
