@@ -300,6 +300,32 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 			const input = screen.getByRole("textbox", { name: /count/i }) as HTMLInputElement
 			expect(input.value).toBe("7")
 		})
+
+		it("stepper buttons are first and last children of the group for correct corner rounding", () => {
+			render(
+				<A2Renderer
+					node={{ type: "NumberField", props: { label: "Guests", defaultValue: 2 } }}
+					registry={registry}
+				/>,
+			)
+			const decrementBtn = screen.getByRole("button", { name: /decrease/i })
+			const incrementBtn = screen.getByRole("button", { name: /increase/i })
+			const group = decrementBtn.parentElement!
+
+			// Decrement must be first child so first:rounded-l applies to its corners
+			expect(group.firstElementChild).toBe(decrementBtn)
+			// Increment must be last child so last:rounded-r applies to its corners
+			expect(group.lastElementChild).toBe(incrementBtn)
+
+			// Both stepper buttons carry the pseudo-class corner utilities
+			expect(decrementBtn.className).toContain("first:rounded-l")
+			expect(decrementBtn.className).toContain("last:rounded-r")
+			expect(incrementBtn.className).toContain("first:rounded-l")
+			expect(incrementBtn.className).toContain("last:rounded-r")
+
+			// Group must not use overflow-hidden (clips button content in flex containers)
+			expect(group.className).not.toContain("overflow-hidden")
+		})
 	})
 
 	describe("Breadcrumb component", () => {
