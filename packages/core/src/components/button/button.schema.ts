@@ -6,7 +6,11 @@ export const ButtonSchema = z.object({
 		.object({
 			variant: z.enum(["primary", "secondary", "danger", "ghost"]).optional(),
 			isDisabled: z.boolean().optional(),
+			isPending: z.boolean().optional(),
 			size: z.enum(["sm", "md", "lg"]).optional(),
+			type: z.enum(["button", "reset", "submit"]).optional(),
+			name: z.string().optional(),
+			value: z.string().optional(),
 		})
 		.optional(),
 	children: z.union([z.string(), z.array(z.unknown())]).optional(),

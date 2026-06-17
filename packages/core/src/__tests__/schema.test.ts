@@ -1269,3 +1269,188 @@ describe("TextSchema", () => {
 		expect(TextSchema.safeParse({ type: "text" }).success).toBe(false)
 	})
 })
+
+// ── Tier 6: UX enrichment ──────────────────────────────────────────────────
+
+describe("ButtonSchema — Tier 6 props", () => {
+	it("accepts isPending as boolean", () => {
+		expect(ButtonSchema.safeParse({ type: "Button", props: { isPending: true } }).success).toBe(true)
+	})
+
+	it("accepts all valid type values", () => {
+		for (const type of ["button", "reset", "submit"]) {
+			expect(ButtonSchema.safeParse({ type: "Button", props: { type } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid type value", () => {
+		expect(ButtonSchema.safeParse({ type: "Button", props: { type: "image" } }).success).toBe(false)
+	})
+
+	it("accepts name and value as strings", () => {
+		expect(ButtonSchema.safeParse({ type: "Button", props: { name: "action", value: "save" } }).success).toBe(true)
+	})
+
+	it("rejects non-boolean isPending", () => {
+		expect(ButtonSchema.safeParse({ type: "Button", props: { isPending: "yes" } }).success).toBe(false)
+	})
+})
+
+describe("TextFieldSchema — Tier 6 props", () => {
+	it("accepts autoFocus as boolean", () => {
+		expect(TextFieldSchema.safeParse({ type: "TextField", props: { autoFocus: true } }).success).toBe(true)
+	})
+
+	it("accepts autoComplete as string", () => {
+		expect(TextFieldSchema.safeParse({ type: "TextField", props: { autoComplete: "email" } }).success).toBe(true)
+	})
+
+	it("accepts all valid inputMode values", () => {
+		for (const inputMode of ["text", "numeric", "decimal", "email", "tel", "url", "search"]) {
+			expect(TextFieldSchema.safeParse({ type: "TextField", props: { inputMode } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid inputMode", () => {
+		expect(TextFieldSchema.safeParse({ type: "TextField", props: { inputMode: "number" } }).success).toBe(false)
+	})
+
+	it("rejects non-boolean autoFocus", () => {
+		expect(TextFieldSchema.safeParse({ type: "TextField", props: { autoFocus: "yes" } }).success).toBe(false)
+	})
+})
+
+describe("NumberFieldSchema — Tier 6 props", () => {
+	it("accepts isWheelDisabled as boolean", () => {
+		expect(NumberFieldSchema.safeParse({ type: "NumberField", props: { isWheelDisabled: true } }).success).toBe(true)
+	})
+
+	it("rejects non-boolean isWheelDisabled", () => {
+		expect(NumberFieldSchema.safeParse({ type: "NumberField", props: { isWheelDisabled: "yes" } }).success).toBe(false)
+	})
+})
+
+describe("CheckboxSchema — Tier 6 props", () => {
+	it("accepts autoFocus as boolean", () => {
+		expect(CheckboxSchema.safeParse({ type: "Checkbox", props: { autoFocus: true } }).success).toBe(true)
+	})
+
+	it("rejects non-boolean autoFocus", () => {
+		expect(CheckboxSchema.safeParse({ type: "Checkbox", props: { autoFocus: "yes" } }).success).toBe(false)
+	})
+})
+
+describe("SwitchSchema — Tier 6 props", () => {
+	it("accepts autoFocus as boolean", () => {
+		expect(SwitchSchema.safeParse({ type: "Switch", props: { autoFocus: true } }).success).toBe(true)
+	})
+
+	it("rejects non-boolean autoFocus", () => {
+		expect(SwitchSchema.safeParse({ type: "Switch", props: { autoFocus: "yes" } }).success).toBe(false)
+	})
+})
+
+describe("DatePickerSchema — Tier 6 props", () => {
+	it("accepts autoFocus, isOpen, defaultOpen as booleans", () => {
+		expect(
+			DatePickerSchema.safeParse({
+				type: "DatePicker",
+				props: { autoFocus: true, isOpen: false, defaultOpen: true },
+			}).success,
+		).toBe(true)
+	})
+
+	it("accepts all valid granularity values", () => {
+		for (const granularity of ["day", "hour", "minute", "second"]) {
+			expect(DatePickerSchema.safeParse({ type: "DatePicker", props: { granularity } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid granularity", () => {
+		expect(DatePickerSchema.safeParse({ type: "DatePicker", props: { granularity: "week" } }).success).toBe(false)
+	})
+
+	it("accepts all valid firstDayOfWeek values", () => {
+		for (const firstDayOfWeek of ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]) {
+			expect(DatePickerSchema.safeParse({ type: "DatePicker", props: { firstDayOfWeek } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid firstDayOfWeek", () => {
+		expect(DatePickerSchema.safeParse({ type: "DatePicker", props: { firstDayOfWeek: "sunday" } }).success).toBe(false)
+	})
+})
+
+describe("DateRangePickerSchema — Tier 6 props", () => {
+	it("accepts isOpen, defaultOpen, allowsNonContiguousRanges as booleans", () => {
+		expect(
+			DateRangePickerSchema.safeParse({
+				type: "DateRangePicker",
+				props: { isOpen: false, defaultOpen: true, allowsNonContiguousRanges: true },
+			}).success,
+		).toBe(true)
+	})
+
+	it("accepts startName and endName as strings", () => {
+		expect(
+			DateRangePickerSchema.safeParse({
+				type: "DateRangePicker",
+				props: { startName: "start_date", endName: "end_date" },
+			}).success,
+		).toBe(true)
+	})
+
+	it("accepts all valid granularity values", () => {
+		for (const granularity of ["day", "hour", "minute", "second"]) {
+			expect(DateRangePickerSchema.safeParse({ type: "DateRangePicker", props: { granularity } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid granularity", () => {
+		expect(DateRangePickerSchema.safeParse({ type: "DateRangePicker", props: { granularity: "year" } }).success).toBe(
+			false,
+		)
+	})
+
+	it("accepts all valid firstDayOfWeek values", () => {
+		for (const firstDayOfWeek of ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]) {
+			expect(DateRangePickerSchema.safeParse({ type: "DateRangePicker", props: { firstDayOfWeek } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid firstDayOfWeek", () => {
+		expect(
+			DateRangePickerSchema.safeParse({ type: "DateRangePicker", props: { firstDayOfWeek: "monday" } }).success,
+		).toBe(false)
+	})
+})
+
+describe("FormSchema — Tier 6 props", () => {
+	it("accepts all valid encType values", () => {
+		for (const encType of ["application/x-www-form-urlencoded", "multipart/form-data", "text/plain"]) {
+			expect(FormSchema.safeParse({ type: "Form", props: { encType } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid encType", () => {
+		expect(FormSchema.safeParse({ type: "Form", props: { encType: "application/json" } }).success).toBe(false)
+	})
+
+	it("accepts both autoComplete values", () => {
+		for (const autoComplete of ["on", "off"]) {
+			expect(FormSchema.safeParse({ type: "Form", props: { autoComplete } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid autoComplete", () => {
+		expect(FormSchema.safeParse({ type: "Form", props: { autoComplete: "email" } }).success).toBe(false)
+	})
+
+	it("accepts target as string", () => {
+		expect(FormSchema.safeParse({ type: "Form", props: { target: "_blank" } }).success).toBe(true)
+	})
+
+	it("rejects non-string target", () => {
+		expect(FormSchema.safeParse({ type: "Form", props: { target: 42 } }).success).toBe(false)
+	})
+})

@@ -12,6 +12,7 @@ interface CheckboxProps {
 	isReadOnly?: boolean
 	isIndeterminate?: boolean
 	isInvalid?: boolean
+	autoFocus?: boolean
 	validationBehavior?: "aria" | "native"
 	validate?: (value: boolean) => string | string[] | true | null | undefined
 	errorMessage?: string
@@ -29,6 +30,7 @@ export function Checkbox({
 	isReadOnly = false,
 	isIndeterminate = false,
 	isInvalid = false,
+	autoFocus,
 	validationBehavior,
 	validate,
 	errorMessage,
@@ -47,6 +49,7 @@ export function Checkbox({
 			isReadOnly={isReadOnly}
 			isIndeterminate={isIndeterminate}
 			isInvalid={isInvalid}
+			autoFocus={autoFocus}
 			validationBehavior={validationBehavior}
 			validate={validate}
 			onChange={onChange}

@@ -28,6 +28,11 @@ interface DatePickerProps {
 	isRequired?: boolean
 	isInvalid?: boolean
 	isReadOnly?: boolean
+	autoFocus?: boolean
+	isOpen?: boolean
+	defaultOpen?: boolean
+	granularity?: "day" | "hour" | "minute" | "second"
+	firstDayOfWeek?: "sun" | "mon" | "tue" | "wed" | "thu" | "fri" | "sat"
 	validationBehavior?: "aria" | "native"
 	validate?: (value: DateValue | null) => string | string[] | true | null | undefined
 	value?: string
@@ -35,6 +40,7 @@ interface DatePickerProps {
 	minValue?: string
 	maxValue?: string
 	onChange?: (value: string) => void
+	onOpenChange?: (isOpen: boolean) => void
 }
 
 export function DatePicker({
@@ -46,6 +52,11 @@ export function DatePicker({
 	isRequired,
 	isInvalid,
 	isReadOnly,
+	autoFocus,
+	isOpen,
+	defaultOpen,
+	granularity,
+	firstDayOfWeek,
 	validationBehavior,
 	validate,
 	value,
@@ -53,6 +64,7 @@ export function DatePicker({
 	minValue,
 	maxValue,
 	onChange,
+	onOpenChange,
 }: DatePickerProps) {
 	const styles = getDatePickerStyles()
 	return (
@@ -66,9 +78,14 @@ export function DatePicker({
 			isRequired={isRequired}
 			isInvalid={isInvalid}
 			isReadOnly={isReadOnly}
+			autoFocus={autoFocus}
+			isOpen={isOpen}
+			defaultOpen={defaultOpen}
+			granularity={granularity}
 			validationBehavior={validationBehavior}
 			validate={validate}
 			onChange={(date) => onChange?.(date?.toString() ?? "")}
+			onOpenChange={onOpenChange}
 			className={styles.root}
 		>
 			{label && <Label className={styles.label}>{label}</Label>}
@@ -85,7 +102,7 @@ export function DatePicker({
 			)}
 			{errorMessage && <FieldError className={styles.error}>{errorMessage}</FieldError>}
 			<Popover className={styles.popover}>
-				<Calendar className={styles.calendar}>
+				<Calendar firstDayOfWeek={firstDayOfWeek} className={styles.calendar}>
 					<header className={styles.calendarHeader}>
 						<Button slot="previous" className={styles.navButton}>
 							◀

@@ -9,6 +9,9 @@ export const FormSchema = z.object({
 			validationErrors: z.record(z.string(), z.union([z.string(), z.array(z.string())])).optional(),
 			action: z.string().optional(),
 			method: z.enum(["get", "post"]).optional(),
+			encType: z.enum(["application/x-www-form-urlencoded", "multipart/form-data", "text/plain"]).optional(),
+			autoComplete: z.enum(["on", "off"]).optional(),
+			target: z.string().optional(),
 		})
 		.optional(),
 	children: z.array(z.unknown()).optional(),

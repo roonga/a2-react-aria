@@ -15,6 +15,7 @@ export const NumberFieldSchema = z.object({
 			isDisabled: z.boolean().optional(),
 			isReadOnly: z.boolean().optional(),
 			isInvalid: z.boolean().optional(),
+			isWheelDisabled: z.boolean().optional(),
 			validationBehavior: z.enum(["aria", "native"]).optional(),
 			name: z.string().optional(),
 			description: z.string().optional(),

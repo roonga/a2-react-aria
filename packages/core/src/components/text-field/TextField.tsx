@@ -12,6 +12,9 @@ interface TextFieldProps {
 	isRequired?: boolean
 	isReadOnly?: boolean
 	isInvalid?: boolean
+	autoFocus?: boolean
+	autoComplete?: string
+	inputMode?: "text" | "numeric" | "decimal" | "email" | "tel" | "url" | "search"
 	validationBehavior?: "aria" | "native"
 	validate?: (value: string) => string | string[] | true | null | undefined
 	minLength?: number
@@ -33,6 +36,9 @@ export function TextField({
 	isRequired = false,
 	isReadOnly = false,
 	isInvalid = false,
+	autoFocus,
+	autoComplete,
+	inputMode,
 	validationBehavior,
 	validate,
 	minLength,
@@ -54,6 +60,8 @@ export function TextField({
 			isRequired={isRequired}
 			isReadOnly={isReadOnly}
 			isInvalid={isInvalid}
+			autoFocus={autoFocus}
+			autoComplete={autoComplete}
 			validationBehavior={validationBehavior}
 			validate={validate}
 			minLength={minLength}
@@ -68,7 +76,7 @@ export function TextField({
 					{isRequired && <span className={styles.requiredIndicator}> *</span>}
 				</Label>
 			)}
-			<Input placeholder={placeholder} className={styles.input} />
+			<Input placeholder={placeholder} inputMode={inputMode} className={styles.input} />
 			{description && (
 				<Text slot="description" className={styles.description}>
 					{description}

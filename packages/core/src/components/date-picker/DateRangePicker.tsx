@@ -27,6 +27,13 @@ interface DateRangePickerProps {
 	isRequired?: boolean
 	isInvalid?: boolean
 	isReadOnly?: boolean
+	isOpen?: boolean
+	defaultOpen?: boolean
+	startName?: string
+	endName?: string
+	granularity?: "day" | "hour" | "minute" | "second"
+	firstDayOfWeek?: "sun" | "mon" | "tue" | "wed" | "thu" | "fri" | "sat"
+	allowsNonContiguousRanges?: boolean
 	validationBehavior?: "aria" | "native"
 	validate?: (value: { start: DateValue; end: DateValue } | null) => string | string[] | true | null | undefined
 	value?: { start: string; end: string }
@@ -34,6 +41,7 @@ interface DateRangePickerProps {
 	minValue?: string
 	maxValue?: string
 	onChange?: (value: { start: string; end: string }) => void
+	onOpenChange?: (isOpen: boolean) => void
 }
 
 export function DateRangePicker({
@@ -44,6 +52,13 @@ export function DateRangePicker({
 	isRequired,
 	isInvalid,
 	isReadOnly,
+	isOpen,
+	defaultOpen,
+	startName,
+	endName,
+	granularity,
+	firstDayOfWeek,
+	allowsNonContiguousRanges,
 	validationBehavior,
 	validate,
 	value,
@@ -51,6 +66,7 @@ export function DateRangePicker({
 	minValue,
 	maxValue,
 	onChange,
+	onOpenChange,
 }: DateRangePickerProps) {
 	const styles = getDatePickerStyles()
 	return (
@@ -65,6 +81,12 @@ export function DateRangePicker({
 			isRequired={isRequired}
 			isInvalid={isInvalid}
 			isReadOnly={isReadOnly}
+			isOpen={isOpen}
+			defaultOpen={defaultOpen}
+			startName={startName}
+			endName={endName}
+			granularity={granularity}
+			allowsNonContiguousRanges={allowsNonContiguousRanges}
 			validationBehavior={validationBehavior}
 			validate={validate}
 			onChange={
@@ -72,6 +94,7 @@ export function DateRangePicker({
 					? (range) => range && onChange({ start: range.start.toString(), end: range.end.toString() })
 					: undefined
 			}
+			onOpenChange={onOpenChange}
 			className={styles.root}
 		>
 			{label && <Label className={styles.label}>{label}</Label>}
@@ -94,7 +117,7 @@ export function DateRangePicker({
 			)}
 			{errorMessage && <FieldError className={styles.error}>{errorMessage}</FieldError>}
 			<Popover className={styles.popover}>
-				<RangeCalendar className={styles.calendar}>
+				<RangeCalendar firstDayOfWeek={firstDayOfWeek} className={styles.calendar}>
 					<header className={styles.calendarHeader}>
 						<Button slot="previous" className={styles.navButton}>
 							◀

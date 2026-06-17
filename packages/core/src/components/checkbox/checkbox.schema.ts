@@ -14,6 +14,7 @@ export const CheckboxSchema = z.object({
 			isIndeterminate: z.boolean().optional(),
 			isReadOnly: z.boolean().optional(),
 			isInvalid: z.boolean().optional(),
+			autoFocus: z.boolean().optional(),
 			validationBehavior: z.enum(["aria", "native"]).optional(),
 			errorMessage: z.string().optional(),
 		})
