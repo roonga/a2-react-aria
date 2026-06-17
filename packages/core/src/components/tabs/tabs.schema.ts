@@ -15,6 +15,7 @@ export const TabsSchema = z.object({
 			tabs: z.array(TabItemSchema).optional(),
 			defaultSelectedKey: z.string().optional(),
 			selectedKey: z.string().optional(),
+			disabledKeys: z.array(z.string()).optional(),
 			orientation: z.enum(["horizontal", "vertical"]).optional(),
 			keyboardActivation: z.enum(["automatic", "manual"]).optional(),
 			ariaLabel: z.string().optional(),

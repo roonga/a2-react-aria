@@ -7,7 +7,13 @@ interface TableProps {
 	columns?: TableColumn[]
 	rows?: TableRow[]
 	selectionMode?: "none" | "single" | "multiple"
+	selectedKeys?: string[]
+	defaultSelectedKeys?: string[]
+	disabledKeys?: string[]
+	sortDescriptor?: { column: string; direction: "ascending" | "descending" }
 	onRowAction?: (id: string) => void
+	onSelectionChange?: (keys: string[]) => void
+	onSortChange?: (descriptor: { column: string; direction: "ascending" | "descending" }) => void
 }
 
 export function Table({
@@ -15,14 +21,36 @@ export function Table({
 	columns = [],
 	rows = [],
 	selectionMode = "none",
+	selectedKeys,
+	defaultSelectedKeys,
+	disabledKeys,
+	sortDescriptor,
 	onRowAction,
+	onSelectionChange,
+	onSortChange,
 }: TableProps) {
 	const styles = getTableStyles()
 	return (
 		<RACTable
 			aria-label={ariaLabel}
 			selectionMode={selectionMode}
+			selectedKeys={selectedKeys}
+			defaultSelectedKeys={defaultSelectedKeys}
+			disabledKeys={disabledKeys}
+			sortDescriptor={sortDescriptor}
 			onRowAction={(key) => onRowAction?.(key as string)}
+			onSelectionChange={
+				onSelectionChange
+					? (selection) => {
+							if (selection !== "all") onSelectionChange([...selection].map((k) => k as string))
+						}
+					: undefined
+			}
+			onSortChange={
+				onSortChange
+					? (descriptor) => onSortChange({ column: descriptor.column as string, direction: descriptor.direction })
+					: undefined
+			}
 			className={styles.root}
 		>
 			<TableHeader>

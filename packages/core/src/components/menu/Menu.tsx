@@ -8,8 +8,12 @@ interface MenuProps {
 	placement?: "top" | "bottom" | "left" | "right"
 	isOpen?: boolean
 	selectionMode?: "none" | "single" | "multiple"
+	selectedKeys?: string[]
 	defaultSelectedKeys?: string[]
+	disabledKeys?: string[]
 	onAction?: (key: string) => void
+	onSelectionChange?: (keys: string[]) => void
+	onClose?: () => void
 	onOpenChange?: (isOpen: boolean) => void
 }
 
@@ -19,8 +23,12 @@ export function Menu({
 	placement = "bottom",
 	isOpen,
 	selectionMode,
+	selectedKeys,
 	defaultSelectedKeys,
+	disabledKeys,
 	onAction,
+	onSelectionChange,
+	onClose,
 	onOpenChange,
 }: MenuProps) {
 	const styles = getMenuStyles()
@@ -32,7 +40,17 @@ export function Menu({
 				<RACMenu
 					onAction={(key) => onAction?.(key as string)}
 					selectionMode={selectionMode}
+					selectedKeys={selectedKeys}
 					defaultSelectedKeys={defaultSelectedKeys}
+					disabledKeys={disabledKeys}
+					onSelectionChange={
+						onSelectionChange
+							? (selection) => {
+									if (selection !== "all") onSelectionChange([...selection].map((k) => k as string))
+								}
+							: undefined
+					}
+					onClose={onClose}
 					className={styles.menu}
 				>
 					{items.map((item) => (

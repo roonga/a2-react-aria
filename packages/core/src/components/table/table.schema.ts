@@ -22,6 +22,15 @@ export const TableSchema = z.object({
 			columns: z.array(TableColumnSchema).optional(),
 			rows: z.array(TableRowSchema).optional(),
 			selectionMode: z.enum(["none", "single", "multiple"]).optional(),
+			selectedKeys: z.array(z.string()).optional(),
+			defaultSelectedKeys: z.array(z.string()).optional(),
+			disabledKeys: z.array(z.string()).optional(),
+			sortDescriptor: z
+				.object({
+					column: z.string(),
+					direction: z.enum(["ascending", "descending"]),
+				})
+				.optional(),
 		})
 		.optional(),
 })

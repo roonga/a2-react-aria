@@ -644,6 +644,19 @@ describe("MenuSchema", () => {
 	it("rejects wrong type literal", () => {
 		expect(MenuSchema.safeParse({ type: "menu" }).success).toBe(false)
 	})
+
+	it("accepts selectedKeys and disabledKeys as string arrays", () => {
+		expect(
+			MenuSchema.safeParse({
+				type: "Menu",
+				props: { selectedKeys: ["a", "b"], disabledKeys: ["c"] },
+			}).success,
+		).toBe(true)
+	})
+
+	it("rejects non-array selectedKeys", () => {
+		expect(MenuSchema.safeParse({ type: "Menu", props: { selectedKeys: "a" } }).success).toBe(false)
+	})
 })
 
 describe("PopoverSchema", () => {
@@ -781,6 +794,14 @@ describe("TabsSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(TabsSchema.safeParse({ type: "tabs" }).success).toBe(false)
+	})
+
+	it("accepts disabledKeys as string array", () => {
+		expect(TabsSchema.safeParse({ type: "Tabs", props: { disabledKeys: ["tab2"] } }).success).toBe(true)
+	})
+
+	it("rejects non-array disabledKeys", () => {
+		expect(TabsSchema.safeParse({ type: "Tabs", props: { disabledKeys: "tab2" } }).success).toBe(false)
 	})
 })
 
@@ -987,6 +1008,33 @@ describe("TableSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(TableSchema.safeParse({ type: "table" }).success).toBe(false)
+	})
+
+	it("accepts selectedKeys, defaultSelectedKeys, and disabledKeys as string arrays", () => {
+		expect(
+			TableSchema.safeParse({
+				type: "Table",
+				props: { selectedKeys: ["1", "2"], defaultSelectedKeys: ["1"], disabledKeys: ["3"] },
+			}).success,
+		).toBe(true)
+	})
+
+	it("accepts a valid sortDescriptor", () => {
+		expect(
+			TableSchema.safeParse({
+				type: "Table",
+				props: { sortDescriptor: { column: "name", direction: "ascending" } },
+			}).success,
+		).toBe(true)
+	})
+
+	it("rejects a sortDescriptor with invalid direction", () => {
+		expect(
+			TableSchema.safeParse({
+				type: "Table",
+				props: { sortDescriptor: { column: "name", direction: "asc" } },
+			}).success,
+		).toBe(false)
 	})
 })
 

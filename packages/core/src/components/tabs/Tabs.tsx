@@ -7,6 +7,7 @@ interface TabsProps {
 	tabs?: TabItem[]
 	defaultSelectedKey?: string
 	selectedKey?: string
+	disabledKeys?: string[]
 	onSelectionChange?: (key: string) => void
 	orientation?: "horizontal" | "vertical"
 	keyboardActivation?: "automatic" | "manual"
@@ -18,6 +19,7 @@ export function Tabs({
 	tabs = [],
 	defaultSelectedKey,
 	selectedKey,
+	disabledKeys,
 	onSelectionChange,
 	orientation = "horizontal",
 	keyboardActivation = "automatic",
@@ -31,6 +33,7 @@ export function Tabs({
 		<RACTabs
 			defaultSelectedKey={defaultSelectedKey}
 			selectedKey={selectedKey}
+			disabledKeys={disabledKeys}
 			onSelectionChange={(key) => onSelectionChange?.(key as string)}
 			orientation={orientation}
 			keyboardActivation={keyboardActivation}

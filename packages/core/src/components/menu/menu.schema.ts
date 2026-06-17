@@ -17,7 +17,9 @@ export const MenuSchema = z.object({
 			placement: z.enum(["top", "bottom", "left", "right"]).optional(),
 			isOpen: z.boolean().optional(),
 			selectionMode: z.enum(["none", "single", "multiple"]).optional(),
+			selectedKeys: z.array(z.string()).optional(),
 			defaultSelectedKeys: z.array(z.string()).optional(),
+			disabledKeys: z.array(z.string()).optional(),
 		})
 		.optional(),
 })
