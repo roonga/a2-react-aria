@@ -4,15 +4,19 @@ import { getButtonStyles, getSizeStyles } from "./button.styles"
 
 interface ButtonProps {
 	children?: ReactNode
-	disabled?: boolean
+	isDisabled?: boolean
 	variant?: "primary" | "secondary" | "danger" | "ghost"
 	size?: "sm" | "md" | "lg"
 	onPress?: () => void
 }
 
-export function Button({ children, disabled = false, variant = "primary", size = "md", onPress }: ButtonProps) {
+export function Button({ children, isDisabled = false, variant = "primary", size = "md", onPress }: ButtonProps) {
 	return (
-		<RACButton onPress={onPress} isDisabled={disabled} className={`${getButtonStyles(variant)} ${getSizeStyles(size)}`}>
+		<RACButton
+			onPress={onPress}
+			isDisabled={isDisabled}
+			className={`${getButtonStyles(variant)} ${getSizeStyles(size)}`}
+		>
 			{children}
 		</RACButton>
 	)

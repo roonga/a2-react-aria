@@ -65,7 +65,7 @@ export const Disabled: Story = {
 	args: {
 		node: {
 			type: "Button",
-			props: { variant: "primary", disabled: true },
+			props: { variant: "primary", isDisabled: true },
 			children: "Disabled",
 		},
 	},

@@ -96,6 +96,15 @@ describe("ButtonSchema", () => {
 	it("rejects wrong type literal", () => {
 		expect(ButtonSchema.safeParse({ type: "button" }).success).toBe(false)
 	})
+
+	it("accepts isDisabled prop", () => {
+		expect(ButtonSchema.safeParse({ type: "Button", props: { isDisabled: true } }).success).toBe(true)
+	})
+
+	it("strips old DOM prop name 'disabled'", () => {
+		const parsed = ButtonSchema.parse({ type: "Button", props: { disabled: true } })
+		expect((parsed.props as Record<string, unknown>)?.disabled).toBeUndefined()
+	})
 })
 
 describe("CardSchema", () => {

@@ -5,7 +5,7 @@ export const ButtonSchema = z.object({
 	props: z
 		.object({
 			variant: z.enum(["primary", "secondary", "danger", "ghost"]).optional(),
-			disabled: z.boolean().optional(),
+			isDisabled: z.boolean().optional(),
 			size: z.enum(["sm", "md", "lg"]).optional(),
 		})
 		.optional(),

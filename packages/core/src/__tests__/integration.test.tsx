@@ -68,7 +68,7 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 		it("renders disabled button from a2UI JSON", () => {
 			const node = {
 				type: "Button" as const,
-				props: { disabled: true },
+				props: { isDisabled: true },
 				children: "Click",
 			}
 			render(<A2Renderer node={node} registry={registry} />)
@@ -433,7 +433,7 @@ describe("Accessibility — axe-core", () => {
 
 		it("has no axe violations (disabled)", async () => {
 			const { container } = render(
-				<A2Renderer node={{ type: "Button", props: { disabled: true }, children: "Disabled" }} registry={registry} />,
+				<A2Renderer node={{ type: "Button", props: { isDisabled: true }, children: "Disabled" }} registry={registry} />,
 			)
 			const { violations } = await axe.run(container, AXE_CONFIG)
 			expect(violations).toHaveLength(0)
