@@ -325,6 +325,11 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 
 			// Group must not use overflow-hidden (clips button content in flex containers)
 			expect(group.className).not.toContain("overflow-hidden")
+
+			// Input must have min-w-0 so flex-1 can shrink in narrow grid cells
+			// (without it the browser's default min-width pushes + outside the border)
+			const input = group.querySelector("input")!
+			expect(input.className).toContain("min-w-0")
 		})
 	})
 
