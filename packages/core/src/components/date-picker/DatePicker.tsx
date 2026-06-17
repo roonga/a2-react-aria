@@ -28,6 +28,7 @@ interface DatePickerProps {
 	isRequired?: boolean
 	isInvalid?: boolean
 	isReadOnly?: boolean
+	value?: string
 	defaultValue?: string
 	minValue?: string
 	maxValue?: string
@@ -43,6 +44,7 @@ export function DatePicker({
 	isRequired,
 	isInvalid,
 	isReadOnly,
+	value,
 	defaultValue,
 	minValue,
 	maxValue,
@@ -51,6 +53,7 @@ export function DatePicker({
 	const styles = getDatePickerStyles()
 	return (
 		<RACDatePicker
+			value={value ? parseDate(value) : undefined}
 			defaultValue={defaultValue ? parseDate(defaultValue) : undefined}
 			minValue={minValue ? parseDate(minValue) : undefined}
 			maxValue={maxValue ? parseDate(maxValue) : undefined}

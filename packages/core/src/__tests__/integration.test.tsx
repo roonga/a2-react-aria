@@ -195,12 +195,35 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 			)
 			expect(container.querySelector("group[data-disabled]") ?? container.firstChild).toBeDefined()
 		})
+
+		it("renders with a controlled value", () => {
+			render(
+				<A2Renderer
+					node={{ type: "DatePicker", props: { label: "Appointment", value: "2024-06-15" } }}
+					registry={registry}
+				/>,
+			)
+			expect(screen.getByText(/appointment/i)).toBeDefined()
+		})
 	})
 
 	describe("DateRangePicker component", () => {
 		it("renders daterangepicker with label", () => {
 			render(<A2Renderer node={{ type: "DateRangePicker", props: { label: "Date range" } }} registry={registry} />)
 			expect(screen.getByText(/date range/i)).toBeDefined()
+		})
+
+		it("renders with a controlled value range", () => {
+			render(
+				<A2Renderer
+					node={{
+						type: "DateRangePicker",
+						props: { label: "Stay period", value: { start: "2024-07-01", end: "2024-07-14" } },
+					}}
+					registry={registry}
+				/>,
+			)
+			expect(screen.getByText(/stay period/i)).toBeDefined()
 		})
 	})
 
@@ -270,6 +293,12 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 			)
 			const hidden = container.querySelector('input[name="amount"]')
 			expect(hidden).not.toBeNull()
+		})
+
+		it("renders with a controlled value", () => {
+			render(<A2Renderer node={{ type: "NumberField", props: { label: "Count", value: 7 } }} registry={registry} />)
+			const input = screen.getByRole("textbox", { name: /count/i }) as HTMLInputElement
+			expect(input.value).toBe("7")
 		})
 	})
 

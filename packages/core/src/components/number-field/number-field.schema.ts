@@ -9,6 +9,7 @@ export const NumberFieldSchema = z.object({
 			minValue: z.number().optional(),
 			maxValue: z.number().optional(),
 			step: z.number().optional(),
+			value: z.number().optional(),
 			defaultValue: z.number().optional(),
 			isRequired: z.boolean().optional(),
 			isDisabled: z.boolean().optional(),

@@ -258,6 +258,14 @@ describe("NumberFieldSchema", () => {
 	it("rejects wrong type literal", () => {
 		expect(NumberFieldSchema.safeParse({ type: "numberfield" }).success).toBe(false)
 	})
+
+	it("accepts a controlled value", () => {
+		expect(NumberFieldSchema.safeParse({ type: "NumberField", props: { value: 42 } }).success).toBe(true)
+	})
+
+	it("rejects a non-number value", () => {
+		expect(NumberFieldSchema.safeParse({ type: "NumberField", props: { value: "42" } }).success).toBe(false)
+	})
 })
 
 describe("CheckboxSchema", () => {
@@ -761,6 +769,14 @@ describe("DatePickerSchema", () => {
 	it("rejects wrong type literal", () => {
 		expect(DatePickerSchema.safeParse({ type: "datepicker" }).success).toBe(false)
 	})
+
+	it("accepts a controlled value", () => {
+		expect(DatePickerSchema.safeParse({ type: "DatePicker", props: { value: "2024-06-15" } }).success).toBe(true)
+	})
+
+	it("rejects a non-string value", () => {
+		expect(DatePickerSchema.safeParse({ type: "DatePicker", props: { value: 20240615 } }).success).toBe(false)
+	})
 })
 
 describe("DateRangePickerSchema", () => {
@@ -797,6 +813,24 @@ describe("DateRangePickerSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(DateRangePickerSchema.safeParse({ type: "daterangepicker" }).success).toBe(false)
+	})
+
+	it("accepts a controlled value range", () => {
+		expect(
+			DateRangePickerSchema.safeParse({
+				type: "DateRangePicker",
+				props: { value: { start: "2024-07-01", end: "2024-07-14" } },
+			}).success,
+		).toBe(true)
+	})
+
+	it("rejects a value missing end", () => {
+		expect(
+			DateRangePickerSchema.safeParse({
+				type: "DateRangePicker",
+				props: { value: { start: "2024-07-01" } },
+			}).success,
+		).toBe(false)
 	})
 })
 

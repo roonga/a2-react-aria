@@ -7,6 +7,7 @@ interface NumberFieldProps {
 	minValue?: number
 	maxValue?: number
 	step?: number
+	value?: number
 	defaultValue?: number
 	isRequired?: boolean
 	isDisabled?: boolean
@@ -24,6 +25,7 @@ export function NumberField({
 	minValue,
 	maxValue,
 	step,
+	value,
 	defaultValue,
 	isRequired = false,
 	isDisabled = false,
@@ -41,6 +43,7 @@ export function NumberField({
 			minValue={minValue}
 			maxValue={maxValue}
 			step={step}
+			value={value}
 			defaultValue={defaultValue}
 			isRequired={isRequired}
 			isDisabled={isDisabled}

@@ -27,9 +27,11 @@ interface DateRangePickerProps {
 	isRequired?: boolean
 	isInvalid?: boolean
 	isReadOnly?: boolean
+	value?: { start: string; end: string }
 	defaultValue?: { start: string; end: string }
 	minValue?: string
 	maxValue?: string
+	onChange?: (value: { start: string; end: string }) => void
 }
 
 export function DateRangePicker({
@@ -40,13 +42,16 @@ export function DateRangePicker({
 	isRequired,
 	isInvalid,
 	isReadOnly,
+	value,
 	defaultValue,
 	minValue,
 	maxValue,
+	onChange,
 }: DateRangePickerProps) {
 	const styles = getDatePickerStyles()
 	return (
 		<RACDateRangePicker
+			value={value ? { start: parseDate(value.start), end: parseDate(value.end) } : undefined}
 			defaultValue={
 				defaultValue ? { start: parseDate(defaultValue.start), end: parseDate(defaultValue.end) } : undefined
 			}
@@ -56,6 +61,11 @@ export function DateRangePicker({
 			isRequired={isRequired}
 			isInvalid={isInvalid}
 			isReadOnly={isReadOnly}
+			onChange={
+				onChange
+					? (range) => range && onChange({ start: range.start.toString(), end: range.end.toString() })
+					: undefined
+			}
 			className={styles.root}
 		>
 			{label && <Label className={styles.label}>{label}</Label>}
