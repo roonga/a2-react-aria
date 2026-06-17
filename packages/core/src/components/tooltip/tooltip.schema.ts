@@ -10,6 +10,10 @@ export const TooltipSchema = z.object({
 			triggerLabel: z.string().optional(),
 			placement: placement.optional(),
 			isOpen: z.boolean().optional(),
+			defaultOpen: z.boolean().optional(),
+			offset: z.number().optional(),
+			crossOffset: z.number().optional(),
+			shouldFlip: z.boolean().optional(),
 		})
 		.optional(),
 })

@@ -6,6 +6,10 @@ interface TooltipProps {
 	triggerLabel?: string
 	placement?: "top" | "bottom" | "left" | "right"
 	isOpen?: boolean
+	defaultOpen?: boolean
+	offset?: number
+	crossOffset?: number
+	shouldFlip?: boolean
 	onOpenChange?: (isOpen: boolean) => void
 }
 
@@ -14,14 +18,24 @@ export function Tooltip({
 	triggerLabel = "Info",
 	placement = "top",
 	isOpen,
+	defaultOpen,
+	offset = 8,
+	crossOffset,
+	shouldFlip,
 	onOpenChange,
 }: TooltipProps) {
 	const styles = getTooltipStyles()
 
 	return (
-		<TooltipTrigger isOpen={isOpen} onOpenChange={onOpenChange}>
+		<TooltipTrigger isOpen={isOpen} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
 			<Button className={styles.trigger}>{triggerLabel}</Button>
-			<RACTooltip placement={placement} offset={8} className={styles.tooltip}>
+			<RACTooltip
+				placement={placement}
+				offset={offset}
+				crossOffset={crossOffset}
+				shouldFlip={shouldFlip}
+				className={styles.tooltip}
+			>
 				{content}
 			</RACTooltip>
 		</TooltipTrigger>

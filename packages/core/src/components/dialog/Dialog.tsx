@@ -10,6 +10,7 @@ interface DialogProps {
 	isKeyboardDismissDisabled?: boolean
 	role?: "dialog" | "alertdialog"
 	isOpen?: boolean
+	defaultOpen?: boolean
 	onOpenChange?: (isOpen: boolean) => void
 	children?: ReactNode
 }
@@ -22,6 +23,7 @@ export function Dialog({
 	isKeyboardDismissDisabled,
 	role = "dialog",
 	isOpen,
+	defaultOpen,
 	onOpenChange,
 	children,
 }: DialogProps) {
@@ -49,7 +51,7 @@ export function Dialog({
 
 	if (triggerLabel) {
 		return (
-			<DialogTrigger>
+			<DialogTrigger defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
 				<Button className={styles.trigger}>{triggerLabel}</Button>
 				<ModalOverlay
 					isDismissable={isDismissable}

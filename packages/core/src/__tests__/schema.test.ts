@@ -548,6 +548,10 @@ describe("DialogSchema", () => {
 	it("rejects wrong type literal", () => {
 		expect(DialogSchema.safeParse({ type: "dialog" }).success).toBe(false)
 	})
+
+	it("accepts defaultOpen", () => {
+		expect(DialogSchema.safeParse({ type: "Dialog", props: { defaultOpen: true } }).success).toBe(true)
+	})
 })
 
 describe("FormSchema", () => {
@@ -681,6 +685,21 @@ describe("PopoverSchema", () => {
 	it("rejects wrong type literal", () => {
 		expect(PopoverSchema.safeParse({ type: "popover" }).success).toBe(false)
 	})
+
+	it("accepts defaultOpen, crossOffset, shouldFlip, isKeyboardDismissDisabled, maxHeight", () => {
+		expect(
+			PopoverSchema.safeParse({
+				type: "Popover",
+				props: {
+					defaultOpen: false,
+					crossOffset: 4,
+					shouldFlip: true,
+					isKeyboardDismissDisabled: false,
+					maxHeight: 300,
+				},
+			}).success,
+		).toBe(true)
+	})
 })
 
 describe("TooltipSchema", () => {
@@ -704,6 +723,15 @@ describe("TooltipSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(TooltipSchema.safeParse({ type: "tooltip" }).success).toBe(false)
+	})
+
+	it("accepts defaultOpen, offset, crossOffset, shouldFlip", () => {
+		expect(
+			TooltipSchema.safeParse({
+				type: "Tooltip",
+				props: { defaultOpen: true, offset: 12, crossOffset: 4, shouldFlip: false },
+			}).success,
+		).toBe(true)
 	})
 })
 
@@ -736,6 +764,15 @@ describe("SelectSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(SelectSchema.safeParse({ type: "select" }).success).toBe(false)
+	})
+
+	it("accepts isOpen, defaultOpen, and disabledKeys", () => {
+		expect(
+			SelectSchema.safeParse({
+				type: "Select",
+				props: { isOpen: false, defaultOpen: true, disabledKeys: ["apple"] },
+			}).success,
+		).toBe(true)
 	})
 
 	it("accepts both validationBehavior values", () => {

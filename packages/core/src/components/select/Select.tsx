@@ -21,12 +21,16 @@ interface SelectProps {
 	isDisabled?: boolean
 	isRequired?: boolean
 	isInvalid?: boolean
+	isOpen?: boolean
+	defaultOpen?: boolean
+	disabledKeys?: string[]
 	validationBehavior?: "aria" | "native"
 	validate?: (value: string) => string | string[] | true | null | undefined
 	name?: string
 	description?: string
 	errorMessage?: string
 	onChange?: (value: string) => void
+	onOpenChange?: (isOpen: boolean) => void
 }
 
 export function Select({
@@ -38,12 +42,16 @@ export function Select({
 	isDisabled = false,
 	isRequired = false,
 	isInvalid = false,
+	isOpen,
+	defaultOpen,
+	disabledKeys,
 	validationBehavior,
 	validate,
 	name,
 	description,
 	errorMessage,
 	onChange,
+	onOpenChange,
 }: SelectProps) {
 	const styles = getSelectStyles()
 
@@ -54,11 +62,14 @@ export function Select({
 			isDisabled={isDisabled}
 			isRequired={isRequired}
 			isInvalid={isInvalid}
+			isOpen={isOpen}
+			defaultOpen={defaultOpen}
 			validationBehavior={validationBehavior}
 			validate={validate ? (key) => validate(key as string) : undefined}
 			name={name}
 			placeholder={placeholder}
 			onSelectionChange={(key) => onChange?.(key as string)}
+			onOpenChange={onOpenChange}
 			className={styles.field}
 		>
 			{label && <Label className={styles.label}>{label}</Label>}
@@ -88,7 +99,7 @@ export function Select({
 			)}
 			<FieldError className={styles.errorMessage}>{errorMessage}</FieldError>
 			<Popover className={styles.popover}>
-				<ListBox className={styles.listbox}>
+				<ListBox disabledKeys={disabledKeys} className={styles.listbox}>
 					{items.map((item) => (
 						<ListBoxItem key={item.value} id={item.value} isDisabled={item.isDisabled} className={styles.item}>
 							{item.label}

@@ -11,6 +11,7 @@ export const DialogSchema = z.object({
 			isKeyboardDismissDisabled: z.boolean().optional(),
 			role: z.enum(["dialog", "alertdialog"]).optional(),
 			isOpen: z.boolean().optional(),
+			defaultOpen: z.boolean().optional(),
 		})
 		.optional(),
 	children: z.array(z.unknown()).optional(),
