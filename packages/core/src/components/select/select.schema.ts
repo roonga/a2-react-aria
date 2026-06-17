@@ -18,6 +18,7 @@ export const SelectSchema = z.object({
 			isDisabled: z.boolean().optional(),
 			isRequired: z.boolean().optional(),
 			isInvalid: z.boolean().optional(),
+			validationBehavior: z.enum(["aria", "native"]).optional(),
 			name: z.string().optional(),
 			description: z.string().optional(),
 			errorMessage: z.string().optional(),

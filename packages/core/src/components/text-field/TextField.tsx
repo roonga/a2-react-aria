@@ -12,6 +12,8 @@ interface TextFieldProps {
 	isRequired?: boolean
 	isReadOnly?: boolean
 	isInvalid?: boolean
+	validationBehavior?: "aria" | "native"
+	validate?: (value: string) => string | string[] | true | null | undefined
 	minLength?: number
 	maxLength?: number
 	pattern?: string
@@ -31,6 +33,8 @@ export function TextField({
 	isRequired = false,
 	isReadOnly = false,
 	isInvalid = false,
+	validationBehavior,
+	validate,
 	minLength,
 	maxLength,
 	pattern,
@@ -50,6 +54,8 @@ export function TextField({
 			isRequired={isRequired}
 			isReadOnly={isReadOnly}
 			isInvalid={isInvalid}
+			validationBehavior={validationBehavior}
+			validate={validate}
 			minLength={minLength}
 			maxLength={maxLength}
 			pattern={pattern}

@@ -9,6 +9,8 @@ interface SwitchProps {
 	isRequired?: boolean
 	isInvalid?: boolean
 	isReadOnly?: boolean
+	validationBehavior?: "aria" | "native"
+	validate?: (value: boolean) => string | string[] | true | null | undefined
 	name?: string
 	value?: string
 	description?: string
@@ -24,6 +26,8 @@ export function Switch({
 	isRequired = false,
 	isInvalid = false,
 	isReadOnly = false,
+	validationBehavior,
+	validate,
 	name,
 	value,
 	description,
@@ -40,6 +44,8 @@ export function Switch({
 			isRequired={isRequired}
 			isInvalid={isInvalid}
 			isReadOnly={isReadOnly}
+			validationBehavior={validationBehavior}
+			validate={validate}
 			name={name}
 			value={value}
 			onChange={onChange}

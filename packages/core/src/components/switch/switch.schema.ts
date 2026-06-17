@@ -11,6 +11,7 @@ export const SwitchSchema = z.object({
 			isRequired: z.boolean().optional(),
 			isInvalid: z.boolean().optional(),
 			isReadOnly: z.boolean().optional(),
+			validationBehavior: z.enum(["aria", "native"]).optional(),
 			name: z.string().optional(),
 			value: z.string().optional(),
 			description: z.string().optional(),

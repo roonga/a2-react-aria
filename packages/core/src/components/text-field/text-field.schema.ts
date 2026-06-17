@@ -14,6 +14,7 @@ export const TextFieldSchema = z.object({
 			isRequired: z.boolean().optional(),
 			isReadOnly: z.boolean().optional(),
 			isInvalid: z.boolean().optional(),
+			validationBehavior: z.enum(["aria", "native"]).optional(),
 			minLength: z.number().optional(),
 			maxLength: z.number().optional(),
 			pattern: z.string().optional(),

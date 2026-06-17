@@ -13,6 +13,8 @@ interface NumberFieldProps {
 	isDisabled?: boolean
 	isReadOnly?: boolean
 	isInvalid?: boolean
+	validationBehavior?: "aria" | "native"
+	validate?: (value: number) => string | string[] | true | null | undefined
 	name?: string
 	description?: string
 	errorMessage?: string
@@ -31,6 +33,8 @@ export function NumberField({
 	isDisabled = false,
 	isReadOnly = false,
 	isInvalid = false,
+	validationBehavior,
+	validate,
 	name,
 	description,
 	errorMessage,
@@ -49,6 +53,8 @@ export function NumberField({
 			isDisabled={isDisabled}
 			isReadOnly={isReadOnly}
 			isInvalid={isInvalid}
+			validationBehavior={validationBehavior}
+			validate={validate}
 			name={name}
 			onChange={onChange}
 			className={styles.container}

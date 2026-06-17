@@ -12,6 +12,7 @@ export const DatePickerSchema = z.object({
 			isRequired: z.boolean().optional(),
 			isInvalid: z.boolean().optional(),
 			isReadOnly: z.boolean().optional(),
+			validationBehavior: z.enum(["aria", "native"]).optional(),
 			value: z.string().optional(),
 			defaultValue: z.string().optional(),
 			minValue: z.string().optional(),
@@ -33,6 +34,7 @@ export const DateRangePickerSchema = z.object({
 			isRequired: z.boolean().optional(),
 			isInvalid: z.boolean().optional(),
 			isReadOnly: z.boolean().optional(),
+			validationBehavior: z.enum(["aria", "native"]).optional(),
 			value: z
 				.object({
 					start: z.string(),

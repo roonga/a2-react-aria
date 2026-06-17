@@ -21,6 +21,8 @@ interface SelectProps {
 	isDisabled?: boolean
 	isRequired?: boolean
 	isInvalid?: boolean
+	validationBehavior?: "aria" | "native"
+	validate?: (value: string) => string | string[] | true | null | undefined
 	name?: string
 	description?: string
 	errorMessage?: string
@@ -36,6 +38,8 @@ export function Select({
 	isDisabled = false,
 	isRequired = false,
 	isInvalid = false,
+	validationBehavior,
+	validate,
 	name,
 	description,
 	errorMessage,
@@ -50,6 +54,8 @@ export function Select({
 			isDisabled={isDisabled}
 			isRequired={isRequired}
 			isInvalid={isInvalid}
+			validationBehavior={validationBehavior}
+			validate={validate ? (key) => validate(key as string) : undefined}
 			name={name}
 			placeholder={placeholder}
 			onSelectionChange={(key) => onChange?.(key as string)}

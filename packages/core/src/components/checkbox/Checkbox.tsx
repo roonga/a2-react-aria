@@ -9,8 +9,11 @@ interface CheckboxProps {
 	defaultSelected?: boolean
 	isDisabled?: boolean
 	isRequired?: boolean
+	isReadOnly?: boolean
 	isIndeterminate?: boolean
 	isInvalid?: boolean
+	validationBehavior?: "aria" | "native"
+	validate?: (value: boolean) => string | string[] | true | null | undefined
 	errorMessage?: string
 	onChange?: (isSelected: boolean) => void
 }
@@ -23,8 +26,11 @@ export function Checkbox({
 	defaultSelected,
 	isDisabled = false,
 	isRequired = false,
+	isReadOnly = false,
 	isIndeterminate = false,
 	isInvalid = false,
+	validationBehavior,
+	validate,
 	errorMessage,
 	onChange,
 }: CheckboxProps) {
@@ -38,8 +44,11 @@ export function Checkbox({
 			defaultSelected={defaultSelected}
 			isDisabled={isDisabled}
 			isRequired={isRequired}
+			isReadOnly={isReadOnly}
 			isIndeterminate={isIndeterminate}
 			isInvalid={isInvalid}
+			validationBehavior={validationBehavior}
+			validate={validate}
 			onChange={onChange}
 			className={styles.field}
 		>

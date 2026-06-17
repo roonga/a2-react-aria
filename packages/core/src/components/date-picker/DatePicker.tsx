@@ -1,4 +1,4 @@
-import { parseDate } from "@internationalized/date"
+import { type DateValue, parseDate } from "@internationalized/date"
 import {
 	Button,
 	Calendar,
@@ -28,6 +28,8 @@ interface DatePickerProps {
 	isRequired?: boolean
 	isInvalid?: boolean
 	isReadOnly?: boolean
+	validationBehavior?: "aria" | "native"
+	validate?: (value: DateValue | null) => string | string[] | true | null | undefined
 	value?: string
 	defaultValue?: string
 	minValue?: string
@@ -44,6 +46,8 @@ export function DatePicker({
 	isRequired,
 	isInvalid,
 	isReadOnly,
+	validationBehavior,
+	validate,
 	value,
 	defaultValue,
 	minValue,
@@ -62,6 +66,8 @@ export function DatePicker({
 			isRequired={isRequired}
 			isInvalid={isInvalid}
 			isReadOnly={isReadOnly}
+			validationBehavior={validationBehavior}
+			validate={validate}
 			onChange={(date) => onChange?.(date?.toString() ?? "")}
 			className={styles.root}
 		>

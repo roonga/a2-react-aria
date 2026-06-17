@@ -1,4 +1,4 @@
-import { parseDate } from "@internationalized/date"
+import { type DateValue, parseDate } from "@internationalized/date"
 import {
 	Button,
 	CalendarCell,
@@ -27,6 +27,8 @@ interface DateRangePickerProps {
 	isRequired?: boolean
 	isInvalid?: boolean
 	isReadOnly?: boolean
+	validationBehavior?: "aria" | "native"
+	validate?: (value: { start: DateValue; end: DateValue } | null) => string | string[] | true | null | undefined
 	value?: { start: string; end: string }
 	defaultValue?: { start: string; end: string }
 	minValue?: string
@@ -42,6 +44,8 @@ export function DateRangePicker({
 	isRequired,
 	isInvalid,
 	isReadOnly,
+	validationBehavior,
+	validate,
 	value,
 	defaultValue,
 	minValue,
@@ -61,6 +65,8 @@ export function DateRangePicker({
 			isRequired={isRequired}
 			isInvalid={isInvalid}
 			isReadOnly={isReadOnly}
+			validationBehavior={validationBehavior}
+			validate={validate}
 			onChange={
 				onChange
 					? (range) => range && onChange({ start: range.start.toString(), end: range.end.toString() })

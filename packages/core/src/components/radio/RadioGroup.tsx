@@ -8,7 +8,10 @@ interface RadioGroupProps {
 	defaultValue?: string
 	isDisabled?: boolean
 	isRequired?: boolean
+	isReadOnly?: boolean
 	isInvalid?: boolean
+	validationBehavior?: "aria" | "native"
+	validate?: (value: string) => string | string[] | true | null | undefined
 	orientation?: "horizontal" | "vertical"
 	name?: string
 	description?: string
@@ -23,7 +26,10 @@ export function RadioGroup({
 	defaultValue,
 	isDisabled = false,
 	isRequired = false,
+	isReadOnly = false,
 	isInvalid = false,
+	validationBehavior,
+	validate,
 	orientation = "vertical",
 	name,
 	description,
@@ -39,7 +45,10 @@ export function RadioGroup({
 			defaultValue={defaultValue}
 			isDisabled={isDisabled}
 			isRequired={isRequired}
+			isReadOnly={isReadOnly}
 			isInvalid={isInvalid}
+			validationBehavior={validationBehavior}
+			validate={validate}
 			orientation={orientation}
 			name={name}
 			onChange={onChange}

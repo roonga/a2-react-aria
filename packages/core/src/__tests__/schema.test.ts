@@ -216,6 +216,16 @@ describe("TextFieldSchema", () => {
 	it("rejects wrong type literal", () => {
 		expect(TextFieldSchema.safeParse({ type: "text-field" }).success).toBe(false)
 	})
+
+	it("accepts both validationBehavior values", () => {
+		for (const v of ["aria", "native"]) {
+			expect(TextFieldSchema.safeParse({ type: "TextField", props: { validationBehavior: v } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid validationBehavior", () => {
+		expect(TextFieldSchema.safeParse({ type: "TextField", props: { validationBehavior: "html" } }).success).toBe(false)
+	})
 })
 
 describe("NumberFieldSchema", () => {
@@ -266,6 +276,18 @@ describe("NumberFieldSchema", () => {
 	it("rejects a non-number value", () => {
 		expect(NumberFieldSchema.safeParse({ type: "NumberField", props: { value: "42" } }).success).toBe(false)
 	})
+
+	it("accepts both validationBehavior values", () => {
+		for (const v of ["aria", "native"]) {
+			expect(NumberFieldSchema.safeParse({ type: "NumberField", props: { validationBehavior: v } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid validationBehavior", () => {
+		expect(NumberFieldSchema.safeParse({ type: "NumberField", props: { validationBehavior: "html" } }).success).toBe(
+			false,
+		)
+	})
 })
 
 describe("CheckboxSchema", () => {
@@ -314,6 +336,20 @@ describe("CheckboxSchema", () => {
 	it("rejects wrong type literal", () => {
 		expect(CheckboxSchema.safeParse({ type: "checkbox" }).success).toBe(false)
 	})
+
+	it("accepts isReadOnly", () => {
+		expect(CheckboxSchema.safeParse({ type: "Checkbox", props: { isReadOnly: true } }).success).toBe(true)
+	})
+
+	it("accepts both validationBehavior values", () => {
+		for (const v of ["aria", "native"]) {
+			expect(CheckboxSchema.safeParse({ type: "Checkbox", props: { validationBehavior: v } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid validationBehavior", () => {
+		expect(CheckboxSchema.safeParse({ type: "Checkbox", props: { validationBehavior: "html" } }).success).toBe(false)
+	})
 })
 
 describe("CheckboxGroupSchema", () => {
@@ -343,6 +379,24 @@ describe("CheckboxGroupSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(CheckboxGroupSchema.safeParse({ type: "checkboxGroup" }).success).toBe(false)
+	})
+
+	it("accepts isReadOnly", () => {
+		expect(CheckboxGroupSchema.safeParse({ type: "CheckboxGroup", props: { isReadOnly: true } }).success).toBe(true)
+	})
+
+	it("accepts both validationBehavior values", () => {
+		for (const v of ["aria", "native"]) {
+			expect(CheckboxGroupSchema.safeParse({ type: "CheckboxGroup", props: { validationBehavior: v } }).success).toBe(
+				true,
+			)
+		}
+	})
+
+	it("rejects an invalid validationBehavior", () => {
+		expect(
+			CheckboxGroupSchema.safeParse({ type: "CheckboxGroup", props: { validationBehavior: "html" } }).success,
+		).toBe(false)
 	})
 })
 
@@ -396,6 +450,22 @@ describe("RadioGroupSchema", () => {
 	it("rejects wrong type literal", () => {
 		expect(RadioGroupSchema.safeParse({ type: "radioGroup" }).success).toBe(false)
 	})
+
+	it("accepts isReadOnly", () => {
+		expect(RadioGroupSchema.safeParse({ type: "RadioGroup", props: { isReadOnly: true } }).success).toBe(true)
+	})
+
+	it("accepts both validationBehavior values", () => {
+		for (const v of ["aria", "native"]) {
+			expect(RadioGroupSchema.safeParse({ type: "RadioGroup", props: { validationBehavior: v } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid validationBehavior", () => {
+		expect(RadioGroupSchema.safeParse({ type: "RadioGroup", props: { validationBehavior: "html" } }).success).toBe(
+			false,
+		)
+	})
 })
 
 describe("SwitchSchema", () => {
@@ -422,6 +492,16 @@ describe("SwitchSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(SwitchSchema.safeParse({ type: "switch" }).success).toBe(false)
+	})
+
+	it("accepts both validationBehavior values", () => {
+		for (const v of ["aria", "native"]) {
+			expect(SwitchSchema.safeParse({ type: "Switch", props: { validationBehavior: v } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid validationBehavior", () => {
+		expect(SwitchSchema.safeParse({ type: "Switch", props: { validationBehavior: "html" } }).success).toBe(false)
 	})
 })
 
@@ -644,6 +724,16 @@ describe("SelectSchema", () => {
 	it("rejects wrong type literal", () => {
 		expect(SelectSchema.safeParse({ type: "select" }).success).toBe(false)
 	})
+
+	it("accepts both validationBehavior values", () => {
+		for (const v of ["aria", "native"]) {
+			expect(SelectSchema.safeParse({ type: "Select", props: { validationBehavior: v } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid validationBehavior", () => {
+		expect(SelectSchema.safeParse({ type: "Select", props: { validationBehavior: "html" } }).success).toBe(false)
+	})
 })
 
 describe("TabsSchema", () => {
@@ -777,6 +867,18 @@ describe("DatePickerSchema", () => {
 	it("rejects a non-string value", () => {
 		expect(DatePickerSchema.safeParse({ type: "DatePicker", props: { value: 20240615 } }).success).toBe(false)
 	})
+
+	it("accepts both validationBehavior values", () => {
+		for (const v of ["aria", "native"]) {
+			expect(DatePickerSchema.safeParse({ type: "DatePicker", props: { validationBehavior: v } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid validationBehavior", () => {
+		expect(DatePickerSchema.safeParse({ type: "DatePicker", props: { validationBehavior: "html" } }).success).toBe(
+			false,
+		)
+	})
 })
 
 describe("DateRangePickerSchema", () => {
@@ -830,6 +932,20 @@ describe("DateRangePickerSchema", () => {
 				type: "DateRangePicker",
 				props: { value: { start: "2024-07-01" } },
 			}).success,
+		).toBe(false)
+	})
+
+	it("accepts both validationBehavior values", () => {
+		for (const v of ["aria", "native"]) {
+			expect(
+				DateRangePickerSchema.safeParse({ type: "DateRangePicker", props: { validationBehavior: v } }).success,
+			).toBe(true)
+		}
+	})
+
+	it("rejects an invalid validationBehavior", () => {
+		expect(
+			DateRangePickerSchema.safeParse({ type: "DateRangePicker", props: { validationBehavior: "html" } }).success,
 		).toBe(false)
 	})
 })
