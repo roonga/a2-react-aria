@@ -17,6 +17,8 @@
 		"build:storybook": "storybook build",
 		"dev": "turbo run dev --parallel",
 		"test": "turbo run test",
+		"test:visual": "playwright test",
+		"test:visual:update": "playwright test --update-snapshots",
 		"storybook": "storybook dev -p 6006",
 		"lint": "biome check .",
 		"format": "biome format . --write",
@@ -34,6 +36,7 @@
 	"devDependencies": {
 		"@a2ui/core": "workspace:*",
 		"@biomejs/biome": "2.4.16",
+		"@playwright/test": "^1.60.0",
 		"@storybook/addon-a11y": "^10.4.4",
 		"@storybook/addon-docs": "^10.4.4",
 		"@storybook/addon-mcp": "^0.6.0",

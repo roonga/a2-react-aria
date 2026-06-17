@@ -14,6 +14,9 @@ importers:
       '@biomejs/biome':
         specifier: 2.4.16
         version: 2.4.16
+      '@playwright/test':
+        specifier: ^1.60.0
+        version: 1.60.0
       '@storybook/addon-a11y':
         specifier: ^10.4.4
         version: 10.4.4(storybook@10.4.4(@testing-library/dom@10.4.1)(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))
