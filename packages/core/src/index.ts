@@ -50,4 +50,4 @@ export type {
 	ComponentRegistry,
 } from "./types"
 
-export const VERSION = "0.1.0"
+export const VERSION = "0.1.0-preview.0"
