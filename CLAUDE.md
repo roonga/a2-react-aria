@@ -1,7 +1,7 @@
 # a2-react-aria
 
 A React component catalog that renders **a2UI JSON** using **React Aria Components**.
-Components are distributed shadcn-style — consumers own the source via `npx a2ui add <component>`.
+Components are distributed shadcn-style — consumers own the source via `npx @a2ra/cli add <component>`.
 
 ## Rules
 
@@ -121,8 +121,8 @@ gh release create v1.0.0
 
 ## Architecture
 
-- `packages/core` — `@a2ui/core`: A2Renderer, registry, Zod schemas
-- `packages/cli` — `a2ui` CLI: add/update/diff components from the registry
+- `packages/core` — `@a2ra/core`: A2Renderer, registry, Zod schemas
+- `packages/cli` — `@a2ra/cli` CLI: add/update/diff components from the registry
 - `packages/vscode` — VS Code extension: IntelliSense, live preview, CLI integration
 - `registry/` — shadcn-compatible component templates (not npm-published)
 - `docs/` — Starlight docs site (auto-deployed to GitHub Pages on push)

@@ -25,5 +25,5 @@ export function init(opts: InitOptions): void {
 	writeConfig(config)
 	success(`Created ${bold(CONFIG_FILE)}`)
 	info(`  componentsDir: ${config.componentsDir}`)
-	info("Run `a2ui add <component>` to add your first component.")
+	info("Run `a2ra add <component>` to add your first component.")
 }

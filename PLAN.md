@@ -34,7 +34,7 @@ Biome, Turbo, and a working agent demo.
 
 ## P1 — OSS hardening & API stability
 
-1. **API stability contract.** Before 1.0, freeze the public surface of `@a2ui/core` (`A2Renderer`,
+1. **API stability contract.** Before 1.0, freeze the public surface of `@a2ra/core` (`A2Renderer`,
    `createRegistry`, `registerComponent`, exported schemas/types). Add an `api-extractor` or
    typedoc-diff check in CI so prop renames break the build, not a consumer.
 2. **Adopt Changesets** for semver + changelog (currently none).

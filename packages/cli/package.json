@@ -1,5 +1,5 @@
 {
-	"name": "a2ui",
+	"name": "@a2ra/cli",
 	"version": "0.1.0",
 	"private": false,
 	"description": "Add React Aria a2UI components to your project, shadcn-style — you own the source.",
@@ -11,7 +11,7 @@
 	"license": "MIT",
 	"type": "module",
 	"bin": {
-		"a2ui": "./dist/index.js"
+		"a2ra": "./dist/index.js"
 	},
 	"files": [
 		"dist"
@@ -20,6 +20,7 @@
 		"node": ">=20"
 	},
 	"keywords": [
+		"a2ra",
 		"a2ui",
 		"react-aria",
 		"shadcn",
@@ -34,7 +35,8 @@
 	"scripts": {
 		"build": "tsc -p tsconfig.json",
 		"dev": "tsc -p tsconfig.json --watch",
-		"test": "vitest run"
+		"test": "vitest run",
+		"prepublishOnly": "pnpm build"
 	},
 	"devDependencies": {
 		"@types/node": "^20",

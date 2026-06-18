@@ -3,7 +3,7 @@ import "./globals.css"
 
 export const metadata: Metadata = {
 	title: "Restaurant Booking — a2UI Demo",
-	description: "ADK agent demo using @a2ui/core components",
+	description: "ADK agent demo using @a2ra/core components",
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
