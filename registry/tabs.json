@@ -1,0 +1,34 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roonga/a2-react-aria/main/registry/schema.json",
+  "name": "tabs",
+  "type": "registry:component",
+  "title": "Tabs",
+  "description": "Tabbed navigation panels.",
+  "dependencies": [
+    "react-aria-components",
+    "zod"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "tabs/Tabs.tsx",
+      "content": "import { Children, type ReactNode } from \"react\"\nimport { Tabs as RACTabs, Tab, TabList, TabPanel } from \"react-aria-components\"\nimport type { TabItem } from \"./tabs.schema\"\nimport { getTabsStyles } from \"./tabs.styles\"\n\ninterface TabsProps {\n\ttabs?: TabItem[]\n\tdefaultSelectedKey?: string\n\tselectedKey?: string\n\tdisabledKeys?: string[]\n\tonSelectionChange?: (key: string) => void\n\torientation?: \"horizontal\" | \"vertical\"\n\tkeyboardActivation?: \"automatic\" | \"manual\"\n\tariaLabel?: string\n\tchildren?: ReactNode\n}\n\nexport function Tabs({\n\ttabs = [],\n\tdefaultSelectedKey,\n\tselectedKey,\n\tdisabledKeys,\n\tonSelectionChange,\n\torientation = \"horizontal\",\n\tkeyboardActivation = \"automatic\",\n\tariaLabel = \"Navigation\",\n\tchildren,\n}: TabsProps) {\n\tconst styles = getTabsStyles(orientation)\n\tconst panels = Children.toArray(children)\n\n\treturn (\n\t\t<RACTabs\n\t\t\tdefaultSelectedKey={defaultSelectedKey}\n\t\t\tselectedKey={selectedKey}\n\t\t\tdisabledKeys={disabledKeys}\n\t\t\tonSelectionChange={(key) => onSelectionChange?.(key as string)}\n\t\t\torientation={orientation}\n\t\t\tkeyboardActivation={keyboardActivation}\n\t\t\tclassName={styles.root}\n\t\t>\n\t\t\t<TabList aria-label={ariaLabel} className={styles.tabList}>\n\t\t\t\t{tabs.map((tab) => (\n\t\t\t\t\t<Tab key={tab.id} id={tab.id} isDisabled={tab.isDisabled} className={styles.tab}>\n\t\t\t\t\t\t{tab.label}\n\t\t\t\t\t</Tab>\n\t\t\t\t))}\n\t\t\t</TabList>\n\t\t\t{tabs.map((tab, i) => (\n\t\t\t\t<TabPanel key={tab.id} id={tab.id} className={styles.panel}>\n\t\t\t\t\t{panels[i] ?? null}\n\t\t\t\t</TabPanel>\n\t\t\t))}\n\t\t</RACTabs>\n\t)\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "tabs/index.ts",
+      "content": "export { Tabs } from \"./Tabs\"\nexport type { TabItem, TabsNode } from \"./tabs.schema\"\nexport { TabsSchema } from \"./tabs.schema\"\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "tabs/tabs.schema.ts",
+      "content": "import { z } from \"zod\"\n\nconst TabItemSchema = z.object({\n\tid: z.string(),\n\tlabel: z.string(),\n\tisDisabled: z.boolean().optional(),\n})\n\nexport type TabItem = z.infer<typeof TabItemSchema>\n\nexport const TabsSchema = z.object({\n\ttype: z.literal(\"Tabs\"),\n\tprops: z\n\t\t.object({\n\t\t\ttabs: z.array(TabItemSchema).optional(),\n\t\t\tdefaultSelectedKey: z.string().optional(),\n\t\t\tselectedKey: z.string().optional(),\n\t\t\tdisabledKeys: z.array(z.string()).optional(),\n\t\t\torientation: z.enum([\"horizontal\", \"vertical\"]).optional(),\n\t\t\tkeyboardActivation: z.enum([\"automatic\", \"manual\"]).optional(),\n\t\t\tariaLabel: z.string().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.array(z.unknown()).optional(),\n})\n\nexport type TabsNode = z.infer<typeof TabsSchema>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "tabs/tabs.styles.ts",
+      "content": "export const getTabsStyles = (orientation: \"horizontal\" | \"vertical\" = \"horizontal\") => ({\n\troot: `flex ${orientation === \"horizontal\" ? \"flex-col\" : \"flex-row\"} gap-0`,\n\ttabList: [\n\t\t\"flex\",\n\t\torientation === \"horizontal\"\n\t\t\t? \"flex-row border-b border-[var(--color-border)]\"\n\t\t\t: \"flex-col border-r border-[var(--color-border)]\",\n\t].join(\" \"),\n\ttab: [\n\t\t\"px-4 py-2 text-sm font-medium text-[var(--color-textMuted)] transition-colors outline-none cursor-pointer\",\n\t\torientation === \"horizontal\" ? \"border-b-2 border-transparent -mb-px\" : \"border-r-2 border-transparent -mr-px\",\n\t\t\"hover:text-[var(--color-text)]\",\n\t\t\"data-[selected]:text-[var(--color-primary)] data-[selected]:border-[var(--color-primary)]\",\n\t\t\"data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50\",\n\t\t\"focus-visible:outline-2 focus-visible:outline-[var(--color-primary)]\",\n\t].join(\" \"),\n\tpanel: \"p-4 outline-none text-[var(--color-text)]\",\n})\n",
+      "type": "registry:component"
+    }
+  ]
+}

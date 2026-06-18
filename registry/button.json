@@ -1,0 +1,34 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roonga/a2-react-aria/main/registry/schema.json",
+  "name": "button",
+  "type": "registry:component",
+  "title": "Button",
+  "description": "Pressable button with variants and sizes.",
+  "dependencies": [
+    "react-aria-components",
+    "zod"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "button/Button.tsx",
+      "content": "import type { ReactNode } from \"react\"\nimport { Button as RACButton } from \"react-aria-components\"\nimport { getButtonStyles, getSizeStyles } from \"./button.styles\"\n\ninterface ButtonProps {\n\tchildren?: ReactNode\n\tisDisabled?: boolean\n\tisPending?: boolean\n\ttype?: \"button\" | \"reset\" | \"submit\"\n\tname?: string\n\tvalue?: string\n\tvariant?: \"primary\" | \"secondary\" | \"danger\" | \"ghost\"\n\tsize?: \"sm\" | \"md\" | \"lg\"\n\tonPress?: () => void\n}\n\nexport function Button({\n\tchildren,\n\tisDisabled = false,\n\tisPending,\n\ttype,\n\tname,\n\tvalue,\n\tvariant = \"primary\",\n\tsize = \"md\",\n\tonPress,\n}: ButtonProps) {\n\treturn (\n\t\t<RACButton\n\t\t\tonPress={onPress}\n\t\t\tisDisabled={isDisabled}\n\t\t\tisPending={isPending}\n\t\t\ttype={type}\n\t\t\tname={name}\n\t\t\tvalue={value}\n\t\t\tclassName={`${getButtonStyles(variant)} ${getSizeStyles(size)}`}\n\t\t>\n\t\t\t{children}\n\t\t</RACButton>\n\t)\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "button/button.schema.ts",
+      "content": "import { z } from \"zod\"\n\nexport const ButtonSchema = z.object({\n\ttype: z.literal(\"Button\"),\n\tprops: z\n\t\t.object({\n\t\t\tvariant: z.enum([\"primary\", \"secondary\", \"danger\", \"ghost\"]).optional(),\n\t\t\tisDisabled: z.boolean().optional(),\n\t\t\tisPending: z.boolean().optional(),\n\t\t\tsize: z.enum([\"sm\", \"md\", \"lg\"]).optional(),\n\t\t\ttype: z.enum([\"button\", \"reset\", \"submit\"]).optional(),\n\t\t\tname: z.string().optional(),\n\t\t\tvalue: z.string().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.union([z.string(), z.array(z.unknown())]).optional(),\n})\n\nexport type ButtonNode = z.infer<typeof ButtonSchema>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "button/button.styles.ts",
+      "content": "export const getButtonStyles = (variant: \"primary\" | \"secondary\" | \"danger\" | \"ghost\" = \"primary\") => {\n\tconst baseStyles =\n\t\t\"inline-flex items-center justify-center rounded font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed\"\n\n\tconst variantStyles: Record<string, string> = {\n\t\tprimary:\n\t\t\t\"bg-[var(--color-primary)] hover:bg-[var(--color-primaryHover)] active:bg-[var(--color-primaryActive)] text-white\",\n\t\tsecondary:\n\t\t\t\"bg-[var(--color-secondary)] hover:bg-[var(--color-secondaryHover)] active:bg-[var(--color-secondaryActive)] text-white\",\n\t\tdanger:\n\t\t\t\"bg-[var(--color-danger)] hover:bg-[var(--color-dangerHover)] active:bg-[var(--color-dangerActive)] text-white\",\n\t\tghost:\n\t\t\t\"bg-[var(--color-ghost)] hover:bg-[var(--color-ghostHover)] active:bg-[var(--color-ghostActive)] text-[var(--color-text)] border border-[var(--color-border)]\",\n\t}\n\n\treturn `${baseStyles} ${variantStyles[variant] || variantStyles.primary}`\n}\n\nexport const getSizeStyles = (size: \"sm\" | \"md\" | \"lg\" = \"md\") => {\n\tconst sizeMap: Record<string, string> = {\n\t\tsm: \"px-3 py-1 text-sm\",\n\t\tmd: \"px-4 py-2 text-base\",\n\t\tlg: \"px-6 py-3 text-lg\",\n\t}\n\treturn sizeMap[size] || sizeMap.md\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "button/index.ts",
+      "content": "export { Button } from \"./Button\"\nexport type { ButtonNode } from \"./button.schema\"\nexport { ButtonSchema } from \"./button.schema\"\n",
+      "type": "registry:component"
+    }
+  ]
+}

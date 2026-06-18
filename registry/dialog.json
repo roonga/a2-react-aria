@@ -1,0 +1,34 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roonga/a2-react-aria/main/registry/schema.json",
+  "name": "dialog",
+  "type": "registry:component",
+  "title": "Dialog",
+  "description": "Modal dialog built on React Aria overlays.",
+  "dependencies": [
+    "react-aria-components",
+    "zod"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "dialog/Dialog.tsx",
+      "content": "import type { ReactNode } from \"react\"\nimport { Button, DialogTrigger, Heading, Modal, ModalOverlay, Dialog as RACDialog } from \"react-aria-components\"\nimport { getDialogStyles } from \"./dialog.styles\"\n\ninterface DialogProps {\n\ttitle?: string\n\tdescription?: string\n\ttriggerLabel?: string\n\tisDismissable?: boolean\n\tisKeyboardDismissDisabled?: boolean\n\trole?: \"dialog\" | \"alertdialog\"\n\tisOpen?: boolean\n\tdefaultOpen?: boolean\n\tonOpenChange?: (isOpen: boolean) => void\n\tchildren?: ReactNode\n}\n\nexport function Dialog({\n\ttitle,\n\tdescription,\n\ttriggerLabel,\n\tisDismissable = true,\n\tisKeyboardDismissDisabled,\n\trole = \"dialog\",\n\tisOpen,\n\tdefaultOpen,\n\tonOpenChange,\n\tchildren,\n}: DialogProps) {\n\tconst styles = getDialogStyles()\n\n\tconst dialogContent = (\n\t\t<>\n\t\t\t<div className={styles.header}>\n\t\t\t\t{title && (\n\t\t\t\t\t<Heading slot=\"title\" className={styles.title}>\n\t\t\t\t\t\t{title}\n\t\t\t\t\t</Heading>\n\t\t\t\t)}\n\t\t\t\t<Button slot=\"close\" aria-label=\"Close dialog\" className={styles.closeButton}>\n\t\t\t\t\t<svg aria-hidden=\"true\" width={16} height={16} viewBox=\"0 0 16 16\" fill=\"none\">\n\t\t\t\t\t\t<line x1={2} y1={2} x2={14} y2={14} stroke=\"currentColor\" strokeWidth={2} strokeLinecap=\"round\" />\n\t\t\t\t\t\t<line x1={14} y1={2} x2={2} y2={14} stroke=\"currentColor\" strokeWidth={2} strokeLinecap=\"round\" />\n\t\t\t\t\t</svg>\n\t\t\t\t</Button>\n\t\t\t</div>\n\t\t\t{description && <p className={styles.description}>{description}</p>}\n\t\t\t{children && <div className={styles.body}>{children}</div>}\n\t\t</>\n\t)\n\n\tif (triggerLabel) {\n\t\treturn (\n\t\t\t<DialogTrigger defaultOpen={defaultOpen} onOpenChange={onOpenChange}>\n\t\t\t\t<Button className={styles.trigger}>{triggerLabel}</Button>\n\t\t\t\t<ModalOverlay\n\t\t\t\t\tisDismissable={isDismissable}\n\t\t\t\t\tisKeyboardDismissDisabled={isKeyboardDismissDisabled}\n\t\t\t\t\tclassName={styles.overlay}\n\t\t\t\t>\n\t\t\t\t\t<Modal className={styles.modal}>\n\t\t\t\t\t\t<RACDialog role={role} className={styles.dialog}>\n\t\t\t\t\t\t\t{dialogContent}\n\t\t\t\t\t\t</RACDialog>\n\t\t\t\t\t</Modal>\n\t\t\t\t</ModalOverlay>\n\t\t\t</DialogTrigger>\n\t\t)\n\t}\n\n\treturn (\n\t\t<ModalOverlay\n\t\t\tisDismissable={isDismissable}\n\t\t\tisKeyboardDismissDisabled={isKeyboardDismissDisabled}\n\t\t\tisOpen={isOpen}\n\t\t\tonOpenChange={onOpenChange}\n\t\t\tclassName={styles.overlay}\n\t\t>\n\t\t\t<Modal className={styles.modal}>\n\t\t\t\t<RACDialog role={role} className={styles.dialog}>\n\t\t\t\t\t{dialogContent}\n\t\t\t\t</RACDialog>\n\t\t\t</Modal>\n\t\t</ModalOverlay>\n\t)\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "dialog/dialog.schema.ts",
+      "content": "import { z } from \"zod\"\n\nexport const DialogSchema = z.object({\n\ttype: z.literal(\"Dialog\"),\n\tprops: z\n\t\t.object({\n\t\t\ttitle: z.string().optional(),\n\t\t\tdescription: z.string().optional(),\n\t\t\ttriggerLabel: z.string().optional(),\n\t\t\tisDismissable: z.boolean().optional(),\n\t\t\tisKeyboardDismissDisabled: z.boolean().optional(),\n\t\t\trole: z.enum([\"dialog\", \"alertdialog\"]).optional(),\n\t\t\tisOpen: z.boolean().optional(),\n\t\t\tdefaultOpen: z.boolean().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.array(z.unknown()).optional(),\n})\n\nexport type DialogNode = z.infer<typeof DialogSchema>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "dialog/dialog.styles.ts",
+      "content": "export const getDialogStyles = () => ({\n\toverlay:\n\t\t\"fixed inset-0 z-20 flex items-center justify-center bg-black/50 backdrop-blur-sm data-[entering]:animate-in data-[entering]:fade-in data-[exiting]:animate-out data-[exiting]:fade-out duration-200\",\n\tmodal: [\n\t\t\"w-full max-w-md rounded-xl shadow-xl max-h-[90vh] overflow-y-auto\",\n\t\t\"bg-[var(--color-background)] border border-[var(--color-border)]\",\n\t\t\"data-[entering]:animate-in data-[entering]:zoom-in-95\",\n\t\t\"data-[exiting]:animate-out data-[exiting]:zoom-out-95 duration-200\",\n\t].join(\" \"),\n\tdialog: \"p-6 outline-none\",\n\theader: \"flex items-start justify-between gap-4 mb-4\",\n\ttitle: \"text-lg font-semibold text-[var(--color-text)]\",\n\tcloseButton: [\n\t\t\"flex shrink-0 items-center justify-center w-8 h-8 rounded\",\n\t\t\"text-[var(--color-textMuted)] hover:bg-[var(--color-backgroundMuted)]\",\n\t\t\"focus-visible:outline-2 focus-visible:outline-[var(--color-primary)] transition-colors\",\n\t].join(\" \"),\n\tdescription: \"text-sm text-[var(--color-textMuted)] mb-4\",\n\tbody: \"flex flex-col gap-4\",\n\ttrigger: [\n\t\t\"rounded px-4 py-2 text-sm font-medium\",\n\t\t\"bg-[var(--color-primary)] text-white\",\n\t\t\"hover:opacity-90 focus-visible:outline-2 focus-visible:outline-[var(--color-primary)] transition-opacity\",\n\t].join(\" \"),\n})\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "dialog/index.ts",
+      "content": "export { Dialog } from \"./Dialog\"\nexport type { DialogNode } from \"./dialog.schema\"\nexport { DialogSchema } from \"./dialog.schema\"\n",
+      "type": "registry:component"
+    }
+  ]
+}

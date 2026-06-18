@@ -1,0 +1,34 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roonga/a2-react-aria/main/registry/schema.json",
+  "name": "popover",
+  "type": "registry:component",
+  "title": "Popover",
+  "description": "Non-modal floating overlay.",
+  "dependencies": [
+    "react-aria-components",
+    "zod"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "popover/Popover.tsx",
+      "content": "import type { ReactNode } from \"react\"\nimport { Button, DialogTrigger, Popover as RACPopover } from \"react-aria-components\"\nimport { getPopoverStyles } from \"./popover.styles\"\n\ninterface PopoverProps {\n\ttriggerLabel?: string\n\tplacement?: \"top\" | \"bottom\" | \"left\" | \"right\"\n\tisOpen?: boolean\n\tdefaultOpen?: boolean\n\toffset?: number\n\tcrossOffset?: number\n\tshouldFlip?: boolean\n\tisKeyboardDismissDisabled?: boolean\n\tmaxHeight?: number\n\tonOpenChange?: (isOpen: boolean) => void\n\tchildren?: ReactNode\n}\n\nexport function Popover({\n\ttriggerLabel = \"Open\",\n\tplacement = \"bottom\",\n\tisOpen,\n\tdefaultOpen,\n\toffset = 8,\n\tcrossOffset,\n\tshouldFlip,\n\tisKeyboardDismissDisabled,\n\tmaxHeight,\n\tonOpenChange,\n\tchildren,\n}: PopoverProps) {\n\tconst styles = getPopoverStyles()\n\n\treturn (\n\t\t<DialogTrigger isOpen={isOpen} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>\n\t\t\t<Button className={styles.trigger}>{triggerLabel}</Button>\n\t\t\t<RACPopover\n\t\t\t\tplacement={placement}\n\t\t\t\toffset={offset}\n\t\t\t\tcrossOffset={crossOffset}\n\t\t\t\tshouldFlip={shouldFlip}\n\t\t\t\tisKeyboardDismissDisabled={isKeyboardDismissDisabled}\n\t\t\t\tmaxHeight={maxHeight}\n\t\t\t\tclassName={styles.popover}\n\t\t\t>\n\t\t\t\t{children}\n\t\t\t</RACPopover>\n\t\t</DialogTrigger>\n\t)\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "popover/index.ts",
+      "content": "export { Popover } from \"./Popover\"\nexport type { PopoverNode } from \"./popover.schema\"\nexport { PopoverSchema } from \"./popover.schema\"\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "popover/popover.schema.ts",
+      "content": "import { z } from \"zod\"\n\nexport const PopoverSchema = z.object({\n\ttype: z.literal(\"Popover\"),\n\tprops: z\n\t\t.object({\n\t\t\ttriggerLabel: z.string().optional(),\n\t\t\tplacement: z.enum([\"top\", \"bottom\", \"left\", \"right\"]).optional(),\n\t\t\tisOpen: z.boolean().optional(),\n\t\t\tdefaultOpen: z.boolean().optional(),\n\t\t\toffset: z.number().optional(),\n\t\t\tcrossOffset: z.number().optional(),\n\t\t\tshouldFlip: z.boolean().optional(),\n\t\t\tisKeyboardDismissDisabled: z.boolean().optional(),\n\t\t\tmaxHeight: z.number().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.array(z.unknown()).optional(),\n})\n\nexport type PopoverNode = z.infer<typeof PopoverSchema>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "popover/popover.styles.ts",
+      "content": "export const getPopoverStyles = () => ({\n\tpopover: [\n\t\t\"rounded-xl p-3 min-w-[200px] outline-none\",\n\t\t\"bg-[var(--color-background)] border border-[var(--color-border)]\",\n\t\t\"shadow-xl\",\n\t\t\"data-[entering]:animate-in data-[entering]:fade-in\",\n\t\t\"data-[exiting]:animate-out data-[exiting]:fade-out duration-150\",\n\t].join(\" \"),\n\ttrigger: [\n\t\t\"rounded px-3 py-1.5 text-sm font-medium\",\n\t\t\"bg-[var(--color-backgroundMuted)] text-[var(--color-text)]\",\n\t\t\"border border-[var(--color-border)]\",\n\t\t\"hover:bg-[var(--color-border)] transition-colors\",\n\t\t\"focus-visible:outline-2 focus-visible:outline-[var(--color-primary)]\",\n\t].join(\" \"),\n})\n",
+      "type": "registry:component"
+    }
+  ]
+}

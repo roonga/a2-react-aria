@@ -1,0 +1,33 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roonga/a2-react-aria/main/registry/schema.json",
+  "name": "card",
+  "type": "registry:component",
+  "title": "Card",
+  "description": "Surface container for grouping content.",
+  "dependencies": [
+    "zod"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "card/Card.tsx",
+      "content": "import type { ReactNode } from \"react\"\nimport { getCardStyles } from \"./card.styles\"\n\ninterface CardProps {\n\tpadding?: \"none\" | \"sm\" | \"md\" | \"lg\"\n\tshadow?: \"none\" | \"sm\" | \"md\" | \"lg\"\n\tradius?: \"none\" | \"sm\" | \"md\" | \"lg\"\n\tborder?: boolean\n\tchildren?: ReactNode\n}\n\nexport function Card({ padding = \"md\", shadow = \"none\", radius = \"md\", border = false, children }: CardProps) {\n\treturn <div className={getCardStyles(padding, shadow, radius, border)}>{children}</div>\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "card/card.schema.ts",
+      "content": "import { z } from \"zod\"\n\nexport const CardSchema = z.object({\n\ttype: z.literal(\"Card\"),\n\tprops: z\n\t\t.object({\n\t\t\tpadding: z.enum([\"none\", \"sm\", \"md\", \"lg\"]).optional(),\n\t\t\tshadow: z.enum([\"none\", \"sm\", \"md\", \"lg\"]).optional(),\n\t\t\tradius: z.enum([\"none\", \"sm\", \"md\", \"lg\"]).optional(),\n\t\t\tborder: z.boolean().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.array(z.unknown()).optional(),\n})\n\nexport type CardNode = z.infer<typeof CardSchema>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "card/card.styles.ts",
+      "content": "const paddingMap = { none: \"p-0\", sm: \"p-3\", md: \"p-4\", lg: \"p-6\" }\nconst shadowMap = { none: \"shadow-none\", sm: \"shadow-sm\", md: \"shadow-md\", lg: \"shadow-lg\" }\nconst radiusMap = { none: \"rounded-none\", sm: \"rounded-sm\", md: \"rounded-md\", lg: \"rounded-lg\" }\n\nexport const getCardStyles = (\n\tpadding: \"none\" | \"sm\" | \"md\" | \"lg\" = \"md\",\n\tshadow: \"none\" | \"sm\" | \"md\" | \"lg\" = \"none\",\n\tradius: \"none\" | \"sm\" | \"md\" | \"lg\" = \"md\",\n\tborder = false,\n) =>\n\t[\n\t\t\"bg-[var(--color-surface)]\",\n\t\tpaddingMap[padding],\n\t\tshadowMap[shadow],\n\t\tradiusMap[radius],\n\t\tborder ? \"border border-[var(--color-border)]\" : \"\",\n\t]\n\t\t.filter(Boolean)\n\t\t.join(\" \")\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "card/index.ts",
+      "content": "export { Card } from \"./Card\"\nexport type { CardNode } from \"./card.schema\"\nexport { CardSchema } from \"./card.schema\"\n",
+      "type": "registry:component"
+    }
+  ]
+}

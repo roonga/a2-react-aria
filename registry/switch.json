@@ -1,0 +1,34 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roonga/a2-react-aria/main/registry/schema.json",
+  "name": "switch",
+  "type": "registry:component",
+  "title": "Switch",
+  "description": "On/off toggle switch.",
+  "dependencies": [
+    "react-aria-components",
+    "zod"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "switch/Switch.tsx",
+      "content": "import { FieldError, SwitchButton, SwitchField, Text } from \"react-aria-components\"\nimport { getSwitchStyles } from \"./switch.styles\"\n\ninterface SwitchProps {\n\tlabel?: string\n\tisSelected?: boolean\n\tdefaultSelected?: boolean\n\tisDisabled?: boolean\n\tisRequired?: boolean\n\tisInvalid?: boolean\n\tisReadOnly?: boolean\n\tautoFocus?: boolean\n\tvalidationBehavior?: \"aria\" | \"native\"\n\tvalidate?: (value: boolean) => string | string[] | true | null | undefined\n\tname?: string\n\tvalue?: string\n\tdescription?: string\n\terrorMessage?: string\n\tonChange?: (isSelected: boolean) => void\n}\n\nexport function Switch({\n\tlabel,\n\tisSelected,\n\tdefaultSelected,\n\tisDisabled = false,\n\tisRequired = false,\n\tisInvalid = false,\n\tisReadOnly = false,\n\tautoFocus,\n\tvalidationBehavior,\n\tvalidate,\n\tname,\n\tvalue,\n\tdescription,\n\terrorMessage,\n\tonChange,\n}: SwitchProps) {\n\tconst styles = getSwitchStyles()\n\n\treturn (\n\t\t<SwitchField\n\t\t\tisSelected={isSelected}\n\t\t\tdefaultSelected={defaultSelected}\n\t\t\tisDisabled={isDisabled}\n\t\t\tisRequired={isRequired}\n\t\t\tisInvalid={isInvalid}\n\t\t\tisReadOnly={isReadOnly}\n\t\t\tautoFocus={autoFocus}\n\t\t\tvalidationBehavior={validationBehavior}\n\t\t\tvalidate={validate}\n\t\t\tname={name}\n\t\t\tvalue={value}\n\t\t\tonChange={onChange}\n\t\t\tclassName={styles.field}\n\t\t>\n\t\t\t<SwitchButton className={styles.button}>\n\t\t\t\t{({ isSelected: sel, isDisabled: dis, isInvalid: inv }) => (\n\t\t\t\t\t<>\n\t\t\t\t\t\t<div className={styles.track({ isSelected: sel, isDisabled: dis, isInvalid: inv })}>\n\t\t\t\t\t\t\t<span className={styles.handle(sel)} />\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t{label}\n\t\t\t\t\t</>\n\t\t\t\t)}\n\t\t\t</SwitchButton>\n\t\t\t{description && (\n\t\t\t\t<Text slot=\"description\" className={styles.description}>\n\t\t\t\t\t{description}\n\t\t\t\t</Text>\n\t\t\t)}\n\t\t\t<FieldError className={styles.errorMessage}>{errorMessage}</FieldError>\n\t\t</SwitchField>\n\t)\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "switch/index.ts",
+      "content": "export { Switch } from \"./Switch\"\nexport type { SwitchNode } from \"./switch.schema\"\nexport { SwitchSchema } from \"./switch.schema\"\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "switch/switch.schema.ts",
+      "content": "import { z } from \"zod\"\n\nexport const SwitchSchema = z.object({\n\ttype: z.literal(\"Switch\"),\n\tprops: z\n\t\t.object({\n\t\t\tlabel: z.string().optional(),\n\t\t\tisSelected: z.boolean().optional(),\n\t\t\tdefaultSelected: z.boolean().optional(),\n\t\t\tisDisabled: z.boolean().optional(),\n\t\t\tisRequired: z.boolean().optional(),\n\t\t\tisInvalid: z.boolean().optional(),\n\t\t\tisReadOnly: z.boolean().optional(),\n\t\t\tautoFocus: z.boolean().optional(),\n\t\t\tvalidationBehavior: z.enum([\"aria\", \"native\"]).optional(),\n\t\t\tname: z.string().optional(),\n\t\t\tvalue: z.string().optional(),\n\t\t\tdescription: z.string().optional(),\n\t\t\terrorMessage: z.string().optional(),\n\t\t})\n\t\t.optional(),\n})\n\nexport type SwitchNode = z.infer<typeof SwitchSchema>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "switch/switch.styles.ts",
+      "content": "interface TrackState {\n\tisSelected: boolean\n\tisDisabled?: boolean\n\tisInvalid?: boolean\n}\n\nconst trackBase = \"relative flex h-5 w-9 shrink-0 items-center rounded-full px-0.5 transition-colors duration-200\"\nconst handleBase = \"h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200\"\n\nexport const getSwitchStyles = () => ({\n\tfield: \"flex flex-col gap-1\",\n\tbutton: \"flex cursor-pointer select-none items-center gap-2 text-sm text-[var(--color-text)]\",\n\ttrack({ isSelected, isDisabled, isInvalid }: TrackState) {\n\t\tif (isDisabled) return `${trackBase} bg-[var(--color-border)] opacity-50`\n\t\tif (isSelected && isInvalid) return `${trackBase} bg-[var(--color-danger)]`\n\t\tif (isSelected) return `${trackBase} bg-[var(--color-primary)]`\n\t\tif (isInvalid) return `${trackBase} bg-[var(--color-danger)] opacity-40`\n\t\treturn `${trackBase} bg-[var(--color-border)]`\n\t},\n\thandle: (isSelected: boolean) => `${handleBase} ${isSelected ? \"translate-x-4\" : \"translate-x-0\"}`,\n\tdescription: \"text-xs text-[var(--color-textMuted)]\",\n\terrorMessage: \"text-xs text-[var(--color-danger)]\",\n})\n",
+      "type": "registry:component"
+    }
+  ]
+}

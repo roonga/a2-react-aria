@@ -1,0 +1,34 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roonga/a2-react-aria/main/registry/schema.json",
+  "name": "select",
+  "type": "registry:component",
+  "title": "Select",
+  "description": "Select / ComboBox dropdown input.",
+  "dependencies": [
+    "react-aria-components",
+    "zod"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "select/Select.tsx",
+      "content": "import {\n\tButton,\n\tFieldError,\n\tLabel,\n\tListBox,\n\tListBoxItem,\n\tPopover,\n\tSelect as RACSelect,\n\tSelectValue,\n\tText,\n} from \"react-aria-components\"\nimport type { SelectItem } from \"./select.schema\"\nimport { getSelectStyles } from \"./select.styles\"\n\ninterface SelectProps {\n\tlabel?: string\n\tplaceholder?: string\n\titems?: SelectItem[]\n\tvalue?: string\n\tdefaultValue?: string\n\tisDisabled?: boolean\n\tisRequired?: boolean\n\tisInvalid?: boolean\n\tisOpen?: boolean\n\tdefaultOpen?: boolean\n\tdisabledKeys?: string[]\n\tvalidationBehavior?: \"aria\" | \"native\"\n\tvalidate?: (value: string) => string | string[] | true | null | undefined\n\tname?: string\n\tdescription?: string\n\terrorMessage?: string\n\tonChange?: (value: string) => void\n\tonOpenChange?: (isOpen: boolean) => void\n}\n\nexport function Select({\n\tlabel,\n\tplaceholder = \"Select an option\",\n\titems = [],\n\tvalue,\n\tdefaultValue,\n\tisDisabled = false,\n\tisRequired = false,\n\tisInvalid = false,\n\tisOpen,\n\tdefaultOpen,\n\tdisabledKeys,\n\tvalidationBehavior,\n\tvalidate,\n\tname,\n\tdescription,\n\terrorMessage,\n\tonChange,\n\tonOpenChange,\n}: SelectProps) {\n\tconst styles = getSelectStyles()\n\n\treturn (\n\t\t<RACSelect\n\t\t\tselectedKey={value}\n\t\t\tdefaultSelectedKey={defaultValue}\n\t\t\tisDisabled={isDisabled}\n\t\t\tisRequired={isRequired}\n\t\t\tisInvalid={isInvalid}\n\t\t\tisOpen={isOpen}\n\t\t\tdefaultOpen={defaultOpen}\n\t\t\tvalidationBehavior={validationBehavior}\n\t\t\tvalidate={validate ? (key) => validate(key as string) : undefined}\n\t\t\tname={name}\n\t\t\tplaceholder={placeholder}\n\t\t\tonSelectionChange={(key) => onChange?.(key as string)}\n\t\t\tonOpenChange={onOpenChange}\n\t\t\tclassName={styles.field}\n\t\t>\n\t\t\t{label && <Label className={styles.label}>{label}</Label>}\n\t\t\t<Button className={({ isDisabled: dis }) => styles.trigger({ isDisabled: dis, isInvalid })}>\n\t\t\t\t<SelectValue>\n\t\t\t\t\t{({ selectedText, isPlaceholder }) => (\n\t\t\t\t\t\t<span className={isPlaceholder ? styles.placeholder : styles.value}>\n\t\t\t\t\t\t\t{isPlaceholder ? placeholder : selectedText}\n\t\t\t\t\t\t</span>\n\t\t\t\t\t)}\n\t\t\t\t</SelectValue>\n\t\t\t\t<svg\n\t\t\t\t\taria-hidden=\"true\"\n\t\t\t\t\tviewBox=\"0 0 16 16\"\n\t\t\t\t\tfill=\"none\"\n\t\t\t\t\tstroke=\"currentColor\"\n\t\t\t\t\tstrokeWidth={1.5}\n\t\t\t\t\tclassName={styles.chevron}\n\t\t\t\t>\n\t\t\t\t\t<path d=\"M4 6l4 4 4-4\" strokeLinecap=\"round\" strokeLinejoin=\"round\" />\n\t\t\t\t</svg>\n\t\t\t</Button>\n\t\t\t{description && (\n\t\t\t\t<Text slot=\"description\" className={styles.description}>\n\t\t\t\t\t{description}\n\t\t\t\t</Text>\n\t\t\t)}\n\t\t\t<FieldError className={styles.errorMessage}>{errorMessage}</FieldError>\n\t\t\t<Popover className={styles.popover}>\n\t\t\t\t<ListBox disabledKeys={disabledKeys} className={styles.listbox}>\n\t\t\t\t\t{items.map((item) => (\n\t\t\t\t\t\t<ListBoxItem key={item.value} id={item.value} isDisabled={item.isDisabled} className={styles.item}>\n\t\t\t\t\t\t\t{item.label}\n\t\t\t\t\t\t</ListBoxItem>\n\t\t\t\t\t))}\n\t\t\t\t</ListBox>\n\t\t\t</Popover>\n\t\t</RACSelect>\n\t)\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "select/index.ts",
+      "content": "export { Select } from \"./Select\"\nexport type { SelectItem, SelectNode } from \"./select.schema\"\nexport { SelectSchema } from \"./select.schema\"\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "select/select.schema.ts",
+      "content": "import { z } from \"zod\"\n\nconst SelectItemSchema = z.object({\n\tlabel: z.string(),\n\tvalue: z.string(),\n\tisDisabled: z.boolean().optional(),\n})\n\nexport const SelectSchema = z.object({\n\ttype: z.literal(\"Select\"),\n\tprops: z\n\t\t.object({\n\t\t\tlabel: z.string().optional(),\n\t\t\tplaceholder: z.string().optional(),\n\t\t\titems: z.array(SelectItemSchema).optional(),\n\t\t\tvalue: z.string().optional(),\n\t\t\tdefaultValue: z.string().optional(),\n\t\t\tisDisabled: z.boolean().optional(),\n\t\t\tisRequired: z.boolean().optional(),\n\t\t\tisOpen: z.boolean().optional(),\n\t\t\tdefaultOpen: z.boolean().optional(),\n\t\t\tdisabledKeys: z.array(z.string()).optional(),\n\t\t\tisInvalid: z.boolean().optional(),\n\t\t\tvalidationBehavior: z.enum([\"aria\", \"native\"]).optional(),\n\t\t\tname: z.string().optional(),\n\t\t\tdescription: z.string().optional(),\n\t\t\terrorMessage: z.string().optional(),\n\t\t})\n\t\t.optional(),\n})\n\nexport type SelectNode = z.infer<typeof SelectSchema>\nexport type SelectItem = z.infer<typeof SelectItemSchema>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "select/select.styles.ts",
+      "content": "interface TriggerState {\n\tisDisabled?: boolean\n\tisInvalid?: boolean\n}\n\nconst triggerBase =\n\t\"flex w-full min-w-40 min-h-11 cursor-pointer items-center justify-between gap-2 rounded border px-3 py-2 text-sm transition-colors\"\n\nexport const getSelectStyles = () => ({\n\tfield: \"flex flex-col gap-1\",\n\tlabel: \"text-sm font-medium text-[var(--color-text)]\",\n\ttrigger({ isDisabled, isInvalid }: TriggerState) {\n\t\tif (isDisabled) {\n\t\t\treturn `${triggerBase} cursor-not-allowed border-[var(--color-border)] bg-[var(--color-backgroundMuted)] opacity-50 text-[var(--color-textMuted)]`\n\t\t}\n\t\tif (isInvalid) {\n\t\t\treturn `${triggerBase} border-[var(--color-danger)] bg-[var(--color-background)] text-[var(--color-text)]`\n\t\t}\n\t\treturn `${triggerBase} border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-text)] hover:border-[var(--color-primary)]`\n\t},\n\tvalue: \"flex-1 truncate text-left\",\n\tplaceholder: \"text-[var(--color-textMuted)]\",\n\tchevron: \"h-4 w-4 shrink-0 text-[var(--color-textMuted)]\",\n\tpopover:\n\t\t\"z-50 min-w-[var(--trigger-width)] rounded border border-[var(--color-border)] bg-[var(--color-background)] p-1 shadow-md\",\n\tlistbox: \"max-h-64 overflow-auto outline-none\",\n\titem: \"flex cursor-pointer items-center rounded px-3 py-1.5 text-sm text-[var(--color-text)] outline-none transition-colors data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[focused]:bg-[var(--color-backgroundMuted)] data-[selected]:font-medium data-[selected]:text-[var(--color-primary)]\",\n\tdescription: \"text-xs text-[var(--color-textMuted)]\",\n\terrorMessage: \"text-xs text-[var(--color-danger)]\",\n})\n",
+      "type": "registry:component"
+    }
+  ]
+}
