@@ -2,8 +2,9 @@ import { describe, expect, it } from "vitest"
 import { createRegistry, VERSION } from "../index"
 
 describe("@a2ra/core smoke", () => {
-	it("exports VERSION", () => {
-		expect(VERSION).toBe("0.1.0")
+	it("exports a semver VERSION", () => {
+		// Format check rather than an exact value so Changesets version bumps don't break this.
+		expect(VERSION).toMatch(/^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/)
 	})
 
 	it("createRegistry returns a Map", () => {

@@ -6,7 +6,7 @@
 		"useIgnoreFile": true
 	},
 	"files": {
-		"includes": ["**", "!.claude", "!registry"]
+		"includes": ["**", "!.claude", "!registry", "!.changeset"]
 	},
 	"formatter": {
 		"enabled": true,
