@@ -27,7 +27,10 @@
 		"format": "biome format . --write",
 		"lint:md": "markdownlint-cli2 \"**/*.md\" \"!**/node_modules/**\"",
 		"format:md": "markdownlint-cli2 --fix \"**/*.md\" \"!**/node_modules/**\"",
-		"typedoc": "typedoc"
+		"typedoc": "typedoc",
+		"changeset": "changeset",
+		"version-packages": "changeset version",
+		"release": "pnpm build && changeset publish"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
@@ -40,6 +43,7 @@
 		"@a2ra/cli": "workspace:*",
 		"@a2ra/core": "workspace:*",
 		"@biomejs/biome": "2.4.16",
+		"@changesets/cli": "^2.31.0",
 		"@playwright/test": "^1.60.0",
 		"@storybook/addon-a11y": "^10.4.4",
 		"@storybook/addon-docs": "^10.4.4",
