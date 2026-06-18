@@ -1,0 +1,44 @@
+{
+	"name": "a2ui",
+	"version": "0.1.0",
+	"private": false,
+	"description": "Add React Aria a2UI components to your project, shadcn-style — you own the source.",
+	"author": {
+		"name": "Ravi Mohan",
+		"email": "a2-react-aria@roonga.com.au",
+		"url": "https://github.com/roonga"
+	},
+	"license": "MIT",
+	"type": "module",
+	"bin": {
+		"a2ui": "./dist/index.js"
+	},
+	"files": [
+		"dist"
+	],
+	"engines": {
+		"node": ">=20"
+	},
+	"keywords": [
+		"a2ui",
+		"react-aria",
+		"shadcn",
+		"cli",
+		"components"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/roonga/a2-react-aria.git",
+		"directory": "packages/cli"
+	},
+	"scripts": {
+		"build": "tsc -p tsconfig.json",
+		"dev": "tsc -p tsconfig.json --watch",
+		"test": "vitest run"
+	},
+	"devDependencies": {
+		"@types/node": "^20",
+		"typescript": "6.0.3",
+		"vitest": "^4.1.8"
+	}
+}
