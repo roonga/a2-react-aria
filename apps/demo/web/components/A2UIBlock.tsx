@@ -1,7 +1,7 @@
 "use client"
 
-import type { A2Node } from "@a2ui/core"
-import { A2Renderer, createRegistry, DatePicker, NumberField, Radio, RadioGroup, Select, TextField } from "@a2ui/core"
+import type { A2Node } from "@a2ra/core"
+import { A2Renderer, createRegistry, DatePicker, NumberField, Radio, RadioGroup, Select, TextField } from "@a2ra/core"
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useRef } from "react"
 import { Button } from "./ui/Button"
 import { Card } from "./ui/Card"

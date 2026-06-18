@@ -1,5 +1,5 @@
 {
-	"name": "@a2ui/core",
+	"name": "@a2ra/core",
 	"version": "0.1.0",
 	"private": false,
 	"author": {
@@ -24,7 +24,8 @@
 		"gen-schema": "node --experimental-strip-types scripts/gen-schema.mts",
 		"test": "vitest run",
 		"test:ui": "vitest --ui",
-		"test:coverage": "vitest run --coverage"
+		"test:coverage": "vitest run --coverage",
+		"prepublishOnly": "pnpm build"
 	},
 	"dependencies": {
 		"@internationalized/date": "^3.12.2",

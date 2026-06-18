@@ -37,7 +37,8 @@
 		]
 	},
 	"devDependencies": {
-		"@a2ui/core": "workspace:*",
+		"@a2ra/cli": "workspace:*",
+		"@a2ra/core": "workspace:*",
 		"@biomejs/biome": "2.4.16",
 		"@playwright/test": "^1.60.0",
 		"@storybook/addon-a11y": "^10.4.4",

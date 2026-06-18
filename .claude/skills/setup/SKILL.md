@@ -45,7 +45,7 @@ Report how many packages were installed. If it fails, show the full error.
 pnpm run build
 ```
 
-This builds `@a2ui/core`, the CLI, and the VS Code extension webview.
+This builds `@a2ra/core`, the CLI, and the VS Code extension webview.
 Report success or any build errors.
 
 ---

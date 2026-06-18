@@ -47,7 +47,7 @@ export function collectDependencies(items: RegistryItem[]): string[] {
 
 export async function add(names: string[], opts: AddOptions): Promise<void> {
 	if (names.length === 0) {
-		fail("No components specified. Usage: a2ui add <component...>")
+		fail("No components specified. Usage: a2ra add <component...>")
 	}
 
 	const config = loadConfig()

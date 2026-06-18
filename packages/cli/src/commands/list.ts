@@ -29,5 +29,5 @@ export async function list(opts: ListOptions): Promise<void> {
 		info(`  ${c.name.padEnd(width)}  ${dim(c.description ?? "")}`)
 	}
 	info("")
-	info(dim("Add one with: a2ui add <name>"))
+	info(dim("Add one with: a2ra add <name>"))
 }

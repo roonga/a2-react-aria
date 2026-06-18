@@ -1,11 +1,11 @@
 # Restaurant Booking Demo
 
-A working ADK sample that shows how to consume `@a2ui/core` in an agent-driven application.
+A working ADK sample that shows how to consume `@a2ra/core` in an agent-driven application.
 
 A Python ADK agent handles the restaurant booking conversation. When it needs to show results
 (search listings, available times, confirmation), it emits a2UI JSON wrapped in `<a2ui-json>`
 tags. The Next.js frontend strips the tags, parses the JSON, and renders the nodes using
-`A2Renderer` from `@a2ui/core`.
+`A2Renderer` from `@a2ra/core`.
 
 ## Prerequisites
 
@@ -45,15 +45,15 @@ Chat UI  →  POST /run_sse  →  ADK agent  →  tool call  →  Python builds 
                                 ↓
                    A2UIBlock.tsx extracts the JSON array
                                 ↓
-                   A2Renderer renders each node using @a2ui/core registry
+                   A2Renderer renders each node using @a2ra/core registry
 ```
 
 ## Key file: `web/components/A2UIBlock.tsx`
 
-This is the consumer pattern — importing and using `@a2ui/core` just like any other npm package:
+This is the consumer pattern — importing and using `@a2ra/core` just like any other npm package:
 
 ```tsx
-import { A2Renderer, Button, Card, createRegistry, Flex, Grid, Text } from "@a2ui/core"
+import { A2Renderer, Button, Card, createRegistry, Flex, Grid, Text } from "@a2ra/core"
 
 const registry = createRegistry({ Button, Card, Flex, Grid, Text, ... })
 
@@ -62,9 +62,9 @@ export default function A2UIBlock({ nodes }) {
 }
 ```
 
-> **Note:** This demo uses `"@a2ui/core": "workspace:*"` because it lives inside the
+> **Note:** This demo uses `"@a2ra/core": "workspace:*"` because it lives inside the
 > monorepo. Once the package is published to npm, replace that with
-> `npm install @a2ui/core` and remove the `transpilePackages` entry in `next.config.ts`.
+> `npm install @a2ra/core` and remove the `transpilePackages` entry in `next.config.ts`.
 
 ## Running the agent locally (without Docker)
 

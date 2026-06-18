@@ -8,7 +8,10 @@ importers:
 
   .:
     devDependencies:
-      '@a2ui/core':
+      '@a2ra/cli':
+        specifier: workspace:*
+        version: link:packages/cli
+      '@a2ra/core':
         specifier: workspace:*
         version: link:packages/core
       '@biomejs/biome':
@@ -68,7 +71,7 @@ importers:
 
   apps/demo/web:
     dependencies:
-      '@a2ui/core':
+      '@a2ra/core':
         specifier: workspace:*
         version: link:../../../packages/core
       next:

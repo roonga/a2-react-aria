@@ -11,14 +11,14 @@ Components are distributed [shadcn-style](https://ui.shadcn.com/docs/registry) â
 ## Install
 
 ```bash
-npx a2ui init
-npx a2ui add button
+npx @a2ra/cli init
+npx @a2ra/cli add button
 ```
 
 ## Usage
 
 ```tsx
-import { A2Renderer } from "@a2ui/core"
+import { A2Renderer } from "@a2ra/core"
 
 const node = {
   type: "Button",

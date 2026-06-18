@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { createRegistry, VERSION } from "../index"
 
-describe("@a2ui/core smoke", () => {
+describe("@a2ra/core smoke", () => {
 	it("exports VERSION", () => {
 		expect(VERSION).toBe("0.1.0")
 	})

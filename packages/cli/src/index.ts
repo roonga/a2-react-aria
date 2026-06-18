@@ -16,30 +16,30 @@ function version(): string {
 	}
 }
 
-const HELP = `${bold("a2ui")} — add React Aria a2UI components to your project, shadcn-style.
+const HELP = `${bold("a2ra")} — add React Aria a2UI components to your project, shadcn-style.
 
 ${bold("Usage:")}
-  a2ui <command> [options]
+  a2ra <command> [options]
 
 ${bold("Commands:")}
-  init                 Create an a2ui.json config in the current directory
+  init                 Create an a2ra.json config in the current directory
   list                 List available components in the registry
   add <component...>   Copy one or more components into your project
   diff [component]     Compare installed components against the registry
 
 ${bold("Options:")}
   --registry <url>     Registry URL or local path (default: official registry)
-  --dir <path>         Target components directory (overrides a2ui.json)
+  --dir <path>         Target components directory (overrides a2ra.json)
   --overwrite          Overwrite existing files (add)
-  --force              Overwrite existing a2ui.json (init)
+  --force              Overwrite existing a2ra.json (init)
   --json               Machine-readable output (list)
   -h, --help           Show this help
   -v, --version        Show version
 
 ${bold("Examples:")}
-  ${dim("$")} ${cyan("a2ui init")}
-  ${dim("$")} ${cyan("a2ui add button text-field")}
-  ${dim("$")} ${cyan("a2ui list --registry ./registry")}
+  ${dim("$")} ${cyan("a2ra init")}
+  ${dim("$")} ${cyan("a2ra add button text-field")}
+  ${dim("$")} ${cyan("a2ra list --registry ./registry")}
 `
 
 async function main(): Promise<void> {
@@ -82,7 +82,7 @@ async function main(): Promise<void> {
 			await diff(args[0], { registry: values.registry, dir: values.dir })
 			break
 		default:
-			fail(`Unknown command: ${command}\nRun \`a2ui --help\` for usage.`)
+			fail(`Unknown command: ${command}\nRun \`a2ra --help\` for usage.`)
 	}
 }
 

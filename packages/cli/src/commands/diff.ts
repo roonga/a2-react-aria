@@ -58,6 +58,6 @@ export async function diff(name: string | undefined, opts: DiffOptions): Promise
 	} else if (!anyChanges) {
 		success("All installed components are up to date.")
 	} else {
-		info(dim("Run `a2ui add <name> --overwrite` to update."))
+		info(dim("Run `a2ra add <name> --overwrite` to update."))
 	}
 }

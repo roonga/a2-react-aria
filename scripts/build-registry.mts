@@ -4,7 +4,7 @@
 //   registry/index.json        — list of available components (name, title, deps, file count)
 //   registry/<name>.json       — full registry item with embedded file contents
 //
-// The CLI (`a2ui add <name>`) consumes these JSON files, copying the embedded
+// The CLI (`a2ra add <name>`) consumes these JSON files, copying the embedded
 // source into a consumer project. Run via: pnpm build:registry
 import { mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs"
 import { dirname, join, relative, resolve } from "node:path"

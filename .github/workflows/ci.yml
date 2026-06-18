@@ -41,10 +41,10 @@ jobs:
         run: pnpm lint:md
 
       - name: Type check (core)
-        run: pnpm --filter @a2ui/core exec tsc --noEmit
+        run: pnpm --filter @a2ra/core exec tsc --noEmit
 
       - name: Type check (cli)
-        run: pnpm --filter a2ui exec tsc --noEmit
+        run: pnpm --filter @a2ra/cli exec tsc --noEmit
 
       - name: Verify registry is up to date
         run: |
