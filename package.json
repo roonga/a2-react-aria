@@ -14,6 +14,7 @@
 	},
 	"scripts": {
 		"build": "turbo run build",
+		"build:registry": "node scripts/build-registry.mts",
 		"build:storybook": "storybook build",
 		"dev": "turbo run dev --parallel",
 		"test": "turbo run test",

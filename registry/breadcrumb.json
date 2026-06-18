@@ -1,0 +1,34 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roonga/a2-react-aria/main/registry/schema.json",
+  "name": "breadcrumb",
+  "type": "registry:component",
+  "title": "Breadcrumb",
+  "description": "Hierarchical navigation with React Aria Breadcrumbs.",
+  "dependencies": [
+    "react-aria-components",
+    "zod"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "breadcrumb/Breadcrumb.tsx",
+      "content": "import { Link, Breadcrumb as RACBreadcrumb, Breadcrumbs as RACBreadcrumbs } from \"react-aria-components\"\nimport type { BreadcrumbItem } from \"./breadcrumb.schema\"\nimport { getBreadcrumbStyles } from \"./breadcrumb.styles\"\n\ninterface BreadcrumbProps {\n\titems?: BreadcrumbItem[]\n\tariaLabel?: string\n\tisDisabled?: boolean\n\tonAction?: (id: string) => void\n}\n\nexport function Breadcrumb({ items = [], ariaLabel = \"Breadcrumb\", isDisabled, onAction }: BreadcrumbProps) {\n\tconst styles = getBreadcrumbStyles()\n\treturn (\n\t\t<RACBreadcrumbs\n\t\t\taria-label={ariaLabel}\n\t\t\tisDisabled={isDisabled}\n\t\t\tonAction={(key) => onAction?.(key as string)}\n\t\t\tclassName={styles.breadcrumbs}\n\t\t>\n\t\t\t{items.map((item) => (\n\t\t\t\t<RACBreadcrumb key={item.id} id={item.id} className={styles.item}>\n\t\t\t\t\t{({ isCurrent }) => (\n\t\t\t\t\t\t<>\n\t\t\t\t\t\t\t<Link href={item.href} className={styles.link}>\n\t\t\t\t\t\t\t\t{item.label}\n\t\t\t\t\t\t\t</Link>\n\t\t\t\t\t\t\t{!isCurrent && (\n\t\t\t\t\t\t\t\t<span aria-hidden=\"true\" className={styles.separator}>\n\t\t\t\t\t\t\t\t\t/\n\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t)}\n\t\t\t\t\t\t</>\n\t\t\t\t\t)}\n\t\t\t\t</RACBreadcrumb>\n\t\t\t))}\n\t\t</RACBreadcrumbs>\n\t)\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "breadcrumb/breadcrumb.schema.ts",
+      "content": "import { z } from \"zod\"\n\nconst BreadcrumbItemSchema = z.object({\n\tid: z.string(),\n\tlabel: z.string(),\n\thref: z.string().optional(),\n})\n\nexport type BreadcrumbItem = z.infer<typeof BreadcrumbItemSchema>\n\nexport const BreadcrumbSchema = z.object({\n\ttype: z.literal(\"Breadcrumb\"),\n\tprops: z\n\t\t.object({\n\t\t\titems: z.array(BreadcrumbItemSchema).optional(),\n\t\t\tariaLabel: z.string().optional(),\n\t\t\tisDisabled: z.boolean().optional(),\n\t\t})\n\t\t.optional(),\n})\n\nexport type BreadcrumbNode = z.infer<typeof BreadcrumbSchema>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "breadcrumb/breadcrumb.styles.ts",
+      "content": "export const getBreadcrumbStyles = () => ({\n\tbreadcrumbs: \"flex items-center list-none m-0 p-0\",\n\titem: \"flex items-center\",\n\tlink: [\n\t\t\"text-sm text-[var(--color-primary)] no-underline outline-none cursor-pointer\",\n\t\t\"hover:underline\",\n\t\t\"data-[current]:text-[var(--color-text)] data-[current]:font-semibold data-[current]:cursor-default data-[current]:hover:no-underline\",\n\t\t\"data-[disabled]:text-[var(--color-textMuted)] data-[disabled]:cursor-not-allowed data-[disabled]:hover:no-underline\",\n\t\t\"focus-visible:outline-2 focus-visible:outline-[var(--color-primary)] focus-visible:rounded-sm\",\n\t].join(\" \"),\n\tseparator: \"mx-2 text-sm text-[var(--color-textMuted)] select-none\",\n})\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "breadcrumb/index.ts",
+      "content": "export { Breadcrumb } from \"./Breadcrumb\"\nexport type { BreadcrumbItem, BreadcrumbNode } from \"./breadcrumb.schema\"\nexport { BreadcrumbSchema } from \"./breadcrumb.schema\"\n",
+      "type": "registry:component"
+    }
+  ]
+}

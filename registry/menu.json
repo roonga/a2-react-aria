@@ -1,0 +1,34 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roonga/a2-react-aria/main/registry/schema.json",
+  "name": "menu",
+  "type": "registry:component",
+  "title": "Menu",
+  "description": "Menu and MenuTrigger with selection support.",
+  "dependencies": [
+    "react-aria-components",
+    "zod"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "menu/Menu.tsx",
+      "content": "import { Button, MenuItem, MenuTrigger, Popover, Menu as RACMenu } from \"react-aria-components\"\nimport type { MenuItemEntry } from \"./menu.schema\"\nimport { getMenuStyles } from \"./menu.styles\"\n\ninterface MenuProps {\n\ttriggerLabel?: string\n\titems?: MenuItemEntry[]\n\tplacement?: \"top\" | \"bottom\" | \"left\" | \"right\"\n\tisOpen?: boolean\n\tselectionMode?: \"none\" | \"single\" | \"multiple\"\n\tselectedKeys?: string[]\n\tdefaultSelectedKeys?: string[]\n\tdisabledKeys?: string[]\n\tonAction?: (key: string) => void\n\tonSelectionChange?: (keys: string[]) => void\n\tonClose?: () => void\n\tonOpenChange?: (isOpen: boolean) => void\n}\n\nexport function Menu({\n\ttriggerLabel = \"Options\",\n\titems = [],\n\tplacement = \"bottom\",\n\tisOpen,\n\tselectionMode,\n\tselectedKeys,\n\tdefaultSelectedKeys,\n\tdisabledKeys,\n\tonAction,\n\tonSelectionChange,\n\tonClose,\n\tonOpenChange,\n}: MenuProps) {\n\tconst styles = getMenuStyles()\n\n\treturn (\n\t\t<MenuTrigger isOpen={isOpen} onOpenChange={onOpenChange}>\n\t\t\t<Button className={styles.trigger}>{triggerLabel}</Button>\n\t\t\t<Popover placement={placement} className={styles.popover}>\n\t\t\t\t<RACMenu\n\t\t\t\t\tonAction={(key) => onAction?.(key as string)}\n\t\t\t\t\tselectionMode={selectionMode}\n\t\t\t\t\tselectedKeys={selectedKeys}\n\t\t\t\t\tdefaultSelectedKeys={defaultSelectedKeys}\n\t\t\t\t\tdisabledKeys={disabledKeys}\n\t\t\t\t\tonSelectionChange={\n\t\t\t\t\t\tonSelectionChange\n\t\t\t\t\t\t\t? (selection) => {\n\t\t\t\t\t\t\t\t\tif (selection !== \"all\") onSelectionChange([...selection].map((k) => k as string))\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t: undefined\n\t\t\t\t\t}\n\t\t\t\t\tonClose={onClose}\n\t\t\t\t\tclassName={styles.menu}\n\t\t\t\t>\n\t\t\t\t\t{items.map((item) => (\n\t\t\t\t\t\t<MenuItem key={item.id} id={item.id} isDisabled={item.isDisabled} className={styles.item}>\n\t\t\t\t\t\t\t{item.label}\n\t\t\t\t\t\t</MenuItem>\n\t\t\t\t\t))}\n\t\t\t\t</RACMenu>\n\t\t\t</Popover>\n\t\t</MenuTrigger>\n\t)\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "menu/index.ts",
+      "content": "export { Menu } from \"./Menu\"\nexport type { MenuItemEntry, MenuNode } from \"./menu.schema\"\nexport { MenuSchema } from \"./menu.schema\"\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "menu/menu.schema.ts",
+      "content": "import { z } from \"zod\"\n\nconst MenuItemSchema = z.object({\n\tid: z.string(),\n\tlabel: z.string(),\n\tisDisabled: z.boolean().optional(),\n})\n\nexport type MenuItemEntry = z.infer<typeof MenuItemSchema>\n\nexport const MenuSchema = z.object({\n\ttype: z.literal(\"Menu\"),\n\tprops: z\n\t\t.object({\n\t\t\ttriggerLabel: z.string().optional(),\n\t\t\titems: z.array(MenuItemSchema).optional(),\n\t\t\tplacement: z.enum([\"top\", \"bottom\", \"left\", \"right\"]).optional(),\n\t\t\tisOpen: z.boolean().optional(),\n\t\t\tselectionMode: z.enum([\"none\", \"single\", \"multiple\"]).optional(),\n\t\t\tselectedKeys: z.array(z.string()).optional(),\n\t\t\tdefaultSelectedKeys: z.array(z.string()).optional(),\n\t\t\tdisabledKeys: z.array(z.string()).optional(),\n\t\t})\n\t\t.optional(),\n})\n\nexport type MenuNode = z.infer<typeof MenuSchema>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "menu/menu.styles.ts",
+      "content": "export const getMenuStyles = () => ({\n\ttrigger: [\n\t\t\"rounded px-3 py-1.5 text-sm font-medium\",\n\t\t\"bg-[var(--color-backgroundMuted)] text-[var(--color-text)]\",\n\t\t\"border border-[var(--color-border)]\",\n\t\t\"hover:bg-[var(--color-border)] transition-colors\",\n\t\t\"focus-visible:outline-2 focus-visible:outline-[var(--color-primary)]\",\n\t].join(\" \"),\n\tpopover: [\n\t\t\"min-w-[150px] rounded-lg p-1 outline-none\",\n\t\t\"bg-[var(--color-background)] border border-[var(--color-border)] shadow-lg\",\n\t\t\"data-[entering]:animate-in data-[entering]:fade-in\",\n\t\t\"data-[exiting]:animate-out data-[exiting]:fade-out duration-150\",\n\t].join(\" \"),\n\tmenu: \"outline-none\",\n\titem: [\n\t\t\"flex cursor-pointer items-center rounded px-3 py-1.5 text-sm text-[var(--color-text)] outline-none transition-colors\",\n\t\t\"data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50\",\n\t\t\"data-[focused]:bg-[var(--color-backgroundMuted)]\",\n\t\t\"data-[selected]:font-medium data-[selected]:text-[var(--color-primary)]\",\n\t].join(\" \"),\n})\n",
+      "type": "registry:component"
+    }
+  ]
+}

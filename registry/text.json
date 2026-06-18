@@ -1,0 +1,33 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roonga/a2-react-aria/main/registry/schema.json",
+  "name": "text",
+  "type": "registry:component",
+  "title": "Text",
+  "description": "Typographic text primitive.",
+  "dependencies": [
+    "zod"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "text/Text.tsx",
+      "content": "import type { ReactNode } from \"react\"\nimport { getTextStyles } from \"./text.styles\"\n\ninterface TextProps {\n\tas?: \"h1\" | \"h2\" | \"h3\" | \"h4\" | \"p\" | \"span\" | \"label\"\n\tsize?: \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\"\n\tweight?: \"normal\" | \"medium\" | \"semibold\" | \"bold\"\n\tcolor?: \"default\" | \"muted\" | \"primary\" | \"danger\"\n\talign?: \"left\" | \"center\" | \"right\" | \"justify\"\n\titalic?: boolean\n\ttruncate?: boolean\n\tchildren?: ReactNode\n}\n\nexport function Text({\n\tas: Tag = \"p\",\n\tsize = \"md\",\n\tweight = \"normal\",\n\tcolor = \"default\",\n\talign,\n\titalic,\n\ttruncate,\n\tchildren,\n}: TextProps) {\n\treturn <Tag className={getTextStyles(size, weight, color, align, italic, truncate)}>{children}</Tag>\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "text/index.ts",
+      "content": "export { Text } from \"./Text\"\nexport type { TextNode } from \"./text.schema\"\nexport { TextSchema } from \"./text.schema\"\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "text/text.schema.ts",
+      "content": "import { z } from \"zod\"\n\nexport const TextSchema = z.object({\n\ttype: z.literal(\"Text\"),\n\tprops: z\n\t\t.object({\n\t\t\tas: z.enum([\"h1\", \"h2\", \"h3\", \"h4\", \"p\", \"span\", \"label\"]).optional(),\n\t\t\tsize: z.enum([\"xs\", \"sm\", \"md\", \"lg\", \"xl\", \"2xl\"]).optional(),\n\t\t\tweight: z.enum([\"normal\", \"medium\", \"semibold\", \"bold\"]).optional(),\n\t\t\tcolor: z.enum([\"default\", \"muted\", \"primary\", \"danger\"]).optional(),\n\t\t\talign: z.enum([\"left\", \"center\", \"right\", \"justify\"]).optional(),\n\t\t\titalic: z.boolean().optional(),\n\t\t\ttruncate: z.boolean().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.union([z.string(), z.array(z.unknown())]).optional(),\n})\n\nexport type TextNode = z.infer<typeof TextSchema>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "text/text.styles.ts",
+      "content": "const sizeMap = {\n\txs: \"text-xs\",\n\tsm: \"text-sm\",\n\tmd: \"text-base\",\n\tlg: \"text-lg\",\n\txl: \"text-xl\",\n\t\"2xl\": \"text-2xl\",\n}\n\nconst weightMap = {\n\tnormal: \"font-normal\",\n\tmedium: \"font-medium\",\n\tsemibold: \"font-semibold\",\n\tbold: \"font-bold\",\n}\n\nconst colorMap = {\n\tdefault: \"text-[var(--color-text)]\",\n\tmuted: \"text-[var(--color-textMuted)]\",\n\tprimary: \"text-[var(--color-primary)]\",\n\tdanger: \"text-[var(--color-danger)]\",\n}\n\nconst alignMap = {\n\tleft: \"text-left\",\n\tcenter: \"text-center\",\n\tright: \"text-right\",\n\tjustify: \"text-justify\",\n}\n\nexport const getTextStyles = (\n\tsize: \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" = \"md\",\n\tweight: \"normal\" | \"medium\" | \"semibold\" | \"bold\" = \"normal\",\n\tcolor: \"default\" | \"muted\" | \"primary\" | \"danger\" = \"default\",\n\talign?: \"left\" | \"center\" | \"right\" | \"justify\",\n\titalic?: boolean,\n\ttruncate?: boolean,\n) =>\n\t[\n\t\tsizeMap[size],\n\t\tweightMap[weight],\n\t\tcolorMap[color],\n\t\talign ? alignMap[align] : \"\",\n\t\titalic ? \"italic\" : \"\",\n\t\ttruncate ? \"truncate\" : \"\",\n\t]\n\t\t.filter(Boolean)\n\t\t.join(\" \")\n",
+      "type": "registry:component"
+    }
+  ]
+}

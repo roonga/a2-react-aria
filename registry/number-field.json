@@ -1,0 +1,34 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roonga/a2-react-aria/main/registry/schema.json",
+  "name": "number-field",
+  "type": "registry:component",
+  "title": "NumberField",
+  "description": "Numeric input with stepper buttons.",
+  "dependencies": [
+    "react-aria-components",
+    "zod"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "number-field/NumberField.tsx",
+      "content": "import { Button, FieldError, Group, Input, Label, NumberField as RACNumberField, Text } from \"react-aria-components\"\nimport { getNumberFieldStyles } from \"./number-field.styles\"\n\ninterface NumberFieldProps {\n\tlabel?: string\n\tplaceholder?: string\n\tminValue?: number\n\tmaxValue?: number\n\tstep?: number\n\tvalue?: number\n\tdefaultValue?: number\n\tisRequired?: boolean\n\tisDisabled?: boolean\n\tisReadOnly?: boolean\n\tisInvalid?: boolean\n\tisWheelDisabled?: boolean\n\tformatOptions?: Intl.NumberFormatOptions\n\tvalidationBehavior?: \"aria\" | \"native\"\n\tvalidate?: (value: number) => string | string[] | true | null | undefined\n\tname?: string\n\tdescription?: string\n\terrorMessage?: string\n\tonChange?: (value: number) => void\n}\n\nexport function NumberField({\n\tlabel,\n\tplaceholder,\n\tminValue,\n\tmaxValue,\n\tstep,\n\tvalue,\n\tdefaultValue,\n\tisRequired = false,\n\tisDisabled = false,\n\tisReadOnly = false,\n\tisInvalid = false,\n\tisWheelDisabled,\n\tformatOptions,\n\tvalidationBehavior,\n\tvalidate,\n\tname,\n\tdescription,\n\terrorMessage,\n\tonChange,\n}: NumberFieldProps) {\n\tconst styles = getNumberFieldStyles()\n\n\treturn (\n\t\t<RACNumberField\n\t\t\tminValue={minValue}\n\t\t\tmaxValue={maxValue}\n\t\t\tstep={step}\n\t\t\tvalue={value}\n\t\t\tdefaultValue={defaultValue}\n\t\t\tisRequired={isRequired}\n\t\t\tisDisabled={isDisabled}\n\t\t\tisReadOnly={isReadOnly}\n\t\t\tisInvalid={isInvalid}\n\t\t\tisWheelDisabled={isWheelDisabled}\n\t\t\tformatOptions={formatOptions}\n\t\t\tvalidationBehavior={validationBehavior}\n\t\t\tvalidate={validate}\n\t\t\tname={name}\n\t\t\tonChange={onChange}\n\t\t\tclassName={styles.container}\n\t\t>\n\t\t\t{label && (\n\t\t\t\t<Label className={styles.label}>\n\t\t\t\t\t{label}\n\t\t\t\t\t{isRequired && <span className={styles.requiredIndicator}> *</span>}\n\t\t\t\t</Label>\n\t\t\t)}\n\t\t\t<Group className={styles.inputGroup}>\n\t\t\t\t<Button slot=\"decrement\" className={styles.stepper}>\n\t\t\t\t\t−\n\t\t\t\t</Button>\n\t\t\t\t<span className={styles.divider} aria-hidden=\"true\" />\n\t\t\t\t<Input placeholder={placeholder} className={styles.input} />\n\t\t\t\t<span className={styles.divider} aria-hidden=\"true\" />\n\t\t\t\t<Button slot=\"increment\" className={styles.stepper}>\n\t\t\t\t\t+\n\t\t\t\t</Button>\n\t\t\t</Group>\n\t\t\t{description && (\n\t\t\t\t<Text slot=\"description\" className={styles.description}>\n\t\t\t\t\t{description}\n\t\t\t\t</Text>\n\t\t\t)}\n\t\t\t<FieldError className={styles.errorMessage}>\n\t\t\t\t{({ validationErrors }) => errorMessage ?? validationErrors.join(\", \")}\n\t\t\t</FieldError>\n\t\t</RACNumberField>\n\t)\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "number-field/index.ts",
+      "content": "export { NumberField } from \"./NumberField\"\nexport type { NumberFieldNode } from \"./number-field.schema\"\nexport { NumberFieldSchema } from \"./number-field.schema\"\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "number-field/number-field.schema.ts",
+      "content": "import { z } from \"zod\"\n\nexport const NumberFieldSchema = z.object({\n\ttype: z.literal(\"NumberField\"),\n\tprops: z\n\t\t.object({\n\t\t\tlabel: z.string().optional(),\n\t\t\tplaceholder: z.string().optional(),\n\t\t\tminValue: z.number().optional(),\n\t\t\tmaxValue: z.number().optional(),\n\t\t\tstep: z.number().optional(),\n\t\t\tvalue: z.number().optional(),\n\t\t\tdefaultValue: z.number().optional(),\n\t\t\tisRequired: z.boolean().optional(),\n\t\t\tisDisabled: z.boolean().optional(),\n\t\t\tisReadOnly: z.boolean().optional(),\n\t\t\tisInvalid: z.boolean().optional(),\n\t\t\tisWheelDisabled: z.boolean().optional(),\n\t\t\tvalidationBehavior: z.enum([\"aria\", \"native\"]).optional(),\n\t\t\tname: z.string().optional(),\n\t\t\tdescription: z.string().optional(),\n\t\t\terrorMessage: z.string().optional(),\n\t\t})\n\t\t.optional(),\n})\n\nexport type NumberFieldNode = z.infer<typeof NumberFieldSchema>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "number-field/number-field.styles.ts",
+      "content": "export const getNumberFieldStyles = () => ({\n\tcontainer: \"flex flex-col gap-2\",\n\tlabel: \"text-sm font-medium text-[var(--color-text)]\",\n\tinputGroup:\n\t\t\"flex items-center border border-[var(--color-border)] rounded bg-[var(--color-background)] focus-within:ring-2 focus-within:ring-[var(--color-primary)] focus-within:border-transparent\",\n\tinput:\n\t\t\"self-stretch flex-1 min-w-0 px-3 text-sm bg-transparent text-[var(--color-text)] placeholder-[var(--color-textMuted)] focus:outline-none disabled:cursor-not-allowed\",\n\tstepper:\n\t\t\"h-11 w-11 shrink-0 flex items-center justify-center text-[var(--color-textMuted)] hover:text-[var(--color-text)] hover:bg-[var(--color-backgroundMuted)] transition-colors outline-none first:rounded-l last:rounded-r focus-visible:outline-2 focus-visible:outline-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed select-none\",\n\tdivider: \"w-px self-stretch bg-[var(--color-border)]\",\n\tdescription: \"text-xs text-[var(--color-textMuted)]\",\n\terrorMessage: \"text-xs text-[var(--color-danger)]\",\n\trequiredIndicator: \"text-[var(--color-danger)]\",\n})\n",
+      "type": "registry:component"
+    }
+  ]
+}

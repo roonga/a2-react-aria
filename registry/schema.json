@@ -1,0 +1,36 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "a2-react-aria registry item",
+	"description": "A shadcn-compatible registry item consumed by the `a2ui` CLI.",
+	"type": "object",
+	"required": ["name", "type", "files"],
+	"properties": {
+		"$schema": { "type": "string" },
+		"name": { "type": "string", "description": "Component identifier, matches the source directory name." },
+		"type": { "type": "string", "enum": ["registry:component"] },
+		"title": { "type": "string" },
+		"description": { "type": "string" },
+		"dependencies": {
+			"type": "array",
+			"items": { "type": "string" },
+			"description": "npm packages the component imports (excludes react/react-dom peers)."
+		},
+		"registryDependencies": {
+			"type": "array",
+			"items": { "type": "string" },
+			"description": "Other registry components this one depends on."
+		},
+		"files": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": ["path", "content", "type"],
+				"properties": {
+					"path": { "type": "string", "description": "Path relative to the consumer's components directory." },
+					"content": { "type": "string" },
+					"type": { "type": "string", "enum": ["registry:component"] }
+				}
+			}
+		}
+	}
+}

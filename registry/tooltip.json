@@ -1,0 +1,34 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roonga/a2-react-aria/main/registry/schema.json",
+  "name": "tooltip",
+  "type": "registry:component",
+  "title": "Tooltip",
+  "description": "Accessible hover/focus tooltip.",
+  "dependencies": [
+    "react-aria-components",
+    "zod"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "tooltip/Tooltip.tsx",
+      "content": "import { Button, Tooltip as RACTooltip, TooltipTrigger } from \"react-aria-components\"\nimport { getTooltipStyles } from \"./tooltip.styles\"\n\ninterface TooltipProps {\n\tcontent?: string\n\ttriggerLabel?: string\n\tplacement?: \"top\" | \"bottom\" | \"left\" | \"right\"\n\tisOpen?: boolean\n\tdefaultOpen?: boolean\n\toffset?: number\n\tcrossOffset?: number\n\tshouldFlip?: boolean\n\tonOpenChange?: (isOpen: boolean) => void\n}\n\nexport function Tooltip({\n\tcontent = \"\",\n\ttriggerLabel = \"Info\",\n\tplacement = \"top\",\n\tisOpen,\n\tdefaultOpen,\n\toffset = 8,\n\tcrossOffset,\n\tshouldFlip,\n\tonOpenChange,\n}: TooltipProps) {\n\tconst styles = getTooltipStyles()\n\n\treturn (\n\t\t<TooltipTrigger isOpen={isOpen} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>\n\t\t\t<Button className={styles.trigger}>{triggerLabel}</Button>\n\t\t\t<RACTooltip\n\t\t\t\tplacement={placement}\n\t\t\t\toffset={offset}\n\t\t\t\tcrossOffset={crossOffset}\n\t\t\t\tshouldFlip={shouldFlip}\n\t\t\t\tclassName={styles.tooltip}\n\t\t\t>\n\t\t\t\t{content}\n\t\t\t</RACTooltip>\n\t\t</TooltipTrigger>\n\t)\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "tooltip/index.ts",
+      "content": "export { Tooltip } from \"./Tooltip\"\nexport type { TooltipNode } from \"./tooltip.schema\"\nexport { TooltipSchema } from \"./tooltip.schema\"\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "tooltip/tooltip.schema.ts",
+      "content": "import { z } from \"zod\"\n\nconst placement = z.enum([\"top\", \"bottom\", \"left\", \"right\"])\n\nexport const TooltipSchema = z.object({\n\ttype: z.literal(\"Tooltip\"),\n\tprops: z\n\t\t.object({\n\t\t\tcontent: z.string().optional(),\n\t\t\ttriggerLabel: z.string().optional(),\n\t\t\tplacement: placement.optional(),\n\t\t\tisOpen: z.boolean().optional(),\n\t\t\tdefaultOpen: z.boolean().optional(),\n\t\t\toffset: z.number().optional(),\n\t\t\tcrossOffset: z.number().optional(),\n\t\t\tshouldFlip: z.boolean().optional(),\n\t\t})\n\t\t.optional(),\n})\n\nexport type TooltipNode = z.infer<typeof TooltipSchema>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "tooltip/tooltip.styles.ts",
+      "content": "export const getTooltipStyles = () => ({\n\ttooltip: [\n\t\t\"rounded-md px-2 py-1 text-xs max-w-[200px]\",\n\t\t\"bg-[var(--color-text)] text-[var(--color-background)]\",\n\t\t\"shadow-md\",\n\t\t\"data-[entering]:animate-in data-[entering]:fade-in\",\n\t\t\"data-[exiting]:animate-out data-[exiting]:fade-out duration-150\",\n\t].join(\" \"),\n\ttrigger: [\n\t\t\"rounded px-3 py-1.5 text-sm\",\n\t\t\"bg-[var(--color-backgroundMuted)] text-[var(--color-text)]\",\n\t\t\"border border-[var(--color-border)]\",\n\t\t\"hover:bg-[var(--color-border)] transition-colors\",\n\t\t\"focus-visible:outline-2 focus-visible:outline-[var(--color-primary)]\",\n\t].join(\" \"),\n})\n",
+      "type": "registry:component"
+    }
+  ]
+}

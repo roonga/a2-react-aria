@@ -1,0 +1,34 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roonga/a2-react-aria/main/registry/schema.json",
+  "name": "form",
+  "type": "registry:component",
+  "title": "Form",
+  "description": "Form layout container with validation wiring.",
+  "dependencies": [
+    "react-aria-components",
+    "zod"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "form/Form.tsx",
+      "content": "import type { ReactNode } from \"react\"\nimport { Form as RACForm } from \"react-aria-components\"\nimport { getFormStyles } from \"./form.styles\"\n\ninterface FormProps {\n\tgap?: \"sm\" | \"md\" | \"lg\"\n\tvalidationBehavior?: \"aria\" | \"native\"\n\tvalidationErrors?: Record<string, string | string[]>\n\taction?: string\n\tmethod?: \"get\" | \"post\"\n\tencType?: \"application/x-www-form-urlencoded\" | \"multipart/form-data\" | \"text/plain\"\n\tautoComplete?: \"on\" | \"off\"\n\ttarget?: \"_blank\" | \"_self\" | \"_parent\" | \"_top\"\n\tonSubmit?: (e: React.FormEvent<HTMLFormElement>) => void\n\tonReset?: (e: React.FormEvent<HTMLFormElement>) => void\n\tonInvalid?: (e: React.FormEvent<HTMLFormElement>) => void\n\tchildren?: ReactNode\n}\n\nexport function Form({\n\tgap = \"md\",\n\tvalidationBehavior = \"native\",\n\tvalidationErrors,\n\taction,\n\tmethod,\n\tencType,\n\tautoComplete,\n\ttarget,\n\tonSubmit,\n\tonReset,\n\tonInvalid,\n\tchildren,\n}: FormProps) {\n\treturn (\n\t\t<RACForm\n\t\t\taction={action}\n\t\t\tmethod={method}\n\t\t\tencType={encType}\n\t\t\tautoComplete={autoComplete}\n\t\t\ttarget={target}\n\t\t\tvalidationBehavior={validationBehavior}\n\t\t\tvalidationErrors={validationErrors}\n\t\t\tonSubmit={onSubmit}\n\t\t\tonReset={onReset}\n\t\t\tonInvalid={onInvalid}\n\t\t\tclassName={getFormStyles(gap)}\n\t\t>\n\t\t\t{children}\n\t\t</RACForm>\n\t)\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "form/form.schema.ts",
+      "content": "import { z } from \"zod\"\n\nexport const FormSchema = z.object({\n\ttype: z.literal(\"Form\"),\n\tprops: z\n\t\t.object({\n\t\t\tgap: z.enum([\"sm\", \"md\", \"lg\"]).optional(),\n\t\t\tvalidationBehavior: z.enum([\"aria\", \"native\"]).optional(),\n\t\t\tvalidationErrors: z.record(z.string(), z.union([z.string(), z.array(z.string())])).optional(),\n\t\t\taction: z.string().optional(),\n\t\t\tmethod: z.enum([\"get\", \"post\"]).optional(),\n\t\t\tencType: z.enum([\"application/x-www-form-urlencoded\", \"multipart/form-data\", \"text/plain\"]).optional(),\n\t\t\tautoComplete: z.enum([\"on\", \"off\"]).optional(),\n\t\t\ttarget: z.string().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.array(z.unknown()).optional(),\n})\n\nexport type FormNode = z.infer<typeof FormSchema>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "form/form.styles.ts",
+      "content": "const gaps = { sm: \"gap-2\", md: \"gap-4\", lg: \"gap-6\" } as const\n\nexport const getFormStyles = (gap: keyof typeof gaps = \"md\") => `flex flex-col ${gaps[gap]}`\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "form/index.ts",
+      "content": "export { Form } from \"./Form\"\nexport type { FormNode } from \"./form.schema\"\nexport { FormSchema } from \"./form.schema\"\n",
+      "type": "registry:component"
+    }
+  ]
+}

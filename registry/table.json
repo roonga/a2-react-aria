@@ -1,0 +1,34 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roonga/a2-react-aria/main/registry/schema.json",
+  "name": "table",
+  "type": "registry:component",
+  "title": "Table",
+  "description": "Sortable, selectable data table.",
+  "dependencies": [
+    "react-aria-components",
+    "zod"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "table/Table.tsx",
+      "content": "import { Cell, Column, Table as RACTable, Row, TableBody, TableHeader } from \"react-aria-components\"\nimport type { TableColumn, TableRow } from \"./table.schema\"\nimport { getTableStyles } from \"./table.styles\"\n\ninterface TableProps {\n\tariaLabel?: string\n\tcolumns?: TableColumn[]\n\trows?: TableRow[]\n\tselectionMode?: \"none\" | \"single\" | \"multiple\"\n\tselectedKeys?: string[]\n\tdefaultSelectedKeys?: string[]\n\tdisabledKeys?: string[]\n\tsortDescriptor?: { column: string; direction: \"ascending\" | \"descending\" }\n\tonRowAction?: (id: string) => void\n\tonSelectionChange?: (keys: string[]) => void\n\tonSortChange?: (descriptor: { column: string; direction: \"ascending\" | \"descending\" }) => void\n}\n\nexport function Table({\n\tariaLabel = \"Table\",\n\tcolumns = [],\n\trows = [],\n\tselectionMode = \"none\",\n\tselectedKeys,\n\tdefaultSelectedKeys,\n\tdisabledKeys,\n\tsortDescriptor,\n\tonRowAction,\n\tonSelectionChange,\n\tonSortChange,\n}: TableProps) {\n\tconst styles = getTableStyles()\n\treturn (\n\t\t<RACTable\n\t\t\taria-label={ariaLabel}\n\t\t\tselectionMode={selectionMode}\n\t\t\tselectedKeys={selectedKeys}\n\t\t\tdefaultSelectedKeys={defaultSelectedKeys}\n\t\t\tdisabledKeys={disabledKeys}\n\t\t\tsortDescriptor={sortDescriptor}\n\t\t\tonRowAction={(key) => onRowAction?.(key as string)}\n\t\t\tonSelectionChange={\n\t\t\t\tonSelectionChange\n\t\t\t\t\t? (selection) => {\n\t\t\t\t\t\t\tif (selection !== \"all\") onSelectionChange([...selection].map((k) => k as string))\n\t\t\t\t\t\t}\n\t\t\t\t\t: undefined\n\t\t\t}\n\t\t\tonSortChange={\n\t\t\t\tonSortChange\n\t\t\t\t\t? (descriptor) => onSortChange({ column: descriptor.column as string, direction: descriptor.direction })\n\t\t\t\t\t: undefined\n\t\t\t}\n\t\t\tclassName={styles.root}\n\t\t>\n\t\t\t<TableHeader>\n\t\t\t\t{columns.map((col) => (\n\t\t\t\t\t<Column key={col.id} id={col.id} isRowHeader={col.isRowHeader} className={styles.column}>\n\t\t\t\t\t\t{col.label}\n\t\t\t\t\t</Column>\n\t\t\t\t))}\n\t\t\t</TableHeader>\n\t\t\t<TableBody>\n\t\t\t\t{rows.map((row) => (\n\t\t\t\t\t<Row key={row.id} id={row.id} className={styles.row}>\n\t\t\t\t\t\t{columns.map((col) => (\n\t\t\t\t\t\t\t<Cell key={col.id} className={styles.cell}>\n\t\t\t\t\t\t\t\t{row.data[col.id] ?? \"\"}\n\t\t\t\t\t\t\t</Cell>\n\t\t\t\t\t\t))}\n\t\t\t\t\t</Row>\n\t\t\t\t))}\n\t\t\t</TableBody>\n\t\t</RACTable>\n\t)\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "table/index.ts",
+      "content": "export { Table } from \"./Table\"\nexport type { TableColumn, TableNode, TableRow } from \"./table.schema\"\nexport { TableSchema } from \"./table.schema\"\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "table/table.schema.ts",
+      "content": "import { z } from \"zod\"\n\nconst TableColumnSchema = z.object({\n\tid: z.string(),\n\tlabel: z.string(),\n\tisRowHeader: z.boolean().optional(),\n})\n\nconst TableRowSchema = z.object({\n\tid: z.string(),\n\tdata: z.record(z.string(), z.string()),\n})\n\nexport type TableColumn = z.infer<typeof TableColumnSchema>\nexport type TableRow = z.infer<typeof TableRowSchema>\n\nexport const TableSchema = z.object({\n\ttype: z.literal(\"Table\"),\n\tprops: z\n\t\t.object({\n\t\t\tariaLabel: z.string().optional(),\n\t\t\tcolumns: z.array(TableColumnSchema).optional(),\n\t\t\trows: z.array(TableRowSchema).optional(),\n\t\t\tselectionMode: z.enum([\"none\", \"single\", \"multiple\"]).optional(),\n\t\t\tselectedKeys: z.array(z.string()).optional(),\n\t\t\tdefaultSelectedKeys: z.array(z.string()).optional(),\n\t\t\tdisabledKeys: z.array(z.string()).optional(),\n\t\t\tsortDescriptor: z\n\t\t\t\t.object({\n\t\t\t\t\tcolumn: z.string(),\n\t\t\t\t\tdirection: z.enum([\"ascending\", \"descending\"]),\n\t\t\t\t})\n\t\t\t\t.optional(),\n\t\t})\n\t\t.optional(),\n})\n\nexport type TableNode = z.infer<typeof TableSchema>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "table/table.styles.ts",
+      "content": "export const getTableStyles = () => ({\n\troot: \"w-full border-collapse text-sm\",\n\tcolumn: [\n\t\t\"px-3 py-2 text-left font-medium text-[var(--color-textMuted)]\",\n\t\t\"border-b border-[var(--color-border)]\",\n\t\t\"outline-none\",\n\t\t\"focus-visible:outline-2 focus-visible:outline-[var(--color-primary)]\",\n\t].join(\" \"),\n\trow: [\n\t\t\"border-b border-[var(--color-border)] outline-none cursor-default\",\n\t\t\"data-[hovered]:bg-[var(--color-surface)]\",\n\t\t\"data-[selected]:bg-[var(--color-primary)]/10\",\n\t\t\"data-[focused]:outline-2 data-[focused]:outline-[var(--color-primary)]\",\n\t].join(\" \"),\n\tcell: [\n\t\t\"px-3 py-2 text-[var(--color-text)]\",\n\t\t\"focus-visible:outline-2 focus-visible:outline-[var(--color-primary)]\",\n\t].join(\" \"),\n})\n",
+      "type": "registry:component"
+    }
+  ]
+}

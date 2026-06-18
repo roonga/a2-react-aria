@@ -1,0 +1,195 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roonga/a2-react-aria/main/registry/schema.json",
+  "name": "a2-react-aria",
+  "homepage": "https://github.com/roonga/a2-react-aria",
+  "components": [
+    {
+      "name": "breadcrumb",
+      "title": "Breadcrumb",
+      "description": "Hierarchical navigation with React Aria Breadcrumbs.",
+      "dependencies": [
+        "react-aria-components",
+        "zod"
+      ],
+      "files": 4
+    },
+    {
+      "name": "button",
+      "title": "Button",
+      "description": "Pressable button with variants and sizes.",
+      "dependencies": [
+        "react-aria-components",
+        "zod"
+      ],
+      "files": 4
+    },
+    {
+      "name": "card",
+      "title": "Card",
+      "description": "Surface container for grouping content.",
+      "dependencies": [
+        "zod"
+      ],
+      "files": 4
+    },
+    {
+      "name": "checkbox",
+      "title": "Checkbox",
+      "description": "Checkbox and CheckboxGroup form controls.",
+      "dependencies": [
+        "react-aria-components",
+        "zod"
+      ],
+      "files": 5
+    },
+    {
+      "name": "date-picker",
+      "title": "DatePicker",
+      "description": "DatePicker and DateRangePicker calendar inputs.",
+      "dependencies": [
+        "@internationalized/date",
+        "react-aria-components",
+        "zod"
+      ],
+      "files": 5
+    },
+    {
+      "name": "dialog",
+      "title": "Dialog",
+      "description": "Modal dialog built on React Aria overlays.",
+      "dependencies": [
+        "react-aria-components",
+        "zod"
+      ],
+      "files": 4
+    },
+    {
+      "name": "form",
+      "title": "Form",
+      "description": "Form layout container with validation wiring.",
+      "dependencies": [
+        "react-aria-components",
+        "zod"
+      ],
+      "files": 4
+    },
+    {
+      "name": "layout",
+      "title": "Layout",
+      "description": "Flex and Grid layout primitives.",
+      "dependencies": [
+        "zod"
+      ],
+      "files": 5
+    },
+    {
+      "name": "menu",
+      "title": "Menu",
+      "description": "Menu and MenuTrigger with selection support.",
+      "dependencies": [
+        "react-aria-components",
+        "zod"
+      ],
+      "files": 4
+    },
+    {
+      "name": "number-field",
+      "title": "NumberField",
+      "description": "Numeric input with stepper buttons.",
+      "dependencies": [
+        "react-aria-components",
+        "zod"
+      ],
+      "files": 4
+    },
+    {
+      "name": "popover",
+      "title": "Popover",
+      "description": "Non-modal floating overlay.",
+      "dependencies": [
+        "react-aria-components",
+        "zod"
+      ],
+      "files": 4
+    },
+    {
+      "name": "radio",
+      "title": "RadioGroup",
+      "description": "Radio and RadioGroup single-select controls.",
+      "dependencies": [
+        "react-aria-components",
+        "zod"
+      ],
+      "files": 5
+    },
+    {
+      "name": "select",
+      "title": "Select",
+      "description": "Select / ComboBox dropdown input.",
+      "dependencies": [
+        "react-aria-components",
+        "zod"
+      ],
+      "files": 4
+    },
+    {
+      "name": "switch",
+      "title": "Switch",
+      "description": "On/off toggle switch.",
+      "dependencies": [
+        "react-aria-components",
+        "zod"
+      ],
+      "files": 4
+    },
+    {
+      "name": "table",
+      "title": "Table",
+      "description": "Sortable, selectable data table.",
+      "dependencies": [
+        "react-aria-components",
+        "zod"
+      ],
+      "files": 4
+    },
+    {
+      "name": "tabs",
+      "title": "Tabs",
+      "description": "Tabbed navigation panels.",
+      "dependencies": [
+        "react-aria-components",
+        "zod"
+      ],
+      "files": 4
+    },
+    {
+      "name": "text",
+      "title": "Text",
+      "description": "Typographic text primitive.",
+      "dependencies": [
+        "zod"
+      ],
+      "files": 4
+    },
+    {
+      "name": "text-field",
+      "title": "TextField",
+      "description": "Single-line text input with label and validation.",
+      "dependencies": [
+        "react-aria-components",
+        "zod"
+      ],
+      "files": 4
+    },
+    {
+      "name": "tooltip",
+      "title": "Tooltip",
+      "description": "Accessible hover/focus tooltip.",
+      "dependencies": [
+        "react-aria-components",
+        "zod"
+      ],
+      "files": 4
+    }
+  ]
+}

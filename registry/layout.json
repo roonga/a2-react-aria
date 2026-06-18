@@ -1,0 +1,38 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roonga/a2-react-aria/main/registry/schema.json",
+  "name": "layout",
+  "type": "registry:component",
+  "title": "Layout",
+  "description": "Flex and Grid layout primitives.",
+  "dependencies": [
+    "zod"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "layout/Flex.tsx",
+      "content": "import type { ReactNode } from \"react\"\nimport { getFlexStyles } from \"./layout.styles\"\n\ninterface FlexProps {\n\tdirection?: \"row\" | \"column\" | \"row-reverse\" | \"column-reverse\"\n\tgap?: \"none\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\"\n\talign?: \"start\" | \"center\" | \"end\" | \"stretch\" | \"baseline\"\n\tjustify?: \"start\" | \"center\" | \"end\" | \"between\" | \"around\" | \"evenly\"\n\twrap?: boolean\n\tchildren?: ReactNode\n}\n\nexport function Flex({\n\tdirection = \"row\",\n\tgap = \"md\",\n\talign = \"stretch\",\n\tjustify = \"start\",\n\twrap = false,\n\tchildren,\n}: FlexProps) {\n\treturn <div className={getFlexStyles(direction, gap, align, justify, wrap)}>{children}</div>\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "layout/Grid.tsx",
+      "content": "import type { ReactNode } from \"react\"\nimport { getGridStyles } from \"./layout.styles\"\n\ninterface GridProps {\n\tcolumns?: number\n\tgap?: \"none\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\"\n\talign?: \"start\" | \"center\" | \"end\" | \"stretch\"\n\tchildren?: ReactNode\n}\n\nexport function Grid({ columns = 1, gap = \"md\", align = \"start\", children }: GridProps) {\n\treturn <div className={getGridStyles(columns, gap, align)}>{children}</div>\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "layout/index.ts",
+      "content": "export { Flex } from \"./Flex\"\nexport { Grid } from \"./Grid\"\nexport type { FlexNode, GridNode } from \"./layout.schema\"\nexport { FlexSchema, GridSchema } from \"./layout.schema\"\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "layout/layout.schema.ts",
+      "content": "import { z } from \"zod\"\n\nexport const FlexSchema = z.object({\n\ttype: z.literal(\"Flex\"),\n\tprops: z\n\t\t.object({\n\t\t\tdirection: z.enum([\"row\", \"column\", \"row-reverse\", \"column-reverse\"]).optional(),\n\t\t\tgap: z.enum([\"none\", \"xs\", \"sm\", \"md\", \"lg\", \"xl\"]).optional(),\n\t\t\talign: z.enum([\"start\", \"center\", \"end\", \"stretch\", \"baseline\"]).optional(),\n\t\t\tjustify: z.enum([\"start\", \"center\", \"end\", \"between\", \"around\", \"evenly\"]).optional(),\n\t\t\twrap: z.boolean().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.array(z.unknown()).optional(),\n})\n\nexport type FlexNode = z.infer<typeof FlexSchema>\n\nexport const GridSchema = z.object({\n\ttype: z.literal(\"Grid\"),\n\tprops: z\n\t\t.object({\n\t\t\tcolumns: z.number().int().min(1).max(12).optional(),\n\t\t\tgap: z.enum([\"none\", \"xs\", \"sm\", \"md\", \"lg\", \"xl\"]).optional(),\n\t\t\talign: z.enum([\"start\", \"center\", \"end\", \"stretch\"]).optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.array(z.unknown()).optional(),\n})\n\nexport type GridNode = z.infer<typeof GridSchema>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "layout/layout.styles.ts",
+      "content": "const gapMap = {\n\tnone: \"gap-0\",\n\txs: \"gap-1\",\n\tsm: \"gap-2\",\n\tmd: \"gap-4\",\n\tlg: \"gap-6\",\n\txl: \"gap-8\",\n}\n\nconst alignMap = {\n\tstart: \"items-start\",\n\tcenter: \"items-center\",\n\tend: \"items-end\",\n\tstretch: \"items-stretch\",\n\tbaseline: \"items-baseline\",\n}\n\nconst justifyMap = {\n\tstart: \"justify-start\",\n\tcenter: \"justify-center\",\n\tend: \"justify-end\",\n\tbetween: \"justify-between\",\n\taround: \"justify-around\",\n\tevenly: \"justify-evenly\",\n}\n\nconst directionMap = {\n\trow: \"flex-row\",\n\tcolumn: \"flex-col\",\n\t\"row-reverse\": \"flex-row-reverse\",\n\t\"column-reverse\": \"flex-col-reverse\",\n}\n\nconst gridColsMap: Record<number, string> = {\n\t1: \"grid-cols-1\",\n\t2: \"grid-cols-2\",\n\t3: \"grid-cols-3\",\n\t4: \"grid-cols-4\",\n\t5: \"grid-cols-5\",\n\t6: \"grid-cols-6\",\n\t7: \"grid-cols-7\",\n\t8: \"grid-cols-8\",\n\t9: \"grid-cols-9\",\n\t10: \"grid-cols-10\",\n\t11: \"grid-cols-11\",\n\t12: \"grid-cols-12\",\n}\n\nexport const getFlexStyles = (\n\tdirection: \"row\" | \"column\" | \"row-reverse\" | \"column-reverse\" = \"row\",\n\tgap: \"none\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" = \"md\",\n\talign: \"start\" | \"center\" | \"end\" | \"stretch\" | \"baseline\" = \"stretch\",\n\tjustify: \"start\" | \"center\" | \"end\" | \"between\" | \"around\" | \"evenly\" = \"start\",\n\twrap = false,\n) =>\n\t[\n\t\t\"flex\",\n\t\tdirectionMap[direction],\n\t\tgapMap[gap],\n\t\talignMap[align],\n\t\tjustifyMap[justify],\n\t\twrap ? \"flex-wrap\" : \"flex-nowrap\",\n\t].join(\" \")\n\nexport const getGridStyles = (\n\tcolumns = 1,\n\tgap: \"none\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" = \"md\",\n\talign: \"start\" | \"center\" | \"end\" | \"stretch\" = \"start\",\n) => [\"grid\", gridColsMap[columns] ?? \"grid-cols-1\", gapMap[gap], alignMap[align]].join(\" \")\n",
+      "type": "registry:component"
+    }
+  ]
+}

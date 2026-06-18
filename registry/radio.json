@@ -1,0 +1,39 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roonga/a2-react-aria/main/registry/schema.json",
+  "name": "radio",
+  "type": "registry:component",
+  "title": "RadioGroup",
+  "description": "Radio and RadioGroup single-select controls.",
+  "dependencies": [
+    "react-aria-components",
+    "zod"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "radio/Radio.tsx",
+      "content": "import { RadioButton, RadioField } from \"react-aria-components\"\nimport { getRadioStyles } from \"./radio.styles\"\n\ninterface RadioProps {\n\tlabel?: string\n\tvalue: string\n\tisDisabled?: boolean\n}\n\nexport function Radio({ label, value, isDisabled = false }: RadioProps) {\n\tconst styles = getRadioStyles()\n\n\treturn (\n\t\t<RadioField value={value} isDisabled={isDisabled} className={styles.field}>\n\t\t\t<RadioButton className={styles.button}>\n\t\t\t\t{({ isSelected, isDisabled: dis, isInvalid }) => (\n\t\t\t\t\t<>\n\t\t\t\t\t\t<div className={styles.indicator({ isSelected, isDisabled: dis, isInvalid })}>\n\t\t\t\t\t\t\t{isSelected && <div className={styles.dot} />}\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t{label}\n\t\t\t\t\t</>\n\t\t\t\t)}\n\t\t\t</RadioButton>\n\t\t</RadioField>\n\t)\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "radio/RadioGroup.tsx",
+      "content": "import type { ReactNode } from \"react\"\nimport { FieldError, Label, RadioGroup as RACRadioGroup, Text } from \"react-aria-components\"\nimport { getRadioGroupStyles } from \"./radio.styles\"\n\ninterface RadioGroupProps {\n\tlabel?: string\n\tvalue?: string\n\tdefaultValue?: string\n\tisDisabled?: boolean\n\tisRequired?: boolean\n\tisReadOnly?: boolean\n\tisInvalid?: boolean\n\tvalidationBehavior?: \"aria\" | \"native\"\n\tvalidate?: (value: string) => string | string[] | true | null | undefined\n\torientation?: \"horizontal\" | \"vertical\"\n\tname?: string\n\tdescription?: string\n\terrorMessage?: string\n\tonChange?: (value: string) => void\n\tchildren?: ReactNode\n}\n\nexport function RadioGroup({\n\tlabel,\n\tvalue,\n\tdefaultValue,\n\tisDisabled = false,\n\tisRequired = false,\n\tisReadOnly = false,\n\tisInvalid = false,\n\tvalidationBehavior,\n\tvalidate,\n\torientation = \"vertical\",\n\tname,\n\tdescription,\n\terrorMessage,\n\tonChange,\n\tchildren,\n}: RadioGroupProps) {\n\tconst styles = getRadioGroupStyles()\n\n\treturn (\n\t\t<RACRadioGroup\n\t\t\tvalue={value}\n\t\t\tdefaultValue={defaultValue}\n\t\t\tisDisabled={isDisabled}\n\t\t\tisRequired={isRequired}\n\t\t\tisReadOnly={isReadOnly}\n\t\t\tisInvalid={isInvalid}\n\t\t\tvalidationBehavior={validationBehavior}\n\t\t\tvalidate={validate}\n\t\t\torientation={orientation}\n\t\t\tname={name}\n\t\t\tonChange={onChange}\n\t\t\tclassName={styles.group}\n\t\t>\n\t\t\t{label && <Label className={styles.label}>{label}</Label>}\n\t\t\t<div className={styles.items(orientation)}>{children}</div>\n\t\t\t{description && (\n\t\t\t\t<Text slot=\"description\" className={styles.description}>\n\t\t\t\t\t{description}\n\t\t\t\t</Text>\n\t\t\t)}\n\t\t\t<FieldError className={styles.errorMessage}>{errorMessage}</FieldError>\n\t\t</RACRadioGroup>\n\t)\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "radio/index.ts",
+      "content": "export { Radio } from \"./Radio\"\nexport { RadioGroup } from \"./RadioGroup\"\nexport type { RadioGroupNode, RadioNode } from \"./radio.schema\"\nexport { RadioGroupSchema, RadioSchema } from \"./radio.schema\"\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "radio/radio.schema.ts",
+      "content": "import { z } from \"zod\"\n\nexport const RadioSchema = z.object({\n\ttype: z.literal(\"Radio\"),\n\tprops: z\n\t\t.object({\n\t\t\tlabel: z.string().optional(),\n\t\t\tvalue: z.string(),\n\t\t\tisDisabled: z.boolean().optional(),\n\t\t})\n\t\t.optional(),\n})\n\nexport type RadioNode = z.infer<typeof RadioSchema>\n\nexport const RadioGroupSchema = z.object({\n\ttype: z.literal(\"RadioGroup\"),\n\tprops: z\n\t\t.object({\n\t\t\tlabel: z.string().optional(),\n\t\t\tvalue: z.string().optional(),\n\t\t\tdefaultValue: z.string().optional(),\n\t\t\tisDisabled: z.boolean().optional(),\n\t\t\tisRequired: z.boolean().optional(),\n\t\t\tisReadOnly: z.boolean().optional(),\n\t\t\tisInvalid: z.boolean().optional(),\n\t\t\tvalidationBehavior: z.enum([\"aria\", \"native\"]).optional(),\n\t\t\torientation: z.enum([\"horizontal\", \"vertical\"]).optional(),\n\t\t\tname: z.string().optional(),\n\t\t\tdescription: z.string().optional(),\n\t\t\terrorMessage: z.string().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.array(z.unknown()).optional(),\n})\n\nexport type RadioGroupNode = z.infer<typeof RadioGroupSchema>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "radio/radio.styles.ts",
+      "content": "interface IndicatorState {\n\tisSelected: boolean\n\tisDisabled?: boolean\n\tisInvalid?: boolean\n}\n\nconst indicatorBase = \"w-4 h-4 shrink-0 rounded-full border-2 flex items-center justify-center transition-colors\"\n\nexport const getRadioStyles = () => ({\n\tfield: \"flex flex-col gap-1\",\n\tbutton: \"flex items-center gap-2 text-sm text-[var(--color-text)] cursor-pointer select-none\",\n\tindicator({ isSelected, isDisabled, isInvalid }: IndicatorState) {\n\t\tif (isDisabled) {\n\t\t\treturn `${indicatorBase} bg-[var(--color-backgroundMuted)] border-[var(--color-border)] opacity-50`\n\t\t}\n\t\tif (isSelected) {\n\t\t\treturn `${indicatorBase} bg-[var(--color-background)] border-[var(--color-primary)]`\n\t\t}\n\t\tif (isInvalid) {\n\t\t\treturn `${indicatorBase} bg-[var(--color-background)] border-[var(--color-danger)]`\n\t\t}\n\t\treturn `${indicatorBase} bg-[var(--color-background)] border-[var(--color-border)]`\n\t},\n\tdot: \"w-2 h-2 rounded-full bg-[var(--color-primary)]\",\n})\n\nexport const getRadioGroupStyles = () => ({\n\tgroup: \"flex flex-col gap-2\",\n\tlabel: \"text-sm font-medium text-[var(--color-text)]\",\n\titems: (orientation: \"horizontal\" | \"vertical\" = \"vertical\") =>\n\t\torientation === \"horizontal\" ? \"flex flex-row flex-wrap gap-4\" : \"flex flex-col gap-2\",\n\tdescription: \"text-xs text-[var(--color-textMuted)]\",\n\terrorMessage: \"text-xs text-[var(--color-danger)]\",\n})\n",
+      "type": "registry:component"
+    }
+  ]
+}
