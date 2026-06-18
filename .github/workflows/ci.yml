@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Lint, Typecheck, Test & Build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20, 22]
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Lint Markdown
+        run: pnpm lint:md
+
+      - name: Type check (core)
+        run: pnpm --filter @a2ui/core exec tsc --noEmit
+
+      - name: Type check (cli)
+        run: pnpm --filter a2ui exec tsc --noEmit
+
+      - name: Verify registry is up to date
+        run: |
+          pnpm build:registry
+          git diff --exit-code registry \
+            || (echo "::error::registry/ is stale — run 'pnpm build:registry' and commit the result." && exit 1)
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build packages
+        run: pnpm build

@@ -30,7 +30,7 @@ docker compose up --build
 
 Open <http://localhost:9001> and type:
 
-```
+```text
 Italian restaurants in Sydney for 2 people tonight
 ```
 
@@ -38,7 +38,7 @@ Then follow the conversation to pick a restaurant, choose a time, and confirm yo
 
 ## How it works
 
-```
+```text
 Chat UI  →  POST /run_sse  →  ADK agent  →  tool call  →  Python builds a2UI JSON
                                                               ↓
                           SSE stream  ←  <a2ui-json>[...]</a2ui-json> in response text
