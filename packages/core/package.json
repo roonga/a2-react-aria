@@ -2,12 +2,33 @@
 	"name": "@a2ra/core",
 	"version": "0.1.0",
 	"private": false,
+	"description": "Render a2UI JSON as accessible React Aria components: A2Renderer, component registry, and Zod schemas.",
 	"author": {
 		"name": "Ravi Mohan",
 		"email": "a2-react-aria@roonga.com.au",
 		"url": "https://github.com/roonga"
 	},
 	"license": "MIT",
+	"publishConfig": {
+		"access": "public"
+	},
+	"homepage": "https://github.com/roonga/a2-react-aria/tree/main/packages/core#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/roonga/a2-react-aria.git",
+		"directory": "packages/core"
+	},
+	"bugs": {
+		"url": "https://github.com/roonga/a2-react-aria/issues"
+	},
+	"keywords": [
+		"a2ra",
+		"a2ui",
+		"react-aria",
+		"renderer",
+		"components",
+		"accessibility"
+	],
 	"type": "module",
 	"main": "./dist/index.js",
 	"module": "./dist/index.js",
