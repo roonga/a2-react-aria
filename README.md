@@ -26,19 +26,38 @@ Accessible React Aria Component
 | Package | Description |
 |---|---|
 | `@a2ui/core` | `A2Renderer`, component registry, Zod schemas |
-| `a2ui` | CLI — add, update, diff components from the registry |
-| `a2ui-vscode` | VS Code extension — IntelliSense, live preview, CLI integration |
+| `a2ui` | CLI — `init`, `list`, `add`, `diff` components from the registry |
+| `a2ui-vscode` | VS Code extension — IntelliSense, live preview, CLI integration _(planned)_ |
 
 ## Quick start
 
 ```bash
-# add @a2ui/core
+# 1. install the renderer + React Aria
 pnpm add @a2ui/core react-aria-components
 
-# add components à la carte (you own the source)
+# 2. create an a2ui.json config (sets your components directory)
+npx a2ui init
+
+# 3. add components à la carte — the source is copied into your project, you own it
 npx a2ui add button
 npx a2ui add text-field form dialog
 ```
+
+The CLI copies each component's source (component, styles, schema, barrel) into the directory
+configured in `a2ui.json` (default `components/a2ui/`) and prints the npm dependencies to install.
+
+## CLI
+
+| Command | Description |
+|---|---|
+| `a2ui init` | Create `a2ui.json` (sets `componentsDir` and optional registry override) |
+| `a2ui list` | List the components available in the registry |
+| `a2ui add <component...>` | Copy one or more components into your project |
+| `a2ui diff [component]` | Compare installed components against the registry |
+
+Useful flags: `--dir <path>` (override target directory), `--overwrite` (replace existing files),
+`--registry <url-or-path>` (use an alternative or local registry). The registry location also
+honours the `A2UI_REGISTRY` environment variable.
 
 ```tsx
 import { A2Renderer } from "@a2ui/core"
