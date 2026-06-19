@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 28" fill="none">
+  <!-- "a2" in white/current -->
+  <text x="0" y="21" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-weight="800" font-size="20" letter-spacing="-0.04em" fill="currentColor">a2</text>
+  <!-- "ra" in lighter violet for contrast on dark bg -->
+  <text x="28" y="21" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-weight="800" font-size="20" letter-spacing="-0.04em" fill="#A48DFF">ra</text>
+</svg>

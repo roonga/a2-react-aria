@@ -1,0 +1,290 @@
+/* Inter for hero/brand headings — oldstyle numerals keep "2" at x-height */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@700;800&display=swap");
+
+/* ============================================================
+   a2ra — custom theme
+   Dark mode: true black + violet accent
+   Light mode: white + violet accent (Starlight defaults for backgrounds/text)
+   ============================================================ */
+
+/* Accent overrides — dark mode (Starlight sets data-theme on <html>) */
+[data-theme="dark"] {
+	--sl-color-accent-low: hsl(258, 80%, 22%);
+	--sl-color-accent: hsl(258, 90%, 72%);
+	--sl-color-accent-high: hsl(258, 100%, 88%);
+
+	/* True-black backgrounds */
+	--sl-color-black: hsl(0, 0%, 5%);
+	--sl-color-gray-6: hsl(0, 0%, 8%);
+	--sl-color-gray-5: hsl(0, 0%, 13%);
+	--sl-color-gray-4: hsl(0, 0%, 33%);
+	--sl-color-gray-3: hsl(0, 0%, 52%);
+	--sl-color-gray-2: hsl(0, 0%, 78%);
+	--sl-color-gray-1: hsl(0, 0%, 93%);
+	--sl-color-white: hsl(0, 0%, 100%);
+
+	--sl-color-bg: var(--sl-color-black);
+	--sl-color-bg-nav: hsl(0, 0%, 7%);
+	--sl-color-bg-sidebar: hsl(0, 0%, 6%);
+	--sl-color-bg-inline-code: hsl(0, 0%, 11%);
+
+	--sl-color-hairline: hsl(0, 0%, 12%);
+	--sl-color-hairline-light: hsl(0, 0%, 14%);
+	--sl-color-hairline-shade: hsl(0, 0%, 5%);
+
+	--sl-color-text: hsl(0, 0%, 85%);
+	--sl-color-text-accent: var(--sl-color-accent-high);
+}
+
+/* Accent overrides — light mode (let Starlight handle backgrounds/text) */
+[data-theme="light"] {
+	--sl-color-accent-low: hsl(258, 80%, 92%);
+	--sl-color-accent: hsl(258, 80%, 48%);
+	--sl-color-accent-high: hsl(258, 80%, 28%);
+}
+
+/* ---- Nav height ---- */
+:root {
+	--sl-nav-height: 4.5rem;
+	--sl-nav-pad-y: 1rem;
+}
+
+/* ---- Nav bar ---- */
+[data-theme="dark"] header.header {
+	border-bottom: 1px solid var(--sl-color-hairline);
+	background: var(--sl-color-bg-nav);
+	backdrop-filter: blur(12px);
+}
+
+/* ---- Sidebar ---- */
+[data-theme="dark"] .sidebar-pane {
+	border-inline-end: 1px solid var(--sl-color-hairline);
+}
+
+/* ---- Code blocks — terminal style (always dark) ---- */
+.expressive-code .frame {
+	border: 1px solid hsl(0, 0%, 18%) !important;
+	border-radius: 0.4rem !important;
+}
+
+/* Terminal top-bar chrome */
+.expressive-code .frame::before {
+	content: "";
+	display: block;
+	height: 2.2rem;
+	background: hsl(0, 0%, 10%);
+	border-bottom: 1px solid hsl(0, 0%, 16%);
+	border-radius: 0.4rem 0.4rem 0 0;
+	background-image:
+		radial-gradient(circle, #ff5f57 5px, transparent 5px), radial-gradient(circle, #febc2e 5px, transparent 5px),
+		radial-gradient(circle, #28c840 5px, transparent 5px);
+	background-repeat: no-repeat;
+	background-position:
+		16px center,
+		34px center,
+		52px center;
+}
+
+/* Push pre down past the fake title bar */
+.expressive-code .frame pre {
+	margin-top: 0 !important;
+	border-radius: 0 0 0.4rem 0.4rem !important;
+}
+
+/* Slightly brighter prompt arrow in plain text blocks */
+.expressive-code .frame code .line::before {
+	color: hsl(142, 70%, 55%);
+}
+
+/* ---- Inline code ---- */
+code:not(pre code) {
+	border-radius: 0.25rem;
+	font-size: 0.85em;
+}
+
+[data-theme="dark"] code:not(pre code) {
+	border: 1px solid hsl(0, 0%, 16%);
+}
+
+/* ---- Cards on splash page ---- */
+[data-theme="dark"] .card {
+	border: 1px solid var(--sl-color-hairline-light) !important;
+	background: hsl(0, 0%, 8%) !important;
+	border-radius: 0.75rem !important;
+	transition:
+		border-color 0.2s ease,
+		box-shadow 0.2s ease;
+}
+
+[data-theme="dark"] .card:hover {
+	border-color: hsl(258, 60%, 40%) !important;
+	box-shadow: 0 0 20px hsla(258, 90%, 60%, 0.08);
+}
+
+[data-theme="light"] .card {
+	border: 1px solid hsl(258, 30%, 88%) !important;
+	background: #ffffff !important;
+	border-radius: 0.75rem !important;
+	transition:
+		border-color 0.2s ease,
+		box-shadow 0.2s ease;
+}
+
+[data-theme="light"] .card:hover {
+	border-color: hsl(258, 60%, 65%) !important;
+	box-shadow: 0 0 20px hsla(258, 80%, 60%, 0.08);
+}
+
+/* ---- Splash hero ---- */
+.hero {
+	padding-block: 4rem;
+}
+
+.hero h1 {
+	font-family: "Inter", system-ui, sans-serif;
+	font-size: clamp(1.8rem, 4.5vw, 3rem);
+	font-weight: 800;
+	line-height: 1.1;
+	letter-spacing: -0.03em;
+	font-variant-numeric: oldstyle-nums;
+	font-feature-settings: "onum" 1;
+}
+
+.site-title {
+	font-family: "Inter", system-ui, sans-serif;
+	font-variant-numeric: oldstyle-nums;
+	font-feature-settings: "onum" 1;
+}
+
+/* Tame the "2" — make it x-height-ish without a font change */
+.hero h1 .brand-num {
+	font-size: 0.68em;
+	vertical-align: 0.12em;
+	font-weight: 700;
+}
+
+[data-theme="dark"] .hero h1 {
+	background: linear-gradient(135deg, #fff 40%, hsl(258, 90%, 82%));
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+[data-theme="light"] .hero h1 {
+	background: linear-gradient(135deg, hsl(258, 60%, 20%) 30%, hsl(258, 80%, 48%));
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+.hero .tagline {
+	font-size: 1.125rem;
+}
+
+[data-theme="dark"] .hero .tagline {
+	color: var(--sl-color-gray-3);
+}
+
+/* ---- Action buttons ---- */
+[data-theme="dark"] .action.primary {
+	background: var(--sl-color-accent) !important;
+	color: #fff !important;
+	border: none !important;
+	font-weight: 600;
+}
+
+[data-theme="dark"] .action.primary:hover {
+	background: hsl(258, 93%, 62%) !important;
+}
+
+[data-theme="dark"] .action.secondary {
+	border-color: var(--sl-color-hairline-light) !important;
+	color: var(--sl-color-gray-2) !important;
+}
+
+/* ---- "Shadcn-style" badge ---- */
+.hero-badge {
+	display: inline-block;
+	padding: 0.3rem 0.85rem;
+	border-radius: 99px;
+	font-size: 0.8rem;
+	font-weight: 500;
+	letter-spacing: 0.04em;
+	margin-top: 0;
+	margin-bottom: 2.5rem;
+}
+
+[data-theme="dark"] .hero-badge {
+	border: 1px solid hsl(258, 60%, 40%);
+	color: var(--sl-color-accent-high);
+	background: hsl(258, 60%, 10%);
+}
+
+[data-theme="light"] .hero-badge {
+	border: 1px solid hsl(258, 60%, 70%);
+	color: hsl(258, 80%, 30%);
+	background: hsl(258, 80%, 95%);
+}
+
+/* ---- Table of contents ---- */
+starlight-toc a[aria-current="true"] {
+	color: var(--sl-color-accent);
+	border-inline-start-color: var(--sl-color-accent);
+}
+
+/* ---- Search ---- */
+[data-theme="dark"] site-search button[data-open-modal] {
+	border: 1px solid var(--sl-color-hairline-light);
+	border-radius: 0.5rem;
+	background: hsl(0, 0%, 9%);
+}
+
+/* ---- Tables ---- */
+table {
+	border-radius: 0.5rem;
+	overflow: hidden;
+}
+
+[data-theme="dark"] table {
+	border: 1px solid var(--sl-color-hairline);
+}
+
+[data-theme="dark"] thead tr {
+	background: hsl(0, 0%, 9%);
+}
+
+[data-theme="dark"] tbody tr:nth-child(even) {
+	background: hsl(0, 0%, 7%);
+}
+
+/* ---- Logo sizing ---- */
+.site-title img,
+.site-title svg {
+	height: 2rem;
+	width: auto;
+}
+
+.site-title {
+	font-size: 1.25rem;
+	font-weight: 800;
+	letter-spacing: -0.02em;
+}
+
+/* ---- Scrollbar (Webkit) ---- */
+::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+	background: hsl(0, 0%, 22%);
+	border-radius: 3px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+	background: hsl(0, 0%, 32%);
+}
