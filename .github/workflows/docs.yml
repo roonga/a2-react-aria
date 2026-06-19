@@ -65,14 +65,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build packages (required for TypeDoc)
-        run: pnpm build
-
       - name: Build Storybook
         run: pnpm build:storybook
 
-      - name: Build docs (Starlight + TypeDoc)
+      - name: Build docs
         run: pnpm --filter @a2ra/docs build
+
+      - name: Copy Storybook into docs
+        run: cp -r storybook-static docs/dist/storybook
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5

@@ -6,33 +6,59 @@ description: Get started with a2UI — accessible React Aria components for AI-g
 ## What is a2UI?
 
 a2UI is a React component catalog that renders **a2UI JSON** using **React Aria Components**.
-Components are distributed [shadcn-style](https://ui.shadcn.com/docs/registry) — you own the source.
+Components are distributed [shadcn-style](https://ui.shadcn.com/docs/registry) — you own the source,
+you control the styling, and you can customise freely without fighting a library.
 
 ## Install
 
 ```bash
+# 1. Install the renderer and React Aria
+pnpm add @a2ra/core react-aria-components
+
+# 2. Initialise the project config
 npx @a2ra/cli init
-npx @a2ra/cli add button
+
+# 3. Add components — source is copied into your project
+npx @a2ra/cli add button text-field form
 ```
 
 ## Usage
 
 ```tsx
-import { A2Renderer } from "@a2ra/core"
+import { A2Renderer, defaultRegistry } from "@a2ra/core"
 
 const node = {
-  type: "Button",
-  props: { variant: "primary" },
-  children: "Click me",
+  type: "Form",
+  children: [
+    { type: "TextField", props: { label: "Email", isRequired: true } },
+    { type: "Button", props: { variant: "primary", children: "Submit" } },
+  ],
 }
 
 export function MyApp() {
-  return <A2Renderer node={node} />
+  return <A2Renderer node={node} registry={defaultRegistry} />
 }
 ```
 
-## AG-UI integration
+`defaultRegistry` includes all 18 built-in components. For a leaner bundle in production,
+[create a custom registry](./registry) with only the components you use.
 
-a2UI is the natural rendering layer for AI agents using the
-[AG-UI protocol](https://github.com/ag-ui-protocol/ag-ui).
-Agents emit a2UI JSON; `A2Renderer` turns it into accessible components.
+## How it works
+
+```text
+AI Agent (LangGraph, Google ADK, CrewAI, etc.)
+   │  emits: { "type": "Form", "props": { ... }, "children": [...] }
+   │  via AG-UI protocol or CopilotKit
+   ▼
+<A2Renderer node={payload} registry={defaultRegistry} />
+   │  validates with Zod · resolves component from registry
+   ▼
+Accessible React Aria Component
+   (source lives in your project — you own it)
+```
+
+## Next steps
+
+- [CLI Reference](./cli) — add, update, and diff components
+- [Registry](./registry) — custom registries and tree-shaking
+- [Agent Integration](./agent-integration) — AG-UI and CopilotKit wiring

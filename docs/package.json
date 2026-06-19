@@ -6,14 +6,10 @@
 	"scripts": {
 		"build": "astro build",
 		"dev": "astro dev",
-		"preview": "astro preview",
-		"typedoc": "typedoc"
+		"preview": "astro preview"
 	},
 	"dependencies": {
 		"@astrojs/starlight": "^0.34.0",
-		"astro": "^5.9.0",
-		"starlight-typedoc": "^0.20.0",
-		"typedoc": "^0.28.19",
-		"typedoc-plugin-markdown": "^4.6.0"
+		"astro": "^5.9.0"
 	}
 }

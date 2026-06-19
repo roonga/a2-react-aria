@@ -1,0 +1,32 @@
+---
+title: a2UI
+description: Accessible React Aria components for AI-generated UIs.
+template: splash
+hero:
+  tagline: Render AI-generated JSON as accessible, production-ready UI. Shadcn-style — you own the source.
+  actions:
+    - text: Get started
+      link: /a2-react-aria/guides/getting-started/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/roonga/a2-react-aria
+      icon: external
+---
+
+import { CardGrid, Card } from '@astrojs/starlight/components';
+
+<CardGrid stagger>
+  <Card title="18 built-in components" icon="puzzle">
+    Button, TextField, Select, Dialog, Table, DatePicker, and more — all accessible out of the box via React Aria.
+  </Card>
+  <Card title="You own the source" icon="pencil">
+    Add components with `npx @a2ra/cli add button` — source is copied into your project. Customise freely.
+  </Card>
+  <Card title="Schema-validated JSON" icon="approve-check">
+    Every node is validated with Zod before rendering. Agents emit structured JSON; `A2Renderer` does the rest.
+  </Card>
+  <Card title="Agent-native" icon="rocket">
+    Built for AG-UI, CopilotKit, LangGraph, and any agent framework that emits structured output.
+  </Card>
+</CardGrid>
