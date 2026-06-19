@@ -1,6 +1,6 @@
 {
 	"name": "@a2ra/core",
-	"version": "0.1.0-preview.0",
+	"version": "0.1.0-preview.1",
 	"private": false,
 	"description": "Render a2UI JSON as accessible React Aria components: A2Renderer, component registry, and Zod schemas.",
 	"author": {
