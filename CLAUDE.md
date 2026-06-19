@@ -112,6 +112,26 @@ gh run view <run-id>
 gh release create v1.0.0
 ```
 
+### Versioning — always add a changeset for user-facing changes
+
+Any PR that adds, changes, or removes a public API, export, CLI command, or behaviour that
+consumers depend on **must** include a changeset file in `.changeset/`.
+
+```bash
+pnpm changeset   # interactive: choose package(s) and bump type, write a summary
+```
+
+Bump guidance:
+
+| Change | Bump |
+| --- | --- |
+| New export, new CLI command, new component | `minor` |
+| Bug fix, internal refactor, docs only | `patch` |
+| Breaking change (removed export, renamed prop, changed CLI contract) | `major` |
+
+PRs that only touch CI, tests, or repo tooling (no consumer-visible change) do not need a
+changeset.
+
 ### Markdown
 
 - All `.md` files must pass `markdownlint` (rules in `.markdownlint.json`)

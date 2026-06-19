@@ -60,7 +60,7 @@ Useful flags: `--dir <path>` (override target directory), `--overwrite` (replace
 honours the `A2RA_REGISTRY` environment variable.
 
 ```tsx
-import { A2Renderer } from "@a2ra/core"
+import { A2Renderer, defaultRegistry } from "@a2ra/core"
 
 const node = {
   type: "Form",
@@ -71,7 +71,27 @@ const node = {
 }
 
 export default function App() {
-  return <A2Renderer node={node} />
+  return <A2Renderer node={node} registry={defaultRegistry} />
+}
+```
+
+`defaultRegistry` includes every built-in component. For production apps where you've added components
+via the CLI and want a leaner bundle, pass a custom registry instead:
+
+```tsx
+import { A2Renderer, createRegistry } from "@a2ra/core"
+import { Form } from "./components/a2ui/form"
+import { TextField } from "./components/a2ui/text-field"
+import { Button } from "./components/a2ui/button"
+
+const registry = createRegistry({
+  Form: { component: Form },
+  TextField: { component: TextField },
+  Button: { component: Button },
+})
+
+export default function App() {
+  return <A2Renderer node={node} registry={registry} />
 }
 ```
 
