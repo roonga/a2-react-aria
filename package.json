@@ -32,13 +32,6 @@
 		"version-packages": "changeset version",
 		"release": "pnpm build && changeset publish"
 	},
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"@swc/core",
-			"esbuild",
-			"sharp"
-		]
-	},
 	"devDependencies": {
 		"@a2ra/cli": "workspace:*",
 		"@a2ra/core": "workspace:*",
