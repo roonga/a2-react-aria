@@ -38,6 +38,7 @@ export type { TooltipNode } from "./components/tooltip"
 export { Tooltip, TooltipSchema } from "./components/tooltip"
 // ↑ Component schemas are exported for consumers to validate a2UI JSON before
 // passing it to A2Renderer. They are not used internally — see schema/node.ts.
+export { defaultRegistry, registerAllComponents } from "./registry/defaultRegistry"
 export { createRegistry, getRegistry, registerComponent } from "./registry/registry"
 export { A2ErrorBoundary } from "./renderer/A2ErrorBoundary"
 export { A2Renderer } from "./renderer/A2Renderer"
