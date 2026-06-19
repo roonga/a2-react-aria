@@ -1,0 +1,111 @@
+<button id="theme-toggle" aria-label="Toggle colour scheme" title="Toggle colour scheme">
+  <!-- Sun: visible in dark mode -->
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="4"/>
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+  </svg>
+  <!-- Moon: visible in light mode -->
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+  </svg>
+</button>
+
+<style>
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    background: transparent;
+    border: 1px solid var(--sl-color-hairline-light);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    color: var(--sl-color-gray-2);
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+  }
+
+  button:hover {
+    border-color: var(--sl-color-accent);
+    color: var(--sl-color-accent);
+  }
+
+  :global([data-theme='dark']) button:hover {
+    background: hsl(0, 0%, 14%);
+  }
+
+  :global([data-theme='light']) button:hover {
+    background: hsl(258, 80%, 95%);
+  }
+
+  button:focus-visible {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 2px;
+  }
+</style>
+
+<style is:global>
+  /* Dark mode (default): show sun, hide moon */
+  #theme-toggle .icon-moon { display: none; }
+
+  /* Light mode: hide sun, show moon */
+  [data-theme='light'] #theme-toggle .icon-sun { display: none; }
+  [data-theme='light'] #theme-toggle .icon-moon { display: block; }
+
+  /* GitHub social icon — match theme toggle size */
+  header .social-icons a {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    transition: color 0.2s ease, background 0.2s ease;
+  }
+
+  header .social-icons svg {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+
+  header .social-icons a:hover {
+    color: var(--sl-color-accent);
+  }
+
+  [data-theme='dark'] header .social-icons a:hover {
+    background: hsl(0, 0%, 14%);
+  }
+
+  [data-theme='light'] header .social-icons a:hover {
+    background: hsl(258, 80%, 95%);
+  }
+</style>
+
+<script>
+  function resolvedTheme(): 'dark' | 'light' {
+    const stored = localStorage.getItem('starlight-theme');
+    if (stored === 'light' || stored === 'dark') return stored;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function applyTheme(theme: 'dark' | 'light') {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('starlight-theme', theme);
+  }
+
+  document.getElementById('theme-toggle')?.addEventListener('click', () => {
+    applyTheme(resolvedTheme() === 'dark' ? 'light' : 'dark');
+  });
+
+  // Open GitHub social link in a new tab
+  document.querySelectorAll<HTMLAnchorElement>('header .social-icons a[href*="github.com"]').forEach(a => {
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+  });
+
+  // Visually shrink the "2" in branding so it matches lowercase x-height
+  document.querySelectorAll<HTMLElement>('.hero h1').forEach(el => {
+    el.innerHTML = el.innerHTML.replace(/(\d+)/g, '<span class="brand-num">$1</span>');
+  });
+</script>

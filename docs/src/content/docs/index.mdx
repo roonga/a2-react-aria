@@ -1,9 +1,9 @@
 ---
-title: a2UI
-description: Accessible React Aria components for AI-generated UIs.
+title: a2ra
+description: Render a2UI JSON as accessible React Aria components. You own the source.
 template: splash
 hero:
-  tagline: Render AI-generated JSON as accessible, production-ready UI. Shadcn-style — you own the source.
+  tagline: AI agents speak a2UI JSON. a2ra turns it into accessible, production-ready React Aria components.
   actions:
     - text: Get started
       link: /a2-react-aria/guides/getting-started/
@@ -16,17 +16,33 @@ hero:
 
 import { CardGrid, Card } from '@astrojs/starlight/components';
 
-<CardGrid stagger>
-  <Card title="18 built-in components" icon="puzzle">
-    Button, TextField, Select, Dialog, Table, DatePicker, and more — all accessible out of the box via React Aria.
+<p class="hero-badge">Shadcn-style &mdash; you own the source.</p>
+
+## How it works
+
+**a2UI** is the JSON schema that AI agents emit. **a2ra** (a2 React Aria) is the renderer that
+consumes it, validating every node with Zod and resolving it to the matching React Aria component in your project.
+
+```text
+AI Agent  →  { "type": "Button", "props": { "variant": "primary", "children": "Submit" } }
+                    ↓  a2ra validates (Zod) + resolves (registry)
+              <Button variant="primary">Submit</Button>   ← React Aria, accessible by default
+```
+
+<CardGrid>
+  <Card title="a2UI JSON in, React Aria out" icon="puzzle">
+    Agents emit structured a2UI JSON. `A2Renderer` validates it with Zod and renders the correct React Aria component.
+    No glue code needed.
   </Card>
   <Card title="You own the source" icon="pencil">
-    Add components with `npx @a2ra/cli add button` — source is copied into your project. Customise freely.
+    Add components with `npx @a2ra/cli add button` and the source is copied into your project. Customise freely, no
+    library to pin.
   </Card>
-  <Card title="Schema-validated JSON" icon="approve-check">
-    Every node is validated with Zod before rendering. Agents emit structured JSON; `A2Renderer` does the rest.
+  <Card title="Accessible by default" icon="approve-check">
+    Every component is a thin wrapper around React Aria Components. WCAG AA, keyboard nav, and screen-reader support
+    built in.
   </Card>
   <Card title="Agent-native" icon="rocket">
-    Built for AG-UI, CopilotKit, LangGraph, and any agent framework that emits structured output.
+    Built for AG-UI, CopilotKit, LangGraph, Google ADK, and any agent framework that emits structured output.
   </Card>
 </CardGrid>
