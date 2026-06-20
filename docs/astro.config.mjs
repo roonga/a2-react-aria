@@ -4,7 +4,7 @@ import { defineConfig } from "astro/config"
 export default defineConfig({
 	integrations: [
 		starlight({
-			title: "a2ra",
+			title: "a2ra — Accessible React Aria for AI agents",
 			logo: {
 				dark: "./src/assets/logo-dark.svg",
 				light: "./src/assets/logo-light.svg",
@@ -37,7 +37,7 @@ export default defineConfig({
 				{ label: "Components", autogenerate: { directory: "components" } },
 				{
 					label: "Component Explorer ↗",
-					link: "/a2-react-aria/storybook/",
+					link: "https://roonga.github.io/a2-react-aria/storybook/",
 					attrs: { target: "_blank", rel: "noopener noreferrer" },
 				},
 			],
