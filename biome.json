@@ -6,7 +6,7 @@
 		"useIgnoreFile": true
 	},
 	"files": {
-		"includes": ["**", "!.claude", "!registry", "!.changeset"]
+		"includes": ["**", "!.claude", "!registry", "!.changeset", "!apps/demo/web/next-env.d.ts"]
 	},
 	"formatter": {
 		"enabled": true,
