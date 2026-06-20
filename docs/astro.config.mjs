@@ -4,7 +4,7 @@ import { defineConfig } from "astro/config"
 export default defineConfig({
 	integrations: [
 		starlight({
-			title: "a2ra — Accessible React Aria for AI agents",
+			title: "a2ra — A2UI JSON to React Aria",
 			logo: {
 				dark: "./src/assets/logo-dark.svg",
 				light: "./src/assets/logo-light.svg",
