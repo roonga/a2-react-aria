@@ -10,15 +10,14 @@
       </p>
     </div>
     <div class="a2-flow-visual">
-      <div class="a2-schema-pill"><span class="j-k">"type"</span><span class="j-p">:</span> <span class="j-s">"Button"</span></div>
-      <div class="a2-schema-pill"><span class="j-k">"type"</span><span class="j-p">:</span> <span class="j-s">"TextField"</span></div>
-      <div class="a2-schema-pill"><span class="j-k">"type"</span><span class="j-p">:</span> <span class="j-s">"Form"</span></div>
-      <div class="a2-schema-pill"><span class="j-k">"type"</span><span class="j-p">:</span> <span class="j-s">"Select"</span></div>
-      <div class="a2-schema-pill"><span class="j-k">"type"</span><span class="j-p">:</span> <span class="j-s">"Dialog"</span></div>
-      <div class="a2-schema-pill"><span class="j-k">"type"</span><span class="j-p">:</span> <span class="j-s">"Table"</span></div>
-      <div class="a2-schema-pill"><span class="j-k">"type"</span><span class="j-p">:</span> <span class="j-s">"Tabs"</span></div>
-      <div class="a2-schema-pill"><span class="j-k">"type"</span><span class="j-p">:</span> <span class="j-s">"DatePicker"</span></div>
-      <div class="a2-schema-more">+ 10 more</div>
+      <pre class="a2-code a2-code--ts"><span class="j-kw">import</span> <span class="j-b">{</span> <span class="j-id">A2Renderer</span><span class="j-p">,</span> defaultRegistry <span class="j-b">}</span>
+  <span class="j-kw">from</span> <span class="j-s">"@a2ra/core"</span>
+
+<span class="j-cm">// give agent your schema as a system prompt</span>
+<span class="j-kw">const</span> renderer <span class="j-p">=</span> <span class="j-kw">new</span> <span class="j-id">A2Renderer</span><span class="j-b">({</span>
+  registry<span class="j-p">:</span> defaultRegistry<span class="j-p">,</span>
+  onNode<span class="j-p">:</span> <span class="j-b">(</span>node<span class="j-b">)</span> <span class="j-p">=&gt;</span> setUI<span class="j-b">(</span>node<span class="j-b">),</span>
+<span class="j-b">})</span></pre>
     </div>
   </div>
 
@@ -42,11 +41,29 @@
       <div class="a2-bubble">
         <div class="a2-bubble-tail" aria-hidden="true"></div>
         <pre class="a2-code" aria-label="Example A2UI JSON node"><span class="j-b">{</span>
-  <span class="j-k">"type"</span><span class="j-p">:</span> <span class="j-s">"Button"</span><span class="j-p">,</span>
-  <span class="j-k">"props"</span><span class="j-p">: {</span>
-    <span class="j-k">"variant"</span><span class="j-p">:</span> <span class="j-s">"primary"</span><span class="j-p">,</span>
-    <span class="j-k">"children"</span><span class="j-p">:</span> <span class="j-s">"Submit"</span>
-  <span class="j-p">}</span>
+  <span class="j-k">"type"</span><span class="j-p">:</span> <span class="j-s">"Form"</span><span class="j-p">,</span>
+  <span class="j-k">"children"</span><span class="j-p">: [</span>
+    <span class="j-b">{</span>
+      <span class="j-k">"type"</span><span class="j-p">:</span> <span class="j-s">"TextField"</span><span class="j-p">,</span>
+      <span class="j-k">"props"</span><span class="j-p">: {</span>
+        <span class="j-k">"label"</span><span class="j-p">:</span> <span class="j-s">"Name"</span><span class="j-p">,</span>
+        <span class="j-k">"isRequired"</span><span class="j-p">:</span> <span class="j-n">true</span>
+      <span class="j-p">}</span>
+    <span class="j-b">}</span><span class="j-p">,</span>
+    <span class="j-b">{</span>
+      <span class="j-k">"type"</span><span class="j-p">:</span> <span class="j-s">"DatePicker"</span><span class="j-p">,</span>
+      <span class="j-k">"props"</span><span class="j-p">: {</span>
+        <span class="j-k">"label"</span><span class="j-p">:</span> <span class="j-s">"Date of Birth"</span>
+      <span class="j-p">}</span>
+    <span class="j-b">}</span><span class="j-p">,</span>
+    <span class="j-b">{</span>
+      <span class="j-k">"type"</span><span class="j-p">:</span> <span class="j-s">"Button"</span><span class="j-p">,</span>
+      <span class="j-k">"props"</span><span class="j-p">: {</span>
+        <span class="j-k">"variant"</span><span class="j-p">:</span> <span class="j-s">"primary"</span><span class="j-p">,</span>
+        <span class="j-k">"children"</span><span class="j-p">:</span> <span class="j-s">"Submit"</span>
+      <span class="j-p">}</span>
+    <span class="j-b">}</span>
+  <span class="j-p">]</span>
 <span class="j-b">}</span></pre>
       </div>
     </div>
@@ -73,8 +90,21 @@
         <div class="a2-preview-chrome" aria-hidden="true">
           <span class="a2-dot"></span><span class="a2-dot"></span><span class="a2-dot"></span>
         </div>
-        <div class="a2-preview-body">
-          <button class="a2-demo-btn" tabindex="-1" aria-hidden="true">Submit</button>
+        <div class="a2-preview-body" aria-hidden="true">
+          <div class="a2-demo-form">
+            <div class="a2-demo-field">
+              <div class="a2-demo-label">Name <span class="a2-demo-req">*</span></div>
+              <div class="a2-demo-input"><span class="a2-demo-cursor"></span></div>
+            </div>
+            <div class="a2-demo-field">
+              <div class="a2-demo-label">Date of Birth</div>
+              <div class="a2-demo-input a2-demo-input--date">
+                <span class="a2-demo-placeholder">MM / DD / YYYY</span>
+                <svg class="a2-demo-cal-icon" width="12" height="12" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 1v4M11 1v4M1 7h14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              </div>
+            </div>
+            <button class="a2-demo-btn" tabindex="-1">Submit</button>
+          </div>
           <div class="a2-badges">
             <span class="a2-badge">✓ Zod validated</span>
             <span class="a2-badge">✓ WCAG AA</span>
@@ -209,35 +239,22 @@
     margin-top: 0.25rem;
   }
 
-  /* Step 1: schema pills */
-  .a2-schema-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.2rem;
-    font-family: 'Cascadia Code', 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 0.68rem;
-    padding: 0.2rem 0.55rem;
-    border-radius: 0.3rem;
-    background: hsl(0, 0%, 12%);
-    border: 1px solid hsl(0, 0%, 20%);
-    margin: 0.2rem 0.2rem 0 0;
-    white-space: nowrap;
+  /* Step 1: agent code block */
+  .a2-code--ts {
+    background: hsl(0, 0%, 9%);
+    border: 1px solid hsl(0, 0%, 16%);
+    border-radius: 0.4rem;
+    padding: 0.65rem 0.85rem;
   }
 
-  :global([data-theme='light']) .a2-schema-pill {
-    background: hsl(258, 15%, 94%);
-    border-color: hsl(258, 15%, 82%);
+  :global([data-theme='light']) .a2-code--ts {
+    background: hsl(258, 15%, 97%);
+    border-color: hsl(258, 15%, 84%);
   }
 
-  .a2-schema-more {
-    display: inline-block;
-    font-size: 0.68rem;
-    color: hsl(0, 0%, 42%);
-    margin-top: 0.3rem;
-    padding-left: 0.1rem;
-  }
-
-  :global([data-theme='light']) .a2-schema-more { color: hsl(258, 15%, 55%); }
+  .j-kw { color: hsl(207, 80%, 65%); }
+  .j-id  { color: hsl(38, 85%, 65%); }
+  .j-cm  { color: hsl(0, 0%, 42%); font-style: italic; }
 
   /* Step 2: speech bubble */
   .a2-bubble {
@@ -278,7 +295,7 @@
     font-size: 0.68rem;
     line-height: 1.65;
     white-space: pre;
-    overflow-x: auto;
+    overflow-x: hidden;
     color: hsl(0, 0%, 82%);
   }
 
@@ -286,6 +303,7 @@
   .j-s { color: hsl(142, 60%, 62%); }
   .j-b { color: hsl(0, 0%, 65%); }
   .j-p { color: hsl(0, 0%, 48%); }
+  .j-n { color: hsl(31, 85%, 65%); }
 
   /* Step 3: preview frame */
   .a2-preview {
@@ -325,29 +343,112 @@
   .a2-dot:nth-child(3) { background: hsl(134, 55%, 46%); }
 
   .a2-preview-body {
-    padding: 0.85rem 0.75rem 0.75rem;
+    padding: 0.85rem 0.75rem 0.65rem;
     display: flex;
     flex-direction: column;
-    gap: 0.55rem;
-    background: hsl(0, 0%, 9%);
+    gap: 0.6rem;
+    background: hsl(0, 0%, 7%);
   }
 
   :global([data-theme='light']) .a2-preview-body {
-    background: hsl(142, 20%, 98%);
+    background: hsl(0, 0%, 97%);
+  }
+
+  /* Demo form */
+  .a2-demo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .a2-demo-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .a2-demo-label {
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: hsl(0, 0%, 72%);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  :global([data-theme='light']) .a2-demo-label {
+    color: hsl(0, 0%, 30%);
+  }
+
+  .a2-demo-req {
+    color: hsl(0, 65%, 60%);
+  }
+
+  .a2-demo-input {
+    height: 1.75rem;
+    border-radius: 0.35rem;
+    border: 1px solid hsl(0, 0%, 20%);
+    background: hsl(0, 0%, 11%);
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+  }
+
+  :global([data-theme='light']) .a2-demo-input {
+    border-color: hsl(0, 0%, 78%);
+    background: #fff;
+    box-shadow: 0 1px 2px hsla(0,0%,0%,0.06);
+  }
+
+  .a2-demo-cursor {
+    width: 1px;
+    height: 0.9rem;
+    background: hsl(258, 80%, 65%);
+    display: inline-block;
+    animation: blink 1.1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .a2-demo-input--date {
+    justify-content: space-between;
+  }
+
+  .a2-demo-placeholder {
+    font-size: 0.6rem;
+    font-family: 'Cascadia Code', ui-monospace, monospace;
+    color: hsl(0, 0%, 35%);
+    letter-spacing: 0.05em;
+  }
+
+  :global([data-theme='light']) .a2-demo-placeholder {
+    color: hsl(0, 0%, 65%);
+  }
+
+  .a2-demo-cal-icon {
+    color: hsl(0, 0%, 42%);
+    flex-shrink: 0;
+  }
+
+  :global([data-theme='light']) .a2-demo-cal-icon {
+    color: hsl(0, 0%, 60%);
   }
 
   .a2-demo-btn {
-    background: hsl(258, 88%, 66%);
+    background: hsl(258, 80%, 58%);
     color: #fff;
     border: none;
     border-radius: 0.35rem;
-    padding: 0.4rem 1rem;
-    font-size: 0.8rem;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.72rem;
     font-weight: 600;
     cursor: default;
     pointer-events: none;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.02em;
     align-self: flex-start;
+    margin-top: 0.1rem;
   }
 
   .a2-badges {
