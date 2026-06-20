@@ -8,3 +8,5 @@ allowBuilds:
   '@swc/core': true
   esbuild: true
   sharp: true
+minimumReleaseAgeExclude:
+  - '@a2ra/core@0.1.0-preview.1'
