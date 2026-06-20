@@ -202,6 +202,23 @@ body:has(.splash-hero) .content-panel:has(h1:not(.sl-markdown-content h1)) {
 	display: none;
 }
 
+/* ---- Hero meta line (open source / license) ---- */
+.hero-meta {
+	font-size: 0.8rem;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	margin-top: 1.25rem !important;
+	margin-bottom: 0 !important;
+}
+
+[data-theme="dark"] .hero-meta {
+	color: hsl(0, 0%, 38%);
+}
+
+[data-theme="light"] .hero-meta {
+	color: hsl(0, 0%, 58%);
+}
+
 /* ---- Splash page section headings — centred only on the home page ---- */
 /* h2 is display:inline inside a block wrapper; scope to the home page only */
 body:has(.splash-hero) .sl-markdown-content .sl-heading-wrapper {
