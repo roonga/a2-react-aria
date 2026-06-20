@@ -172,18 +172,21 @@ code:not(pre code) {
 	font-weight: 700;
 }
 
+/* Colour "ra" violet to match the nav logo */
+.splash-hero h1 .brand-suffix {
+	color: hsl(258, 90%, 72%);
+}
+
 [data-theme="dark"] .splash-hero h1 {
-	background: linear-gradient(135deg, #fff 40%, hsl(258, 90%, 82%));
-	-webkit-background-clip: text;
-	-webkit-text-fill-color: transparent;
-	background-clip: text;
+	color: #ffffff;
 }
 
 [data-theme="light"] .splash-hero h1 {
-	background: linear-gradient(135deg, hsl(258, 60%, 20%) 30%, hsl(258, 80%, 48%));
-	-webkit-background-clip: text;
-	-webkit-text-fill-color: transparent;
-	background-clip: text;
+	color: hsl(258, 60%, 12%);
+}
+
+[data-theme="light"] .splash-hero h1 .brand-suffix {
+	color: hsl(258, 80%, 48%);
 }
 
 .splash-hero p:not(.splash-links) {
@@ -202,21 +205,35 @@ body:has(.splash-hero) .content-panel:has(h1:not(.sl-markdown-content h1)) {
 	display: none;
 }
 
-/* ---- Hero meta line (open source / license) ---- */
+/* ---- Hero meta badge ---- */
+.hero-meta-wrap {
+	margin-top: 1.5rem;
+	display: flex;
+	justify-content: center;
+}
+
 .hero-meta {
-	font-size: 0.8rem;
-	letter-spacing: 0.04em;
+	display: inline-flex;
+	gap: 0.5rem;
+	align-items: center;
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.06em;
 	text-transform: uppercase;
-	margin-top: 1.25rem !important;
-	margin-bottom: 0 !important;
+	padding: 0.3rem 0.9rem;
+	border-radius: 99px;
 }
 
 [data-theme="dark"] .hero-meta {
-	color: hsl(0, 0%, 38%);
+	color: hsl(258, 60%, 72%);
+	border: 1px solid hsl(258, 40%, 22%);
+	background: hsl(258, 40%, 9%);
 }
 
 [data-theme="light"] .hero-meta {
-	color: hsl(0, 0%, 58%);
+	color: hsl(258, 55%, 38%);
+	border: 1px solid hsl(258, 40%, 82%);
+	background: hsl(258, 50%, 96%);
 }
 
 /* ---- Splash page section headings — centred only on the home page ---- */

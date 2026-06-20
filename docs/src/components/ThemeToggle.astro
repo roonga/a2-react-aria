@@ -104,8 +104,10 @@
     a.rel = 'noopener noreferrer';
   });
 
-  // Visually shrink the "2" in branding so it matches lowercase x-height
+  // Split a2ra branding: shrink "2", colour "ra" violet to match logo
   document.querySelectorAll<HTMLElement>('.splash-hero h1').forEach(el => {
-    el.innerHTML = el.innerHTML.replace(/(\d+)/g, '<span class="brand-num">$1</span>');
+    el.innerHTML = el.innerHTML
+      .replace(/(\d+)/g, '<span class="brand-num">$1</span>')
+      .replace(/(ra)(<\/h1>|$)/, '<span class="brand-suffix">$1</span>$2');
   });
 </script>
