@@ -46,9 +46,8 @@ export function MyApp() {
 ## How it works
 
 ```text
-AI Agent (LangGraph, Google ADK, CrewAI, etc.)
+AI Agent (LangGraph, Google ADK, CrewAI, plain LLM call, etc.)
    │  emits: { "type": "Form", "props": { ... }, "children": [...] }
-   │  via AG-UI protocol or CopilotKit
    ▼
 <A2Renderer node={payload} registry={defaultRegistry} />
    │  validates with Zod · resolves component from registry
@@ -61,4 +60,4 @@ Accessible React Aria Component
 
 - [CLI Reference](./cli) — add, update, and diff components
 - [Registry](./registry) — custom registries and tree-shaking
-- [Agent Integration](./agent-integration) — AG-UI and CopilotKit wiring
+- [Agent Integration](./agent-integration) — wiring agents to A2Renderer

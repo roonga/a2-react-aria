@@ -1,77 +1,78 @@
 ---
 title: Agent Integration
-description: Connect AI agents to A2Renderer using AG-UI or CopilotKit.
+description: Connect AI agents to A2Renderer — no third-party SDKs required.
 ---
 
 a2UI is designed as the rendering layer for AI agents. Agents emit a2UI JSON; `A2Renderer`
-validates it and turns it into accessible React components — no JSX generation required.
+validates it with Zod and turns it into accessible React components. Because a2UI JSON is
+plain JSON, any agent that can return structured output works — no third-party SDK required.
 
-## AG-UI protocol
+## One-shot response
 
-[AG-UI](https://github.com/ag-ui-protocol/ag-ui) is a lightweight protocol for streaming
-structured UI events from agents to frontends over SSE or WebSocket.
-
-### Server (agent)
-
-Emit a `generative_ui` event with an a2UI JSON payload:
-
-```python
-yield {
-    "type": "generative_ui",
-    "payload": {
-        "type": "Form",
-        "children": [
-            { "type": "TextField", "props": { "label": "Search", "name": "q" } },
-            { "type": "Button", "props": { "variant": "primary", "children": "Search" } },
-        ]
-    }
-}
-```
-
-### Client (React)
+The simplest pattern: call your agent, get a JSON node back, render it.
 
 ```tsx
-import { useAgUIStream } from "@ag-ui/react"
+import { useState } from "react"
 import { A2Renderer, defaultRegistry } from "@a2ra/core"
 
 export function AgentUI() {
-  const { node } = useAgUIStream("/api/agent")
-
-  if (!node) return null
-  return <A2Renderer node={node} registry={defaultRegistry} />
-}
-```
-
-## CopilotKit
-
-[CopilotKit](https://copilotkit.ai) provides hooks for rendering agent-generated UI inside
-React apps. Use `useCopilotAction` to pass the a2UI payload to `A2Renderer`:
-
-```tsx
-import { useCopilotAction } from "@copilotkit/react-core"
-import { A2Renderer, defaultRegistry } from "@a2ra/core"
-import { useState } from "react"
-
-export function CopilotAwareApp() {
   const [node, setNode] = useState(null)
 
-  useCopilotAction({
-    name: "render_ui",
-    description: "Render an a2UI component tree",
-    parameters: [
-      { name: "node", type: "object", description: "a2UI JSON node" },
-    ],
-    handler: ({ node }) => setNode(node),
-  })
+  async function run() {
+    const res = await fetch("/api/agent", { method: "POST" })
+    const data = await res.json()
+    setNode(data.node)
+  }
 
-  if (!node) return null
-  return <A2Renderer node={node} registry={defaultRegistry} />
+  return (
+    <>
+      <button onClick={run}>Ask agent</button>
+      {node && <A2Renderer node={node} registry={defaultRegistry} />}
+    </>
+  )
 }
 ```
 
-## Any agent framework
+## Streaming (Server-Sent Events)
 
-a2UI JSON is plain JSON — any agent that can return structured output can use it.
+For agents that stream output, parse the final node from the SSE stream and hand it to
+`A2Renderer` when the stream closes.
+
+```tsx
+import { useState } from "react"
+import { A2Renderer, defaultRegistry } from "@a2ra/core"
+
+export function StreamingAgentUI() {
+  const [node, setNode] = useState(null)
+
+  async function run() {
+    const es = new EventSource("/api/agent/stream")
+
+    es.addEventListener("ui_node", (e) => {
+      setNode(JSON.parse(e.data))
+      es.close()
+    })
+
+    es.onerror = () => es.close()
+  }
+
+  return (
+    <>
+      <button onClick={run}>Ask agent</button>
+      {node && <A2Renderer node={node} registry={defaultRegistry} />}
+    </>
+  )
+}
+```
+
+Your agent emits an `ui_node` event with the a2UI JSON payload:
+
+```python
+# Python (any framework)
+yield f"event: ui_node\ndata: {json.dumps(node)}\n\n"
+```
+
+## Agent-side: generating valid nodes
 
 ### LangGraph (Python)
 
@@ -83,12 +84,13 @@ parser = JsonOutputParser()
 node = parser.parse(llm.invoke(
     "Return an a2UI JSON Form node with a TextField and a Button."
 ))
-# node = { "type": "Form", "children": [...] }
+# { "type": "Form", "children": [...] }
 ```
 
-### Prompt guidance
+### Google ADK / CrewAI / plain LLM
 
-Include the component schema in the system prompt so the LLM generates valid nodes:
+Any model that supports structured or JSON output works. Include the component schema in
+your system prompt:
 
 ```text
 You may return UI using a2UI JSON. The root node must have a "type" field matching

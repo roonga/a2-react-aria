@@ -16,7 +16,7 @@ function version(): string {
 	}
 }
 
-const HELP = `${bold("a2ra")} — add React Aria a2UI components to your project, shadcn-style.
+const HELP = `${bold("a2ra")} — add React Aria a2UI components to your project, shadcn style.
 
 ${bold("Usage:")}
   a2ra <command> [options]

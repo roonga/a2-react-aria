@@ -1,48 +1,67 @@
 ---
 title: a2ra
-description: Render a2UI JSON as accessible React Aria components. You own the source.
+description: Render A2UI JSON as accessible React Aria components. You own the source.
 template: splash
-hero:
-  tagline: AI agents speak a2UI JSON. a2ra turns it into accessible, production-ready React Aria components.
-  actions:
-    - text: Get started
-      link: /a2-react-aria/guides/getting-started/
-      icon: right-arrow
-      variant: primary
-    - text: View on GitHub
-      link: https://github.com/roonga/a2-react-aria
-      icon: external
 ---
 
 import { CardGrid, Card } from '@astrojs/starlight/components';
+import FlowDiagram from '../../components/FlowDiagram.astro';
+import CompareTable from '../../components/CompareTable.astro';
 
-<p class="hero-badge">Shadcn-style &mdash; you own the source.</p>
+<div class="splash-hero">
+
+# a2ra
+
+AI agents can now generate full user interfaces on demand. **A2UI** is the typed JSON protocol
+that expresses UI intent — a2ra validates every node and renders it as an accessible React Aria
+component.
+
+<p class="splash-links">
+  <a href="/a2-react-aria/guides/getting-started/">Get started →</a>
+  <a href="https://github.com/roonga/a2-react-aria">View on GitHub →</a>
+</p>
+
+</div>
+
+<div class="splash-intro">
+
+## Why A2UI?
+
+Modern AI agents go beyond chat — they build entire interfaces dynamically based on context,
+user intent, and task state. **A2UI** gives agents a stable, typed JSON vocabulary to express
+that intent safely. a2ra validates every node with Zod and renders it using React Aria, so
+accessibility and correctness are guaranteed regardless of what the agent generates.
+
+<p class="splash-links">
+  <a href="/a2-react-aria/guides/why-a2ui/">Why A2UI? →</a>
+  <a href="/a2-react-aria/components/button/">Component schemas →</a>
+</p>
+
+</div>
 
 ## How it works
 
-**a2UI** is the JSON schema that AI agents emit. **a2ra** (a2 React Aria) is the renderer that
-consumes it, validating every node with Zod and resolving it to the matching React Aria component in your project.
+<FlowDiagram />
 
-```text
-AI Agent  →  { "type": "Button", "props": { "variant": "primary", "children": "Submit" } }
-                    ↓  a2ra validates (Zod) + resolves (registry)
-              <Button variant="primary">Submit</Button>   ← React Aria, accessible by default
-```
+## A2UI vs the alternatives
+
+<CompareTable />
 
 <CardGrid>
-  <Card title="a2UI JSON in, React Aria out" icon="puzzle">
-    Agents emit structured a2UI JSON. `A2Renderer` validates it with Zod and renders the correct React Aria component.
-    No glue code needed.
+  <Card title="A2UI JSON in, React Aria out" icon="puzzle">
+    Agents emit structured A2UI JSON. `A2Renderer` validates it with Zod and renders the correct
+    React Aria component. No glue code needed.
   </Card>
   <Card title="You own the source" icon="pencil">
-    Add components with `npx @a2ra/cli add button` and the source is copied into your project. Customise freely, no
-    library to pin.
+    Add components with `npx @a2ra/cli add button` and the source lands in your project.
+    Customise freely — shadcn-style, no library to pin.
   </Card>
   <Card title="Accessible by default" icon="approve-check">
-    Every component is a thin wrapper around React Aria Components. WCAG AA, keyboard nav, and screen-reader support
-    built in.
+    Every component is a thin wrapper around React Aria Components. WCAG AA, keyboard nav, and
+    screen-reader support built in.
   </Card>
   <Card title="Agent-native" icon="rocket">
-    Built for AG-UI, CopilotKit, LangGraph, Google ADK, and any agent framework that emits structured output.
+    Works with any agent framework that emits structured output — LangGraph, Google ADK, CrewAI,
+    or a plain LLM call.
   </Card>
 </CardGrid>

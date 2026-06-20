@@ -67,6 +67,8 @@ jobs:
 
       - name: Build Storybook
         run: pnpm build:storybook
+        env:
+          STORYBOOK_BASE_URL: /a2-react-aria/storybook/
 
       - name: Build docs
         run: pnpm --filter @a2ra/docs build

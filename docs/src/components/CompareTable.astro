@@ -1,0 +1,181 @@
+<div class="ct-wrap" role="region" aria-label="Comparison: Raw HTML vs JSX vs A2UI JSON">
+  <table class="ct">
+    <thead>
+      <tr>
+        <th class="ct-feature" scope="col">Feature</th>
+        <th scope="col">Raw HTML</th>
+        <th scope="col">JSX</th>
+        <th scope="col" class="ct-winner">A2UI JSON</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="ct-feature">Safe to render from agents</td>
+        <td><span class="ct-no" aria-label="No">✗</span><span class="ct-note">XSS vectors</span></td>
+        <td><span class="ct-no" aria-label="No">✗</span><span class="ct-note">code execution</span></td>
+        <td class="ct-winner"><span class="ct-yes" aria-label="Yes">✓</span><span class="ct-note">data only</span></td>
+      </tr>
+      <tr>
+        <td class="ct-feature">Validated at the boundary</td>
+        <td><span class="ct-no" aria-label="No">✗</span></td>
+        <td><span class="ct-no" aria-label="No">✗</span></td>
+        <td class="ct-winner"><span class="ct-yes" aria-label="Yes">✓</span><span class="ct-note">Zod schemas</span></td>
+      </tr>
+      <tr>
+        <td class="ct-feature">Accessible by default</td>
+        <td><span class="ct-no" aria-label="No">✗</span></td>
+        <td><span class="ct-warn" aria-label="Partial">~</span><span class="ct-note">varies</span></td>
+        <td class="ct-winner"><span class="ct-yes" aria-label="Yes">✓</span><span class="ct-note">React Aria</span></td>
+      </tr>
+      <tr>
+        <td class="ct-feature">Agent output is reliable</td>
+        <td><span class="ct-warn" aria-label="Partial">~</span><span class="ct-note">injects attributes</span></td>
+        <td><span class="ct-no" aria-label="No">✗</span><span class="ct-note">hallucinates props</span></td>
+        <td class="ct-winner"><span class="ct-yes" aria-label="Yes">✓</span><span class="ct-note">typed schema</span></td>
+      </tr>
+      <tr>
+        <td class="ct-feature">Survives UI refactors</td>
+        <td><span class="ct-no" aria-label="No">✗</span></td>
+        <td><span class="ct-no" aria-label="No">✗</span></td>
+        <td class="ct-winner"><span class="ct-yes" aria-label="Yes">✓</span><span class="ct-note">renderer changes, schema stays</span></td>
+      </tr>
+      <tr>
+        <td class="ct-feature">No build pipeline needed</td>
+        <td><span class="ct-yes" aria-label="Yes">✓</span></td>
+        <td><span class="ct-no" aria-label="No">✗</span></td>
+        <td class="ct-winner"><span class="ct-yes" aria-label="Yes">✓</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .ct-wrap {
+    width: 100%;
+    overflow-x: auto;
+    margin: 1.5rem 0 2.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid hsl(0, 0%, 16%);
+    display: block;
+    box-sizing: border-box;
+  }
+
+  :global([data-theme='light']) .ct-wrap {
+    border-color: hsl(258, 15%, 82%);
+  }
+
+  .ct {
+    width: 100%;
+    min-width: 100%;
+    display: table;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    /* reset Starlight table overrides */
+    border-radius: 0 !important;
+    overflow: visible !important;
+    border: none !important;
+  }
+
+  /* header row */
+  .ct thead tr {
+    background: hsl(0, 0%, 10%) !important;
+    border-bottom: 1px solid hsl(0, 0%, 18%);
+  }
+
+  :global([data-theme='light']) .ct thead tr {
+    background: hsl(258, 15%, 94%) !important;
+    border-bottom-color: hsl(258, 15%, 82%);
+  }
+
+  .ct th {
+    padding: 0.75rem 1rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: hsl(0, 0%, 58%);
+    text-align: center;
+    border: none;
+  }
+
+  :global([data-theme='light']) .ct th { color: hsl(258, 15%, 48%); }
+
+  .ct th.ct-feature { text-align: left; }
+
+  /* winner column header */
+  .ct th.ct-winner {
+    color: hsl(258, 70%, 75%);
+    background: hsl(258, 40%, 11%);
+  }
+
+  :global([data-theme='light']) .ct th.ct-winner {
+    color: hsl(258, 55%, 38%);
+    background: hsl(258, 50%, 94%);
+  }
+
+  /* body rows */
+  .ct tbody tr {
+    border-bottom: 1px solid hsl(0, 0%, 13%);
+  }
+
+  :global([data-theme='light']) .ct tbody tr {
+    border-bottom-color: hsl(258, 15%, 88%);
+  }
+
+  .ct tbody tr:last-child { border-bottom: none; }
+
+  .ct tbody tr:nth-child(even) {
+    background: hsl(0, 0%, 7%) !important;
+  }
+
+  :global([data-theme='light']) .ct tbody tr:nth-child(even) {
+    background: hsl(258, 15%, 97%) !important;
+  }
+
+  .ct td {
+    padding: 0.7rem 1rem;
+    text-align: center;
+    vertical-align: middle;
+    border: none;
+    color: hsl(0, 0%, 70%);
+  }
+
+  :global([data-theme='light']) .ct td { color: hsl(258, 10%, 38%); }
+
+  .ct td.ct-feature {
+    text-align: left;
+    font-weight: 500;
+    color: hsl(0, 0%, 82%);
+  }
+
+  :global([data-theme='light']) .ct td.ct-feature { color: hsl(258, 10%, 18%); }
+
+  /* winner column body cells */
+  .ct td.ct-winner {
+    background: hsl(258, 40%, 9%);
+    color: hsl(258, 60%, 80%);
+    font-weight: 600;
+  }
+
+  :global([data-theme='light']) .ct td.ct-winner {
+    background: hsl(258, 50%, 96%);
+    color: hsl(258, 50%, 32%);
+  }
+
+  /* icons */
+  .ct-yes  { color: hsl(142, 60%, 52%); font-weight: 700; margin-right: 0.3rem; }
+  .ct-no   { color: hsl(4,  75%, 55%);  font-weight: 700; margin-right: 0.3rem; }
+  .ct-warn { color: hsl(38, 88%, 55%);  font-weight: 700; margin-right: 0.3rem; }
+
+  .ct-note {
+    font-size: 0.72rem;
+    color: hsl(0, 0%, 45%);
+    display: block;
+    margin-top: 0.1rem;
+  }
+
+  :global([data-theme='light']) .ct-note { color: hsl(258, 10%, 52%); }
+
+  .ct td.ct-winner .ct-note { color: hsl(258, 40%, 55%); }
+  :global([data-theme='light']) .ct td.ct-winner .ct-note { color: hsl(258, 35%, 48%); }
+</style>
