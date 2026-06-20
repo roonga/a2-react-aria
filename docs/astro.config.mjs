@@ -18,7 +18,7 @@ export default defineConfig({
 			},
 			expressiveCode: {
 				// Always use a dark terminal theme regardless of page theme
-				themes: ["github-dark", "github-dark"],
+				themes: ["one-dark-pro", "one-dark-pro"],
 				styleOverrides: {
 					borderRadius: "0.4rem",
 					codeFontFamily: "'Cascadia Code', 'JetBrains Mono', 'Fira Code', ui-monospace, 'Consolas', monospace",
