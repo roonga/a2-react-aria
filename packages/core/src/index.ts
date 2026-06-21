@@ -1,3 +1,5 @@
+export type { ActionCtx } from "./action-context"
+export { ActionContext, withAction } from "./action-context"
 export type { BreadcrumbItem, BreadcrumbNode } from "./components/breadcrumb"
 export { Breadcrumb, BreadcrumbSchema } from "./components/breadcrumb"
 export type { ButtonNode } from "./components/button"
@@ -36,10 +38,13 @@ export type { TextFieldNode } from "./components/text-field"
 export { TextField, TextFieldSchema } from "./components/text-field"
 export type { TooltipNode } from "./components/tooltip"
 export { Tooltip, TooltipSchema } from "./components/tooltip"
+export type { FormStateCtx } from "./form-state"
+export { FormStateContext, withFormState, withFormStateNum } from "./form-state"
 // ↑ Component schemas are exported for consumers to validate a2UI JSON before
 // passing it to A2Renderer. They are not used internally — see schema/node.ts.
 export { defaultRegistry, registerAllComponents } from "./registry/defaultRegistry"
 export { createRegistry, getRegistry, registerComponent } from "./registry/registry"
+export { A2BlockRenderer } from "./renderer/A2BlockRenderer"
 export { A2ErrorBoundary } from "./renderer/A2ErrorBoundary"
 export { A2Renderer } from "./renderer/A2Renderer"
 export type { A2NodeInput } from "./schema"
@@ -50,5 +55,6 @@ export type {
 	ComponentEntry,
 	ComponentRegistry,
 } from "./types"
+export { extractA2ui, stripStreamingA2ui } from "./utils/extractA2ui"
 
 export const VERSION = "0.1.0-preview.0"
