@@ -75,8 +75,8 @@ importers:
   apps/demo/web:
     dependencies:
       '@a2ra/core':
-        specifier: ^0.1.0-preview.1
-        version: 0.1.0-preview.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        specifier: workspace:*
+        version: link:../../../packages/core
       '@internationalized/date':
         specifier: ^3.7.0
         version: 3.12.2
@@ -192,12 +192,6 @@ importers:
         version: 4.1.8(@types/node@24.13.2)(@vitest/browser-playwright@4.1.8)(jsdom@26.1.0)(vite@8.0.16(@types/node@24.13.2)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.9.0))
 
 packages:
-
-  '@a2ra/core@0.1.0-preview.1':
-    resolution: {integrity: sha512-52EU0B+IRKSPTw4zQ6EqO4L2LAp8YTSkZBQnplskXvcYaMCre0I9yD7aN6ght83yrHWboi+09fikGBkXjfMg/g==}
-    peerDependencies:
-      react: ^19.0.0
-      react-dom: ^19.0.0
 
   '@adobe/css-tools@4.5.0':
     resolution: {integrity: sha512-6OzddxPio9UiWTCemp4N8cYLV2ZN1ncRnV1cVGtve7dhPOtRkleRyx32GQCYSwDYgaHU3USMm84tNsvKzRCa1Q==}
@@ -4631,14 +4625,6 @@ packages:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
-
-  '@a2ra/core@0.1.0-preview.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
-    dependencies:
-      '@internationalized/date': 3.12.2
-      react: 19.2.4
-      react-aria-components: 1.18.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react-dom: 19.2.4(react@19.2.4)
-      zod: 4.4.3
 
   '@adobe/css-tools@4.5.0': {}
 
