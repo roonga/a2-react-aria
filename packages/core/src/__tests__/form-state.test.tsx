@@ -1,6 +1,10 @@
 import { fireEvent, render, screen } from "@testing-library/react"
+import { useContext, useEffect } from "react"
 import { describe, expect, it, vi } from "vitest"
-import { FormStateContext, withFormState } from "../form-state/form-state"
+import { FormStateContext } from "../form-state/form-state"
+
+// Mock components that use FormStateContext the same way built-in components do.
+// These also serve as a reference pattern for custom component authors.
 
 function MockInput({
 	label,
@@ -11,7 +15,22 @@ function MockInput({
 	defaultValue?: string
 	onChange?: (v: string) => void
 }) {
-	return <input aria-label={label} defaultValue={defaultValue} onChange={(e) => onChange?.(e.target.value)} />
+	const ctx = useContext(FormStateContext)
+	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional mount-only seed
+	useEffect(() => {
+		if (defaultValue !== undefined && label) ctx?.setValue(label, defaultValue)
+	}, [])
+	return (
+		<input
+			aria-label={label}
+			defaultValue={defaultValue}
+			onChange={(e) => {
+				const v = e.target.value
+				if (label) ctx?.setValue(label, v)
+				onChange?.(v)
+			}}
+		/>
+	)
 }
 
 function MockNumInput({
@@ -23,25 +42,31 @@ function MockNumInput({
 	defaultValue?: number
 	onChange?: (v: number) => void
 }) {
+	const ctx = useContext(FormStateContext)
+	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional mount-only seed
+	useEffect(() => {
+		if (defaultValue !== undefined && label) ctx?.setValue(label, `${defaultValue}`)
+	}, [])
 	return (
 		<input
 			type="number"
 			aria-label={label}
 			defaultValue={defaultValue}
-			onChange={(e) => onChange?.(Number(e.target.value))}
+			onChange={(e) => {
+				const v = Number(e.target.value)
+				if (label) ctx?.setValue(label, `${v}`)
+				onChange?.(v)
+			}}
 		/>
 	)
 }
 
-const WrappedInput = withFormState(MockInput)
-const WrappedNumInput = withFormState(MockNumInput)
-
-describe("withFormState", () => {
-	it("seeds string defaultValue into FormStateContext on mount", () => {
+describe("FormStateContext — component integration", () => {
+	it("seeds string defaultValue into context on mount", () => {
 		const setValue = vi.fn()
 		render(
 			<FormStateContext.Provider value={{ setValue }}>
-				<WrappedInput label="Name" defaultValue="Alice" />
+				<MockInput label="Name" defaultValue="Alice" />
 			</FormStateContext.Provider>,
 		)
 		expect(setValue).toHaveBeenCalledWith("Name", "Alice")
@@ -51,7 +76,7 @@ describe("withFormState", () => {
 		const setValue = vi.fn()
 		render(
 			<FormStateContext.Provider value={{ setValue }}>
-				<WrappedNumInput label="Guests" defaultValue={3} />
+				<MockNumInput label="Guests" defaultValue={3} />
 			</FormStateContext.Provider>,
 		)
 		expect(setValue).toHaveBeenCalledWith("Guests", "3")
@@ -61,7 +86,7 @@ describe("withFormState", () => {
 		const setValue = vi.fn()
 		render(
 			<FormStateContext.Provider value={{ setValue }}>
-				<WrappedNumInput label="Count" defaultValue={0} />
+				<MockNumInput label="Count" defaultValue={0} />
 			</FormStateContext.Provider>,
 		)
 		expect(setValue).toHaveBeenCalledWith("Count", "0")
@@ -71,7 +96,7 @@ describe("withFormState", () => {
 		const setValue = vi.fn()
 		render(
 			<FormStateContext.Provider value={{ setValue }}>
-				<WrappedInput label="Name" />
+				<MockInput label="Name" />
 			</FormStateContext.Provider>,
 		)
 		expect(setValue).not.toHaveBeenCalled()
@@ -81,7 +106,7 @@ describe("withFormState", () => {
 		const setValue = vi.fn()
 		render(
 			<FormStateContext.Provider value={{ setValue }}>
-				<WrappedInput defaultValue="Alice" />
+				<MockInput defaultValue="Alice" />
 			</FormStateContext.Provider>,
 		)
 		expect(setValue).not.toHaveBeenCalled()
@@ -91,7 +116,7 @@ describe("withFormState", () => {
 		const setValue = vi.fn()
 		render(
 			<FormStateContext.Provider value={{ setValue }}>
-				<WrappedInput label="City" />
+				<MockInput label="City" />
 			</FormStateContext.Provider>,
 		)
 		fireEvent.change(screen.getByRole("textbox"), { target: { value: "Sydney" } })
@@ -102,18 +127,31 @@ describe("withFormState", () => {
 		const setValue = vi.fn()
 		render(
 			<FormStateContext.Provider value={{ setValue }}>
-				<WrappedNumInput label="Qty" />
+				<MockNumInput label="Qty" />
 			</FormStateContext.Provider>,
 		)
 		fireEvent.change(screen.getByRole("spinbutton"), { target: { value: "5" } })
 		expect(setValue).toHaveBeenCalledWith("Qty", "5")
 	})
 
+	it("passes through onChange to the caller alongside context update", () => {
+		const setValue = vi.fn()
+		const onChange = vi.fn()
+		render(
+			<FormStateContext.Provider value={{ setValue }}>
+				<MockInput label="City" onChange={onChange} />
+			</FormStateContext.Provider>,
+		)
+		fireEvent.change(screen.getByRole("textbox"), { target: { value: "Sydney" } })
+		expect(setValue).toHaveBeenCalledWith("City", "Sydney")
+		expect(onChange).toHaveBeenCalledWith("Sydney")
+	})
+
 	it("does not call setValue on change when label is missing", () => {
 		const setValue = vi.fn()
 		render(
 			<FormStateContext.Provider value={{ setValue }}>
-				<WrappedInput />
+				<MockInput />
 			</FormStateContext.Provider>,
 		)
 		fireEvent.change(screen.getByRole("textbox"), { target: { value: "anything" } })
@@ -121,7 +159,7 @@ describe("withFormState", () => {
 	})
 
 	it("does not throw when there is no FormStateContext", () => {
-		render(<WrappedInput label="Name" defaultValue="Bob" />)
+		render(<MockInput label="Name" defaultValue="Bob" />)
 		expect(() => {
 			fireEvent.change(screen.getByRole("textbox"), { target: { value: "Charlie" } })
 		}).not.toThrow()

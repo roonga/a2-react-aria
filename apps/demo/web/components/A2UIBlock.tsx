@@ -1,6 +1,6 @@
 "use client"
 
-import { A2Renderer, ActionContext, createRegistry, withAction, withFormState } from "@a2ra/core"
+import { A2Renderer, ActionContext, createRegistry } from "@a2ra/core"
 import { useContext } from "react"
 import { Button } from "./a2ui/button"
 import { Card } from "./a2ui/card"
@@ -43,18 +43,18 @@ function FeedbackSurveyCard({
 }
 
 const REGISTRY = createRegistry({
-	Button: { component: withAction(Button) as RegComp },
+	Button: { component: Button as RegComp },
 	Card: { component: Card as RegComp },
-	DatePicker: { component: withFormState(DatePicker) as RegComp },
+	DatePicker: { component: DatePicker as RegComp },
 	FeedbackSurvey: { component: FeedbackSurveyCard as RegComp },
 	Flex: { component: Flex as RegComp },
 	Grid: { component: Grid as RegComp },
-	NumberField: { component: withFormState(NumberField) as RegComp },
+	NumberField: { component: NumberField as RegComp },
 	Radio: { component: Radio as unknown as RegComp },
-	RadioGroup: { component: withFormState(RadioGroup) as RegComp },
-	Select: { component: withFormState(Select) as RegComp },
+	RadioGroup: { component: RadioGroup as RegComp },
+	Select: { component: Select as RegComp },
 	Text: { component: Text as RegComp },
-	TextField: { component: withFormState(TextField) as RegComp },
+	TextField: { component: TextField as RegComp },
 })
 
 interface Props {

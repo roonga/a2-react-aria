@@ -13,21 +13,23 @@ three things on top of basic rendering:
    submits
 3. **Extract A2UI JSON** from the agent's text stream, which may mix prose and UI nodes
 
-`A2Renderer` handles all three. No second component to learn.
+`A2Renderer` handles all three. No second component to learn, no HOC wrapping required.
 
 ## Interactive mode — the onAction prop
 
-Pass `onAction` to `A2Renderer` and it automatically wires form-state collection and action
-firing for every component in the rendered tree:
+Pass `onAction` to `A2Renderer` and all built-in form fields and buttons automatically
+wire themselves to form-state collection and action firing:
 
 ```tsx
 import { A2Renderer, createRegistry } from "@a2ra/core"
 import { Button } from "./components/a2ui/button"
+import { Select } from "./components/a2ui/select"
 import { TextField } from "./components/a2ui/text-field"
 
 const registry = createRegistry({
-  Button: { component: Button },
+  Button:    { component: Button },
   TextField: { component: TextField },
+  Select:    { component: Select },
 })
 
 function AgentFormBlock({ nodes, onAction }) {
@@ -38,67 +40,42 @@ function AgentFormBlock({ nodes, onAction }) {
 `onAction(text)` receives the compound action string when the user presses an action button.
 Without `onAction`, `A2Renderer` is stateless — no context, no overhead.
 
-## Collecting form field values — withFormState
+## How it works
 
-Wrap any component that has `label`, `defaultValue`, and `onChange` props to make it report
-its value up to the nearest `A2Renderer` with `onAction`:
+When `onAction` is provided, `A2Renderer` internally wraps the rendered tree with
+`FormStateContext` and `ActionContext`. Built-in components read from these contexts
+automatically:
 
-```tsx
-import { withFormState } from "@a2ra/core"
-import { NumberField } from "./components/a2ui/number-field"
-import { Select } from "./components/a2ui/select"
-import { TextField } from "./components/a2ui/text-field"
+- **Form fields** (`TextField`, `Select`, `RadioGroup`, `NumberField`, `DatePicker`) seed
+  their `defaultValue` into the context on mount and report every `onChange` update.
+- **`Button`** reads from `ActionContext` on press. If the agent set a `value` prop on the
+  button node, that string is fired directly. Otherwise the button label is passed through
+  `buildAction`, which collects all current field values into a compound string.
 
-const registry = createRegistry({
-  TextField:   { component: withFormState(TextField) },
-  Select:      { component: withFormState(Select) },
-  NumberField: { component: withFormState(NumberField) },
-})
-```
+When `onAction` is absent, none of this context is provided and the components behave
+exactly as standalone React components.
 
-`withFormState` works for both string-value fields (`TextField`, `Select`, `RadioGroup`,
-`DatePicker`) and number-value fields (`NumberField`). Number values are converted to
-strings with template literals before being stored — the action string is always plain text.
+## Action string format
 
-`withFormState` seeds the field's `defaultValue` on mount and pipes `onChange` updates into
-the context. The component API is otherwise unchanged — existing props pass through normally.
-
-## Firing actions — withAction
-
-Wrap a `Button` (or any component with `onPress`) to fire the collected fields back to the
-agent when the user presses it:
-
-```tsx
-import { withAction } from "@a2ra/core"
-import { Button } from "./components/a2ui/button"
-
-const registry = createRegistry({
-  Button: { component: withAction(Button) },
-  // ...
-})
-```
-
-When the user presses the button, `withAction` builds a compound string from every field
-collected so far:
+When the user presses a button, `onAction` receives a compound string:
 
 ```text
 Book table | Location: Sydney | Date: 2025-12-24 | Party size: 4
 ```
 
-The button label becomes the subject; each `label: value` pair follows. Empty fields are
-excluded. The compound string is passed to `onAction`.
+The button label is the subject. Each `label: value` pair for filled fields follows,
+separated by ` | `. Empty fields are excluded.
 
 ### Value-based actions
 
-If the agent sets a `value` prop on a Button node, `withAction` fires that string directly
-instead of building a compound payload — useful when the button represents a fixed choice
-like `"confirm"` or `"cancel"`:
+If the agent sets a `value` prop on a Button node, that string is fired directly instead
+of building a compound payload — useful for fixed choices like `"confirm"` or `"cancel"`:
 
 ```json
 { "type": "Button", "props": { "value": "cancel", "children": "Never mind" } }
 ```
 
-The `value` prop is stripped before it reaches the DOM so it does not trigger React warnings.
+The `value` prop is not passed to the DOM, so it does not trigger React warnings.
 
 ## Parsing A2UI JSON from text — extractA2ui
 
@@ -142,15 +119,15 @@ Once the stream ends, call `extractA2ui` on the complete buffer to extract the f
 
 ```tsx
 import { useState } from "react"
-import { A2Renderer, createRegistry, extractA2ui, stripStreamingA2ui, withAction, withFormState } from "@a2ra/core"
+import { A2Renderer, createRegistry, extractA2ui, stripStreamingA2ui } from "@a2ra/core"
 import { Button } from "./components/a2ui/button"
 import { Select } from "./components/a2ui/select"
 import { TextField } from "./components/a2ui/text-field"
 
 const registry = createRegistry({
-  Button:    { component: withAction(Button) },
-  TextField: { component: withFormState(TextField) },
-  Select:    { component: withFormState(Select) },
+  Button:    { component: Button },
+  TextField: { component: TextField },
+  Select:    { component: Select },
 })
 
 export function AgentChat() {

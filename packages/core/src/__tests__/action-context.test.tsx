@@ -1,17 +1,32 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import type { ReactNode } from "react"
+import { useContext } from "react"
 import { describe, expect, it, vi } from "vitest"
-import { ActionContext, withAction } from "../action-context/action-context"
+import { ActionContext } from "../action-context/action-context"
 
-function MockButton({ onPress, children }: { onPress?: () => void; children?: ReactNode }) {
+// Mock component that uses ActionContext the same way the built-in Button does.
+// Also serves as a reference pattern for custom component authors.
+function MockButton({ onPress, value, children }: { onPress?: () => void; value?: string; children?: ReactNode }) {
+	const ctx = useContext(ActionContext)
 	return (
-		<button type="button" onClick={onPress}>
+		<button
+			type="button"
+			onClick={() => {
+				if (ctx) {
+					if (value) {
+						ctx.fire(value)
+					} else if (typeof children === "string") {
+						ctx.fire(ctx.buildAction(children))
+					}
+				} else {
+					onPress?.()
+				}
+			}}
+		>
 			{children}
 		</button>
 	)
 }
-
-const ActionButton = withAction(MockButton)
 
 function makeCtx(overrides?: { buildAction?: (l: string) => string; fire?: (t: string) => void }) {
 	return {
@@ -20,13 +35,13 @@ function makeCtx(overrides?: { buildAction?: (l: string) => string; fire?: (t: s
 	}
 }
 
-describe("withAction", () => {
+describe("ActionContext — component integration", () => {
 	it("fires value prop directly when provided", () => {
 		const fire = vi.fn()
 		const ctx = makeCtx({ fire })
 		render(
 			<ActionContext.Provider value={ctx}>
-				<ActionButton value="book:1">Confirm</ActionButton>
+				<MockButton value="book:1">Confirm</MockButton>
 			</ActionContext.Provider>,
 		)
 		fireEvent.click(screen.getByRole("button", { name: "Confirm" }))
@@ -39,7 +54,7 @@ describe("withAction", () => {
 		const ctx = makeCtx({ buildAction, fire })
 		render(
 			<ActionContext.Provider value={ctx}>
-				<ActionButton>Submit</ActionButton>
+				<MockButton>Submit</MockButton>
 			</ActionContext.Provider>,
 		)
 		fireEvent.click(screen.getByRole("button", { name: "Submit" }))
@@ -52,19 +67,18 @@ describe("withAction", () => {
 		const ctx = makeCtx({ buildAction: () => "Submit | Name: Alice", fire })
 		render(
 			<ActionContext.Provider value={ctx}>
-				<ActionButton>Submit</ActionButton>
+				<MockButton>Submit</MockButton>
 			</ActionContext.Provider>,
 		)
 		fireEvent.click(screen.getByRole("button", { name: "Submit" }))
 		expect(fire).toHaveBeenCalledWith("Submit | Name: Alice")
 	})
 
-	it("does nothing on press when there is no ActionContext", () => {
-		render(<ActionButton>Orphan</ActionButton>)
-		// Should not throw
-		expect(() => {
-			fireEvent.click(screen.getByRole("button", { name: "Orphan" }))
-		}).not.toThrow()
+	it("falls back to onPress when there is no ActionContext", () => {
+		const onPress = vi.fn()
+		render(<MockButton onPress={onPress}>Orphan</MockButton>)
+		fireEvent.click(screen.getByRole("button", { name: "Orphan" }))
+		expect(onPress).toHaveBeenCalled()
 	})
 
 	it("does nothing when children are not a string and no value prop", () => {
@@ -72,32 +86,31 @@ describe("withAction", () => {
 		const ctx = makeCtx({ fire })
 		render(
 			<ActionContext.Provider value={ctx}>
-				<ActionButton>
+				<MockButton>
 					<span>icon</span>
-				</ActionButton>
+				</MockButton>
 			</ActionContext.Provider>,
 		)
 		fireEvent.click(screen.getByRole("button"))
 		expect(fire).not.toHaveBeenCalled()
 	})
 
-	it("strips value from props forwarded to the wrapped component", () => {
+	it("does not forward value to the DOM element", () => {
 		const ctx = makeCtx()
 		const { container } = render(
 			<ActionContext.Provider value={ctx}>
-				<ActionButton value="action-id">Go</ActionButton>
+				<MockButton value="action-id">Go</MockButton>
 			</ActionContext.Provider>,
 		)
 		const btn = container.querySelector("button")
-		// "value" is an A2UI action identifier, not a DOM attribute — should not appear
 		expect(btn?.hasAttribute("value")).toBe(false)
 	})
 
-	it("still forwards other props to the wrapped component", () => {
+	it("renders children correctly", () => {
 		const ctx = makeCtx()
 		render(
 			<ActionContext.Provider value={ctx}>
-				<ActionButton>Styled</ActionButton>
+				<MockButton>Styled</MockButton>
 			</ActionContext.Provider>,
 		)
 		expect(screen.getByRole("button", { name: "Styled" })).toBeDefined()

@@ -1,3 +1,4 @@
+import { useContext, useEffect } from "react"
 import {
 	Button,
 	FieldError,
@@ -9,6 +10,7 @@ import {
 	SelectValue,
 	Text,
 } from "react-aria-components"
+import { FormStateContext } from "../../form-state"
 import type { SelectItem } from "./select.schema"
 import { getSelectStyles } from "./select.styles"
 
@@ -54,6 +56,12 @@ export function Select({
 	onOpenChange,
 }: SelectProps) {
 	const styles = getSelectStyles()
+	const formCtx = useContext(FormStateContext)
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional mount-only seed
+	useEffect(() => {
+		if (defaultValue !== undefined && label) formCtx?.setValue(label, defaultValue)
+	}, [])
 
 	return (
 		<RACSelect
@@ -68,7 +76,11 @@ export function Select({
 			validate={validate ? (key) => validate(key as string) : undefined}
 			name={name}
 			placeholder={placeholder}
-			onSelectionChange={(key) => onChange?.(key as string)}
+			onSelectionChange={(key) => {
+				const v = key as string
+				if (label) formCtx?.setValue(label, v)
+				onChange?.(v)
+			}}
 			onOpenChange={onOpenChange}
 			className={styles.field}
 		>

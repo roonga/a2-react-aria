@@ -1,4 +1,6 @@
+import { useContext, useEffect } from "react"
 import { FieldError, Input, Label, TextField as RACTextField, Text } from "react-aria-components"
+import { FormStateContext } from "../../form-state"
 import { getTextFieldStyles } from "./text-field.styles"
 
 interface TextFieldProps {
@@ -49,6 +51,17 @@ export function TextField({
 	onChange,
 }: TextFieldProps) {
 	const styles = getTextFieldStyles()
+	const formCtx = useContext(FormStateContext)
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional mount-only seed
+	useEffect(() => {
+		if (defaultValue !== undefined && label) formCtx?.setValue(label, defaultValue)
+	}, [])
+
+	const handleChange = (v: string) => {
+		if (label) formCtx?.setValue(label, v)
+		onChange?.(v)
+	}
 
 	return (
 		<RACTextField
@@ -67,7 +80,7 @@ export function TextField({
 			minLength={minLength}
 			maxLength={maxLength}
 			pattern={pattern}
-			onChange={onChange}
+			onChange={handleChange}
 			className={styles.container}
 		>
 			{label && (

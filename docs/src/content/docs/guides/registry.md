@@ -111,8 +111,8 @@ import { A2Renderer } from "@a2ra/core"
 <A2Renderer nodes={nodes} registry={registry} onAction={handleAction} />
 ```
 
-Without `onAction`, `A2Renderer` is stateless. With it, every `withFormState`-wrapped
-component in the tree reports its value and every `withAction`-wrapped button fires the
-compound string to `handleAction`.
+Without `onAction`, `A2Renderer` is stateless. With it, all built-in form fields
+automatically report their values and all built-in buttons fire the compound string to
+`handleAction`. No HOC wrapping or extra setup required.
 
-See [Building a Form Block](./building-a-form-block) for the full HOC setup.
+See [Building a Form Block](./building-a-form-block) for the full usage guide.

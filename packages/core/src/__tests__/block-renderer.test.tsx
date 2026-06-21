@@ -1,22 +1,44 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import type { ReactNode } from "react"
+import { useContext } from "react"
 import { describe, expect, it, vi } from "vitest"
-import { withAction } from "../action-context/action-context"
-import { withFormState } from "../form-state/form-state"
+import { ActionContext } from "../action-context/action-context"
+import { FormStateContext } from "../form-state/form-state"
 import { A2Renderer, createRegistry } from "../index"
 
-// ── mock components ──────────────────────────────────────────────────────────
+// ── mock components — use contexts directly, matching the built-in pattern ───
 
-function MockButton({ onPress, children }: { onPress?: () => void; children?: ReactNode }) {
+function MockButton({ value, children }: { onPress?: () => void; value?: string; children?: ReactNode }) {
+	const ctx = useContext(ActionContext)
 	return (
-		<button type="button" onClick={onPress}>
+		<button
+			type="button"
+			onClick={() => {
+				if (!ctx) return
+				if (value) {
+					ctx.fire(value)
+				} else if (typeof children === "string") {
+					ctx.fire(ctx.buildAction(children))
+				}
+			}}
+		>
 			{children}
 		</button>
 	)
 }
 
 function MockInput({ label, onChange }: { label?: string; onChange?: (v: string) => void }) {
-	return <input aria-label={label} onChange={(e) => onChange?.(e.target.value)} />
+	const ctx = useContext(FormStateContext)
+	return (
+		<input
+			aria-label={label}
+			onChange={(e) => {
+				const v = e.target.value
+				if (label) ctx?.setValue(label, v)
+				onChange?.(v)
+			}}
+		/>
+	)
 }
 
 function MockCard({ children }: { children?: ReactNode }) {
@@ -26,8 +48,8 @@ function MockCard({ children }: { children?: ReactNode }) {
 type RegComp = Parameters<typeof createRegistry>[0][string]["component"]
 
 const registry = createRegistry({
-	Button: { component: withAction(MockButton) as RegComp },
-	TextField: { component: withFormState(MockInput) as RegComp },
+	Button: { component: MockButton as RegComp },
+	TextField: { component: MockInput as RegComp },
 	Card: { component: MockCard as RegComp },
 })
 

@@ -1,5 +1,7 @@
 import type { ReactNode } from "react"
+import { useContext, useEffect } from "react"
 import { FieldError, Label, RadioGroup as RACRadioGroup, Text } from "react-aria-components"
+import { FormStateContext } from "../../form-state"
 import { getRadioGroupStyles } from "./radio.styles"
 
 interface RadioGroupProps {
@@ -38,6 +40,17 @@ export function RadioGroup({
 	children,
 }: RadioGroupProps) {
 	const styles = getRadioGroupStyles()
+	const formCtx = useContext(FormStateContext)
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional mount-only seed
+	useEffect(() => {
+		if (defaultValue !== undefined && label) formCtx?.setValue(label, defaultValue)
+	}, [])
+
+	const handleChange = (v: string) => {
+		if (label) formCtx?.setValue(label, v)
+		onChange?.(v)
+	}
 
 	return (
 		<RACRadioGroup
@@ -51,7 +64,7 @@ export function RadioGroup({
 			validate={validate}
 			orientation={orientation}
 			name={name}
-			onChange={onChange}
+			onChange={handleChange}
 			className={styles.group}
 		>
 			{label && <Label className={styles.label}>{label}</Label>}
