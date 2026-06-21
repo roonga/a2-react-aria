@@ -3,7 +3,7 @@ import type { ReactNode } from "react"
 import { describe, expect, it, vi } from "vitest"
 import { withAction } from "../action-context/action-context"
 import { withFormState } from "../form-state/form-state"
-import { A2BlockRenderer, createRegistry } from "../index"
+import { A2Renderer, createRegistry } from "../index"
 
 // ── mock components ──────────────────────────────────────────────────────────
 
@@ -33,28 +33,28 @@ const registry = createRegistry({
 
 // ── tests ────────────────────────────────────────────────────────────────────
 
-describe("A2BlockRenderer", () => {
+describe("A2Renderer — interactive mode (nodes + onAction)", () => {
 	it("returns null for an empty nodes array", () => {
-		const { container } = render(<A2BlockRenderer nodes={[]} registry={registry} onAction={vi.fn()} />)
+		const { container } = render(<A2Renderer nodes={[]} registry={registry} onAction={vi.fn()} />)
 		expect(container.firstChild).toBeNull()
 	})
 
 	it("returns null for undefined nodes", () => {
 		const { container } = render(
 			// biome-ignore lint/suspicious/noExplicitAny: testing undefined edge case
-			<A2BlockRenderer nodes={undefined as any} registry={registry} onAction={vi.fn()} />,
+			<A2Renderer nodes={undefined as any} registry={registry} onAction={vi.fn()} />,
 		)
 		expect(container.firstChild).toBeNull()
 	})
 
 	it("renders a single node via the registry", () => {
-		render(<A2BlockRenderer nodes={[{ type: "Card", children: "Hello" }]} registry={registry} />)
+		render(<A2Renderer nodes={[{ type: "Card", children: "Hello" }]} registry={registry} />)
 		expect(screen.getByTestId("card")).toBeDefined()
 	})
 
 	it("renders multiple nodes", () => {
 		render(
-			<A2BlockRenderer
+			<A2Renderer
 				nodes={[
 					{ type: "Button", children: "First" },
 					{ type: "Button", children: "Second" },
@@ -68,9 +68,7 @@ describe("A2BlockRenderer", () => {
 
 	it("fires onAction with just the button label when no form fields are present", () => {
 		const onAction = vi.fn()
-		render(
-			<A2BlockRenderer nodes={[{ type: "Button", children: "Confirm" }]} registry={registry} onAction={onAction} />,
-		)
+		render(<A2Renderer nodes={[{ type: "Button", children: "Confirm" }]} registry={registry} onAction={onAction} />)
 		fireEvent.click(screen.getByRole("button", { name: "Confirm" }))
 		expect(onAction).toHaveBeenCalledWith("Confirm")
 	})
@@ -78,7 +76,7 @@ describe("A2BlockRenderer", () => {
 	it("fires onAction with value prop directly", () => {
 		const onAction = vi.fn()
 		render(
-			<A2BlockRenderer
+			<A2Renderer
 				nodes={[{ type: "Button", props: { value: "action:book" }, children: "Book" }]}
 				registry={registry}
 				onAction={onAction}
@@ -91,7 +89,7 @@ describe("A2BlockRenderer", () => {
 	it("collects form field values into the action string", () => {
 		const onAction = vi.fn()
 		render(
-			<A2BlockRenderer
+			<A2Renderer
 				nodes={[
 					{ type: "TextField", props: { label: "Name" } },
 					{ type: "Button", children: "Submit" },
@@ -108,7 +106,7 @@ describe("A2BlockRenderer", () => {
 	it("excludes empty fields from the action string", () => {
 		const onAction = vi.fn()
 		render(
-			<A2BlockRenderer
+			<A2Renderer
 				nodes={[
 					{ type: "TextField", props: { label: "Comment" } },
 					{ type: "Button", children: "Send" },
@@ -125,7 +123,7 @@ describe("A2BlockRenderer", () => {
 	it("builds compound action string from multiple fields", () => {
 		const onAction = vi.fn()
 		render(
-			<A2BlockRenderer
+			<A2Renderer
 				nodes={[
 					{ type: "TextField", props: { label: "City" } },
 					{ type: "TextField", props: { label: "Date" } },
@@ -143,7 +141,7 @@ describe("A2BlockRenderer", () => {
 	})
 
 	it("does not throw when onAction is not provided", () => {
-		render(<A2BlockRenderer nodes={[{ type: "Button", children: "OK" }]} registry={registry} />)
+		render(<A2Renderer nodes={[{ type: "Button", children: "OK" }]} registry={registry} />)
 		expect(() => {
 			fireEvent.click(screen.getByRole("button", { name: "OK" }))
 		}).not.toThrow()

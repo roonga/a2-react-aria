@@ -1,6 +1,6 @@
 "use client"
 
-import { A2BlockRenderer, ActionContext, createRegistry, withAction, withFormState, withFormStateNum } from "@a2ra/core"
+import { A2Renderer, ActionContext, createRegistry, withAction, withFormState, withFormStateNum } from "@a2ra/core"
 import { useContext } from "react"
 import { Button } from "./a2ui/button"
 import { Card } from "./a2ui/card"
@@ -65,7 +65,7 @@ interface Props {
 export default function A2UIBlock({ nodes, onAction }: Props) {
 	return (
 		<div className="mt-3 space-y-3">
-			<A2BlockRenderer nodes={nodes} registry={REGISTRY} onAction={onAction} />
+			<A2Renderer nodes={nodes} registry={REGISTRY} onAction={onAction} />
 		</div>
 	)
 }

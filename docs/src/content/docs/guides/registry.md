@@ -100,16 +100,19 @@ For the full walkthrough — including connecting a custom component to the acti
 and writing a system-prompt description for the agent — see the
 [Custom Components guide](./custom-components).
 
-## A2BlockRenderer
+## Interactive rendering — onAction
 
-When the node list contains form fields and action buttons, use `A2BlockRenderer` instead
-of `A2Renderer`. It accepts the same `registry` prop and wires form-state collection and
-action firing automatically:
+When the node list contains form fields and action buttons, pass `onAction` to `A2Renderer`.
+It accepts a `nodes` array and wires form-state collection and action firing automatically:
 
 ```tsx
-import { A2BlockRenderer } from "@a2ra/core"
+import { A2Renderer } from "@a2ra/core"
 
-<A2BlockRenderer nodes={nodes} registry={registry} onAction={handleAction} />
+<A2Renderer nodes={nodes} registry={registry} onAction={handleAction} />
 ```
+
+Without `onAction`, `A2Renderer` is stateless. With it, every `withFormState`-wrapped
+component in the tree reports its value and every `withAction`-wrapped button fires the
+compound string to `handleAction`.
 
 See [Building a Form Block](./building-a-form-block) for the full HOC setup.

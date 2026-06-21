@@ -1,27 +1,27 @@
 ---
 title: Building a Form Block
-description: Wire up A2BlockRenderer, form-state HOCs, and A2UI text-parsing utilities to handle agent-driven forms.
+description: Use A2Renderer with onAction to handle agent-driven forms, collect field values, and fire action strings.
 sidebar:
   order: 8
 ---
 
 When an agent emits a form — a booking widget, a search panel, a multi-step flow — you need
-three things the basic `A2Renderer` does not provide:
+three things on top of basic rendering:
 
 1. **Collect field values** as the user types across multiple inputs
 2. **Fire the collected values** back to the agent in a single action string when the user
    submits
 3. **Extract A2UI JSON** from the agent's text stream, which may mix prose and UI nodes
 
-`@a2ra/core` exports purpose-built primitives for each.
+`A2Renderer` handles all three. No second component to learn.
 
-## A2BlockRenderer
+## Interactive mode — the onAction prop
 
-Drop-in replacement for `A2Renderer` when the node list may contain form fields and action
-buttons. It wires `FormStateContext` and `ActionContext` automatically.
+Pass `onAction` to `A2Renderer` and it automatically wires form-state collection and action
+firing for every component in the rendered tree:
 
 ```tsx
-import { A2BlockRenderer, createRegistry } from "@a2ra/core"
+import { A2Renderer, createRegistry } from "@a2ra/core"
 import { Button } from "./components/a2ui/button"
 import { TextField } from "./components/a2ui/text-field"
 
@@ -31,16 +31,17 @@ const registry = createRegistry({
 })
 
 function AgentFormBlock({ nodes, onAction }) {
-  return <A2BlockRenderer nodes={nodes} registry={registry} onAction={onAction} />
+  return <A2Renderer nodes={nodes} registry={registry} onAction={onAction} />
 }
 ```
 
 `onAction(text)` receives the compound action string when the user presses an action button.
+Without `onAction`, `A2Renderer` is stateless — no context, no overhead.
 
 ## Collecting form field values — withFormState
 
 Wrap any component that has `label`, `defaultValue`, and `onChange` props to make it report
-its value to the nearest `A2BlockRenderer`:
+its value up to the nearest `A2Renderer` with `onAction`:
 
 ```tsx
 import { withFormState, withFormStateNum } from "@a2ra/core"
@@ -77,7 +78,7 @@ const registry = createRegistry({
 ```
 
 When the user presses the button, `withAction` builds a compound string from every field
-the `A2BlockRenderer` has collected:
+collected so far:
 
 ```text
 Book table | Location: Sydney | Date: 2025-12-24 | Party size: 4
@@ -141,7 +142,7 @@ Once the stream ends, call `extractA2ui` on the complete buffer to extract the f
 ```tsx
 import { useState } from "react"
 import {
-  A2BlockRenderer,
+  A2Renderer,
   createRegistry,
   extractA2ui,
   stripStreamingA2ui,
@@ -193,7 +194,7 @@ export function AgentChat() {
         <div key={i}>
           <p>{msg.content}</p>
           {msg.a2uiJson && (
-            <A2BlockRenderer nodes={msg.a2uiJson} registry={registry} onAction={handleAction} />
+            <A2Renderer nodes={msg.a2uiJson} registry={registry} onAction={handleAction} />
           )}
         </div>
       ))}

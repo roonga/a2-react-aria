@@ -97,7 +97,6 @@ describe("withAction", () => {
 		const ctx = makeCtx()
 		render(
 			<ActionContext.Provider value={ctx}>
-				{/* biome-ignore lint/a11y/useButtonType: test only */}
 				<ActionButton>Styled</ActionButton>
 			</ActionContext.Provider>,
 		)
