@@ -37,3 +37,6 @@ packages/core/schema.json
 
 # Turbo cache
 .turbo/
+
+# TypeScript incremental build info (auto-generated)
+*.tsbuildinfo

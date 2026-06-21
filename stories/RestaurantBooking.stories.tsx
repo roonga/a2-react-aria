@@ -21,21 +21,51 @@ import {
 } from "../packages/core/src/index"
 
 const registry = createRegistry({
-	Breadcrumb: { component: Breadcrumb as Parameters<typeof createRegistry>[0][string]["component"] },
-	Button: { component: Button as Parameters<typeof createRegistry>[0][string]["component"] },
-	Card: { component: Card as Parameters<typeof createRegistry>[0][string]["component"] },
-	Checkbox: { component: Checkbox as Parameters<typeof createRegistry>[0][string]["component"] },
-	CheckboxGroup: { component: CheckboxGroup as Parameters<typeof createRegistry>[0][string]["component"] },
-	DatePicker: { component: DatePicker as Parameters<typeof createRegistry>[0][string]["component"] },
-	Flex: { component: Flex as Parameters<typeof createRegistry>[0][string]["component"] },
-	Form: { component: Form as Parameters<typeof createRegistry>[0][string]["component"] },
-	Grid: { component: Grid as Parameters<typeof createRegistry>[0][string]["component"] },
-	Radio: { component: Radio as Parameters<typeof createRegistry>[0][string]["component"] },
-	RadioGroup: { component: RadioGroup as Parameters<typeof createRegistry>[0][string]["component"] },
-	Select: { component: Select as Parameters<typeof createRegistry>[0][string]["component"] },
-	Tabs: { component: Tabs as Parameters<typeof createRegistry>[0][string]["component"] },
-	Text: { component: Text as Parameters<typeof createRegistry>[0][string]["component"] },
-	TextField: { component: TextField as Parameters<typeof createRegistry>[0][string]["component"] },
+	Breadcrumb: {
+		component: Breadcrumb as Parameters<typeof createRegistry>[0][string]["component"],
+	},
+	Button: {
+		component: Button as Parameters<typeof createRegistry>[0][string]["component"],
+	},
+	Card: {
+		component: Card as Parameters<typeof createRegistry>[0][string]["component"],
+	},
+	Checkbox: {
+		component: Checkbox as Parameters<typeof createRegistry>[0][string]["component"],
+	},
+	CheckboxGroup: {
+		component: CheckboxGroup as Parameters<typeof createRegistry>[0][string]["component"],
+	},
+	DatePicker: {
+		component: DatePicker as Parameters<typeof createRegistry>[0][string]["component"],
+	},
+	Flex: {
+		component: Flex as Parameters<typeof createRegistry>[0][string]["component"],
+	},
+	Form: {
+		component: Form as Parameters<typeof createRegistry>[0][string]["component"],
+	},
+	Grid: {
+		component: Grid as Parameters<typeof createRegistry>[0][string]["component"],
+	},
+	Radio: {
+		component: Radio as Parameters<typeof createRegistry>[0][string]["component"],
+	},
+	RadioGroup: {
+		component: RadioGroup as Parameters<typeof createRegistry>[0][string]["component"],
+	},
+	Select: {
+		component: Select as Parameters<typeof createRegistry>[0][string]["component"],
+	},
+	Tabs: {
+		component: Tabs as Parameters<typeof createRegistry>[0][string]["component"],
+	},
+	Text: {
+		component: Text as Parameters<typeof createRegistry>[0][string]["component"],
+	},
+	TextField: {
+		component: TextField as Parameters<typeof createRegistry>[0][string]["component"],
+	},
 })
 
 const meta = {
@@ -54,7 +84,11 @@ export const SearchScreen: Story = {
 			type: "Flex",
 			props: { direction: "column", gap: "lg" },
 			children: [
-				{ type: "Text", props: { as: "h1", size: "2xl", weight: "bold" }, children: "Find Your Table" },
+				{
+					type: "Text",
+					props: { as: "h1", size: "2xl", weight: "bold" },
+					children: "Find Your Table",
+				},
 				{
 					type: "Text",
 					props: { as: "p", color: "muted" },
@@ -68,7 +102,10 @@ export const SearchScreen: Story = {
 							type: "Grid",
 							props: { columns: 2, gap: "md" },
 							children: [
-								{ type: "TextField", props: { label: "Location", placeholder: "Suburb or city" } },
+								{
+									type: "TextField",
+									props: { label: "Location", placeholder: "Suburb or city" },
+								},
 								{
 									type: "Select",
 									props: {
@@ -90,6 +127,7 @@ export const SearchScreen: Story = {
 										items: [
 											{ value: "any", label: "Any cuisine" },
 											{ value: "italian", label: "Italian" },
+											{ value: "indian", label: "Indian" },
 											{ value: "japanese", label: "Japanese" },
 											{ value: "thai", label: "Thai" },
 											{ value: "modern-aus", label: "Modern Australian" },
@@ -158,15 +196,28 @@ export const RestaurantListing: Story = {
 					children: [
 						{
 							type: "Card",
-							props: { padding: "md", shadow: "sm", radius: "md", border: true },
+							props: {
+								padding: "md",
+								shadow: "sm",
+								radius: "md",
+								border: true,
+							},
 							children: [
 								{
 									type: "Text",
 									props: { as: "h3", size: "md", weight: "semibold" },
 									children: "La Dolce Vita",
 								},
-								{ type: "Text", props: { as: "p", size: "sm", color: "muted" }, children: "Italian · CBD" },
-								{ type: "Text", props: { as: "p", size: "sm" }, children: "⭐ 4.8 · $$" },
+								{
+									type: "Text",
+									props: { as: "p", size: "sm", color: "muted" },
+									children: "Italian · CBD",
+								},
+								{
+									type: "Text",
+									props: { as: "p", size: "sm" },
+									children: "⭐ 4.8 · $$",
+								},
 								{
 									type: "Flex",
 									props: { justify: "between", align: "center" },
@@ -176,14 +227,23 @@ export const RestaurantListing: Story = {
 											props: { as: "span", size: "sm", color: "primary" },
 											children: "Available tonight",
 										},
-										{ type: "Button", props: { variant: "primary", size: "sm" }, children: "Book" },
+										{
+											type: "Button",
+											props: { variant: "primary", size: "sm" },
+											children: "Book",
+										},
 									],
 								},
 							],
 						},
 						{
 							type: "Card",
-							props: { padding: "md", shadow: "sm", radius: "md", border: true },
+							props: {
+								padding: "md",
+								shadow: "sm",
+								radius: "md",
+								border: true,
+							},
 							children: [
 								{
 									type: "Text",
@@ -195,7 +255,11 @@ export const RestaurantListing: Story = {
 									props: { as: "p", size: "sm", color: "muted" },
 									children: "Japanese · Surry Hills",
 								},
-								{ type: "Text", props: { as: "p", size: "sm" }, children: "⭐ 4.6 · $$$" },
+								{
+									type: "Text",
+									props: { as: "p", size: "sm" },
+									children: "⭐ 4.6 · $$$",
+								},
 								{
 									type: "Flex",
 									props: { justify: "between", align: "center" },
@@ -205,18 +269,39 @@ export const RestaurantListing: Story = {
 											props: { as: "span", size: "sm", color: "primary" },
 											children: "Available tonight",
 										},
-										{ type: "Button", props: { variant: "primary", size: "sm" }, children: "Book" },
+										{
+											type: "Button",
+											props: { variant: "primary", size: "sm" },
+											children: "Book",
+										},
 									],
 								},
 							],
 						},
 						{
 							type: "Card",
-							props: { padding: "md", shadow: "sm", radius: "md", border: true },
+							props: {
+								padding: "md",
+								shadow: "sm",
+								radius: "md",
+								border: true,
+							},
 							children: [
-								{ type: "Text", props: { as: "h3", size: "md", weight: "semibold" }, children: "Thai Orchid" },
-								{ type: "Text", props: { as: "p", size: "sm", color: "muted" }, children: "Thai · Newtown" },
-								{ type: "Text", props: { as: "p", size: "sm" }, children: "⭐ 4.7 · $$" },
+								{
+									type: "Text",
+									props: { as: "h3", size: "md", weight: "semibold" },
+									children: "Thai Orchid",
+								},
+								{
+									type: "Text",
+									props: { as: "p", size: "sm", color: "muted" },
+									children: "Thai · Newtown",
+								},
+								{
+									type: "Text",
+									props: { as: "p", size: "sm" },
+									children: "⭐ 4.7 · $$",
+								},
 								{
 									type: "Flex",
 									props: { justify: "between", align: "center" },
@@ -226,7 +311,11 @@ export const RestaurantListing: Story = {
 											props: { as: "span", size: "sm", color: "primary" },
 											children: "Available tonight",
 										},
-										{ type: "Button", props: { variant: "primary", size: "sm" }, children: "Book" },
+										{
+											type: "Button",
+											props: { variant: "primary", size: "sm" },
+											children: "Book",
+										},
 									],
 								},
 							],
@@ -272,7 +361,11 @@ export const BookingForm: Story = {
 									props: { as: "h3", size: "lg", weight: "bold" },
 									children: "La Dolce Vita",
 								},
-								{ type: "Text", props: { as: "span", color: "muted" }, children: "Italian · CBD" },
+								{
+									type: "Text",
+									props: { as: "span", color: "muted" },
+									children: "Italian · CBD",
+								},
 							],
 						},
 					],
@@ -281,7 +374,11 @@ export const BookingForm: Story = {
 					type: "Form",
 					props: { gap: "lg" },
 					children: [
-						{ type: "Text", props: { as: "h3", size: "lg", weight: "semibold" }, children: "Choose a time" },
+						{
+							type: "Text",
+							props: { as: "h3", size: "lg", weight: "semibold" },
+							children: "Choose a time",
+						},
 						{
 							type: "RadioGroup",
 							props: { label: "Available times", orientation: "horizontal" },
@@ -302,19 +399,37 @@ export const BookingForm: Story = {
 							type: "Grid",
 							props: { columns: 2, gap: "md" },
 							children: [
-								{ type: "TextField", props: { label: "First name", required: true } },
-								{ type: "TextField", props: { label: "Last name", required: true } },
-								{ type: "TextField", props: { label: "Email", type: "email", required: true } },
+								{
+									type: "TextField",
+									props: { label: "First name", required: true },
+								},
+								{
+									type: "TextField",
+									props: { label: "Last name", required: true },
+								},
+								{
+									type: "TextField",
+									props: { label: "Email", type: "email", required: true },
+								},
 								{ type: "TextField", props: { label: "Phone", type: "tel" } },
 							],
 						},
 						{
 							type: "CheckboxGroup",
-							props: { label: "Dietary requirements", orientation: "horizontal" },
+							props: {
+								label: "Dietary requirements",
+								orientation: "horizontal",
+							},
 							children: [
-								{ type: "Checkbox", props: { value: "vegetarian", label: "Vegetarian" } },
+								{
+									type: "Checkbox",
+									props: { value: "vegetarian", label: "Vegetarian" },
+								},
 								{ type: "Checkbox", props: { value: "vegan", label: "Vegan" } },
-								{ type: "Checkbox", props: { value: "gluten-free", label: "Gluten free" } },
+								{
+									type: "Checkbox",
+									props: { value: "gluten-free", label: "Gluten free" },
+								},
 								{ type: "Checkbox", props: { value: "halal", label: "Halal" } },
 							],
 						},
@@ -322,8 +437,16 @@ export const BookingForm: Story = {
 							type: "Flex",
 							props: { justify: "end", gap: "md" },
 							children: [
-								{ type: "Button", props: { variant: "secondary" }, children: "Back" },
-								{ type: "Button", props: { variant: "primary" }, children: "Confirm Booking" },
+								{
+									type: "Button",
+									props: { variant: "secondary" },
+									children: "Back",
+								},
+								{
+									type: "Button",
+									props: { variant: "primary" },
+									children: "Confirm Booking",
+								},
 							],
 						},
 					],
@@ -371,16 +494,48 @@ export const BookingConfirmation: Story = {
 							type: "Grid",
 							props: { columns: 2, gap: "sm" },
 							children: [
-								{ type: "Text", props: { as: "span", weight: "semibold" }, children: "Restaurant" },
-								{ type: "Text", props: { as: "span" }, children: "La Dolce Vita" },
-								{ type: "Text", props: { as: "span", weight: "semibold" }, children: "Date" },
-								{ type: "Text", props: { as: "span" }, children: "Saturday, 21 June 2026" },
-								{ type: "Text", props: { as: "span", weight: "semibold" }, children: "Time" },
+								{
+									type: "Text",
+									props: { as: "span", weight: "semibold" },
+									children: "Restaurant",
+								},
+								{
+									type: "Text",
+									props: { as: "span" },
+									children: "La Dolce Vita",
+								},
+								{
+									type: "Text",
+									props: { as: "span", weight: "semibold" },
+									children: "Date",
+								},
+								{
+									type: "Text",
+									props: { as: "span" },
+									children: "Saturday, 21 June 2026",
+								},
+								{
+									type: "Text",
+									props: { as: "span", weight: "semibold" },
+									children: "Time",
+								},
 								{ type: "Text", props: { as: "span" }, children: "7:00 PM" },
-								{ type: "Text", props: { as: "span", weight: "semibold" }, children: "Party size" },
+								{
+									type: "Text",
+									props: { as: "span", weight: "semibold" },
+									children: "Party size",
+								},
 								{ type: "Text", props: { as: "span" }, children: "4 guests" },
-								{ type: "Text", props: { as: "span", weight: "semibold" }, children: "Confirmation #" },
-								{ type: "Text", props: { as: "span", color: "primary" }, children: "RB-20260621-0042" },
+								{
+									type: "Text",
+									props: { as: "span", weight: "semibold" },
+									children: "Confirmation #",
+								},
+								{
+									type: "Text",
+									props: { as: "span", color: "primary" },
+									children: "RB-20260621-0042",
+								},
 							],
 						},
 					],
@@ -389,8 +544,16 @@ export const BookingConfirmation: Story = {
 					type: "Flex",
 					props: { gap: "md" },
 					children: [
-						{ type: "Button", props: { variant: "secondary" }, children: "Book Another Table" },
-						{ type: "Button", props: { variant: "primary" }, children: "Manage My Booking" },
+						{
+							type: "Button",
+							props: { variant: "secondary" },
+							children: "Book Another Table",
+						},
+						{
+							type: "Button",
+							props: { variant: "primary" },
+							children: "Manage My Booking",
+						},
 					],
 				},
 			],

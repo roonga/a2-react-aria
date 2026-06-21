@@ -38,5 +38,17 @@
 			"quoteStyle": "double",
 			"trailingCommas": "all"
 		}
-	}
+	},
+	"overrides": [
+		{
+			"includes": ["docs/**/*.css"],
+			"linter": {
+				"rules": {
+					"complexity": {
+						"noImportantStyles": "off"
+					}
+				}
+			}
+		}
+	]
 }

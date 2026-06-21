@@ -177,7 +177,7 @@ The `storybook` server only works when `pnpm storybook` is running.
 Open the project in VS Code. You will see a prompt:
 **"Do you want to install the recommended extensions?"** → click **Install All**.
 
-This installs: Biome, Tailwind IntelliSense, Vitest, axe linter, Error Lens, Pretty TS Errors, GitLens, Import Cost, markdownlint.
+This installs: Biome, Tailwind IntelliSense, Vitest, Error Lens, Pretty TS Errors, GitLens, Import Cost, markdownlint.
 
 ## Key commands
 
