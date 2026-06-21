@@ -1,6 +1,6 @@
 "use client"
 
-import { A2Renderer, ActionContext, createRegistry, withAction, withFormState, withFormStateNum } from "@a2ra/core"
+import { A2Renderer, ActionContext, createRegistry, withAction, withFormState } from "@a2ra/core"
 import { useContext } from "react"
 import { Button } from "./a2ui/button"
 import { Card } from "./a2ui/card"
@@ -49,7 +49,7 @@ const REGISTRY = createRegistry({
 	FeedbackSurvey: { component: FeedbackSurveyCard as RegComp },
 	Flex: { component: Flex as RegComp },
 	Grid: { component: Grid as RegComp },
-	NumberField: { component: withFormStateNum(NumberField) as RegComp },
+	NumberField: { component: withFormState(NumberField) as RegComp },
 	Radio: { component: Radio as unknown as RegComp },
 	RadioGroup: { component: withFormState(RadioGroup) as RegComp },
 	Select: { component: withFormState(Select) as RegComp },

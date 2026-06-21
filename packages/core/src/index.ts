@@ -39,7 +39,7 @@ export { TextField, TextFieldSchema } from "./components/text-field"
 export type { TooltipNode } from "./components/tooltip"
 export { Tooltip, TooltipSchema } from "./components/tooltip"
 export type { FormStateCtx } from "./form-state"
-export { FormStateContext, withFormState, withFormStateNum } from "./form-state"
+export { FormStateContext, withFormState } from "./form-state"
 // ↑ Component schemas are exported for consumers to validate a2UI JSON before
 // passing it to A2Renderer. They are not used internally — see schema/node.ts.
 export { defaultRegistry, registerAllComponents } from "./registry/defaultRegistry"

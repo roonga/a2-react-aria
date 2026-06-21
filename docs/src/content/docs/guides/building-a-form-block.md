@@ -44,7 +44,7 @@ Wrap any component that has `label`, `defaultValue`, and `onChange` props to mak
 its value up to the nearest `A2Renderer` with `onAction`:
 
 ```tsx
-import { withFormState, withFormStateNum } from "@a2ra/core"
+import { withFormState } from "@a2ra/core"
 import { NumberField } from "./components/a2ui/number-field"
 import { Select } from "./components/a2ui/select"
 import { TextField } from "./components/a2ui/text-field"
@@ -52,15 +52,16 @@ import { TextField } from "./components/a2ui/text-field"
 const registry = createRegistry({
   TextField:   { component: withFormState(TextField) },
   Select:      { component: withFormState(Select) },
-  NumberField: { component: withFormStateNum(NumberField) },
+  NumberField: { component: withFormState(NumberField) },
 })
 ```
 
-- `withFormState` — for string values: `TextField`, `Select`, `RadioGroup`, `DatePicker`
-- `withFormStateNum` — for number values: `NumberField`
+`withFormState` works for both string-value fields (`TextField`, `Select`, `RadioGroup`,
+`DatePicker`) and number-value fields (`NumberField`). Number values are converted to
+strings with template literals before being stored — the action string is always plain text.
 
-Both HOCs seed the field's `defaultValue` on mount and pipe `onChange` updates into the
-context. The component API is otherwise unchanged — existing props pass through normally.
+`withFormState` seeds the field's `defaultValue` on mount and pipes `onChange` updates into
+the context. The component API is otherwise unchanged — existing props pass through normally.
 
 ## Firing actions — withAction
 
@@ -141,14 +142,7 @@ Once the stream ends, call `extractA2ui` on the complete buffer to extract the f
 
 ```tsx
 import { useState } from "react"
-import {
-  A2Renderer,
-  createRegistry,
-  extractA2ui,
-  stripStreamingA2ui,
-  withAction,
-  withFormState,
-} from "@a2ra/core"
+import { A2Renderer, createRegistry, extractA2ui, stripStreamingA2ui, withAction, withFormState } from "@a2ra/core"
 import { Button } from "./components/a2ui/button"
 import { Select } from "./components/a2ui/select"
 import { TextField } from "./components/a2ui/text-field"

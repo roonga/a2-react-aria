@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import { FormStateContext, withFormState, withFormStateNum } from "../form-state/form-state"
+import { FormStateContext, withFormState } from "../form-state/form-state"
 
 function MockInput({
 	label,
@@ -34,10 +34,10 @@ function MockNumInput({
 }
 
 const WrappedInput = withFormState(MockInput)
-const WrappedNumInput = withFormStateNum(MockNumInput)
+const WrappedNumInput = withFormState(MockNumInput)
 
 describe("withFormState", () => {
-	it("seeds defaultValue into FormStateContext on mount", () => {
+	it("seeds string defaultValue into FormStateContext on mount", () => {
 		const setValue = vi.fn()
 		render(
 			<FormStateContext.Provider value={{ setValue }}>
@@ -45,6 +45,26 @@ describe("withFormState", () => {
 			</FormStateContext.Provider>,
 		)
 		expect(setValue).toHaveBeenCalledWith("Name", "Alice")
+	})
+
+	it("seeds number defaultValue as a string on mount", () => {
+		const setValue = vi.fn()
+		render(
+			<FormStateContext.Provider value={{ setValue }}>
+				<WrappedNumInput label="Guests" defaultValue={3} />
+			</FormStateContext.Provider>,
+		)
+		expect(setValue).toHaveBeenCalledWith("Guests", "3")
+	})
+
+	it("seeds defaultValue of 0 (falsy number) correctly", () => {
+		const setValue = vi.fn()
+		render(
+			<FormStateContext.Provider value={{ setValue }}>
+				<WrappedNumInput label="Count" defaultValue={0} />
+			</FormStateContext.Provider>,
+		)
+		expect(setValue).toHaveBeenCalledWith("Count", "0")
 	})
 
 	it("does not seed when defaultValue is absent", () => {
@@ -67,60 +87,15 @@ describe("withFormState", () => {
 		expect(setValue).not.toHaveBeenCalled()
 	})
 
-	it("calls setValue with the new value on change", () => {
+	it("calls setValue with the string value on change", () => {
 		const setValue = vi.fn()
 		render(
 			<FormStateContext.Provider value={{ setValue }}>
 				<WrappedInput label="City" />
 			</FormStateContext.Provider>,
 		)
-		const input = screen.getByRole("textbox")
-		fireEvent.change(input, { target: { value: "Sydney" } })
+		fireEvent.change(screen.getByRole("textbox"), { target: { value: "Sydney" } })
 		expect(setValue).toHaveBeenCalledWith("City", "Sydney")
-	})
-
-	it("does not call setValue on change when label is missing", () => {
-		const setValue = vi.fn()
-		render(
-			<FormStateContext.Provider value={{ setValue }}>
-				<WrappedInput />
-			</FormStateContext.Provider>,
-		)
-		const input = screen.getByRole("textbox")
-		fireEvent.change(input, { target: { value: "anything" } })
-		expect(setValue).not.toHaveBeenCalled()
-	})
-
-	it("does not throw when there is no FormStateContext", () => {
-		render(<WrappedInput label="Name" defaultValue="Bob" />)
-		const input = screen.getByRole("textbox")
-		expect(() => {
-			fireEvent.change(input, { target: { value: "Charlie" } })
-		}).not.toThrow()
-	})
-})
-
-describe("withFormStateNum", () => {
-	it("seeds number defaultValue as a string on mount", () => {
-		const setValue = vi.fn()
-		render(
-			<FormStateContext.Provider value={{ setValue }}>
-				<WrappedNumInput label="Guests" defaultValue={3} />
-			</FormStateContext.Provider>,
-		)
-		expect(setValue).toHaveBeenCalledWith("Guests", "3")
-	})
-
-	it("does not seed when defaultValue is 0 (falsy)", () => {
-		const setValue = vi.fn()
-		render(
-			<FormStateContext.Provider value={{ setValue }}>
-				<WrappedNumInput label="Count" defaultValue={0} />
-			</FormStateContext.Provider>,
-		)
-		// defaultValue === 0 is undefined-like in the guard `props.defaultValue !== undefined`
-		// The implementation uses `!== undefined`, so 0 should seed
-		expect(setValue).toHaveBeenCalledWith("Count", "0")
 	})
 
 	it("converts number onChange value to string in context", () => {
@@ -130,8 +105,25 @@ describe("withFormStateNum", () => {
 				<WrappedNumInput label="Qty" />
 			</FormStateContext.Provider>,
 		)
-		const input = screen.getByRole("spinbutton")
-		fireEvent.change(input, { target: { value: "5" } })
+		fireEvent.change(screen.getByRole("spinbutton"), { target: { value: "5" } })
 		expect(setValue).toHaveBeenCalledWith("Qty", "5")
+	})
+
+	it("does not call setValue on change when label is missing", () => {
+		const setValue = vi.fn()
+		render(
+			<FormStateContext.Provider value={{ setValue }}>
+				<WrappedInput />
+			</FormStateContext.Provider>,
+		)
+		fireEvent.change(screen.getByRole("textbox"), { target: { value: "anything" } })
+		expect(setValue).not.toHaveBeenCalled()
+	})
+
+	it("does not throw when there is no FormStateContext", () => {
+		render(<WrappedInput label="Name" defaultValue="Bob" />)
+		expect(() => {
+			fireEvent.change(screen.getByRole("textbox"), { target: { value: "Charlie" } })
+		}).not.toThrow()
 	})
 })
