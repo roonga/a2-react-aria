@@ -1,6 +1,8 @@
 ---
 title: Table
 description: An accessible data table with sorting and row selection.
+sidebar:
+  order: 19
 ---
 
 A wrapper around React Aria's `Table`, `TableHeader`, `Column`, `TableBody`, and `Row`

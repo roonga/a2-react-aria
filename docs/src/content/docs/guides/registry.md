@@ -1,6 +1,8 @@
 ---
 title: Registry
 description: How the a2UI component registry works and how to build a custom one.
+sidebar:
+  order: 5
 ---
 
 `A2Renderer` resolves component types through a **registry** — a `Map<string, ComponentEntry>`

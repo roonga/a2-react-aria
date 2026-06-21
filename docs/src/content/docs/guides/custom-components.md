@@ -1,6 +1,8 @@
 ---
 title: Custom Components
 description: Register your own components alongside the built-in a2UI library.
+sidebar:
+  order: 7
 ---
 
 The registry accepts any React component — you are not limited to the 18 built-in types.

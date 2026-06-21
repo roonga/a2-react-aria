@@ -1,6 +1,8 @@
 ---
 title: TextField
 description: A labeled text input with validation, description, and error message support.
+sidebar:
+  order: 3
 ---
 
 A wrapper around React Aria's `TextField` component. Manages label association,

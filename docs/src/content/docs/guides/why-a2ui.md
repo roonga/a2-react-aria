@@ -1,6 +1,8 @@
 ---
 title: Why A2UI?
 description: The problem with agents emitting JSX, and why a stable JSON schema is a better contract.
+sidebar:
+  order: 2
 ---
 
 ## The problem with agents emitting JSX

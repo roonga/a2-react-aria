@@ -1,6 +1,8 @@
 ---
 title: Styling
 description: Theme a2ra components with shadcn tokens, Tailwind, or plain CSS — you own the source.
+sidebar:
+  order: 4
 ---
 
 a2ra components ship with styles built on CSS custom property tokens that follow the

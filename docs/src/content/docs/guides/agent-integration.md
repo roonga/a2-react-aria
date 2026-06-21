@@ -1,6 +1,8 @@
 ---
 title: Agent Integration
 description: Connect AI agents to A2Renderer — no third-party SDKs required.
+sidebar:
+  order: 6
 ---
 
 a2UI is designed as the rendering layer for AI agents. Agents emit a2UI JSON; `A2Renderer`

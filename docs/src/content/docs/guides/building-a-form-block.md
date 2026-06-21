@@ -1,6 +1,8 @@
 ---
 title: Building a Form Block
 description: Wire up A2BlockRenderer, form-state HOCs, and A2UI text-parsing utilities to handle agent-driven forms.
+sidebar:
+  order: 8
 ---
 
 When an agent emits a form — a booking widget, a search panel, a multi-step flow — you need
