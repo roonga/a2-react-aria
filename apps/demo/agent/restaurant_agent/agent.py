@@ -34,16 +34,16 @@ _EDIT_SEARCH_RE = re.compile(r"^Edit Search", re.IGNORECASE)
 
 # Natural language extraction — used in Case 0
 _CUISINE_EXTRACT_RE = re.compile(
-    r"\b(italian|japanese|thai|modern australian)\b", re.IGNORECASE
+    r"\b(italian|japanese|thai|indian|modern australian)\b", re.IGNORECASE
 )
 _LOCATION_IN_RE = re.compile(
     r"\bin\s+([\w\s]+?)(?=\s+for\b|\s+table\b|\s+on\b|\s*,"
-    r"|\s+tomorrow\b|\s+today\b"
+    r"|\s+tomorrow\b|\s+tonight\b|\s+today\b"
     r"|\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b|\s*$)",
     re.IGNORECASE,
 )
 _TOMORROW_RE = re.compile(r"\btomorrow\b", re.IGNORECASE)
-_TODAY_RE = re.compile(r"\btoday\b", re.IGNORECASE)
+_TODAY_RE = re.compile(r"\btoday\b|\btonight\b", re.IGNORECASE)
 _WEEKDAY_RE = re.compile(
     r"\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b", re.IGNORECASE
 )
@@ -415,6 +415,12 @@ RULE 4 — Ask for missing details:
 
 RULE 5 — General:
   Action: reply in 1-2 sentences. Do not call a tool.
+
+A2UI components you can emit in any response by including a <a2ui-json> block:
+  FeedbackSurvey — collects a star rating and optional comment from the user.
+    Props: title (string), description (string), submitLabel (string), commentPlaceholder (string)
+    Example: {"type":"FeedbackSurvey","props":{"title":"How did we do?","description":"Rate your experience"}}
+    Use after any positive completion where feedback is appropriate.
 
 Strict requirements:
 - Never write a plan, summary, or preamble before calling a tool. Call the tool first.
