@@ -1,13 +1,13 @@
 ---
 title: Agent Integration
-description: Connect AI agents to A2Renderer — no third-party SDKs required.
+description: Connect AI agents to A2Renderer without third-party SDKs.
 sidebar:
-  order: 6
+  order: 7
 ---
 
 a2UI is designed as the rendering layer for AI agents. Agents emit a2UI JSON; `A2Renderer`
 validates it with Zod and turns it into accessible React components. Because a2UI JSON is
-plain JSON, any agent that can return structured output works — no third-party SDK required.
+plain JSON, any agent that can return structured output works. No third-party SDK required.
 
 ## One-shot response
 
@@ -83,10 +83,10 @@ partial tag while streaming:
 ```tsx
 import { extractA2ui, stripStreamingA2ui } from "@a2ra/core"
 
-// During streaming — strip the open tag so raw markup is not shown:
+// During streaming: strip the open tag so raw markup is not shown:
 const visibleText = stripStreamingA2ui(streamingBuffer)
 
-// When the stream ends — extract the node list:
+// When the stream ends: extract the node list:
 const { plainText, a2uiJson } = extractA2ui(completedBuffer)
 // plainText: prose without the <a2ui-json> block
 // a2uiJson:  parsed JSON array, or null if no tag was present

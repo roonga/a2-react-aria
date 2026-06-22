@@ -74,4 +74,4 @@ With server-side validation errors:
 
 - `validationErrors` keys must match the `name` prop of the field they target.
 - Use `validationBehavior: "native"` when submitting to a plain HTML form endpoint.
-- `Form` does not submit on its own — pair it with a `Button` with `type: "submit"`.
+- `Form` does not submit on its own. Pair it with a `Button` with `type: "submit"`.

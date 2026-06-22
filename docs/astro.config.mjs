@@ -4,7 +4,7 @@ import { defineConfig } from "astro/config"
 export default defineConfig({
 	integrations: [
 		starlight({
-			title: "a2ra — A2UI JSON to React Aria",
+			title: "a2ra: A2UI JSON to React Aria",
 			favicon: "/favicon.svg",
 			logo: {
 				dark: "./src/assets/logo-dark.svg",
@@ -18,7 +18,6 @@ export default defineConfig({
 				ThemeSelect: "./src/components/ThemeToggle.astro",
 			},
 			expressiveCode: {
-				// Always use a dark terminal theme regardless of page theme
 				themes: ["one-dark-pro", "one-dark-pro"],
 				styleOverrides: {
 					borderRadius: "0.4rem",

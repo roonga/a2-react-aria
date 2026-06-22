@@ -2,12 +2,12 @@
 title: Why A2UI?
 description: The problem with agents emitting JSX, and why a stable JSON schema is a better contract.
 sidebar:
-  order: 2
+  order: 3
 ---
 
 ## The problem with agents emitting JSX
 
-When AI agents need to build UI, the obvious instinct is to emit JSX — but JSX is fragile as
+When AI agents need to build UI, the obvious instinct is to emit JSX, but JSX is fragile as
 agent output.
 
 - It is tightly coupled to your component library's exact API. Rename a prop and the agent's
@@ -45,7 +45,7 @@ An agent emits A2UI JSON:
 }
 ```
 
-The agent only needs to know the schema — a short list of component types and their valid props.
+The agent only needs to know the schema: a short list of component types and their valid props.
 It does not need to know which React library you use, how your `onPress` handler is wired, or
 anything about your build toolchain.
 
@@ -56,7 +56,7 @@ refactor the renderer without touching the agent prompt, as long as the schema s
 
 **Zod catches mistakes at the boundary.** Every node is validated before rendering. If the model
 invents a prop (`"colour": "red"` instead of `"variant": "danger"`), the renderer rejects the
-node and can surface a structured error back to the agent — not a silent visual bug.
+node and can surface a structured error back to the agent, not a silent visual bug.
 
 **Agents produce it reliably.** The schema mirrors real component APIs closely enough that models
 generate valid nodes from a short system prompt. It is far simpler than JSX for a model to
@@ -74,13 +74,14 @@ prop, its type, and an example node.
 
 A minimal system prompt for an agent looks like:
 
-```text
-You may return UI using A2UI JSON. The root node must have a "type" field
-matching one of: Button, TextField, NumberField, Checkbox, CheckboxGroup,
-RadioGroup, Switch, Select, Form, Dialog, Tooltip, Popover, Menu, Tabs,
-Breadcrumb, DatePicker, DateRangePicker, Table, Text, Card, Flex, Grid.
+You may return UI using A2UI JSON. The root node must have a `"type"` field
+matching one of: `Button`, `TextField`, `NumberField`, `Checkbox`, `CheckboxGroup`,
+`RadioGroup`, `Switch`, `Select`, `Form`, `Dialog`, `Tooltip`, `Popover`, `Menu`, `Tabs`,
+`Breadcrumb`, `DatePicker`, `DateRangePicker`, `Table`, `Text`, `Card`, `Flex`, `Grid`.
 
 Example:
+
+```json
 {
   "type": "Form",
   "children": [

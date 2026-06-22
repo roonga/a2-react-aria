@@ -43,7 +43,7 @@ npx @a2ra/cli add card
 
 ## Notes
 
-- `Card` has no semantic HTML role — it is a plain `<div>`. Wrap with `<article>` or `<section>`
+- `Card` has no semantic HTML role; it is a plain `<div>`. Wrap with `<article>` or `<section>`
   via a parent layout node if the content warrants a landmark.
 - `border: false` combined with a shadow is the standard "floating card" look.
 - Nest `Form` or `Flex` inside `Card` to build structured layouts.

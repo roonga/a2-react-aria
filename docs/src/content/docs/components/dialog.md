@@ -59,4 +59,4 @@ npx @a2ra/cli add dialog
   announce it more urgently than a standard `dialog`.
 - Focus is trapped inside the dialog while it is open and returned to the trigger on close.
 - `isDismissable: false` combined with `isKeyboardDismissDisabled: true` forces the user
-  to explicitly choose an action — use only for `alertdialog` scenarios.
+  to explicitly choose an action. Use only for `alertdialog` scenarios.

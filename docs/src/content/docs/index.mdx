@@ -5,7 +5,6 @@ template: splash
 ---
 
 import { CardGrid, Card } from '@astrojs/starlight/components';
-import FlowDiagram from '../../components/FlowDiagram.astro';
 import CompareTable from '../../components/CompareTable.astro';
 
 <div class="splash-hero">
@@ -13,7 +12,7 @@ import CompareTable from '../../components/CompareTable.astro';
 # a2ra
 
 AI agents can now generate full user interfaces on demand. **A2UI** is the typed JSON protocol
-that expresses UI intent — a2ra validates every node and renders it as an accessible React Aria
+that expresses UI intent. a2ra validates every node and renders it as an accessible React Aria
 component.
 
 <p class="splash-links">
@@ -29,21 +28,18 @@ component.
 
 ## Why A2UI?
 
-Modern AI agents go beyond chat — they build entire interfaces dynamically based on context,
+Modern AI agents go beyond chat. They build entire interfaces dynamically based on context,
 user intent, and task state. **A2UI** gives agents a stable, typed JSON vocabulary to express
 that intent safely. a2ra validates every node with Zod and renders it using React Aria, so
 accessibility and correctness are guaranteed regardless of what the agent generates.
 
 <p class="splash-links">
   <a href="/a2-react-aria/guides/why-a2ui/">Why A2UI? →</a>
+  <a href="/a2-react-aria/guides/how-it-works/">How it works →</a>
   <a href="/a2-react-aria/components/button/">Component schemas →</a>
 </p>
 
 </div>
-
-## How it works
-
-<FlowDiagram />
 
 ## A2UI vs the alternatives
 
@@ -56,14 +52,14 @@ accessibility and correctness are guaranteed regardless of what the agent genera
   </Card>
   <Card title="You own the source" icon="pencil">
     Add components with `npx @a2ra/cli add button` and the source lands in your project.
-    Customise freely — shadcn-style, no library to pin.
+    Customise freely, shadcn-style, no library to pin.
   </Card>
   <Card title="Accessible by default" icon="approve-check">
     Every component is a thin wrapper around React Aria Components. WCAG AA, keyboard nav, and
     screen-reader support built in.
   </Card>
   <Card title="Agent-native" icon="rocket">
-    Works with any agent framework that emits structured output — LangGraph, Google ADK, CrewAI,
+    Works with any agent framework that emits structured output: LangGraph, Google ADK, CrewAI,
     or a plain LLM call.
   </Card>
 </CardGrid>

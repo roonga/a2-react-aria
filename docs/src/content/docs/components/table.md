@@ -68,5 +68,5 @@ npx @a2ra/cli add table
 
 - Mark one column as `isRowHeader: true` so screen readers announce it as the row label.
 - When `selectionMode` is not `"none"`, a checkbox column is prepended automatically.
-- `sortDescriptor` is a controlled prop — the agent or parent component is responsible for
+- `sortDescriptor` is a controlled prop. The agent or parent component is responsible for
   re-ordering `rows` in response to sort changes.

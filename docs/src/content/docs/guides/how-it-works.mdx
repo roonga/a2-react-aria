@@ -1,0 +1,18 @@
+---
+title: How it works
+description: The full pipeline from AI agent to accessible React Aria component.
+sidebar:
+  order: 2
+---
+
+import GettingStartedFlow from '../../../components/GettingStartedFlow.astro';
+
+<GettingStartedFlow />
+
+An AI agent emits a JSON node describing intent. `A2Renderer` validates the node against
+its Zod schema, looks up the matching component in your registry, and renders it as an
+accessible React Aria component. The source for every component lives in your project,
+so you own and can customise it freely.
+
+See [Agent Integration](./agent-integration) for connecting a real agent backend,
+or [Building a Form Block](./building-a-form-block) for the full interactive form walkthrough.

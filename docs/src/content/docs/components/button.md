@@ -56,5 +56,5 @@ Disabled state:
 ## Notes
 
 - Use `type: "submit"` inside a `Form` node to trigger form submission.
-- `isPending` disables the button and shows a spinner — use while an async action is running.
+- `isPending` disables the button and shows a spinner; use it while an async action is running.
 - `variant: "ghost"` renders no background or border; suitable for icon buttons inside toolbars.

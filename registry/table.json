@@ -27,7 +27,7 @@
     },
     {
       "path": "table/table.styles.ts",
-      "content": "export const getTableStyles = () => ({\n\troot: \"w-full border-collapse text-sm\",\n\tcolumn: [\n\t\t\"px-3 py-2 text-left font-medium text-[var(--color-textMuted)]\",\n\t\t\"border-b border-[var(--color-border)]\",\n\t\t\"outline-none\",\n\t\t\"focus-visible:outline-2 focus-visible:outline-[var(--color-primary)]\",\n\t].join(\" \"),\n\trow: [\n\t\t\"border-b border-[var(--color-border)] outline-none cursor-default\",\n\t\t\"data-[hovered]:bg-[var(--color-surface)]\",\n\t\t\"data-[selected]:bg-[var(--color-primary)]/10\",\n\t\t\"data-[focused]:outline-2 data-[focused]:outline-[var(--color-primary)]\",\n\t].join(\" \"),\n\tcell: [\n\t\t\"px-3 py-2 text-[var(--color-text)]\",\n\t\t\"focus-visible:outline-2 focus-visible:outline-[var(--color-primary)]\",\n\t].join(\" \"),\n})\n",
+      "content": "export const getTableStyles = () => ({\n\troot: \"w-full border-collapse text-sm\",\n\tcolumn: [\n\t\t\"px-3 py-2 text-left font-medium text-(--color-textMuted)\",\n\t\t\"border-b border-(--color-border)\",\n\t\t\"outline-none\",\n\t\t\"focus-visible:outline-2 focus-visible:outline-(--color-primary)\",\n\t].join(\" \"),\n\trow: [\n\t\t\"border-b border-(--color-border) outline-none cursor-default\",\n\t\t\"data-[hovered]:bg-(--color-surface)\",\n\t\t\"data-[selected]:bg-(--color-primary)/10\",\n\t\t\"data-[focused]:outline-2 data-[focused]:outline-(--color-primary)\",\n\t].join(\" \"),\n\tcell: [\"px-3 py-2 text-(--color-text)\", \"focus-visible:outline-2 focus-visible:outline-(--color-primary)\"].join(\" \"),\n})\n",
       "type": "registry:component"
     }
   ]

@@ -27,7 +27,7 @@
     },
     {
       "path": "text-field/text-field.styles.ts",
-      "content": "export const getTextFieldStyles = () => ({\n\tcontainer: \"flex flex-col gap-2\",\n\tlabel: \"text-sm font-medium text-[var(--color-text)]\",\n\tinput:\n\t\t\"px-3 py-2.5 border border-[var(--color-border)] rounded bg-[var(--color-background)] text-[var(--color-text)] placeholder-[var(--color-textMuted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent disabled:bg-[var(--color-backgroundMuted)] disabled:cursor-not-allowed aria-[invalid]:border-[var(--color-danger)] aria-[invalid]:focus:ring-[var(--color-danger)]\",\n\tdescription: \"text-xs text-[var(--color-textMuted)]\",\n\terrorMessage: \"text-xs text-[var(--color-danger)]\",\n\trequiredIndicator: \"text-[var(--color-danger)]\",\n})\n",
+      "content": "export const getTextFieldStyles = () => ({\n\tcontainer: \"flex flex-col gap-2\",\n\tlabel: \"text-sm font-medium text-(--color-text)\",\n\tinput:\n\t\t\"px-3 py-2.5 border border-(--color-border) rounded bg-(--color-background) text-(--color-text) placeholder-(--color-textMuted) focus:outline-none focus:ring-2 focus:ring-(--color-primary) focus:border-transparent disabled:bg-(--color-backgroundMuted) disabled:cursor-not-allowed aria-[invalid]:border-(--color-danger) aria-[invalid]:focus:ring-(--color-danger)\",\n\tdescription: \"text-xs text-(--color-textMuted)\",\n\terrorMessage: \"text-xs text-(--color-danger)\",\n\trequiredIndicator: \"text-(--color-danger)\",\n})\n",
       "type": "registry:component"
     }
   ]
