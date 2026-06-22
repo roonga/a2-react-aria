@@ -1,0 +1,526 @@
+<div class="gsf">
+
+  <!-- Step 1 -->
+  <div class="gsf-step">
+    <span class="gsf-num" aria-hidden="true">01</span>
+    <div class="gsf-content">
+      <h3 class="gsf-title">Your AI agent emits A2UI JSON</h3>
+      <p class="gsf-desc">
+        Any model or framework that returns structured JSON works:
+        LangGraph, Google ADK, CrewAI, or a plain LLM call.
+      </p>
+      <div class="gsf-tags" aria-label="Compatible frameworks">
+        <span class="gsf-tag">LangGraph</span>
+        <span class="gsf-tag">Google ADK</span>
+        <span class="gsf-tag">CrewAI</span>
+        <span class="gsf-tag">Plain LLM</span>
+      </div>
+    </div>
+    <div class="gsf-visual">
+      <div class="gsf-visual-label" aria-hidden="true">agent output</div>
+      <pre class="gsf-code" aria-label="Example A2UI JSON output"><span class="j-b">&#123;</span>
+  <span class="j-k">"type"</span><span class="j-p">:</span> <span class="j-s">"Form"</span><span class="j-p">,</span>
+  <span class="j-k">"children"</span><span class="j-p">: [</span>
+    <span class="j-b">&#123;</span>
+      <span class="j-k">"type"</span><span class="j-p">:</span> <span class="j-s">"TextField"</span><span class="j-p">,</span>
+      <span class="j-k">"props"</span><span class="j-p">: &#123;</span>
+        <span class="j-k">"label"</span><span class="j-p">:</span> <span class="j-s">"Email"</span><span class="j-p">,</span>
+        <span class="j-k">"isRequired"</span><span class="j-p">:</span> <span class="j-n">true</span>
+      <span class="j-p">&#125;</span>
+    <span class="j-b">&#125;</span><span class="j-p">,</span>
+    <span class="j-b">&#123;</span>
+      <span class="j-k">"type"</span><span class="j-p">:</span> <span class="j-s">"Button"</span><span class="j-p">,</span>
+      <span class="j-k">"props"</span><span class="j-p">: &#123;</span>
+        <span class="j-k">"variant"</span><span class="j-p">:</span> <span class="j-s">"primary"</span><span class="j-p">,</span>
+        <span class="j-k">"children"</span><span class="j-p">:</span> <span class="j-s">"Subscribe"</span>
+      <span class="j-p">&#125;</span>
+    <span class="j-b">&#125;</span>
+  <span class="j-p">]</span>
+<span class="j-b">&#125;</span></pre>
+    </div>
+  </div>
+
+  <!-- Connector -->
+  <div class="gsf-connector" aria-hidden="true">
+    <div class="gsf-connector-line"></div>
+    <span class="gsf-connector-label">validates &amp; resolves</span>
+    <div class="gsf-connector-line"></div>
+    <svg class="gsf-arrow" width="10" height="6" viewBox="0 0 10 6">
+      <path d="M0 0L5 6L10 0" fill="currentColor"/>
+    </svg>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="gsf-step gsf-step--renderer">
+    <span class="gsf-num" aria-hidden="true">02</span>
+    <div class="gsf-content">
+      <h3 class="gsf-title">A2Renderer validates and resolves</h3>
+      <p class="gsf-desc">
+        Every node is parsed by its Zod schema before rendering.
+        Invalid props are caught at the boundary, not silently ignored.
+        The correct component is then looked up in your registry.
+      </p>
+      <ul class="gsf-checklist" aria-label="What A2Renderer does">
+        <li>Zod validation per node</li>
+        <li>Registry lookup by type string</li>
+        <li>Error boundary for unknown types</li>
+        <li>Form-state and action wiring via <code>onAction</code></li>
+      </ul>
+    </div>
+    <div class="gsf-visual">
+      <div class="gsf-visual-label" aria-hidden="true">usage</div>
+      <pre class="gsf-code" aria-label="A2Renderer usage"><span class="j-kw">import</span> <span class="j-b">&#123;</span> A2Renderer<span class="j-p">,</span> createRegistry <span class="j-b">&#125;</span>
+  <span class="j-kw">from</span> <span class="j-s">"@a2ra/core"</span>
+<span class="j-kw">import</span> <span class="j-b">&#123;</span> Button <span class="j-b">&#125;</span>    <span class="j-kw">from</span> <span class="j-s">"./a2ui/button"</span>
+<span class="j-kw">import</span> <span class="j-b">&#123;</span> TextField <span class="j-b">&#125;</span> <span class="j-kw">from</span> <span class="j-s">"./a2ui/text-field"</span>
+
+<span class="j-kw">const</span> registry <span class="j-p">=</span> createRegistry<span class="j-b">(&#123;</span>
+  Button<span class="j-p">:</span>    <span class="j-b">&#123;</span> component<span class="j-p">:</span> Button <span class="j-b">&#125;</span><span class="j-p">,</span>
+  TextField<span class="j-p">:</span> <span class="j-b">&#123;</span> component<span class="j-p">:</span> TextField <span class="j-b">&#125;</span><span class="j-p">,</span>
+<span class="j-b">&#125;)</span>
+
+<span class="j-p">&lt;</span>A2Renderer
+  nodes<span class="j-p">=&#123;</span>nodes<span class="j-b">&#125;</span>
+  registry<span class="j-p">=&#123;</span>registry<span class="j-b">&#125;</span>
+  onAction<span class="j-p">=&#123;</span>handleAction<span class="j-b">&#125;</span>
+<span class="j-p">/&gt;</span></pre>
+    </div>
+  </div>
+
+  <!-- Connector -->
+  <div class="gsf-connector" aria-hidden="true">
+    <div class="gsf-connector-line"></div>
+    <span class="gsf-connector-label">renders</span>
+    <div class="gsf-connector-line"></div>
+    <svg class="gsf-arrow" width="10" height="6" viewBox="0 0 10 6">
+      <path d="M0 0L5 6L10 0" fill="currentColor"/>
+    </svg>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="gsf-step gsf-step--output">
+    <span class="gsf-num" aria-hidden="true">03</span>
+    <div class="gsf-content">
+      <h3 class="gsf-title">Accessible React Aria components</h3>
+      <p class="gsf-desc">
+        Each component is a thin wrapper around React Aria.
+        WCAG AA, keyboard navigation, and screen-reader support are built in.
+        Source is copied into your project. You own every file.
+      </p>
+      <div class="gsf-badges" aria-label="Output guarantees">
+        <span class="gsf-badge gsf-badge--green">WCAG AA</span>
+        <span class="gsf-badge gsf-badge--green">Keyboard nav</span>
+        <span class="gsf-badge gsf-badge--green">Screen reader</span>
+        <span class="gsf-badge gsf-badge--purple">You own the source</span>
+      </div>
+    </div>
+    <div class="gsf-visual">
+      <div class="gsf-visual-label" aria-hidden="true">rendered output</div>
+      <div class="gsf-preview">
+        <div class="gsf-preview-chrome" aria-hidden="true">
+          <span class="gsf-dot"></span><span class="gsf-dot"></span><span class="gsf-dot"></span>
+        </div>
+        <div class="gsf-preview-body" aria-hidden="true">
+          <div class="gsf-demo-field">
+            <div class="gsf-demo-label">Email <span class="gsf-demo-req">*</span></div>
+            <div class="gsf-demo-input"><span class="gsf-demo-cursor"></span></div>
+          </div>
+          <button class="gsf-demo-btn" tabindex="-1">Subscribe</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+  /* ── Container ─────────────────────────────── */
+  .gsf {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 1.5rem 0 2rem;
+  }
+
+  /* ── Step card ─────────────────────────────── */
+  .gsf-step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem 1.5rem;
+    padding: 1.5rem 1.25rem 1.25rem;
+    border-radius: 0.875rem;
+    border: 1px solid hsl(0, 0%, 16%);
+    background: hsl(0, 0%, 8%);
+    overflow: hidden;
+  }
+
+  .gsf-step--renderer {
+    border-color: hsl(258, 50%, 30%);
+    background: hsl(258, 45%, 9%);
+  }
+
+  .gsf-step--output {
+    border-color: hsl(142, 40%, 22%);
+    background: hsl(142, 30%, 7%);
+  }
+
+  :global([data-theme='light']) .gsf-step {
+    background: #fff;
+    border-color: hsl(258, 15%, 84%);
+  }
+  :global([data-theme='light']) .gsf-step--renderer {
+    background: hsl(258, 60%, 98%);
+    border-color: hsl(258, 50%, 72%);
+  }
+  :global([data-theme='light']) .gsf-step--output {
+    background: hsl(142, 30%, 97%);
+    border-color: hsl(142, 45%, 60%);
+  }
+
+  @media (max-width: 640px) {
+    .gsf-step { grid-template-columns: 1fr; }
+  }
+
+  /* ── Watermark number ──────────────────────── */
+  .gsf-num {
+    position: absolute;
+    top: -0.5rem;
+    right: 0.6rem;
+    font-size: 5.5rem;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: hsl(0, 0%, 13%);
+    pointer-events: none;
+    user-select: none;
+    font-variant-numeric: tabular-nums;
+    z-index: 0;
+  }
+
+  .gsf-step--renderer .gsf-num { color: hsl(258, 40%, 16%); }
+  .gsf-step--output .gsf-num   { color: hsl(142, 30%, 12%); }
+
+  :global([data-theme='light']) .gsf-num                     { color: hsl(0, 0%, 90%); }
+  :global([data-theme='light']) .gsf-step--renderer .gsf-num { color: hsl(258, 40%, 88%); }
+  :global([data-theme='light']) .gsf-step--output .gsf-num   { color: hsl(142, 30%, 86%); }
+
+  /* ── Text column ───────────────────────────── */
+  .gsf-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    min-width: 0;
+  }
+
+  .gsf-title {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: hsl(0, 0%, 92%);
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+
+  .gsf-step--renderer .gsf-title { color: hsl(258, 70%, 82%); }
+  .gsf-step--output .gsf-title   { color: hsl(142, 55%, 65%); }
+
+  :global([data-theme='light']) .gsf-title                     { color: hsl(0, 0%, 10%); }
+  :global([data-theme='light']) .gsf-step--renderer .gsf-title { color: hsl(258, 55%, 32%); }
+  :global([data-theme='light']) .gsf-step--output .gsf-title   { color: hsl(142, 45%, 28%); }
+
+  .gsf-desc {
+    margin: 0;
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: hsl(0, 0%, 55%);
+  }
+
+  :global([data-theme='light']) .gsf-desc { color: hsl(258, 10%, 38%); }
+
+  /* ── Framework tags ────────────────────────── */
+  .gsf-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .gsf-tag {
+    font-size: 0.65rem;
+    font-weight: 500;
+    padding: 0.12rem 0.45rem;
+    border-radius: 99px;
+    background: hsl(0, 0%, 14%);
+    color: hsl(0, 0%, 58%);
+    border: 1px solid hsl(0, 0%, 20%);
+    white-space: nowrap;
+  }
+
+  :global([data-theme='light']) .gsf-tag {
+    background: hsl(258, 15%, 94%);
+    color: hsl(258, 20%, 40%);
+    border-color: hsl(258, 15%, 82%);
+  }
+
+  /* ── Checklist ─────────────────────────────── */
+  .gsf-checklist {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .gsf-checklist li {
+    font-size: 0.75rem;
+    color: hsl(0, 0%, 52%);
+    padding-left: 1.1rem;
+    position: relative;
+    line-height: 1.45;
+  }
+
+  .gsf-checklist li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: hsl(258, 65%, 68%);
+    font-weight: 700;
+    font-size: 0.7rem;
+  }
+
+  .gsf-checklist code {
+    font-size: 0.7rem;
+    background: hsl(258, 30%, 14%);
+    color: hsl(258, 70%, 78%);
+    padding: 0.05rem 0.3rem;
+    border-radius: 0.2rem;
+  }
+
+  :global([data-theme='light']) .gsf-checklist li { color: hsl(258, 15%, 35%); }
+  :global([data-theme='light']) .gsf-checklist li::before { color: hsl(258, 55%, 45%); }
+  :global([data-theme='light']) .gsf-checklist code {
+    background: hsl(258, 40%, 92%);
+    color: hsl(258, 55%, 35%);
+  }
+
+  /* ── Badges ────────────────────────────────── */
+  .gsf-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .gsf-badge {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 0.12rem 0.45rem;
+    border-radius: 99px;
+    white-space: nowrap;
+  }
+
+  .gsf-badge--green {
+    background: hsl(142, 30%, 12%);
+    color: hsl(142, 55%, 58%);
+    border: 1px solid hsl(142, 35%, 20%);
+  }
+
+  .gsf-badge--purple {
+    background: hsl(258, 30%, 14%);
+    color: hsl(258, 65%, 78%);
+    border: 1px solid hsl(258, 35%, 24%);
+  }
+
+  :global([data-theme='light']) .gsf-badge--green {
+    background: hsl(142, 30%, 92%);
+    color: hsl(142, 45%, 28%);
+    border-color: hsl(142, 35%, 72%);
+  }
+  :global([data-theme='light']) .gsf-badge--purple {
+    background: hsl(258, 40%, 93%);
+    color: hsl(258, 55%, 32%);
+    border-color: hsl(258, 35%, 72%);
+  }
+
+  /* ── Visual column ─────────────────────────── */
+  .gsf-visual {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+  }
+
+  .gsf-visual-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: hsl(0, 0%, 28%);
+  }
+
+  :global([data-theme='light']) .gsf-visual-label { color: hsl(0, 0%, 55%); }
+
+  /* ── Code ──────────────────────────────────── */
+  .gsf-code {
+    margin: 0;
+    padding: 0.65rem 0.8rem;
+    border-radius: 0.45rem;
+    background: hsl(220, 15%, 10%);
+    border: 1px solid hsl(0, 0%, 15%);
+    font-family: 'Cascadia Code', 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    font-size: 0.68rem;
+    line-height: 1.65;
+    white-space: pre;
+    overflow-x: auto;
+    color: hsl(0, 0%, 78%);
+  }
+
+  :global([data-theme='light']) .gsf-code {
+    background: hsl(258, 20%, 97%);
+    border-color: hsl(258, 15%, 84%);
+    color: hsl(258, 15%, 18%);
+  }
+
+  .j-kw { color: hsl(207, 80%, 65%); }
+  .j-k  { color: hsl(258, 65%, 78%); }
+  .j-s  { color: hsl(142, 60%, 62%); }
+  .j-b  { color: hsl(0, 0%, 58%); }
+  .j-p  { color: hsl(0, 0%, 42%); }
+  .j-n  { color: hsl(31, 85%, 65%); }
+
+  :global([data-theme='light']) .j-kw { color: hsl(207, 80%, 35%); }
+  :global([data-theme='light']) .j-k  { color: hsl(258, 55%, 38%); }
+  :global([data-theme='light']) .j-s  { color: hsl(142, 55%, 28%); }
+  :global([data-theme='light']) .j-b  { color: hsl(0, 0%, 35%); }
+  :global([data-theme='light']) .j-p  { color: hsl(0, 0%, 45%); }
+  :global([data-theme='light']) .j-n  { color: hsl(31, 70%, 35%); }
+
+  /* ── Preview frame ─────────────────────────── */
+  .gsf-preview {
+    border: 1px solid hsl(0, 0%, 20%);
+    border-radius: 0.45rem;
+    overflow: hidden;
+  }
+
+  :global([data-theme='light']) .gsf-preview { border-color: hsl(142, 30%, 72%); }
+
+  .gsf-preview-chrome {
+    height: 1.5rem;
+    background: hsl(0, 0%, 11%);
+    border-bottom: 1px solid hsl(0, 0%, 18%);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 10px;
+  }
+
+  :global([data-theme='light']) .gsf-preview-chrome {
+    background: hsl(142, 20%, 92%);
+    border-bottom-color: hsl(142, 20%, 80%);
+  }
+
+  .gsf-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .gsf-dot:nth-child(1) { background: hsl(4, 85%, 60%); }
+  .gsf-dot:nth-child(2) { background: hsl(38, 92%, 55%); }
+  .gsf-dot:nth-child(3) { background: hsl(134, 55%, 46%); }
+
+  .gsf-preview-body {
+    padding: 0.85rem 0.75rem 0.75rem;
+    background: hsl(0, 0%, 7%);
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  :global([data-theme='light']) .gsf-preview-body { background: hsl(0, 0%, 97%); }
+
+  .gsf-demo-field { display: flex; flex-direction: column; gap: 0.25rem; }
+
+  .gsf-demo-label {
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: hsl(0, 0%, 65%);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  :global([data-theme='light']) .gsf-demo-label { color: hsl(0, 0%, 30%); }
+
+  .gsf-demo-req { color: hsl(0, 65%, 60%); }
+
+  .gsf-demo-input {
+    height: 1.85rem;
+    border-radius: 0.3rem;
+    border: 1px solid hsl(0, 0%, 22%);
+    background: hsl(0, 0%, 11%);
+    display: flex;
+    align-items: center;
+    padding: 0 0.55rem;
+  }
+
+  :global([data-theme='light']) .gsf-demo-input {
+    border-color: hsl(0, 0%, 75%);
+    background: #fff;
+    box-shadow: 0 1px 2px hsla(0,0%,0%,0.06);
+  }
+
+  .gsf-demo-cursor {
+    width: 1px;
+    height: 0.85rem;
+    background: hsl(258, 80%, 65%);
+    display: inline-block;
+    animation: gsf-blink 1.1s step-end infinite;
+  }
+
+  @keyframes gsf-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
+  .gsf-demo-btn {
+    background: hsl(258, 80%, 58%);
+    color: #fff;
+    border: none;
+    border-radius: 0.3rem;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: default;
+    pointer-events: none;
+    align-self: flex-start;
+  }
+
+  /* ── Connector ─────────────────────────────── */
+  .gsf-connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: hsl(0, 0%, 26%);
+    padding: 0.1rem 0;
+  }
+
+  :global([data-theme='light']) .gsf-connector { color: hsl(258, 15%, 60%); }
+
+  .gsf-connector-line {
+    width: 1px;
+    height: 0.75rem;
+    background: currentColor;
+    opacity: 0.4;
+  }
+
+  .gsf-connector-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    padding: 0.1rem 0;
+  }
+
+  .gsf-arrow { opacity: 0.4; }
+</style>

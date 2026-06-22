@@ -137,7 +137,8 @@ changeset.
 - All `.md` files must pass `markdownlint` (rules in `.markdownlint.json`)
 - 120 character line limit (tables and code blocks exempt)
 - Fenced code blocks must declare a language
-- Consistent heading hierarchy — no skipped levels
+- Consistent heading hierarchy, no skipped levels
+- No em dashes (`—`). Use a colon, comma, semicolon, or rewrite as two sentences instead.
 
 ## Architecture
 

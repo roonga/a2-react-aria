@@ -1,13 +1,13 @@
 ---
 title: Styling
-description: Theme a2ra components with shadcn tokens, Tailwind, or plain CSS — you own the source.
+description: Theme a2ra components with shadcn tokens, Tailwind, or plain CSS. You own the source.
 sidebar:
-  order: 4
+  order: 5
 ---
 
 a2ra components ship with styles built on CSS custom property tokens that follow the
 [shadcn/ui theming convention](https://ui.shadcn.com/docs/theming). Because components live in your
-project — not in a published package — you own every file and can style them any way you like.
+project, not in a published package. You own every file and can style them any way you like.
 
 ## Design tokens
 
@@ -61,9 +61,9 @@ palette generator.
 Because `npx @a2ra/cli add <component>` copies the source into your project, you can edit any file
 without fighting a library's API:
 
-- **Change class composition** — edit `*.styles.ts` to add, remove, or swap Tailwind utilities
-- **Change structure** — edit the `.tsx` component to alter markup, add props, or wrap elements
-- **Override globally** — target the component's class selectors in your global CSS if a one-off
+- **Change class composition**: edit `*.styles.ts` to add, remove, or swap Tailwind utilities
+- **Change structure**: edit the `.tsx` component to alter markup, add props, or wrap elements
+- **Override globally**: target the component's class selectors in your global CSS if a one-off
   tweak is all you need
 
 There is no library version to pin and no specificity battles. It is just your code.

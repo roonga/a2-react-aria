@@ -2,11 +2,11 @@
 title: CLI Reference
 description: Use @a2ra/cli to add, update, and diff components in your project.
 sidebar:
-  order: 3
+  order: 4
 ---
 
 The `@a2ra/cli` copies component source files into your project so you own and control the code.
-There is nothing to version-pin — you pull updates deliberately with `diff`.
+There is nothing to version-pin; you pull updates deliberately with `diff`.
 
 ## Init
 

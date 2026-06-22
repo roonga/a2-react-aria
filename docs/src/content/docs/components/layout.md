@@ -1,5 +1,5 @@
 ---
-title: Layout — Flex / Grid
+title: "Flex / Grid Layout"
 description: Structural layout nodes for composing component trees.
 sidebar:
   order: 11
@@ -86,5 +86,5 @@ Nested column form layout:
 ## Notes
 
 - `Flex` and `Grid` render as plain `<div>` elements with no semantic meaning.
-- For form layouts, prefer `Form` over `Flex` — `Form` wires up React Aria validation context.
+- For form layouts, prefer `Form` over `Flex`. `Form` wires up React Aria validation context.
 - `Grid` columns are always equal-width. For asymmetric layouts, nest multiple `Flex` nodes.

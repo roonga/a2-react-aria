@@ -58,8 +58,8 @@ npx @a2ra/cli add tabs
 
 ## Notes
 
-- `children` are matched to `tabs` by position — the first child is the panel for the first tab, etc.
+- `children` are matched to `tabs` by position. The first child is the panel for the first tab, etc.
 - `keyboardActivation: "manual"` requires pressing `Enter` or `Space` to activate a focused tab.
   Use this when switching tabs triggers a data fetch to avoid unnecessary requests.
 - The tab list has `role="tablist"` and each panel has `role="tabpanel"` with `aria-labelledby`
-  pointing to its tab — all managed by React Aria.
+  pointing to its tab, all managed by React Aria.

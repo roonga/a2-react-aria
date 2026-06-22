@@ -5,7 +5,7 @@ sidebar:
   order: 2
 ---
 
-Renders any semantic text element — `h1`–`h4`, `p`, `span`, or `label` — with size,
+Renders `h1` through `h4`, `p`, `span`, and `label` elements with size,
 weight, colour, and alignment variants driven by design tokens.
 
 ## Add via CLI
@@ -58,5 +58,5 @@ Muted helper text:
 ## Notes
 
 - All colours reference `var(--color-*)` tokens, so `Text` inherits the consumer's theme.
-- `truncate: true` adds `overflow: hidden; text-overflow: ellipsis; white-space: nowrap` —
-  the parent must have a constrained width for this to take effect.
+- `truncate: true` adds `overflow: hidden; text-overflow: ellipsis; white-space: nowrap`.
+  The parent must have a constrained width for this to take effect.

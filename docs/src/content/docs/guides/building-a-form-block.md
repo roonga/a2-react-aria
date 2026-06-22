@@ -2,10 +2,10 @@
 title: Building a Form Block
 description: Use A2Renderer with onAction to handle agent-driven forms, collect field values, and fire action strings.
 sidebar:
-  order: 8
+  order: 9
 ---
 
-When an agent emits a form — a booking widget, a search panel, a multi-step flow — you need
+When an agent emits a form (a booking widget, a search panel, or a multi-step flow) you need
 three things on top of basic rendering:
 
 1. **Extract A2UI JSON** from the agent's text stream, which may mix prose and UI nodes
@@ -15,7 +15,7 @@ three things on top of basic rendering:
 
 `A2Renderer` handles all three. No second component to learn, no HOC wrapping required.
 
-## Parsing A2UI JSON from text — extractA2ui
+## Parsing A2UI JSON from text: extractA2ui
 
 Agents often embed A2UI JSON inside a prose response. `extractA2ui` parses the
 `<a2ui-json>…</a2ui-json>` tag and splits the text cleanly:
@@ -36,7 +36,7 @@ I've found three tables for you.
 <a2ui-json>[{"type":"Card","children":[...]}]</a2ui-json>
 ```
 
-## Stripping partial tags during streaming — stripStreamingA2ui
+## Stripping partial tags during streaming: stripStreamingA2ui
 
 While the agent is still streaming, the `<a2ui-json>` tag may be incomplete. Pass the
 streaming buffer through `stripStreamingA2ui` before showing it in the UI to avoid
@@ -53,7 +53,7 @@ const visibleText = stripStreamingA2ui(streamingBuffer)
 
 Once the stream ends, call `extractA2ui` on the complete buffer to extract the final node list.
 
-## Interactive mode — the onAction prop
+## Interactive mode: the onAction prop
 
 Pass `onAction` to `A2Renderer` and all built-in form fields and buttons automatically
 wire themselves to form-state collection and action firing:
@@ -76,7 +76,7 @@ function AgentFormBlock({ nodes, onAction }) {
 ```
 
 `onAction(text)` receives the compound action string when the user presses an action button.
-Without `onAction`, `A2Renderer` is stateless — no context, no overhead.
+Without `onAction`, `A2Renderer` is stateless with no context or overhead.
 
 ## How it works
 
@@ -107,7 +107,7 @@ separated by ` | `. Empty fields are excluded.
 ### Value-based actions
 
 If the agent sets a `value` prop on a Button node, that string is fired directly instead
-of building a compound payload — useful for fixed choices like `"confirm"` or `"cancel"`:
+of building a compound payload. This is useful for fixed choices like `"confirm"` or `"cancel"`:
 
 ```json
 { "type": "Button", "props": { "value": "cancel", "children": "Never mind" } }

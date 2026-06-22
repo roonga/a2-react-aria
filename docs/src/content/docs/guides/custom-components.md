@@ -2,16 +2,16 @@
 title: Custom Components
 description: Register your own components alongside the built-in a2UI library.
 sidebar:
-  order: 7
+  order: 8
 ---
 
-The registry accepts any React component — you are not limited to the 18 built-in types.
+The registry accepts any React component, not just the 18 built-in types.
 A star-rating widget, a map picker, a file upload zone: if you can write a React component
 for it, you can teach the agent to emit it.
 
 ## Create the component
 
-Write a normal React component. Props become the agent-controlled surface — keep them
+Write a normal React component. Props become the agent-controlled surface. Keep them
 serialisable (strings, numbers, booleans) so the agent can produce them from JSON.
 
 ```tsx
@@ -49,7 +49,7 @@ The `type` key in the registry (`"FeedbackSurvey"`) is what the agent must emit.
 If the component needs to send data back to the agent (e.g. a form submission), read
 `ActionContext` and call `fire()` with the result string.
 
-`A2BlockRenderer` provides this context automatically — you do not need to wire it yourself.
+`A2BlockRenderer` provides this context automatically, so you do not need to wire it yourself.
 
 ```tsx
 import { ActionContext } from "@a2ra/core"
@@ -128,5 +128,5 @@ const FeedbackSurveySchema = z.object({
 })
 ```
 
-Custom schemas are validated independently — they are not part of the `safeParseNode`
+Custom schemas are validated independently. They are not part of the `safeParseNode`
 built-in set, which only covers the 18 core components.
