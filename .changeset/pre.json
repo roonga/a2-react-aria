@@ -8,6 +8,7 @@
     "@a2ra/core": "0.1.0-preview.0"
   },
   "changesets": [
-    "add-default-registry"
+    "add-default-registry",
+    "remove-hoc-wiring"
   ]
 }
