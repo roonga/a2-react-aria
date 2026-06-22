@@ -8,12 +8,50 @@ sidebar:
 When an agent emits a form — a booking widget, a search panel, a multi-step flow — you need
 three things on top of basic rendering:
 
-1. **Collect field values** as the user types across multiple inputs
-2. **Fire the collected values** back to the agent in a single action string when the user
+1. **Extract A2UI JSON** from the agent's text stream, which may mix prose and UI nodes
+2. **Collect field values** as the user types across multiple inputs
+3. **Fire the collected values** back to the agent in a single action string when the user
    submits
-3. **Extract A2UI JSON** from the agent's text stream, which may mix prose and UI nodes
 
 `A2Renderer` handles all three. No second component to learn, no HOC wrapping required.
+
+## Parsing A2UI JSON from text — extractA2ui
+
+Agents often embed A2UI JSON inside a prose response. `extractA2ui` parses the
+`<a2ui-json>…</a2ui-json>` tag and splits the text cleanly:
+
+```ts
+import { extractA2ui } from "@a2ra/core"
+
+const { plainText, a2uiJson } = extractA2ui(agentResponse)
+// plainText: the prose without the tag
+// a2uiJson:  parsed JSON array, or null if no tag was found
+```
+
+Agent output format:
+
+```text
+I've found three tables for you.
+
+<a2ui-json>[{"type":"Card","children":[...]}]</a2ui-json>
+```
+
+## Stripping partial tags during streaming — stripStreamingA2ui
+
+While the agent is still streaming, the `<a2ui-json>` tag may be incomplete. Pass the
+streaming buffer through `stripStreamingA2ui` before showing it in the UI to avoid
+displaying raw tag markup:
+
+```ts
+import { stripStreamingA2ui } from "@a2ra/core"
+
+// Inside your streaming render:
+const visibleText = stripStreamingA2ui(streamingBuffer)
+// If the buffer contains an open <a2ui-json> tag with no closing tag,
+// everything from that tag onward is removed.
+```
+
+Once the stream ends, call `extractA2ui` on the complete buffer to extract the final node list.
 
 ## Interactive mode — the onAction prop
 
@@ -76,44 +114,6 @@ of building a compound payload — useful for fixed choices like `"confirm"` or 
 ```
 
 The `value` prop is not passed to the DOM, so it does not trigger React warnings.
-
-## Parsing A2UI JSON from text — extractA2ui
-
-Agents often embed A2UI JSON inside a prose response. `extractA2ui` parses the
-`<a2ui-json>…</a2ui-json>` tag and splits the text cleanly:
-
-```ts
-import { extractA2ui } from "@a2ra/core"
-
-const { plainText, a2uiJson } = extractA2ui(agentResponse)
-// plainText: the prose without the tag
-// a2uiJson:  parsed JSON array, or null if no tag was found
-```
-
-Agent output format:
-
-```text
-I've found three tables for you.
-
-<a2ui-json>[{"type":"Card","children":[...]}]</a2ui-json>
-```
-
-## Stripping partial tags during streaming — stripStreamingA2ui
-
-While the agent is still streaming, the `<a2ui-json>` tag may be incomplete. Pass the
-streaming buffer through `stripStreamingA2ui` before showing it in the UI to avoid
-displaying raw tag markup:
-
-```ts
-import { stripStreamingA2ui } from "@a2ra/core"
-
-// Inside your streaming render:
-const visibleText = stripStreamingA2ui(streamingBuffer)
-// If the buffer contains an open <a2ui-json> tag with no closing tag,
-// everything from that tag onward is removed.
-```
-
-Once the stream ends, call `extractA2ui` on the complete buffer to extract the final node list.
 
 ## Complete example
 
