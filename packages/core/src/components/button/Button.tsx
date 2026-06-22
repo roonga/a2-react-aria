@@ -1,5 +1,7 @@
 import type { ReactNode } from "react"
+import { useContext } from "react"
 import { Button as RACButton } from "react-aria-components"
+import { ActionContext } from "../../action-context"
 import { getButtonStyles, getSizeStyles } from "./button.styles"
 
 interface ButtonProps {
@@ -25,14 +27,26 @@ export function Button({
 	size = "md",
 	onPress,
 }: ButtonProps) {
+	const actionCtx = useContext(ActionContext)
+
+	const handlePress = actionCtx
+		? () => {
+				if (value) {
+					actionCtx.fire(value)
+				} else if (typeof children === "string") {
+					actionCtx.fire(actionCtx.buildAction(children))
+				}
+			}
+		: onPress
+
 	return (
 		<RACButton
-			onPress={onPress}
+			onPress={handlePress}
 			isDisabled={isDisabled}
 			isPending={isPending}
 			type={type}
 			name={name}
-			value={value}
+			value={actionCtx ? undefined : value}
 			className={`${getButtonStyles(variant)} ${getSizeStyles(size)}`}
 		>
 			{children}

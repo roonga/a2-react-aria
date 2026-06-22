@@ -1,6 +1,8 @@
 ---
 title: Switch
 description: A toggle switch for binary on/off settings.
+sidebar:
+  order: 8
 ---
 
 A wrapper around React Aria's `Switch` component. Renders as a toggle with ARIA `role="switch"`

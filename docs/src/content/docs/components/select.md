@@ -1,6 +1,8 @@
 ---
 title: Select
 description: A dropdown selector with keyboard navigation and search support.
+sidebar:
+  order: 9
 ---
 
 A wrapper around React Aria's `Select` component. Renders a button that opens a listbox

@@ -1,6 +1,8 @@
 ---
 title: Breadcrumb
 description: A navigation trail showing the current page's location in the hierarchy.
+sidebar:
+  order: 13
 ---
 
 A wrapper around React Aria's `Breadcrumbs` and `Breadcrumb` components.

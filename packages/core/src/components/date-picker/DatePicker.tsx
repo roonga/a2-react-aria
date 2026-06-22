@@ -1,4 +1,5 @@
 import { type DateValue, parseDate } from "@internationalized/date"
+import { useContext, useEffect } from "react"
 import {
 	Button,
 	Calendar,
@@ -17,6 +18,7 @@ import {
 	DatePicker as RACDatePicker,
 	Text,
 } from "react-aria-components"
+import { FormStateContext } from "../../form-state"
 import { getDatePickerStyles } from "./date-picker.styles"
 
 interface DatePickerProps {
@@ -67,6 +69,13 @@ export function DatePicker({
 	onOpenChange,
 }: DatePickerProps) {
 	const styles = getDatePickerStyles()
+	const formCtx = useContext(FormStateContext)
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional mount-only seed
+	useEffect(() => {
+		if (defaultValue !== undefined && label) formCtx?.setValue(label, defaultValue)
+	}, [])
+
 	return (
 		<RACDatePicker
 			value={value ? parseDate(value) : undefined}
@@ -84,7 +93,11 @@ export function DatePicker({
 			granularity={granularity}
 			validationBehavior={validationBehavior}
 			validate={validate}
-			onChange={(date) => onChange?.(date?.toString() ?? "")}
+			onChange={(date) => {
+				const v = date?.toString() ?? ""
+				if (label) formCtx?.setValue(label, v)
+				onChange?.(v)
+			}}
 			onOpenChange={onOpenChange}
 			className={styles.root}
 		>

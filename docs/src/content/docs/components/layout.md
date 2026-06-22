@@ -1,6 +1,8 @@
 ---
 title: Layout — Flex / Grid
 description: Structural layout nodes for composing component trees.
+sidebar:
+  order: 11
 ---
 
 Two layout primitives: `Flex` for one-dimensional layouts (row or column) and `Grid` for

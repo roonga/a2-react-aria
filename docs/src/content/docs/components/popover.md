@@ -1,6 +1,8 @@
 ---
 title: Popover
 description: An interactive overlay anchored to a trigger, for rich contextual content.
+sidebar:
+  order: 17
 ---
 
 A wrapper around React Aria's `DialogTrigger` and `Popover` components. Unlike `Tooltip`,

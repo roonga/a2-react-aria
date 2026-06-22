@@ -1,6 +1,8 @@
 ---
 title: Getting Started
 description: Get started with a2UI — accessible React Aria components for AI-generated UIs.
+sidebar:
+  order: 1
 ---
 
 ## What is a2UI?

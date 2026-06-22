@@ -1,6 +1,8 @@
 ---
 title: Agent Integration
 description: Connect AI agents to A2Renderer — no third-party SDKs required.
+sidebar:
+  order: 6
 ---
 
 a2UI is designed as the rendering layer for AI agents. Agents emit a2UI JSON; `A2Renderer`
@@ -71,6 +73,35 @@ Your agent emits an `ui_node` event with the a2UI JSON payload:
 # Python (any framework)
 yield f"event: ui_node\ndata: {json.dumps(node)}\n\n"
 ```
+
+### Inline A2UI JSON in text streams
+
+Some agents mix prose and A2UI JSON in a single text stream using `<a2ui-json>` tags.
+Use `extractA2ui` to split the completed buffer and `stripStreamingA2ui` to hide the
+partial tag while streaming:
+
+```tsx
+import { extractA2ui, stripStreamingA2ui } from "@a2ra/core"
+
+// During streaming — strip the open tag so raw markup is not shown:
+const visibleText = stripStreamingA2ui(streamingBuffer)
+
+// When the stream ends — extract the node list:
+const { plainText, a2uiJson } = extractA2ui(completedBuffer)
+// plainText: prose without the <a2ui-json> block
+// a2uiJson:  parsed JSON array, or null if no tag was present
+```
+
+Agent output format:
+
+```text
+I found a table for you.
+
+<a2ui-json>[{"type":"Card","children":[...]}]</a2ui-json>
+```
+
+See [Building a Form Block](./building-a-form-block) for a complete streaming + form
+integration example.
 
 ## Agent-side: generating valid nodes
 

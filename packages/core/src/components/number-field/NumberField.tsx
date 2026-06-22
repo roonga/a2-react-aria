@@ -1,4 +1,6 @@
+import { useContext, useEffect } from "react"
 import { Button, FieldError, Group, Input, Label, NumberField as RACNumberField, Text } from "react-aria-components"
+import { FormStateContext } from "../../form-state"
 import { getNumberFieldStyles } from "./number-field.styles"
 
 interface NumberFieldProps {
@@ -45,6 +47,17 @@ export function NumberField({
 	onChange,
 }: NumberFieldProps) {
 	const styles = getNumberFieldStyles()
+	const formCtx = useContext(FormStateContext)
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional mount-only seed
+	useEffect(() => {
+		if (defaultValue !== undefined && label) formCtx?.setValue(label, `${defaultValue}`)
+	}, [])
+
+	const handleChange = (v: number) => {
+		if (label) formCtx?.setValue(label, `${v}`)
+		onChange?.(v)
+	}
 
 	return (
 		<RACNumberField
@@ -62,7 +75,7 @@ export function NumberField({
 			validationBehavior={validationBehavior}
 			validate={validate}
 			name={name}
-			onChange={onChange}
+			onChange={handleChange}
 			className={styles.container}
 		>
 			{label && (

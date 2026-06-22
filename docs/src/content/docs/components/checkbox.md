@@ -1,6 +1,8 @@
 ---
 title: Checkbox / CheckboxGroup
 description: A single checkbox or a labelled group of checkboxes with validation support.
+sidebar:
+  order: 6
 ---
 
 Two components: `Checkbox` for a standalone toggle, and `CheckboxGroup` for a labelled

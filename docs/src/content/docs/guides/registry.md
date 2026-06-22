@@ -1,6 +1,8 @@
 ---
 title: Registry
 description: How the a2UI component registry works and how to build a custom one.
+sidebar:
+  order: 5
 ---
 
 `A2Renderer` resolves component types through a **registry** — a `Map<string, ComponentEntry>`
@@ -93,3 +95,24 @@ registerComponent("MyBanner", { component: MyBanner })
 
 Agents can then emit `{ "type": "MyBanner", "props": { ... } }` and `A2Renderer` will
 resolve it to your custom component.
+
+For the full walkthrough — including connecting a custom component to the action pipeline
+and writing a system-prompt description for the agent — see the
+[Custom Components guide](./custom-components).
+
+## Interactive rendering — onAction
+
+When the node list contains form fields and action buttons, pass `onAction` to `A2Renderer`.
+It accepts a `nodes` array and wires form-state collection and action firing automatically:
+
+```tsx
+import { A2Renderer } from "@a2ra/core"
+
+<A2Renderer nodes={nodes} registry={registry} onAction={handleAction} />
+```
+
+Without `onAction`, `A2Renderer` is stateless. With it, all built-in form fields
+automatically report their values and all built-in buttons fire the compound string to
+`handleAction`. No HOC wrapping or extra setup required.
+
+See [Building a Form Block](./building-a-form-block) for the full usage guide.

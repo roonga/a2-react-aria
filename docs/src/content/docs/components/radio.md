@@ -1,6 +1,8 @@
 ---
 title: RadioGroup
 description: A labelled group of mutually exclusive radio buttons.
+sidebar:
+  order: 7
 ---
 
 Two components: `RadioGroup` (the container) and `Radio` (individual options). Built on

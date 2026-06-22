@@ -1,6 +1,8 @@
 ---
 title: DatePicker / DateRangePicker
 description: Calendar date pickers for single dates and date ranges.
+sidebar:
+  order: 10
 ---
 
 Two components: `DatePicker` for a single date and `DateRangePicker` for a start–end range.

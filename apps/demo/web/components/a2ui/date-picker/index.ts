@@ -1,4 +1,3 @@
 export { DatePicker } from "./DatePicker"
-export { DateRangePicker } from "./DateRangePicker"
-export type { DatePickerNode, DateRangePickerNode } from "./date-picker.schema"
-export { DatePickerSchema, DateRangePickerSchema } from "./date-picker.schema"
+export type { DatePickerNode } from "./date-picker.schema"
+export { DatePickerSchema } from "./date-picker.schema"

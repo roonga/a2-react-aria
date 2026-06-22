@@ -1,6 +1,8 @@
 ---
 title: Form
 description: A layout container that groups form fields with consistent spacing.
+sidebar:
+  order: 5
 ---
 
 A wrapper around React Aria's `Form` component. Handles server-side validation errors,

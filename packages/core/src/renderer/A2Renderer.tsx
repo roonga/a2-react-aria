@@ -1,4 +1,8 @@
-import type { ReactElement, ReactNode } from "react"
+import { type ReactElement, type ReactNode, useCallback, useMemo, useRef } from "react"
+import type { ActionCtx } from "../action-context/action-context"
+import { ActionContext } from "../action-context/action-context"
+import type { FormStateCtx } from "../form-state/form-state"
+import { FormStateContext } from "../form-state/form-state"
 import { getRegistry } from "../registry/registry"
 import type { A2Node, A2RendererProps, ComponentRegistry } from "../types"
 import { A2ErrorBoundary } from "./A2ErrorBoundary"
@@ -13,24 +17,69 @@ function resolveChildren(children: A2Node["children"], registry: ComponentRegist
 	return <A2Renderer node={children} registry={registry} fallback={fallback} />
 }
 
-function A2RendererInner({ node, registry, fallback }: A2RendererProps): ReactElement | null {
-	const reg = registry ?? getRegistry()
-	const entry = reg.get(node.type)
-
-	if (!entry) {
-		throw new Error(`[A2Renderer] Unknown component type: "${node.type}"`)
-	}
-
+function A2RendererInner({
+	node,
+	registry,
+	fallback,
+}: {
+	node: A2Node
+	registry: ComponentRegistry
+	fallback: ReactNode
+}): ReactElement | null {
+	const entry = registry.get(node.type)
+	if (!entry) throw new Error(`[A2Renderer] Unknown component type: "${node.type}"`)
 	const { component: Component } = entry
-	const resolvedChildren = resolveChildren(node.children, reg, fallback)
-
+	const resolvedChildren = resolveChildren(node.children, registry, fallback)
 	return (<Component {...(node.props ?? {})}>{resolvedChildren}</Component>) as ReactElement
 }
 
-export function A2Renderer(props: A2RendererProps): ReactElement {
+function InteractiveWrapper({ onAction, children }: { onAction: (text: string) => void; children: ReactNode }) {
+	const fieldsRef = useRef<Record<string, string>>({})
+
+	const formState = useMemo<FormStateCtx>(
+		() => ({
+			setValue: (label, value) => {
+				fieldsRef.current[label] = value
+			},
+		}),
+		[],
+	)
+
+	const buildAction = useCallback((buttonLabel: string): string => {
+		const entries = Object.entries(fieldsRef.current).filter(([, v]) => v !== "")
+		if (entries.length === 0) return buttonLabel
+		const parts = entries.map(([k, v]) => `${k}: ${v}`)
+		return `${buttonLabel} | ${parts.join(" | ")}`
+	}, [])
+
+	const actionCtx = useMemo<ActionCtx>(() => ({ buildAction, fire: (text) => onAction(text) }), [buildAction, onAction])
+
 	return (
-		<A2ErrorBoundary fallback={props.fallback}>
-			<A2RendererInner {...props} />
+		<FormStateContext.Provider value={formState}>
+			<ActionContext.Provider value={actionCtx}>{children}</ActionContext.Provider>
+		</FormStateContext.Provider>
+	)
+}
+
+export function A2Renderer({ node, nodes, registry, fallback, onAction }: A2RendererProps): ReactElement | null {
+	const reg = registry ?? getRegistry()
+
+	let inner: ReactNode
+	if (nodes !== undefined) {
+		if (!nodes.length) return null
+		inner = nodes.map((n, i) => (
+			// biome-ignore lint/suspicious/noArrayIndexKey: a2UI nodes have no stable IDs
+			<A2RendererInner key={i} node={n as A2Node} registry={reg} fallback={fallback} />
+		))
+	} else if (node !== undefined) {
+		inner = <A2RendererInner node={node} registry={reg} fallback={fallback} />
+	} else {
+		return null
+	}
+
+	return (
+		<A2ErrorBoundary fallback={fallback}>
+			{onAction ? <InteractiveWrapper onAction={onAction}>{inner}</InteractiveWrapper> : inner}
 		</A2ErrorBoundary>
 	) as ReactElement
 }

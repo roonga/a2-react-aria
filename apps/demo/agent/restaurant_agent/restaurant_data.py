@@ -77,9 +77,27 @@ _RESTAURANTS = [
         "price_range": "$$$",
         "time_slots": ["6:00 PM", "6:30 PM", "7:00 PM", "7:30 PM", "8:00 PM", "8:30 PM"],
     },
+    {
+        "id": "passage-to-india",
+        "name": "Passage to India",
+        "cuisine": "Indian",
+        "suburb": "CBD",
+        "rating": "4.6",
+        "price_range": "$$",
+        "time_slots": ["6:00 PM", "6:30 PM", "7:00 PM", "7:30 PM", "8:00 PM", "8:30 PM"],
+    },
+    {
+        "id": "malabar-coast",
+        "name": "Malabar Coast",
+        "cuisine": "Indian",
+        "suburb": "Surry Hills",
+        "rating": "4.5",
+        "price_range": "$$",
+        "time_slots": ["6:30 PM", "7:00 PM", "7:30 PM", "8:00 PM", "9:00 PM"],
+    },
 ]
 
-_CUISINES = ["Italian", "Japanese", "Thai", "Modern Australian"]
+_CUISINES = ["Italian", "Japanese", "Thai", "Indian", "Modern Australian"]
 
 
 def find_restaurants(location: str, cuisine: str = "any", party_size: int = 2) -> list[dict]:
@@ -123,6 +141,22 @@ def _card(children: list, **props) -> dict:
 
 def _vflex(children: list, gap: str = "md") -> dict:
     return {"type": "Flex", "props": {"direction": "column", "gap": gap}, "children": children}
+
+
+def _feedback_survey(
+    title: str = "How was your experience?",
+    description: str = "",
+    submit_label: str = "",
+    comment_placeholder: str = "",
+) -> dict:
+    props: dict = {"title": title}
+    if description:
+        props["description"] = description
+    if submit_label:
+        props["submitLabel"] = submit_label
+    if comment_placeholder:
+        props["commentPlaceholder"] = comment_placeholder
+    return {"type": "FeedbackSurvey", "props": props}
 
 
 def build_intent_confirmation(
@@ -505,7 +539,11 @@ def build_confirmation_card(
             shadow="md",
             radius="lg",
             border=True,
-        )
+        ),
+        _feedback_survey(
+            title="How was your booking experience?",
+            description="Help us improve — your feedback takes 10 seconds.",
+        ),
     ]
 
 

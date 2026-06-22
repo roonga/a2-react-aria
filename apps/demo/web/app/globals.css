@@ -25,6 +25,7 @@
 
 	/* ── a2UI component tokens (mapped from shadcn) ─────────── */
 	--color-primary: var(--primary);
+	--color-primaryForeground: var(--primary-foreground);
 	--color-primaryHover: oklch(0.47 0.223 3.958);
 	--color-primaryActive: oklch(0.41 0.223 3.958);
 	/* secondary-foreground (dark slate) so text-white stays legible */
@@ -43,6 +44,7 @@
 	--color-background: var(--background);
 	--color-backgroundMuted: var(--muted);
 	--color-surface: var(--card);
+	--color-star: oklch(0.75 0.18 84);
 }
 
 .dark {
@@ -68,6 +70,7 @@
 
 	/* ── a2UI component tokens (dark, mapped from shadcn) ───── */
 	--color-primary: var(--primary);
+	--color-primaryForeground: var(--primary-foreground);
 	--color-primaryHover: oklch(0.4 0.187 3.815);
 	--color-primaryActive: oklch(0.34 0.187 3.815);
 	/* secondary in dark mode is already dark enough for text-white */
@@ -86,4 +89,5 @@
 	--color-background: var(--background);
 	--color-backgroundMuted: var(--muted);
 	--color-surface: var(--card);
+	--color-star: oklch(0.87 0.18 84);
 }
