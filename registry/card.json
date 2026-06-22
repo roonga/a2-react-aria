@@ -21,7 +21,7 @@
     },
     {
       "path": "card/card.styles.ts",
-      "content": "const paddingMap = { none: \"p-0\", sm: \"p-3\", md: \"p-4\", lg: \"p-6\" }\nconst shadowMap = { none: \"shadow-none\", sm: \"shadow-sm\", md: \"shadow-md\", lg: \"shadow-lg\" }\nconst radiusMap = { none: \"rounded-none\", sm: \"rounded-sm\", md: \"rounded-md\", lg: \"rounded-lg\" }\n\nexport const getCardStyles = (\n\tpadding: \"none\" | \"sm\" | \"md\" | \"lg\" = \"md\",\n\tshadow: \"none\" | \"sm\" | \"md\" | \"lg\" = \"none\",\n\tradius: \"none\" | \"sm\" | \"md\" | \"lg\" = \"md\",\n\tborder = false,\n) =>\n\t[\n\t\t\"bg-[var(--color-surface)]\",\n\t\tpaddingMap[padding],\n\t\tshadowMap[shadow],\n\t\tradiusMap[radius],\n\t\tborder ? \"border border-[var(--color-border)]\" : \"\",\n\t]\n\t\t.filter(Boolean)\n\t\t.join(\" \")\n",
+      "content": "const paddingMap = { none: \"p-0\", sm: \"p-3\", md: \"p-4\", lg: \"p-6\" }\nconst shadowMap = { none: \"shadow-none\", sm: \"shadow-sm\", md: \"shadow-md\", lg: \"shadow-lg\" }\nconst radiusMap = { none: \"rounded-none\", sm: \"rounded-sm\", md: \"rounded-md\", lg: \"rounded-lg\" }\n\nexport const getCardStyles = (\n\tpadding: \"none\" | \"sm\" | \"md\" | \"lg\" = \"md\",\n\tshadow: \"none\" | \"sm\" | \"md\" | \"lg\" = \"none\",\n\tradius: \"none\" | \"sm\" | \"md\" | \"lg\" = \"md\",\n\tborder = false,\n) =>\n\t[\n\t\t\"bg-(--color-surface)\",\n\t\tpaddingMap[padding],\n\t\tshadowMap[shadow],\n\t\tradiusMap[radius],\n\t\tborder ? \"border border-(--color-border)\" : \"\",\n\t]\n\t\t.filter(Boolean)\n\t\t.join(\" \")\n",
       "type": "registry:component"
     },
     {

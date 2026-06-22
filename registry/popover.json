@@ -27,7 +27,7 @@
     },
     {
       "path": "popover/popover.styles.ts",
-      "content": "export const getPopoverStyles = () => ({\n\tpopover: [\n\t\t\"rounded-xl p-3 min-w-[200px] outline-none\",\n\t\t\"bg-[var(--color-background)] border border-[var(--color-border)]\",\n\t\t\"shadow-xl\",\n\t\t\"data-[entering]:animate-in data-[entering]:fade-in\",\n\t\t\"data-[exiting]:animate-out data-[exiting]:fade-out duration-150\",\n\t].join(\" \"),\n\ttrigger: [\n\t\t\"rounded px-3 py-1.5 text-sm font-medium\",\n\t\t\"bg-[var(--color-backgroundMuted)] text-[var(--color-text)]\",\n\t\t\"border border-[var(--color-border)]\",\n\t\t\"hover:bg-[var(--color-border)] transition-colors\",\n\t\t\"focus-visible:outline-2 focus-visible:outline-[var(--color-primary)]\",\n\t].join(\" \"),\n})\n",
+      "content": "export const getPopoverStyles = () => ({\n\tpopover: [\n\t\t\"rounded-xl p-3 min-w-[200px] outline-none\",\n\t\t\"bg-(--color-background) border border-(--color-border)\",\n\t\t\"shadow-xl\",\n\t\t\"data-[entering]:animate-in data-[entering]:fade-in\",\n\t\t\"data-[exiting]:animate-out data-[exiting]:fade-out duration-150\",\n\t].join(\" \"),\n\ttrigger: [\n\t\t\"rounded px-3 py-1.5 text-sm font-medium\",\n\t\t\"bg-(--color-backgroundMuted) text-(--color-text)\",\n\t\t\"border border-(--color-border)\",\n\t\t\"hover:bg-(--color-border) transition-colors\",\n\t\t\"focus-visible:outline-2 focus-visible:outline-(--color-primary)\",\n\t].join(\" \"),\n})\n",
       "type": "registry:component"
     }
   ]
