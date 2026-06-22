@@ -15,10 +15,10 @@ const weightMap = {
 }
 
 const colorMap = {
-	default: "text-[var(--color-text)]",
-	muted: "text-[var(--color-textMuted)]",
-	primary: "text-[var(--color-primary)]",
-	danger: "text-[var(--color-danger)]",
+	default: "text-(--color-text)",
+	muted: "text-(--color-textMuted)",
+	primary: "text-(--color-primary)",
+	danger: "text-(--color-danger)",
 }
 
 const alignMap = {

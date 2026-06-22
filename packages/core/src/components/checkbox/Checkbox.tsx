@@ -57,7 +57,7 @@ export function Checkbox({
 		>
 			<CheckboxButton
 				className={({ isDisabled: dis, isInvalid: inv }) =>
-					`${styles.button} ${dis ? "cursor-not-allowed opacity-50" : ""} ${inv ? "text-[var(--color-danger)]" : ""}`
+					`${styles.button} ${dis ? "cursor-not-allowed opacity-50" : ""} ${inv ? "text-(--color-danger)" : ""}`
 				}
 			>
 				{({ isSelected: sel, isIndeterminate: indet, isDisabled: dis, isInvalid: inv }) => (
@@ -66,7 +66,7 @@ export function Checkbox({
 							className={styles.indicator({ isSelected: sel, isIndeterminate: indet, isDisabled: dis, isInvalid: inv })}
 						>
 							{(sel || indet) && (
-								<svg viewBox="0 0 12 12" aria-hidden="true" className="w-3 h-3">
+								<svg viewBox="0 0 12 12" aria-hidden="true" className="h-3 w-3">
 									{indet ? (
 										<rect x={1} y={5} width={10} height={2} fill="currentColor" />
 									) : (

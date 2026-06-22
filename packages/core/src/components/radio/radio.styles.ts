@@ -8,27 +8,27 @@ const indicatorBase = "w-4 h-4 shrink-0 rounded-full border-2 flex items-center 
 
 export const getRadioStyles = () => ({
 	field: "flex flex-col gap-1",
-	button: "flex items-center gap-2 text-sm text-[var(--color-text)] cursor-pointer select-none",
+	button: "flex items-center gap-2 text-sm text-(--color-text) cursor-pointer select-none",
 	indicator({ isSelected, isDisabled, isInvalid }: IndicatorState) {
 		if (isDisabled) {
-			return `${indicatorBase} bg-[var(--color-backgroundMuted)] border-[var(--color-border)] opacity-50`
+			return `${indicatorBase} bg-(--color-backgroundMuted) border-(--color-border) opacity-50`
 		}
 		if (isSelected) {
-			return `${indicatorBase} bg-[var(--color-background)] border-[var(--color-primary)]`
+			return `${indicatorBase} bg-(--color-background) border-(--color-primary)`
 		}
 		if (isInvalid) {
-			return `${indicatorBase} bg-[var(--color-background)] border-[var(--color-danger)]`
+			return `${indicatorBase} bg-(--color-background) border-(--color-danger)`
 		}
-		return `${indicatorBase} bg-[var(--color-background)] border-[var(--color-border)]`
+		return `${indicatorBase} bg-(--color-background) border-(--color-border)`
 	},
-	dot: "w-2 h-2 rounded-full bg-[var(--color-primary)]",
+	dot: "w-2 h-2 rounded-full bg-(--color-primary)",
 })
 
 export const getRadioGroupStyles = () => ({
 	group: "flex flex-col gap-2",
-	label: "text-sm font-medium text-[var(--color-text)]",
+	label: "text-sm font-medium text-(--color-text)",
 	items: (orientation: "horizontal" | "vertical" = "vertical") =>
 		orientation === "horizontal" ? "flex flex-row flex-wrap gap-4" : "flex flex-col gap-2",
-	description: "text-xs text-[var(--color-textMuted)]",
-	errorMessage: "text-xs text-[var(--color-danger)]",
+	description: "text-xs text-(--color-textMuted)",
+	errorMessage: "text-xs text-(--color-danger)",
 })

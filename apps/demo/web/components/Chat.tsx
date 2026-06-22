@@ -10,13 +10,13 @@ const A2UIBlock = dynamic(
 	() =>
 		import("./A2UIBlock").catch((err: unknown) => {
 			console.error("[Chat] A2UIBlock import failed:", err)
-			const Fallback = () => <p className="text-[var(--color-danger)] text-xs">A2UI load error: {String(err)}</p>
+			const Fallback = () => <p className="text-(--color-danger) text-xs">A2UI load error: {String(err)}</p>
 			Fallback.displayName = "A2UIBlockFallback"
 			return { default: Fallback }
 		}),
 	{
 		ssr: false,
-		loading: () => <p className="mt-1 text-[var(--color-textMuted)] text-xs">Loading components…</p>,
+		loading: () => <p className="mt-1 text-(--color-textMuted) text-xs">Loading components…</p>,
 	},
 )
 
@@ -38,21 +38,18 @@ export default function Chat() {
 	const visibleStreamingText = stripStreamingA2ui(streamingText)
 
 	return (
-		<div className="overflow-hidden rounded-lg bg-[var(--color-surface)] shadow-2xl">
-			<div
-				ref={messagesContainerRef}
-				className="h-[600px] space-y-4 overflow-y-auto bg-[var(--color-backgroundMuted)] p-6"
-			>
+		<div className="overflow-hidden rounded-lg bg-(--color-surface) shadow-2xl">
+			<div ref={messagesContainerRef} className="h-150 space-y-4 overflow-y-auto bg-(--color-backgroundMuted) p-6">
 				{messages.map((msg, idx) => (
 					// biome-ignore lint/suspicious/noArrayIndexKey: chat messages have no stable IDs
 					<div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
 						<div
 							className={`max-w-[85%] rounded-lg px-4 py-3 ${
 								msg.role === "user"
-									? "bg-[var(--color-primary)] text-white"
+									? "bg-(--color-primary) text-white"
 									: msg.content.startsWith("Error:")
-										? "border border-[var(--color-danger)] bg-[var(--color-backgroundMuted)] text-[var(--color-danger)] shadow-sm"
-										: "bg-[var(--color-surface)] text-[var(--color-text)] shadow-md"
+										? "border border-(--color-danger) bg-(--color-backgroundMuted) text-(--color-danger) shadow-sm"
+										: "bg-(--color-surface) text-(--color-text) shadow-md"
 							}`}
 						>
 							{msg.thought && <ThinkingBlock text={msg.thought} />}
@@ -66,20 +63,20 @@ export default function Chat() {
 					<div className="flex justify-start">
 						<div className="max-w-[85%] space-y-1">
 							{streamingThought && (
-								<div className="flex items-center gap-2 rounded-md border border-[var(--color-border)] bg-[var(--color-backgroundMuted)] px-3 py-2 text-[var(--color-textMuted)] text-xs">
+								<div className="flex items-center gap-2 rounded-md border border-(--color-border) bg-(--color-backgroundMuted) px-3 py-2 text-(--color-textMuted) text-xs">
 									<span className="flex gap-0.5">
-										<span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[var(--color-textMuted)] [animation-delay:0ms]" />
-										<span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[var(--color-textMuted)] [animation-delay:150ms]" />
-										<span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[var(--color-textMuted)] [animation-delay:300ms]" />
+										<span className="h-1.5 w-1.5 animate-bounce rounded-full bg-(--color-textMuted) [animation-delay:0ms]" />
+										<span className="h-1.5 w-1.5 animate-bounce rounded-full bg-(--color-textMuted) [animation-delay:150ms]" />
+										<span className="h-1.5 w-1.5 animate-bounce rounded-full bg-(--color-textMuted) [animation-delay:300ms]" />
 									</span>
 									<span className="font-medium">Thinking…</span>
 								</div>
 							)}
 							{visibleStreamingText.trim() && (
-								<div className="rounded-lg bg-[var(--color-surface)] px-4 py-3 text-[var(--color-text)] shadow-md">
+								<div className="rounded-lg bg-(--color-surface) px-4 py-3 text-(--color-text) shadow-md">
 									<p className="whitespace-pre-wrap">
 										{visibleStreamingText}
-										<span className="ml-1 inline-block h-5 w-2 animate-pulse bg-[var(--color-text)]" />
+										<span className="ml-1 inline-block h-5 w-2 animate-pulse bg-(--color-text)" />
 									</p>
 								</div>
 							)}
@@ -88,14 +85,14 @@ export default function Chat() {
 				)}
 			</div>
 
-			<div className="border-[var(--color-border)] border-t bg-[var(--color-surface)] p-4">
+			<div className="border-(--color-border) border-t bg-(--color-surface) p-4">
 				<div className="mb-3 flex flex-wrap gap-2">
 					<FeedbackDemoButton onAdd={appendMessages} />
 					<button
 						type="button"
 						onClick={() => void sendMessage("Book a table for 2 in Sydney tonight, Indian cuisine")}
 						disabled={isLoading}
-						className="rounded-full border border-[var(--color-border)] px-3 py-1.5 text-[var(--color-textMuted)] text-xs transition-colors hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] disabled:cursor-not-allowed disabled:opacity-40"
+						className="rounded-full border border-(--color-border) px-3 py-1.5 text-(--color-textMuted) text-xs transition-colors hover:border-(--color-primary) hover:text-(--color-primary) disabled:cursor-not-allowed disabled:opacity-40"
 					>
 						🍽 Indian in Sydney tonight
 					</button>
@@ -109,13 +106,13 @@ export default function Chat() {
 						onKeyDown={handleKeyDown}
 						placeholder="Or type a message…"
 						disabled={isLoading}
-						className="flex-1 rounded-lg border border-[var(--color-border)] px-4 py-3 text-[var(--color-text)] placeholder:text-[var(--color-textMuted)] focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] disabled:cursor-not-allowed disabled:bg-[var(--color-backgroundMuted)]"
+						className="flex-1 rounded-lg border border-(--color-border) px-4 py-3 text-(--color-text) placeholder:text-(--color-textMuted) focus:border-transparent focus:outline-none focus:ring-(--color-primary) focus:ring-2 disabled:cursor-not-allowed disabled:bg-(--color-backgroundMuted)"
 					/>
 					<button
 						type="button"
 						onClick={() => void sendMessage()}
 						disabled={isLoading || !input.trim()}
-						className="rounded-lg bg-[var(--color-primary)] px-6 py-3 font-medium text-white transition-colors hover:bg-[var(--color-primaryHover)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] disabled:cursor-not-allowed disabled:bg-[var(--color-backgroundMuted)] disabled:text-[var(--color-textMuted)]"
+						className="rounded-lg bg-(--color-primary) px-6 py-3 font-medium text-white transition-colors hover:bg-(--color-primaryHover) focus:outline-none focus:ring-(--color-primary) focus:ring-2 disabled:cursor-not-allowed disabled:bg-(--color-backgroundMuted) disabled:text-(--color-textMuted)"
 					>
 						{isLoading ? "Sending…" : "Send"}
 					</button>

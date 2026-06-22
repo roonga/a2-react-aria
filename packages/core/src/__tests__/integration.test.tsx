@@ -62,7 +62,7 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 			render(<A2Renderer node={node} registry={registry} />)
 			const btn = screen.getByRole("button", { name: /submit/i })
 			expect(btn).toBeDefined()
-			expect(btn.className).toContain("bg-[var(--color-primary)]")
+			expect(btn.className).toContain("bg-(--color-primary)")
 		})
 
 		it("renders disabled button from a2UI JSON", () => {
@@ -84,7 +84,7 @@ describe("A2Renderer — a2UI to React Aria integration", () => {
 			}
 			render(<A2Renderer node={node} registry={registry} />)
 			const btn = screen.getByRole("button", { name: /delete/i })
-			expect(btn.className).toContain("bg-[var(--color-danger)]")
+			expect(btn.className).toContain("bg-(--color-danger)")
 		})
 	})
 

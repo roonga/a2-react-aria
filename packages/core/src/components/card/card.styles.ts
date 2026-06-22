@@ -9,11 +9,11 @@ export const getCardStyles = (
 	border = false,
 ) =>
 	[
-		"bg-[var(--color-surface)]",
+		"bg-(--color-surface)",
 		paddingMap[padding],
 		shadowMap[shadow],
 		radiusMap[radius],
-		border ? "border border-[var(--color-border)]" : "",
+		border ? "border border-(--color-border)" : "",
 	]
 		.filter(Boolean)
 		.join(" ")

@@ -8,23 +8,22 @@ const triggerBase =
 
 export const getSelectStyles = () => ({
 	field: "flex flex-col gap-1",
-	label: "text-sm font-medium text-[var(--color-text)]",
+	label: "text-sm font-medium text-(--color-text)",
 	trigger({ isDisabled, isInvalid }: TriggerState) {
 		if (isDisabled) {
-			return `${triggerBase} cursor-not-allowed border-[var(--color-border)] bg-[var(--color-backgroundMuted)] opacity-50 text-[var(--color-textMuted)]`
+			return `${triggerBase} cursor-not-allowed border-(--color-border) bg-(--color-backgroundMuted) opacity-50 text-(--color-textMuted)`
 		}
 		if (isInvalid) {
-			return `${triggerBase} border-[var(--color-danger)] bg-[var(--color-background)] text-[var(--color-text)]`
+			return `${triggerBase} border-(--color-danger) bg-(--color-background) text-(--color-text)`
 		}
-		return `${triggerBase} border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-text)] hover:border-[var(--color-primary)]`
+		return `${triggerBase} border-(--color-border) bg-(--color-background) text-(--color-text) hover:border-(--color-primary)`
 	},
 	value: "flex-1 truncate text-left",
-	placeholder: "text-[var(--color-textMuted)]",
-	chevron: "h-4 w-4 shrink-0 text-[var(--color-textMuted)]",
-	popover:
-		"z-50 min-w-[var(--trigger-width)] rounded border border-[var(--color-border)] bg-[var(--color-background)] p-1 shadow-md",
+	placeholder: "text-(--color-textMuted)",
+	chevron: "h-4 w-4 shrink-0 text-(--color-textMuted)",
+	popover: "z-50 min-w-(--trigger-width) rounded border border-(--color-border) bg-(--color-background) p-1 shadow-md",
 	listbox: "max-h-64 overflow-auto outline-none",
-	item: "flex cursor-pointer items-center rounded px-3 py-1.5 text-sm text-[var(--color-text)] outline-none transition-colors data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[focused]:bg-[var(--color-backgroundMuted)] data-[selected]:font-medium data-[selected]:text-[var(--color-primary)]",
-	description: "text-xs text-[var(--color-textMuted)]",
-	errorMessage: "text-xs text-[var(--color-danger)]",
+	item: "flex cursor-pointer items-center rounded px-3 py-1.5 text-sm text-(--color-text) outline-none transition-colors data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[focused]:bg-(--color-backgroundMuted) data-[selected]:font-medium data-[selected]:text-(--color-primary)",
+	description: "text-xs text-(--color-textMuted)",
+	errorMessage: "text-xs text-(--color-danger)",
 })

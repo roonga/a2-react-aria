@@ -9,15 +9,15 @@ const handleBase = "h-4 w-4 rounded-full bg-white shadow-sm transition-transform
 
 export const getSwitchStyles = () => ({
 	field: "flex flex-col gap-1",
-	button: "flex cursor-pointer select-none items-center gap-2 text-sm text-[var(--color-text)]",
+	button: "flex cursor-pointer select-none items-center gap-2 text-sm text-(--color-text)",
 	track({ isSelected, isDisabled, isInvalid }: TrackState) {
-		if (isDisabled) return `${trackBase} bg-[var(--color-border)] opacity-50`
-		if (isSelected && isInvalid) return `${trackBase} bg-[var(--color-danger)]`
-		if (isSelected) return `${trackBase} bg-[var(--color-primary)]`
-		if (isInvalid) return `${trackBase} bg-[var(--color-danger)] opacity-40`
-		return `${trackBase} bg-[var(--color-border)]`
+		if (isDisabled) return `${trackBase} bg-(--color-border) opacity-50`
+		if (isSelected && isInvalid) return `${trackBase} bg-(--color-danger)`
+		if (isSelected) return `${trackBase} bg-(--color-primary)`
+		if (isInvalid) return `${trackBase} bg-(--color-danger) opacity-40`
+		return `${trackBase} bg-(--color-border)`
 	},
 	handle: (isSelected: boolean) => `${handleBase} ${isSelected ? "translate-x-4" : "translate-x-0"}`,
-	description: "text-xs text-[var(--color-textMuted)]",
-	errorMessage: "text-xs text-[var(--color-danger)]",
+	description: "text-xs text-(--color-textMuted)",
+	errorMessage: "text-xs text-(--color-danger)",
 })
