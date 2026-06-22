@@ -23,7 +23,7 @@ export function FeedbackDemoButton({ onAdd }: FeedbackDemoButtonProps) {
 		<button
 			type="button"
 			onClick={() => onAdd(FEEDBACK_DEMO_MESSAGES)}
-			className="text-xs px-3 py-1.5 rounded-full border border-[var(--color-border)] text-[var(--color-textMuted)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors"
+			className="rounded-full border border-[var(--color-border)] px-3 py-1.5 text-[var(--color-textMuted)] text-xs transition-colors hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
 		>
 			⭐ Leave feedback
 		</button>

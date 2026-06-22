@@ -24,6 +24,7 @@
 		"test:e2e:headed": "HEADED=1 playwright test --config playwright.e2e.config.ts",
 		"storybook": "storybook dev -p 6006",
 		"lint": "biome check .",
+		"lint:fix": "biome check . --write --unsafe",
 		"format": "biome format . --write",
 		"lint:md": "markdownlint-cli2 \"**/*.md\" \"!**/node_modules/**\"",
 		"format:md": "markdownlint-cli2 --fix \"**/*.md\" \"!**/node_modules/**\"",
