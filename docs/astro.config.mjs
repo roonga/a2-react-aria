@@ -5,6 +5,7 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: "a2ra — A2UI JSON to React Aria",
+			favicon: "/favicon.svg",
 			logo: {
 				dark: "./src/assets/logo-dark.svg",
 				light: "./src/assets/logo-light.svg",
