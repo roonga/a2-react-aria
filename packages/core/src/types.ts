@@ -11,8 +11,17 @@ export interface SchemaLike {
 	safeParse(data: unknown): { success: boolean }
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: registry accepts any component regardless of its specific prop type
-export type A2ComponentType = ComponentType<any>
+/**
+ * Base props contract for all a2UI components.
+ * The index signature lets the renderer pass arbitrary JSON props without
+ * knowing the specific shape of each component's props at compile time.
+ */
+export interface A2ComponentProps {
+	[key: string]: unknown
+}
+
+/** A React component that accepts a2UI props. */
+export type A2ComponentType = ComponentType<A2ComponentProps>
 
 export interface ComponentEntry {
 	component: A2ComponentType
