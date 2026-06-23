@@ -52,6 +52,7 @@ export { A2Renderer } from "./renderer/A2Renderer"
 export type { A2NodeInput } from "./schema"
 export { A2NodeSchema, parseNode, safeParseNode } from "./schema"
 export type {
+	A2ComponentType,
 	A2Node,
 	A2RendererProps,
 	ComponentEntry,

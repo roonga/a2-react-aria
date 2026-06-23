@@ -11,8 +11,10 @@ export interface SchemaLike {
 	safeParse(data: unknown): { success: boolean }
 }
 
+export type A2ComponentType = ComponentType<Record<string, unknown>>
+
 export interface ComponentEntry {
-	component: ComponentType<Record<string, unknown>>
+	component: A2ComponentType
 	schema?: SchemaLike
 }
 
