@@ -1,6 +1,6 @@
 "use client"
 
-import { A2Renderer, createRegistry } from "@a2ra/core"
+import { A2Renderer, buildRegistrySchema, createRegistry } from "@a2ra/core"
 import { Button, ButtonSchema } from "./a2ui/button"
 import { Card, CardSchema } from "./a2ui/card"
 import { DatePicker, DatePickerSchema } from "./a2ui/date-picker"
@@ -30,25 +30,25 @@ const REGISTRY = createRegistry({
 	TextField: { component: TextField as RegComp, schema: TextFieldSchema },
 })
 
+const nodeSchema = buildRegistrySchema(REGISTRY)
+
 interface Props {
 	nodes: unknown[]
 	onAction?: (text: string) => void
 }
 
-function isValidNode(n: unknown): boolean {
-	if (typeof n !== "object" || n === null || typeof (n as Record<string, unknown>).type !== "string") return false
-	const entry = REGISTRY.get((n as Record<string, unknown>).type as string)
-	if (!entry) return false
-	if (!entry.schema) return true
-	return entry.schema.safeParse(n).success
-}
-
 export default function A2UIBlock({ nodes, onAction }: Props) {
-	const validNodes = nodes.filter(isValidNode)
+	for (const n of nodes) {
+		const result = nodeSchema.safeParse(n)
+		if (!result.success) {
+			const type = typeof n === "object" && n !== null ? (n as Record<string, unknown>).type : n
+			throw new Error(`Invalid a2UI node (type: ${JSON.stringify(type)}): ${result.error.message}`)
+		}
+	}
 
 	return (
 		<div className="mt-3 space-y-3">
-			<A2Renderer nodes={validNodes} registry={REGISTRY} onAction={onAction} />
+			<A2Renderer nodes={nodes} registry={REGISTRY} onAction={onAction} />
 		</div>
 	)
 }
