@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest"
 import { z } from "zod"
 import { defaultRegistry } from "../registry/defaultRegistry"
-import { buildRegistrySchema, createNodeValidator, toJsonSchema } from "../registry-schema"
+import { createRegistry } from "../registry/registry"
+import { buildRegistrySchema, toJsonSchema } from "../registry-schema"
 
 describe("buildRegistrySchema", () => {
 	it("returns a Zod schema that accepts a valid Button node", () => {
@@ -74,28 +75,34 @@ describe("toJsonSchema", () => {
 	})
 })
 
-describe("createNodeValidator", () => {
-	const validate = createNodeValidator(toJsonSchema(defaultRegistry))
+describe("createRegistry with jsonSchema — registry.validate", () => {
+	const jsonSchema = toJsonSchema(defaultRegistry)
+	const registry = createRegistry(Object.fromEntries(defaultRegistry), jsonSchema)
 
 	it("accepts an array of valid nodes", () => {
 		const nodes = [
 			{ type: "Button", children: "Go" },
 			{ type: "TextField", props: { label: "Name" } },
 		]
-		expect(validate(nodes).success).toBe(true)
+		expect(registry.validate(nodes).success).toBe(true)
 	})
 
-	it("rejects when any node has an unknown type", () => {
-		const r = validate([{ type: "Button", children: "Go" }, { type: "Ghost" }])
+	it("rejects a node with an unknown type", () => {
+		const r = registry.validate([{ type: "Button", children: "Go" }, { type: "Ghost" }])
 		expect(r.success).toBe(false)
 		expect(r.error).toBeDefined()
 	})
 
 	it("rejects a node with an invalid prop value", () => {
-		expect(validate([{ type: "Button", props: { variant: "purple" } }]).success).toBe(false)
+		expect(registry.validate([{ type: "Button", props: { variant: "purple" } }]).success).toBe(false)
+	})
+
+	it("rejects a valid node whose type is not in this registry", () => {
+		const partial = createRegistry(Object.fromEntries([...defaultRegistry].filter(([k]) => k !== "Button")), jsonSchema)
+		expect(partial.validate([{ type: "Button", children: "Go" }]).success).toBe(false)
 	})
 
 	it("accepts an empty array", () => {
-		expect(validate([]).success).toBe(true)
+		expect(registry.validate([]).success).toBe(true)
 	})
 })

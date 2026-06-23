@@ -1,6 +1,7 @@
 "use client"
 
-import { A2Renderer, createNodeValidator, createRegistry } from "@a2ra/core"
+import type { ComponentEntry } from "@a2ra/core"
+import { A2Renderer, createRegistry } from "@a2ra/core"
 import schema from "../public/a2ui-schema.json"
 import { Button } from "./a2ui/button"
 import { Card } from "./a2ui/card"
@@ -13,24 +14,25 @@ import { Text } from "./a2ui/text"
 import { TextField } from "./a2ui/text-field"
 import { FeedbackSurveyCard } from "./custom/FeedbackSurveyCard"
 
-type RegComp = Parameters<typeof createRegistry>[0][string]["component"]
+type C = ComponentEntry["component"]
 
-const REGISTRY = createRegistry({
-	Button: { component: Button as RegComp },
-	Card: { component: Card as RegComp },
-	DatePicker: { component: DatePicker as RegComp },
-	FeedbackSurvey: { component: FeedbackSurveyCard as RegComp },
-	Flex: { component: Flex as RegComp },
-	Grid: { component: Grid as RegComp },
-	NumberField: { component: NumberField as RegComp },
-	Radio: { component: Radio as unknown as RegComp },
-	RadioGroup: { component: RadioGroup as RegComp },
-	Select: { component: Select as RegComp },
-	Text: { component: Text as RegComp },
-	TextField: { component: TextField as RegComp },
-})
-
-const validate = createNodeValidator(schema)
+const REGISTRY = createRegistry(
+	{
+		Button: { component: Button as C },
+		Card: { component: Card as C },
+		DatePicker: { component: DatePicker as C },
+		FeedbackSurvey: { component: FeedbackSurveyCard as C },
+		Flex: { component: Flex as C },
+		Grid: { component: Grid as C },
+		NumberField: { component: NumberField as C },
+		Radio: { component: Radio as unknown as C },
+		RadioGroup: { component: RadioGroup as C },
+		Select: { component: Select as C },
+		Text: { component: Text as C },
+		TextField: { component: TextField as C },
+	},
+	schema,
+)
 
 interface Props {
 	nodes: unknown[]
@@ -38,7 +40,7 @@ interface Props {
 }
 
 export default function A2UIBlock({ nodes, onAction }: Props) {
-	const result = validate(nodes)
+	const result = REGISTRY.validate(nodes)
 	if (!result.success) {
 		throw new Error(`Invalid a2UI node(s): ${result.error}`)
 	}

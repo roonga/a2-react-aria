@@ -26,8 +26,19 @@ export interface NodeValidatorResult {
 
 type JsonSchemaInput = Parameters<typeof z.fromJSONSchema>[0]
 
-export function createNodeValidator(jsonSchema: object): (nodes: unknown[]) => NodeValidatorResult {
-	const arraySchema = z.array(z.fromJSONSchema(jsonSchema as JsonSchemaInput))
+export function createNodeValidator(
+	jsonSchema: object,
+	registry: ComponentRegistry,
+): (nodes: unknown[]) => NodeValidatorResult {
+	const allowedTypes = new Set(registry.keys())
+	const nodeSchema = z.fromJSONSchema(jsonSchema as JsonSchemaInput).refine(
+		(node) => {
+			const type = (node as Record<string, unknown>).type
+			return typeof type === "string" && allowedTypes.has(type)
+		},
+		{ message: "Component type is not in the registry" },
+	)
+	const arraySchema = z.array(nodeSchema)
 	return (nodes) => {
 		const result = arraySchema.safeParse(nodes)
 		if (result.success) return { success: true }
