@@ -5,6 +5,7 @@ import { add } from "./commands/add.js"
 import { diff } from "./commands/diff.js"
 import { init } from "./commands/init.js"
 import { list } from "./commands/list.js"
+import { schema } from "./commands/schema.js"
 import { bold, cyan, dim, fail, info } from "./ui.js"
 
 function version(): string {
@@ -26,6 +27,7 @@ ${bold("Commands:")}
   list                 List available components in the registry
   add <component...>   Copy one or more components into your project
   diff [component]     Compare installed components against the registry
+  schema               Print the JSON Schema for all registered a2UI component types
 
 ${bold("Options:")}
   --registry <url>     Registry URL or local path (default: official registry)
@@ -33,6 +35,7 @@ ${bold("Options:")}
   --overwrite          Overwrite existing files (add)
   --force              Overwrite existing a2ra.json (init)
   --json               Machine-readable output (list)
+  --out <file>         Write output to a file instead of stdout (schema)
   -h, --help           Show this help
   -v, --version        Show version
 
@@ -51,6 +54,7 @@ async function main(): Promise<void> {
 			overwrite: { type: "boolean" },
 			json: { type: "boolean" },
 			force: { type: "boolean" },
+			out: { type: "string" },
 			help: { type: "boolean", short: "h" },
 			version: { type: "boolean", short: "v" },
 		},
@@ -80,6 +84,9 @@ async function main(): Promise<void> {
 			break
 		case "diff":
 			await diff(args[0], { registry: values.registry, dir: values.dir })
+			break
+		case "schema":
+			await schema({ registry: values.registry, out: values.out })
 			break
 		default:
 			fail(`Unknown command: ${command}\nRun \`a2ra --help\` for usage.`)

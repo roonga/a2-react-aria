@@ -44,6 +44,7 @@ export { FormStateContext } from "./form-state"
 // passing it to A2Renderer. They are not used internally — see schema/node.ts.
 export { defaultRegistry, registerAllComponents } from "./registry/defaultRegistry"
 export { createRegistry, getRegistry, registerComponent } from "./registry/registry"
+export { buildRegistrySchema, toJsonSchema } from "./registry-schema"
 export { A2ErrorBoundary } from "./renderer/A2ErrorBoundary"
 export { A2Renderer } from "./renderer/A2Renderer"
 export type { A2NodeInput } from "./schema"
@@ -53,6 +54,7 @@ export type {
 	A2RendererProps,
 	ComponentEntry,
 	ComponentRegistry,
+	SchemaLike,
 } from "./types"
 export { extractA2ui, stripStreamingA2ui } from "./utils/extractA2ui"
 
