@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest"
 import { collectDependencies, writeItems } from "../commands/add.js"
 import { resolveRegistry } from "../config.js"
 import { diffLines } from "../diff.js"
-import { loadIndex, resolveItems } from "../registry.js"
+import { loadA2uiSchema, loadIndex, resolveItems } from "../registry.js"
 import type { RegistryItem } from "../types.js"
 import { detectPackageManager, installCommand } from "../util.js"
 
@@ -109,5 +109,29 @@ describe("registry loader (local)", () => {
 		const items = await resolveItems(REGISTRY, ["button"])
 		expect(items).toHaveLength(1)
 		expect(items[0].files.some((f) => f.path === "button/Button.tsx")).toBe(true)
+	})
+})
+
+describe("loadA2uiSchema (local)", () => {
+	it("loads the generated a2ui-schema.json", async () => {
+		const schema = await loadA2uiSchema(REGISTRY)
+		expect(schema).toBeTypeOf("object")
+		expect(schema).not.toBeNull()
+	})
+
+	it("has oneOf with 23 entries (all built-in component types)", async () => {
+		const schema = (await loadA2uiSchema(REGISTRY)) as Record<string, unknown>
+		const entries = (schema.oneOf ?? schema.anyOf) as unknown[]
+		expect(entries).toHaveLength(23)
+	})
+
+	it("includes Button and TextField in the schema", async () => {
+		const schema = (await loadA2uiSchema(REGISTRY)) as Record<string, unknown>
+		const entries = (schema.oneOf ?? schema.anyOf) as Array<Record<string, unknown>>
+		const types = entries
+			.map((e) => (e.properties as Record<string, { const?: string }> | undefined)?.type?.const)
+			.filter(Boolean)
+		expect(types).toContain("Button")
+		expect(types).toContain("TextField")
 	})
 })

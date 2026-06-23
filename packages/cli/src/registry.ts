@@ -33,6 +33,10 @@ export function loadIndex(base: string): Promise<RegistryIndex> {
 	return fetchJson<RegistryIndex>(base, "index.json")
 }
 
+export function loadA2uiSchema(base: string): Promise<object> {
+	return fetchJson<object>(base, "a2ui-schema.json")
+}
+
 export function loadItem(base: string, name: string): Promise<RegistryItem> {
 	return fetchJson<RegistryItem>(base, `${name}.json`)
 }

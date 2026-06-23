@@ -1,49 +1,49 @@
 import type { ComponentType } from "react"
-import { Breadcrumb } from "../components/breadcrumb"
-import { Button } from "../components/button"
-import { Card } from "../components/card"
-import { Checkbox, CheckboxGroup } from "../components/checkbox"
-import { DatePicker, DateRangePicker } from "../components/date-picker"
-import { Dialog } from "../components/dialog"
-import { Form } from "../components/form"
-import { Flex, Grid } from "../components/layout"
-import { Menu } from "../components/menu"
-import { NumberField } from "../components/number-field"
-import { Popover } from "../components/popover"
-import { Radio, RadioGroup } from "../components/radio"
-import { Select } from "../components/select"
-import { Switch } from "../components/switch"
-import { Table } from "../components/table"
-import { Tabs } from "../components/tabs"
-import { Text } from "../components/text"
-import { TextField } from "../components/text-field"
-import { Tooltip } from "../components/tooltip"
+import { Breadcrumb, BreadcrumbSchema } from "../components/breadcrumb"
+import { Button, ButtonSchema } from "../components/button"
+import { Card, CardSchema } from "../components/card"
+import { Checkbox, CheckboxGroup, CheckboxGroupSchema, CheckboxSchema } from "../components/checkbox"
+import { DatePicker, DatePickerSchema, DateRangePicker, DateRangePickerSchema } from "../components/date-picker"
+import { Dialog, DialogSchema } from "../components/dialog"
+import { Form, FormSchema } from "../components/form"
+import { Flex, FlexSchema, Grid, GridSchema } from "../components/layout"
+import { Menu, MenuSchema } from "../components/menu"
+import { NumberField, NumberFieldSchema } from "../components/number-field"
+import { Popover, PopoverSchema } from "../components/popover"
+import { Radio, RadioGroup, RadioGroupSchema, RadioSchema } from "../components/radio"
+import { Select, SelectSchema } from "../components/select"
+import { Switch, SwitchSchema } from "../components/switch"
+import { Table, TableSchema } from "../components/table"
+import { Tabs, TabsSchema } from "../components/tabs"
+import { Text, TextSchema } from "../components/text"
+import { TextField, TextFieldSchema } from "../components/text-field"
+import { Tooltip, TooltipSchema } from "../components/tooltip"
 import { createRegistry, registerComponent } from "./registry"
 
 export const defaultRegistry = createRegistry({
-	Breadcrumb: { component: Breadcrumb },
-	Button: { component: Button },
-	Card: { component: Card },
-	Checkbox: { component: Checkbox },
-	CheckboxGroup: { component: CheckboxGroup },
-	DatePicker: { component: DatePicker },
-	DateRangePicker: { component: DateRangePicker },
-	Dialog: { component: Dialog },
-	Flex: { component: Flex },
-	Form: { component: Form },
-	Grid: { component: Grid },
-	Menu: { component: Menu },
-	NumberField: { component: NumberField },
-	Popover: { component: Popover },
-	Radio: { component: Radio as unknown as ComponentType<Record<string, unknown>> },
-	RadioGroup: { component: RadioGroup },
-	Select: { component: Select },
-	Switch: { component: Switch },
-	Table: { component: Table },
-	Tabs: { component: Tabs },
-	Text: { component: Text },
-	TextField: { component: TextField },
-	Tooltip: { component: Tooltip },
+	Breadcrumb: { component: Breadcrumb, schema: BreadcrumbSchema },
+	Button: { component: Button, schema: ButtonSchema },
+	Card: { component: Card, schema: CardSchema },
+	Checkbox: { component: Checkbox, schema: CheckboxSchema },
+	CheckboxGroup: { component: CheckboxGroup, schema: CheckboxGroupSchema },
+	DatePicker: { component: DatePicker, schema: DatePickerSchema },
+	DateRangePicker: { component: DateRangePicker, schema: DateRangePickerSchema },
+	Dialog: { component: Dialog, schema: DialogSchema },
+	Flex: { component: Flex, schema: FlexSchema },
+	Form: { component: Form, schema: FormSchema },
+	Grid: { component: Grid, schema: GridSchema },
+	Menu: { component: Menu, schema: MenuSchema },
+	NumberField: { component: NumberField, schema: NumberFieldSchema },
+	Popover: { component: Popover, schema: PopoverSchema },
+	Radio: { component: Radio as unknown as ComponentType<Record<string, unknown>>, schema: RadioSchema },
+	RadioGroup: { component: RadioGroup, schema: RadioGroupSchema },
+	Select: { component: Select, schema: SelectSchema },
+	Switch: { component: Switch, schema: SwitchSchema },
+	Table: { component: Table, schema: TableSchema },
+	Tabs: { component: Tabs, schema: TabsSchema },
+	Text: { component: Text, schema: TextSchema },
+	TextField: { component: TextField, schema: TextFieldSchema },
+	Tooltip: { component: Tooltip, schema: TooltipSchema },
 })
 
 export function registerAllComponents(): void {

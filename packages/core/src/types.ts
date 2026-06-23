@@ -1,4 +1,5 @@
 import type { ComponentType, ReactNode } from "react"
+import type { ZodTypeAny } from "zod"
 
 export interface A2Node {
 	type: string
@@ -8,6 +9,7 @@ export interface A2Node {
 
 export interface ComponentEntry {
 	component: ComponentType<Record<string, unknown>>
+	schema?: ZodTypeAny
 }
 
 export type ComponentRegistry = Map<string, ComponentEntry>

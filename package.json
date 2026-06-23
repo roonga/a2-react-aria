@@ -14,7 +14,7 @@
 	},
 	"scripts": {
 		"build": "turbo run build",
-		"build:registry": "node scripts/build-registry.mts",
+		"build:registry": "node scripts/build-registry.mts && pnpm --filter @a2ra/core build:schema",
 		"build:storybook": "storybook build",
 		"dev": "turbo run dev --parallel",
 		"test": "turbo run test",
