@@ -11,7 +11,8 @@ export interface SchemaLike {
 	safeParse(data: unknown): { success: boolean }
 }
 
-export type A2ComponentType = ComponentType<Record<string, unknown>>
+// biome-ignore lint/suspicious/noExplicitAny: registry accepts any component regardless of its specific prop type
+export type A2ComponentType = ComponentType<any>
 
 export interface ComponentEntry {
 	component: A2ComponentType
