@@ -18,10 +18,10 @@
 		"next": "16.2.6",
 		"react": "19.2.4",
 		"react-aria-components": "^1.18.0",
-		"react-dom": "19.2.4",
-		"zod": "^4.4.3"
+		"react-dom": "19.2.4"
 	},
 	"devDependencies": {
+		"zod": "^4.4.3",
 		"@playwright/test": "^1.50.0",
 		"@tailwindcss/postcss": "^4",
 		"@types/node": "^20",

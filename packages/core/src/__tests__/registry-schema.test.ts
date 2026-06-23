@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { z } from "zod"
 import { defaultRegistry } from "../registry/defaultRegistry"
-import { buildRegistrySchema, toJsonSchema } from "../registry-schema"
+import { buildRegistrySchema, createNodeValidator, toJsonSchema } from "../registry-schema"
 
 describe("buildRegistrySchema", () => {
 	it("returns a Zod schema that accepts a valid Button node", () => {
@@ -64,12 +64,38 @@ describe("toJsonSchema", () => {
 		expect(types).toContain("Form")
 	})
 
-	it("custom registry with extra schema is reflected in the output", () => {
+	it("custom registry with extra schema is reflected in output", () => {
 		const CustomSchema = z.object({ type: z.literal("Banner"), props: z.object({ message: z.string() }).optional() })
 		const customRegistry = new Map(defaultRegistry)
 		customRegistry.set("Banner", { component: (() => null) as never, schema: CustomSchema })
 		const json = toJsonSchema(customRegistry) as Record<string, unknown>
 		const entries = (json.oneOf ?? json.anyOf) as unknown[]
 		expect(entries).toHaveLength(24)
+	})
+})
+
+describe("createNodeValidator", () => {
+	const validate = createNodeValidator(toJsonSchema(defaultRegistry))
+
+	it("accepts an array of valid nodes", () => {
+		const nodes = [
+			{ type: "Button", children: "Go" },
+			{ type: "TextField", props: { label: "Name" } },
+		]
+		expect(validate(nodes).success).toBe(true)
+	})
+
+	it("rejects when any node has an unknown type", () => {
+		const r = validate([{ type: "Button", children: "Go" }, { type: "Ghost" }])
+		expect(r.success).toBe(false)
+		expect(r.error).toBeDefined()
+	})
+
+	it("rejects a node with an invalid prop value", () => {
+		expect(validate([{ type: "Button", props: { variant: "purple" } }]).success).toBe(false)
+	})
+
+	it("accepts an empty array", () => {
+		expect(validate([]).success).toBe(true)
 	})
 })
