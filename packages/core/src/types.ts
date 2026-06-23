@@ -1,5 +1,4 @@
 import type { ComponentType, ReactNode } from "react"
-import type { ZodTypeAny } from "zod"
 
 export interface A2Node {
 	type: string
@@ -7,9 +6,14 @@ export interface A2Node {
 	children?: A2Node | A2Node[] | string
 }
 
+/** Minimal interface satisfied by both Zod v3 and v4 schema objects. */
+export interface SchemaLike {
+	safeParse(data: unknown): { success: boolean }
+}
+
 export interface ComponentEntry {
 	component: ComponentType<Record<string, unknown>>
-	schema?: ZodTypeAny
+	schema?: SchemaLike
 }
 
 export type ComponentRegistry = Map<string, ComponentEntry>

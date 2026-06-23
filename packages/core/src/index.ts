@@ -54,6 +54,7 @@ export type {
 	A2RendererProps,
 	ComponentEntry,
 	ComponentRegistry,
+	SchemaLike,
 } from "./types"
 export { extractA2ui, stripStreamingA2ui } from "./utils/extractA2ui"
 
