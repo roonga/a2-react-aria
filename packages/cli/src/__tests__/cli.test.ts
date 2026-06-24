@@ -135,3 +135,35 @@ describe("loadA2uiSchema (local)", () => {
 		expect(types).toContain("TextField")
 	})
 })
+
+describe("schema --entry (generateFromEntry)", () => {
+	// Use apps/demo/web as cwd so the gen script can resolve zod (it's a devDependency there).
+	const DEMO_WEB = resolve(fileURLToPath(new URL(".", import.meta.url)), "../../../../apps/demo/web")
+	let entryPath: string
+	let outPath: string
+
+	beforeEach(() => {
+		const suffix = Date.now()
+		entryPath = join(DEMO_WEB, `.a2ra-test-entry-${suffix}.ts`)
+		outPath = join(DEMO_WEB, `.a2ra-test-out-${suffix}.json`)
+	})
+	afterEach(() => {
+		rmSync(entryPath, { force: true })
+		rmSync(outPath, { force: true })
+	})
+
+	it("generates a JSON Schema file from a local registry-schemas entry", async () => {
+		writeFileSync(
+			entryPath,
+			`import { z } from "zod"\nexport const registrySchemas = { Foo: z.object({ type: z.literal("Foo") }), Bar: z.object({ type: z.literal("Bar") }) }\n`,
+		)
+
+		const { schema } = await import("../commands/schema.js")
+		await schema({ entry: entryPath, out: outPath, title: "Test Schema", cwd: DEMO_WEB })
+
+		const written = JSON.parse(readFileSync(outPath, "utf8")) as Record<string, unknown>
+		expect(written.title).toBe("Test Schema")
+		const entries = (written.anyOf ?? written.oneOf) as unknown[]
+		expect(entries).toHaveLength(2)
+	})
+})

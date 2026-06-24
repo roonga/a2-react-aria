@@ -31,4 +31,10 @@ export interface RegistryIndex {
 export interface Config {
 	componentsDir: string
 	registry?: string
+	schema?: {
+		/** Path to the file that exports registrySchemas (or a default export of the same shape). */
+		entry?: string
+		/** Output path for the generated schema file. Default: public/a2ui-schema.json */
+		out?: string
+	}
 }
