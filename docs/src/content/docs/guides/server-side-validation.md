@@ -7,9 +7,15 @@ sidebar:
 
 Think of this like OpenAPI: you define a schema for your API contract, generate a spec
 file, and both the client and the server validate against it. a2UI works the same way.
-`a2ra schema` generates a JSON Schema that describes every component type your app
-accepts. The frontend validates incoming nodes against it before rendering; the backend
-loads the same file to catch bad output before it ever leaves the agent.
+`a2ra schema` generates a standard **JSON Schema (Draft 7)** file that describes every
+component type your app accepts. JSON Schema is a widely supported open standard with
+validator libraries in every major language — Python, Go, Ruby, Java, Rust, .NET and
+more. Your agent does not need to know anything about React or Zod; it just needs a
+JSON Schema validator, which it almost certainly already has access to.
+
+The frontend validates incoming nodes against the schema before rendering; the backend
+loads the same file to catch bad output before it ever leaves the agent. One source of
+truth, validated at both ends.
 
 Client-side validation catches bad nodes before React renders them. Server-side
 validation catches them earlier: at the agent, before the response is sent. Catching
@@ -112,7 +118,10 @@ pnpm add ajv
 
 ## 4. What gets validated
 
-The JSON Schema encodes the full prop surface of every registered component:
+The generated file is plain JSON Schema Draft 7 — no proprietary format, no runtime
+dependency on `@a2ra/core` or Zod. Any conformant validator will work.
+
+The schema encodes the full prop surface of every registered component:
 
 - **Type** must be one of the registered component names
 - **Props** must match the component's schema (correct types, valid enum values)
@@ -120,6 +129,21 @@ The JSON Schema encodes the full prop surface of every registered component:
 
 Invalid nodes — wrong variant names, missing required props, unknown types — all fail
 with a descriptive error pointing at the offending field.
+
+### Other languages
+
+Any language with a JSON Schema Draft 7 library works. A few well-known ones:
+
+| Language | Library |
+|----------|---------|
+| Go | `github.com/xeipuuv/gojsonschema` |
+| Ruby | `json_schemer` gem |
+| Java | `everit-org/json-schema` |
+| Rust | `jsonschema` crate |
+| .NET | `NJsonSchema` |
+
+Load the schema file, compile it once, and call `validate` on each node — the pattern
+is identical regardless of language.
 
 ## 5. When to regenerate
 
