@@ -4,6 +4,7 @@ import { join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
 import { collectDependencies, writeItems } from "../commands/add.js"
+import { init } from "../commands/init.js"
 import { resolveRegistry } from "../config.js"
 import { diffLines } from "../diff.js"
 import { loadA2uiSchema, loadIndex, resolveItems } from "../registry.js"
@@ -89,6 +90,45 @@ describe("detectPackageManager", () => {
 		expect(detectPackageManager(dir)).toBe("npm")
 		writeFileSync(join(dir, "pnpm-lock.yaml"), "")
 		expect(detectPackageManager(dir)).toBe("pnpm")
+	})
+})
+
+describe("init", () => {
+	let dir: string
+	beforeEach(() => {
+		dir = mkdtempSync(join(tmpdir(), "a2ra-init-"))
+	})
+	afterEach(() => {
+		rmSync(dir, { recursive: true, force: true })
+	})
+
+	it("creates a2ra.json with defaults", () => {
+		const orig = process.cwd()
+		process.chdir(dir)
+		try {
+			init({})
+			const config = JSON.parse(readFileSync(join(dir, "a2ra.json"), "utf8")) as Record<string, unknown>
+			expect(config.componentsDir).toBe("components/a2ui")
+			expect(config.schema).toBeUndefined()
+		} finally {
+			process.chdir(orig)
+		}
+	})
+
+	it("writes schema block when --entry is provided", () => {
+		const orig = process.cwd()
+		process.chdir(dir)
+		try {
+			init({ entry: "lib/registry-schemas.ts" })
+			const config = JSON.parse(readFileSync(join(dir, "a2ra.json"), "utf8")) as Record<string, unknown>
+			const schema = config.schema as Record<string, unknown>
+			expect(schema.entry).toBe("lib/registry-schemas.ts")
+			expect(schema.out).toBe("public/a2ui-schema.json")
+			expect(typeof schema.title).toBe("string")
+			expect(typeof schema.description).toBe("string")
+		} finally {
+			process.chdir(orig)
+		}
 	})
 })
 

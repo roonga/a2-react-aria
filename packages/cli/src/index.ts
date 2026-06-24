@@ -35,15 +35,15 @@ ${bold("Options:")}
   --overwrite          Overwrite existing files (add)
   --force              Overwrite existing a2ra.json (init)
   --json               Machine-readable output (list)
-  --entry <file>       Schema entry: path to file exporting registrySchemas (schema)
-  --out <file>         Output path, default public/a2ui-schema.json (schema --entry)
-  --title <string>     Schema title (schema --entry)
-  --description <str>  Schema description (schema --entry)
+  --entry <file>       Schema entry: path to file exporting registrySchemas (init, schema)
+  --out <file>         Output path, default public/a2ui-schema.json (schema)
+  --title <string>     Schema title (schema)
+  --description <str>  Schema description (schema)
   -h, --help           Show this help
   -v, --version        Show version
 
 ${bold("Examples:")}
-  ${dim("$")} ${cyan("a2ra init")}
+  ${dim("$")} ${cyan("a2ra init --entry lib/registry-schemas.ts")}
   ${dim("$")} ${cyan("a2ra add button text-field")}
   ${dim("$")} ${cyan("a2ra list --registry ./registry")}
   ${dim("$")} ${cyan("a2ra schema --entry lib/registry-schemas.ts")}
@@ -81,7 +81,7 @@ async function main(): Promise<void> {
 
 	switch (command) {
 		case "init":
-			init({ dir: values.dir, registry: values.registry, force: values.force })
+			init({ dir: values.dir, registry: values.registry, force: values.force, entry: values.entry })
 			break
 		case "list":
 			await list({ registry: values.registry, json: values.json })
