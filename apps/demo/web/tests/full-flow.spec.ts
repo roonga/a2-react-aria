@@ -28,6 +28,10 @@ test("complete booking flow: search form → results → slots → guest form �
 	await page.getByRole("button", { name: /any cuisine/i }).click()
 	await page.getByRole("option", { name: "Italian" }).click()
 
+	// RAC DatePicker renders dd/mm/yyyy spinbutton segments; click and type to auto-advance
+	await page.getByRole("group", { name: "Date" }).click()
+	await page.keyboard.type("15072026")
+
 	// ── 3. Submit → _before_model intercepts "Find Restaurants | …" ───────────
 	await page.getByRole("button", { name: "Find Restaurants" }).click()
 

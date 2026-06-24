@@ -1,16 +1,21 @@
 "use client"
 
-import { A2Renderer, createRegistry } from "@a2ra/core"
+import {
+	A2Renderer,
+	Button,
+	Card,
+	createRegistry,
+	DatePicker,
+	Flex,
+	Grid,
+	NumberField,
+	Radio,
+	RadioGroup,
+	Select,
+	Text,
+	TextField,
+} from "@a2ra/core"
 import schema from "../public/a2ui-schema.json"
-import { Button } from "./a2ui/button"
-import { Card } from "./a2ui/card"
-import { DatePicker } from "./a2ui/date-picker"
-import { Flex, Grid } from "./a2ui/layout"
-import { NumberField } from "./a2ui/number-field"
-import { Radio, RadioGroup } from "./a2ui/radio"
-import { Select } from "./a2ui/select"
-import { Text } from "./a2ui/text"
-import { TextField } from "./a2ui/text-field"
 import { FeedbackSurveyCard } from "./custom/FeedbackSurveyCard"
 
 const REGISTRY = createRegistry(
