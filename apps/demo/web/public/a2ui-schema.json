@@ -1,807 +1,637 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "a2UI Restaurant Demo",
-  "description": "JSON Schema for a2UI nodes rendered by the restaurant booking demo. Includes all built-in components plus FeedbackSurvey.",
-  "anyOf": [
-    {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "Button"
-        },
-        "props": {
-          "type": "object",
-          "properties": {
-            "variant": {
-              "type": "string",
-              "enum": [
-                "primary",
-                "secondary",
-                "danger",
-                "ghost"
-              ]
-            },
-            "isDisabled": {
-              "type": "boolean"
-            },
-            "isPending": {
-              "type": "boolean"
-            },
-            "size": {
-              "type": "string",
-              "enum": [
-                "sm",
-                "md",
-                "lg"
-              ]
-            },
-            "type": {
-              "type": "string",
-              "enum": [
-                "button",
-                "reset",
-                "submit"
-              ]
-            },
-            "name": {
-              "type": "string"
-            },
-            "value": {
-              "type": "string"
-            }
-          },
-          "additionalProperties": false
-        },
-        "children": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "array",
-              "items": {}
-            }
-          ]
-        }
-      },
-      "required": [
-        "type"
-      ],
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "Card"
-        },
-        "props": {
-          "type": "object",
-          "properties": {
-            "padding": {
-              "type": "string",
-              "enum": [
-                "none",
-                "sm",
-                "md",
-                "lg"
-              ]
-            },
-            "shadow": {
-              "type": "string",
-              "enum": [
-                "none",
-                "sm",
-                "md",
-                "lg"
-              ]
-            },
-            "radius": {
-              "type": "string",
-              "enum": [
-                "none",
-                "sm",
-                "md",
-                "lg"
-              ]
-            },
-            "border": {
-              "type": "boolean"
-            }
-          },
-          "additionalProperties": false
-        },
-        "children": {
-          "type": "array",
-          "items": {}
-        }
-      },
-      "required": [
-        "type"
-      ],
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "DatePicker"
-        },
-        "props": {
-          "type": "object",
-          "properties": {
-            "label": {
-              "type": "string"
-            },
-            "name": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            },
-            "errorMessage": {
-              "type": "string"
-            },
-            "isDisabled": {
-              "type": "boolean"
-            },
-            "isRequired": {
-              "type": "boolean"
-            },
-            "isInvalid": {
-              "type": "boolean"
-            },
-            "isReadOnly": {
-              "type": "boolean"
-            },
-            "autoFocus": {
-              "type": "boolean"
-            },
-            "isOpen": {
-              "type": "boolean"
-            },
-            "defaultOpen": {
-              "type": "boolean"
-            },
-            "granularity": {
-              "type": "string",
-              "enum": [
-                "day",
-                "hour",
-                "minute",
-                "second"
-              ]
-            },
-            "firstDayOfWeek": {
-              "type": "string",
-              "enum": [
-                "sun",
-                "mon",
-                "tue",
-                "wed",
-                "thu",
-                "fri",
-                "sat"
-              ]
-            },
-            "validationBehavior": {
-              "type": "string",
-              "enum": [
-                "aria",
-                "native"
-              ]
-            },
-            "value": {
-              "type": "string"
-            },
-            "defaultValue": {
-              "type": "string"
-            },
-            "minValue": {
-              "type": "string"
-            },
-            "maxValue": {
-              "type": "string"
-            }
-          },
-          "additionalProperties": false
-        }
-      },
-      "required": [
-        "type"
-      ],
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "FeedbackSurvey"
-        },
-        "props": {
-          "type": "object",
-          "properties": {
-            "title": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            },
-            "submitLabel": {
-              "type": "string"
-            },
-            "commentPlaceholder": {
-              "type": "string"
-            }
-          },
-          "additionalProperties": false
-        }
-      },
-      "required": [
-        "type"
-      ],
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "Flex"
-        },
-        "props": {
-          "type": "object",
-          "properties": {
-            "direction": {
-              "type": "string",
-              "enum": [
-                "row",
-                "column",
-                "row-reverse",
-                "column-reverse"
-              ]
-            },
-            "gap": {
-              "type": "string",
-              "enum": [
-                "none",
-                "xs",
-                "sm",
-                "md",
-                "lg",
-                "xl"
-              ]
-            },
-            "align": {
-              "type": "string",
-              "enum": [
-                "start",
-                "center",
-                "end",
-                "stretch",
-                "baseline"
-              ]
-            },
-            "justify": {
-              "type": "string",
-              "enum": [
-                "start",
-                "center",
-                "end",
-                "between",
-                "around",
-                "evenly"
-              ]
-            },
-            "wrap": {
-              "type": "boolean"
-            }
-          },
-          "additionalProperties": false
-        },
-        "children": {
-          "type": "array",
-          "items": {}
-        }
-      },
-      "required": [
-        "type"
-      ],
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "Grid"
-        },
-        "props": {
-          "type": "object",
-          "properties": {
-            "columns": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 12
-            },
-            "gap": {
-              "type": "string",
-              "enum": [
-                "none",
-                "xs",
-                "sm",
-                "md",
-                "lg",
-                "xl"
-              ]
-            },
-            "align": {
-              "type": "string",
-              "enum": [
-                "start",
-                "center",
-                "end",
-                "stretch"
-              ]
-            }
-          },
-          "additionalProperties": false
-        },
-        "children": {
-          "type": "array",
-          "items": {}
-        }
-      },
-      "required": [
-        "type"
-      ],
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "NumberField"
-        },
-        "props": {
-          "type": "object",
-          "properties": {
-            "label": {
-              "type": "string"
-            },
-            "placeholder": {
-              "type": "string"
-            },
-            "minValue": {
-              "type": "number"
-            },
-            "maxValue": {
-              "type": "number"
-            },
-            "step": {
-              "type": "number"
-            },
-            "value": {
-              "type": "number"
-            },
-            "defaultValue": {
-              "type": "number"
-            },
-            "isRequired": {
-              "type": "boolean"
-            },
-            "isDisabled": {
-              "type": "boolean"
-            },
-            "isReadOnly": {
-              "type": "boolean"
-            },
-            "isInvalid": {
-              "type": "boolean"
-            },
-            "isWheelDisabled": {
-              "type": "boolean"
-            },
-            "validationBehavior": {
-              "type": "string",
-              "enum": [
-                "aria",
-                "native"
-              ]
-            },
-            "name": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            },
-            "errorMessage": {
-              "type": "string"
-            }
-          },
-          "additionalProperties": false
-        }
-      },
-      "required": [
-        "type"
-      ],
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "Radio"
-        },
-        "props": {
-          "type": "object",
-          "properties": {
-            "label": {
-              "type": "string"
-            },
-            "value": {
-              "type": "string"
-            },
-            "isDisabled": {
-              "type": "boolean"
-            }
-          },
-          "required": [
-            "value"
-          ],
-          "additionalProperties": false
-        }
-      },
-      "required": [
-        "type"
-      ],
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "RadioGroup"
-        },
-        "props": {
-          "type": "object",
-          "properties": {
-            "label": {
-              "type": "string"
-            },
-            "value": {
-              "type": "string"
-            },
-            "defaultValue": {
-              "type": "string"
-            },
-            "isDisabled": {
-              "type": "boolean"
-            },
-            "isRequired": {
-              "type": "boolean"
-            },
-            "isReadOnly": {
-              "type": "boolean"
-            },
-            "isInvalid": {
-              "type": "boolean"
-            },
-            "validationBehavior": {
-              "type": "string",
-              "enum": [
-                "aria",
-                "native"
-              ]
-            },
-            "orientation": {
-              "type": "string",
-              "enum": [
-                "horizontal",
-                "vertical"
-              ]
-            },
-            "name": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            },
-            "errorMessage": {
-              "type": "string"
-            }
-          },
-          "additionalProperties": false
-        },
-        "children": {
-          "type": "array",
-          "items": {}
-        }
-      },
-      "required": [
-        "type"
-      ],
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "Select"
-        },
-        "props": {
-          "type": "object",
-          "properties": {
-            "label": {
-              "type": "string"
-            },
-            "placeholder": {
-              "type": "string"
-            },
-            "items": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "label": {
-                    "type": "string"
-                  },
-                  "value": {
-                    "type": "string"
-                  },
-                  "isDisabled": {
-                    "type": "boolean"
-                  }
-                },
-                "required": [
-                  "label",
-                  "value"
-                ],
-                "additionalProperties": false
-              }
-            },
-            "value": {
-              "type": "string"
-            },
-            "defaultValue": {
-              "type": "string"
-            },
-            "isDisabled": {
-              "type": "boolean"
-            },
-            "isRequired": {
-              "type": "boolean"
-            },
-            "isOpen": {
-              "type": "boolean"
-            },
-            "defaultOpen": {
-              "type": "boolean"
-            },
-            "disabledKeys": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "isInvalid": {
-              "type": "boolean"
-            },
-            "validationBehavior": {
-              "type": "string",
-              "enum": [
-                "aria",
-                "native"
-              ]
-            },
-            "name": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            },
-            "errorMessage": {
-              "type": "string"
-            }
-          },
-          "additionalProperties": false
-        }
-      },
-      "required": [
-        "type"
-      ],
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "Text"
-        },
-        "props": {
-          "type": "object",
-          "properties": {
-            "as": {
-              "type": "string",
-              "enum": [
-                "h1",
-                "h2",
-                "h3",
-                "h4",
-                "p",
-                "span",
-                "label"
-              ]
-            },
-            "size": {
-              "type": "string",
-              "enum": [
-                "xs",
-                "sm",
-                "md",
-                "lg",
-                "xl",
-                "2xl"
-              ]
-            },
-            "weight": {
-              "type": "string",
-              "enum": [
-                "normal",
-                "medium",
-                "semibold",
-                "bold"
-              ]
-            },
-            "color": {
-              "type": "string",
-              "enum": [
-                "default",
-                "muted",
-                "primary",
-                "danger"
-              ]
-            },
-            "align": {
-              "type": "string",
-              "enum": [
-                "left",
-                "center",
-                "right",
-                "justify"
-              ]
-            },
-            "italic": {
-              "type": "boolean"
-            },
-            "truncate": {
-              "type": "boolean"
-            }
-          },
-          "additionalProperties": false
-        },
-        "children": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "array",
-              "items": {}
-            }
-          ]
-        }
-      },
-      "required": [
-        "type"
-      ],
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "const": "TextField"
-        },
-        "props": {
-          "type": "object",
-          "properties": {
-            "label": {
-              "type": "string"
-            },
-            "placeholder": {
-              "type": "string"
-            },
-            "type": {
-              "type": "string",
-              "enum": [
-                "text",
-                "email",
-                "password",
-                "number",
-                "tel",
-                "url"
-              ]
-            },
-            "name": {
-              "type": "string"
-            },
-            "value": {
-              "type": "string"
-            },
-            "defaultValue": {
-              "type": "string"
-            },
-            "isDisabled": {
-              "type": "boolean"
-            },
-            "isRequired": {
-              "type": "boolean"
-            },
-            "isReadOnly": {
-              "type": "boolean"
-            },
-            "isInvalid": {
-              "type": "boolean"
-            },
-            "autoFocus": {
-              "type": "boolean"
-            },
-            "autoComplete": {
-              "type": "string"
-            },
-            "inputMode": {
-              "type": "string",
-              "enum": [
-                "text",
-                "numeric",
-                "decimal",
-                "email",
-                "tel",
-                "url",
-                "search"
-              ]
-            },
-            "validationBehavior": {
-              "type": "string",
-              "enum": [
-                "aria",
-                "native"
-              ]
-            },
-            "minLength": {
-              "type": "number"
-            },
-            "maxLength": {
-              "type": "number"
-            },
-            "pattern": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            },
-            "errorMessage": {
-              "type": "string"
-            }
-          },
-          "additionalProperties": false
-        }
-      },
-      "required": [
-        "type"
-      ],
-      "additionalProperties": false
-    }
-  ]
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "a2UI Restaurant Demo",
+	"description": "JSON Schema for a2UI nodes rendered by the restaurant booking demo. Includes all built-in components plus FeedbackSurvey.",
+	"anyOf": [
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"const": "Button"
+				},
+				"props": {
+					"type": "object",
+					"properties": {
+						"variant": {
+							"type": "string",
+							"enum": ["primary", "secondary", "danger", "ghost"]
+						},
+						"isDisabled": {
+							"type": "boolean"
+						},
+						"isPending": {
+							"type": "boolean"
+						},
+						"size": {
+							"type": "string",
+							"enum": ["sm", "md", "lg"]
+						},
+						"type": {
+							"type": "string",
+							"enum": ["button", "reset", "submit"]
+						},
+						"name": {
+							"type": "string"
+						},
+						"value": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				},
+				"children": {
+					"anyOf": [
+						{
+							"type": "string"
+						},
+						{
+							"type": "array",
+							"items": {}
+						}
+					]
+				}
+			},
+			"required": ["type"],
+			"additionalProperties": false
+		},
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"const": "Card"
+				},
+				"props": {
+					"type": "object",
+					"properties": {
+						"padding": {
+							"type": "string",
+							"enum": ["none", "sm", "md", "lg"]
+						},
+						"shadow": {
+							"type": "string",
+							"enum": ["none", "sm", "md", "lg"]
+						},
+						"radius": {
+							"type": "string",
+							"enum": ["none", "sm", "md", "lg"]
+						},
+						"border": {
+							"type": "boolean"
+						}
+					},
+					"additionalProperties": false
+				},
+				"children": {
+					"type": "array",
+					"items": {}
+				}
+			},
+			"required": ["type"],
+			"additionalProperties": false
+		},
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"const": "DatePicker"
+				},
+				"props": {
+					"type": "object",
+					"properties": {
+						"label": {
+							"type": "string"
+						},
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"type": "string"
+						},
+						"errorMessage": {
+							"type": "string"
+						},
+						"isDisabled": {
+							"type": "boolean"
+						},
+						"isRequired": {
+							"type": "boolean"
+						},
+						"isInvalid": {
+							"type": "boolean"
+						},
+						"isReadOnly": {
+							"type": "boolean"
+						},
+						"autoFocus": {
+							"type": "boolean"
+						},
+						"isOpen": {
+							"type": "boolean"
+						},
+						"defaultOpen": {
+							"type": "boolean"
+						},
+						"granularity": {
+							"type": "string",
+							"enum": ["day", "hour", "minute", "second"]
+						},
+						"firstDayOfWeek": {
+							"type": "string",
+							"enum": ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
+						},
+						"validationBehavior": {
+							"type": "string",
+							"enum": ["aria", "native"]
+						},
+						"value": {
+							"type": "string"
+						},
+						"defaultValue": {
+							"type": "string"
+						},
+						"minValue": {
+							"type": "string"
+						},
+						"maxValue": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				}
+			},
+			"required": ["type"],
+			"additionalProperties": false
+		},
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"const": "FeedbackSurvey"
+				},
+				"props": {
+					"type": "object",
+					"properties": {
+						"title": {
+							"type": "string"
+						},
+						"description": {
+							"type": "string"
+						},
+						"submitLabel": {
+							"type": "string"
+						},
+						"commentPlaceholder": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				}
+			},
+			"required": ["type"],
+			"additionalProperties": false
+		},
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"const": "Flex"
+				},
+				"props": {
+					"type": "object",
+					"properties": {
+						"direction": {
+							"type": "string",
+							"enum": ["row", "column", "row-reverse", "column-reverse"]
+						},
+						"gap": {
+							"type": "string",
+							"enum": ["none", "xs", "sm", "md", "lg", "xl"]
+						},
+						"align": {
+							"type": "string",
+							"enum": ["start", "center", "end", "stretch", "baseline"]
+						},
+						"justify": {
+							"type": "string",
+							"enum": ["start", "center", "end", "between", "around", "evenly"]
+						},
+						"wrap": {
+							"type": "boolean"
+						}
+					},
+					"additionalProperties": false
+				},
+				"children": {
+					"type": "array",
+					"items": {}
+				}
+			},
+			"required": ["type"],
+			"additionalProperties": false
+		},
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"const": "Grid"
+				},
+				"props": {
+					"type": "object",
+					"properties": {
+						"columns": {
+							"type": "integer",
+							"minimum": 1,
+							"maximum": 12
+						},
+						"gap": {
+							"type": "string",
+							"enum": ["none", "xs", "sm", "md", "lg", "xl"]
+						},
+						"align": {
+							"type": "string",
+							"enum": ["start", "center", "end", "stretch"]
+						}
+					},
+					"additionalProperties": false
+				},
+				"children": {
+					"type": "array",
+					"items": {}
+				}
+			},
+			"required": ["type"],
+			"additionalProperties": false
+		},
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"const": "NumberField"
+				},
+				"props": {
+					"type": "object",
+					"properties": {
+						"label": {
+							"type": "string"
+						},
+						"placeholder": {
+							"type": "string"
+						},
+						"minValue": {
+							"type": "number"
+						},
+						"maxValue": {
+							"type": "number"
+						},
+						"step": {
+							"type": "number"
+						},
+						"value": {
+							"type": "number"
+						},
+						"defaultValue": {
+							"type": "number"
+						},
+						"isRequired": {
+							"type": "boolean"
+						},
+						"isDisabled": {
+							"type": "boolean"
+						},
+						"isReadOnly": {
+							"type": "boolean"
+						},
+						"isInvalid": {
+							"type": "boolean"
+						},
+						"isWheelDisabled": {
+							"type": "boolean"
+						},
+						"validationBehavior": {
+							"type": "string",
+							"enum": ["aria", "native"]
+						},
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"type": "string"
+						},
+						"errorMessage": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				}
+			},
+			"required": ["type"],
+			"additionalProperties": false
+		},
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"const": "Radio"
+				},
+				"props": {
+					"type": "object",
+					"properties": {
+						"label": {
+							"type": "string"
+						},
+						"value": {
+							"type": "string"
+						},
+						"isDisabled": {
+							"type": "boolean"
+						}
+					},
+					"required": ["value"],
+					"additionalProperties": false
+				}
+			},
+			"required": ["type"],
+			"additionalProperties": false
+		},
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"const": "RadioGroup"
+				},
+				"props": {
+					"type": "object",
+					"properties": {
+						"label": {
+							"type": "string"
+						},
+						"value": {
+							"type": "string"
+						},
+						"defaultValue": {
+							"type": "string"
+						},
+						"isDisabled": {
+							"type": "boolean"
+						},
+						"isRequired": {
+							"type": "boolean"
+						},
+						"isReadOnly": {
+							"type": "boolean"
+						},
+						"isInvalid": {
+							"type": "boolean"
+						},
+						"validationBehavior": {
+							"type": "string",
+							"enum": ["aria", "native"]
+						},
+						"orientation": {
+							"type": "string",
+							"enum": ["horizontal", "vertical"]
+						},
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"type": "string"
+						},
+						"errorMessage": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				},
+				"children": {
+					"type": "array",
+					"items": {}
+				}
+			},
+			"required": ["type"],
+			"additionalProperties": false
+		},
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"const": "Select"
+				},
+				"props": {
+					"type": "object",
+					"properties": {
+						"label": {
+							"type": "string"
+						},
+						"placeholder": {
+							"type": "string"
+						},
+						"items": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"label": {
+										"type": "string"
+									},
+									"value": {
+										"type": "string"
+									},
+									"isDisabled": {
+										"type": "boolean"
+									}
+								},
+								"required": ["label", "value"],
+								"additionalProperties": false
+							}
+						},
+						"value": {
+							"type": "string"
+						},
+						"defaultValue": {
+							"type": "string"
+						},
+						"isDisabled": {
+							"type": "boolean"
+						},
+						"isRequired": {
+							"type": "boolean"
+						},
+						"isOpen": {
+							"type": "boolean"
+						},
+						"defaultOpen": {
+							"type": "boolean"
+						},
+						"disabledKeys": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						},
+						"isInvalid": {
+							"type": "boolean"
+						},
+						"validationBehavior": {
+							"type": "string",
+							"enum": ["aria", "native"]
+						},
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"type": "string"
+						},
+						"errorMessage": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				}
+			},
+			"required": ["type"],
+			"additionalProperties": false
+		},
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"const": "Text"
+				},
+				"props": {
+					"type": "object",
+					"properties": {
+						"as": {
+							"type": "string",
+							"enum": ["h1", "h2", "h3", "h4", "p", "span", "label"]
+						},
+						"size": {
+							"type": "string",
+							"enum": ["xs", "sm", "md", "lg", "xl", "2xl"]
+						},
+						"weight": {
+							"type": "string",
+							"enum": ["normal", "medium", "semibold", "bold"]
+						},
+						"color": {
+							"type": "string",
+							"enum": ["default", "muted", "primary", "danger"]
+						},
+						"align": {
+							"type": "string",
+							"enum": ["left", "center", "right", "justify"]
+						},
+						"italic": {
+							"type": "boolean"
+						},
+						"truncate": {
+							"type": "boolean"
+						}
+					},
+					"additionalProperties": false
+				},
+				"children": {
+					"anyOf": [
+						{
+							"type": "string"
+						},
+						{
+							"type": "array",
+							"items": {}
+						}
+					]
+				}
+			},
+			"required": ["type"],
+			"additionalProperties": false
+		},
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"const": "TextField"
+				},
+				"props": {
+					"type": "object",
+					"properties": {
+						"label": {
+							"type": "string"
+						},
+						"placeholder": {
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": ["text", "email", "password", "number", "tel", "url"]
+						},
+						"name": {
+							"type": "string"
+						},
+						"value": {
+							"type": "string"
+						},
+						"defaultValue": {
+							"type": "string"
+						},
+						"isDisabled": {
+							"type": "boolean"
+						},
+						"isRequired": {
+							"type": "boolean"
+						},
+						"isReadOnly": {
+							"type": "boolean"
+						},
+						"isInvalid": {
+							"type": "boolean"
+						},
+						"autoFocus": {
+							"type": "boolean"
+						},
+						"autoComplete": {
+							"type": "string"
+						},
+						"inputMode": {
+							"type": "string",
+							"enum": ["text", "numeric", "decimal", "email", "tel", "url", "search"]
+						},
+						"validationBehavior": {
+							"type": "string",
+							"enum": ["aria", "native"]
+						},
+						"minLength": {
+							"type": "number"
+						},
+						"maxLength": {
+							"type": "number"
+						},
+						"pattern": {
+							"type": "string"
+						},
+						"description": {
+							"type": "string"
+						},
+						"errorMessage": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				}
+			},
+			"required": ["type"],
+			"additionalProperties": false
+		}
+	]
 }
