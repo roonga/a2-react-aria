@@ -41,6 +41,36 @@ const registry = createRegistry({
 Only the components in the registry are bundled. Agents that emit unknown types will
 hit the error boundary instead of crashing the page.
 
+## Registry-aware validation
+
+Pass a prebuilt JSON Schema as the second argument to `createRegistry` to get a
+`.validate()` method that checks both node shape and allowed types in one call:
+
+```tsx
+import { createRegistry } from "@a2ra/core"
+import schema from "./public/a2ui-schema.json"
+import { Button } from "./components/a2ui/button"
+import { TextField } from "./components/a2ui/text-field"
+
+const registry = createRegistry(
+  {
+    Button: { component: Button },
+    TextField: { component: TextField },
+  },
+  schema,
+)
+
+// In your render component:
+const result = registry.validate(nodes)
+if (!result.success) {
+  throw new Error(`Invalid a2UI nodes: ${result.error}`)
+}
+```
+
+The schema is generated at dev time with `a2ra schema` and committed as a static file.
+The client imports it as plain JSON — no Zod dependency required.
+See the [CLI Reference](./cli#schema) for how to generate it.
+
 ## Global registry
 
 `registerAllComponents` registers all built-in components into the global singleton.

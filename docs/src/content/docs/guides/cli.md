@@ -24,6 +24,29 @@ Creates an `a2ra.json` config file at the project root:
 
 Edit `componentsDir` to set where components are copied. The default is `components/a2ui/`.
 
+Pass `--entry` to also scaffold the schema block so `a2ra schema` works out of the box:
+
+```bash
+npx @a2ra/cli init --entry lib/registry-schemas.ts
+```
+
+This produces:
+
+```json
+{
+  "componentsDir": "components/a2ui",
+  "schema": {
+    "entry": "lib/registry-schemas.ts",
+    "out": "public/a2ui-schema.json",
+    "title": "a2UI Schema",
+    "description": "JSON Schema for a2UI nodes accepted by this app."
+  }
+}
+```
+
+Edit `title` and `description` to match your app. They appear as top-level fields in the
+generated JSON Schema file.
+
 ## List
 
 ```bash
@@ -66,13 +89,54 @@ Run without an argument to diff all installed components at once.
 Use this before pulling upstream updates so you can review what changed and decide
 whether to accept, merge, or skip each change.
 
+## Schema
+
+```bash
+npx @a2ra/cli schema
+```
+
+Generates a JSON Schema file from your app's component registry. The schema covers all
+registered types (built-in and custom) and their prop shapes. Commit it alongside your
+code so the backend can load it as a static file for validation.
+
+Reads `schema.entry`, `schema.out`, `schema.title`, and `schema.description` from
+`a2ra.json`. Pass flags to override any of them:
+
+```bash
+npx @a2ra/cli schema --entry lib/registry-schemas.ts --out public/a2ui-schema.json
+```
+
+The entry file must export a `registrySchemas` object (or a default export) mapping
+component names to Zod schemas:
+
+```ts
+// lib/registry-schemas.ts
+import { ButtonSchema, TextFieldSchema } from "@a2ra/core"
+import { MyWidgetSchema } from "./components/custom/my-widget.schema"
+
+export const registrySchemas = {
+  Button: ButtonSchema,
+  TextField: TextFieldSchema,
+  MyWidget: MyWidgetSchema,
+}
+```
+
+Run this command whenever you add or change a component, then commit the output.
+Requires Node 22.6+ for TypeScript entry files.
+
 ## Flags
 
-| Flag | Description |
-|------|-------------|
-| `--dir <path>` | Override the target directory (ignores `a2ra.json`) |
-| `--overwrite` | Replace existing files without prompting |
-| `--registry <url-or-path>` | Use an alternative or local registry |
+| Flag | Command | Description |
+|------|---------|-------------|
+| `--dir <path>` | add, diff | Override the target directory (ignores `a2ra.json`) |
+| `--overwrite` | add | Replace existing files without prompting |
+| `--registry <url>` | all | Use an alternative or local registry |
+| `--entry <file>` | init, schema | Path to file exporting `registrySchemas` |
+| `--out <file>` | schema | Output path (default: `public/a2ui-schema.json`) |
+| `--title <string>` | schema | Top-level `title` in the generated schema |
+| `--description <str>` | schema | Top-level `description` in the generated schema |
+| `--force` | init | Overwrite an existing `a2ra.json` |
+| `--json` | list | Machine-readable output |
 
 The registry URL can also be set via the `A2RA_REGISTRY` environment variable.
 This is useful for monorepos that host their own private registry.

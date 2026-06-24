@@ -141,8 +141,62 @@ Example:
 
 ## Schema validation
 
-`A2Renderer` validates nodes with Zod before rendering. You can also validate on the
-server before sending to the client:
+### Client-side (registry-aware)
+
+Pass the prebuilt JSON Schema to `createRegistry` to get a `.validate()` method.
+It checks both node shape and that each type is actually registered:
+
+```tsx
+import { createRegistry, A2Renderer } from "@a2ra/core"
+import schema from "../public/a2ui-schema.json"
+
+const registry = createRegistry({ Button, TextField }, schema)
+
+function MyBlock({ nodes }) {
+  const result = registry.validate(nodes)
+  if (!result.success) throw new Error(`Invalid nodes: ${result.error}`)
+  return <A2Renderer nodes={nodes} registry={registry} onAction={onAction} />
+}
+```
+
+Generate `public/a2ui-schema.json` at dev time and commit it:
+
+```bash
+npx @a2ra/cli schema   # reads schema.entry from a2ra.json
+```
+
+### Backend (Python)
+
+Load the same committed schema file in your agent to catch bad nodes before they
+reach the frontend:
+
+```python
+import json, urllib.request
+from jsonschema import Draft7Validator
+
+def _load_validator():
+    with urllib.request.urlopen("http://web:6001/a2ui-schema.json") as r:
+        return Draft7Validator(json.load(r))
+
+validator = _load_validator()
+
+def validate_nodes(nodes: list) -> None:
+    for node in nodes:
+        errors = list(validator.iter_errors(node))
+        if errors:
+            raise ValueError(
+                f"Invalid a2UI node '{node.get('type')}': {errors[0].message}"
+            )
+```
+
+Call `validate_nodes(nodes)` before serialising them into the agent response.
+Any validation error surfaces as a hard failure at the source rather than
+silent broken UI on the client.
+
+### Node-level validation
+
+For validating individual nodes against the base a2UI schema (without a registry),
+use `safeParseNode`:
 
 ```ts
 import { safeParseNode } from "@a2ra/core"
