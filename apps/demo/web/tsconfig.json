@@ -11,8 +11,10 @@
 		"moduleResolution": "bundler",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
+		"allowImportingTsExtensions": true,
 		"jsx": "react-jsx",
 		"incremental": true,
+		"forceConsistentCasingInFileNames": true,
 		"plugins": [
 			{
 				"name": "next"

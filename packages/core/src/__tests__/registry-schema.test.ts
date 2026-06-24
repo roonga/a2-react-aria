@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { z } from "zod"
 import { defaultRegistry } from "../registry/defaultRegistry"
+import { createRegistry } from "../registry/registry"
 import { buildRegistrySchema, toJsonSchema } from "../registry-schema"
 
 describe("buildRegistrySchema", () => {
@@ -64,12 +65,44 @@ describe("toJsonSchema", () => {
 		expect(types).toContain("Form")
 	})
 
-	it("custom registry with extra schema is reflected in the output", () => {
+	it("custom registry with extra schema is reflected in output", () => {
 		const CustomSchema = z.object({ type: z.literal("Banner"), props: z.object({ message: z.string() }).optional() })
 		const customRegistry = new Map(defaultRegistry)
 		customRegistry.set("Banner", { component: (() => null) as never, schema: CustomSchema })
 		const json = toJsonSchema(customRegistry) as Record<string, unknown>
 		const entries = (json.oneOf ?? json.anyOf) as unknown[]
 		expect(entries).toHaveLength(24)
+	})
+})
+
+describe("createRegistry with jsonSchema — registry.validate", () => {
+	const jsonSchema = toJsonSchema(defaultRegistry)
+	const registry = createRegistry(Object.fromEntries(defaultRegistry), jsonSchema)
+
+	it("accepts an array of valid nodes", () => {
+		const nodes = [
+			{ type: "Button", children: "Go" },
+			{ type: "TextField", props: { label: "Name" } },
+		]
+		expect(registry.validate(nodes).success).toBe(true)
+	})
+
+	it("rejects a node with an unknown type", () => {
+		const r = registry.validate([{ type: "Button", children: "Go" }, { type: "Ghost" }])
+		expect(r.success).toBe(false)
+		expect(r.error).toBeDefined()
+	})
+
+	it("rejects a node with an invalid prop value", () => {
+		expect(registry.validate([{ type: "Button", props: { variant: "purple" } }]).success).toBe(false)
+	})
+
+	it("rejects a valid node whose type is not in this registry", () => {
+		const partial = createRegistry(Object.fromEntries([...defaultRegistry].filter(([k]) => k !== "Button")), jsonSchema)
+		expect(partial.validate([{ type: "Button", children: "Go" }]).success).toBe(false)
+	})
+
+	it("accepts an empty array", () => {
+		expect(registry.validate([]).success).toBe(true)
 	})
 })

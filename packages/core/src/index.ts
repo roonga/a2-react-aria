@@ -43,13 +43,17 @@ export { FormStateContext } from "./form-state"
 // ↑ Component schemas are exported for consumers to validate a2UI JSON before
 // passing it to A2Renderer. They are not used internally — see schema/node.ts.
 export { defaultRegistry, registerAllComponents } from "./registry/defaultRegistry"
+export type { A2Registry } from "./registry/registry"
 export { createRegistry, getRegistry, registerComponent } from "./registry/registry"
+export type { NodeValidatorResult } from "./registry-schema"
 export { buildRegistrySchema, toJsonSchema } from "./registry-schema"
 export { A2ErrorBoundary } from "./renderer/A2ErrorBoundary"
 export { A2Renderer } from "./renderer/A2Renderer"
 export type { A2NodeInput } from "./schema"
 export { A2NodeSchema, parseNode, safeParseNode } from "./schema"
 export type {
+	A2ComponentProps,
+	A2ComponentType,
 	A2Node,
 	A2RendererProps,
 	ComponentEntry,
