@@ -2,7 +2,7 @@
 title: Client-Side Validation
 description: Validate a2UI nodes in the browser before they reach the renderer.
 sidebar:
-  order: 8.5
+  order: 8
 ---
 
 Before passing agent output to `A2Renderer`, validate it. An agent that emits a

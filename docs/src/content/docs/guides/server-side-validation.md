@@ -2,7 +2,7 @@
 title: Server-Side Validation
 description: Validate a2UI nodes on the backend before they reach the renderer.
 sidebar:
-  order: 8
+  order: 8.5
 ---
 
 Think of this like OpenAPI: you define a schema for your API contract, generate a spec
