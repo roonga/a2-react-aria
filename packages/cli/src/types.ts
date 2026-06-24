@@ -36,5 +36,9 @@ export interface Config {
 		entry?: string
 		/** Output path for the generated schema file. Default: public/a2ui-schema.json */
 		out?: string
+		/** Top-level title field in the generated JSON Schema. */
+		title?: string
+		/** Top-level description field in the generated JSON Schema. */
+		description?: string
 	}
 }

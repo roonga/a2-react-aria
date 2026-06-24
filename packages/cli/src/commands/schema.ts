@@ -42,9 +42,10 @@ export async function schema(opts: SchemaOptions): Promise<void> {
 	if (entry) {
 		generateFromEntry(entry, {
 			out: opts.out ?? outDefault,
-			title: opts.title ?? "a2UI Node",
+			title: opts.title ?? config.schema?.title ?? "a2UI Node",
 			description:
 				opts.description ??
+				config.schema?.description ??
 				"JSON Schema for a2UI nodes accepted by this app. Validate agent output against this before rendering.",
 			cwd: opts.cwd,
 		})
