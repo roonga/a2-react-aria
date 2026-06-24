@@ -9,6 +9,7 @@
   },
   "changesets": [
     "add-default-registry",
+    "registry-schema-export",
     "remove-hoc-wiring"
   ]
 }

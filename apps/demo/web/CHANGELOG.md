@@ -1,5 +1,12 @@
 # a2ui-demo-web
 
+## 0.1.1-preview.2
+
+### Patch Changes
+
+- Updated dependencies [e313ade]
+  - @a2ra/core@1.0.0-preview.3
+
 ## 0.1.1-preview.1
 
 ### Patch Changes
