@@ -48,7 +48,7 @@ Pass a prebuilt JSON Schema as the second argument to `createRegistry` to get a
 
 ```tsx
 import { createRegistry } from "@a2ra/core"
-import schema from "./public/a2ui-schema.json"
+import schema from "./a2ui-schema.json"
 import { Button } from "./components/a2ui/button"
 import { TextField } from "./components/a2ui/text-field"
 
@@ -67,7 +67,7 @@ if (!result.success) {
 }
 ```
 
-The schema is generated at dev time with `a2ra schema` and committed as a static file.
+The schema is generated at dev time with `a2ra schema`.
 The client imports it as plain JSON — no Zod dependency required.
 See the [CLI Reference](./cli#schema) for how to generate it.
 

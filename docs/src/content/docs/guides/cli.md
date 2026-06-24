@@ -37,7 +37,7 @@ This produces:
   "componentsDir": "components/a2ui",
   "schema": {
     "entry": "lib/registry-schemas.ts",
-    "out": "public/a2ui-schema.json",
+    "out": "a2ui-schema.json",
     "title": "a2UI Schema",
     "description": "JSON Schema for a2UI nodes accepted by this app."
   }
@@ -103,7 +103,7 @@ Reads `schema.entry`, `schema.out`, `schema.title`, and `schema.description` fro
 `a2ra.json`. Pass flags to override any of them:
 
 ```bash
-npx @a2ra/cli schema --entry lib/registry-schemas.ts --out public/a2ui-schema.json
+npx @a2ra/cli schema --entry lib/registry-schemas.ts --out a2ui-schema.json
 ```
 
 The entry file must export a `registrySchemas` object (or a default export) mapping
@@ -121,7 +121,7 @@ export const registrySchemas = {
 }
 ```
 
-Run this command whenever you add or change a component, then commit the output.
+Run this command whenever you add or change a component.
 Requires Node 22.6+ for TypeScript entry files.
 
 ## Flags
@@ -132,7 +132,7 @@ Requires Node 22.6+ for TypeScript entry files.
 | `--overwrite` | add | Replace existing files without prompting |
 | `--registry <url>` | all | Use an alternative or local registry |
 | `--entry <file>` | init, schema | Path to file exporting `registrySchemas` |
-| `--out <file>` | schema | Output path (default: `public/a2ui-schema.json`) |
+| `--out <file>` | schema | Output path for the generated schema file |
 | `--title <string>` | schema | Top-level `title` in the generated schema |
 | `--description <str>` | schema | Top-level `description` in the generated schema |
 | `--force` | init | Overwrite an existing `a2ra.json` |

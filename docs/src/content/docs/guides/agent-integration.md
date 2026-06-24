@@ -148,7 +148,7 @@ It checks both node shape and that each type is actually registered:
 
 ```tsx
 import { createRegistry, A2Renderer } from "@a2ra/core"
-import schema from "../public/a2ui-schema.json"
+import schema from "../a2ui-schema.json"
 
 const registry = createRegistry({ Button, TextField }, schema)
 
@@ -159,7 +159,7 @@ function MyBlock({ nodes }) {
 }
 ```
 
-Generate `public/a2ui-schema.json` at dev time and commit it:
+Generate the schema file at dev time:
 
 ```bash
 npx @a2ra/cli schema   # reads schema.entry from a2ra.json
@@ -167,8 +167,7 @@ npx @a2ra/cli schema   # reads schema.entry from a2ra.json
 
 ### Backend (Python)
 
-Load the same committed schema file in your agent to catch bad nodes before they
-reach the frontend:
+Load the same schema file in your agent to catch bad nodes before they reach the frontend:
 
 ```python
 import json, urllib.request
@@ -192,6 +191,9 @@ def validate_nodes(nodes: list) -> None:
 Call `validate_nodes(nodes)` before serialising them into the agent response.
 Any validation error surfaces as a hard failure at the source rather than
 silent broken UI on the client.
+
+For a complete backend setup guide including Python and Node.js examples, see
+[Server-Side Validation](./server-side-validation).
 
 ### Node-level validation
 

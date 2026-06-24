@@ -2,7 +2,7 @@
 title: Custom Components
 description: Register your own components alongside the built-in a2UI library.
 sidebar:
-  order: 8
+  order: 9
 ---
 
 The registry accepts any React component, not just the 18 built-in types.
@@ -146,6 +146,6 @@ Then regenerate the JSON Schema file so the backend picks up the new type:
 npx @a2ra/cli schema
 ```
 
-Commit the updated `public/a2ui-schema.json`. The client-side `registry.validate()` and
-the backend `jsonschema` validator will both enforce the new shape automatically.
+The client-side `registry.validate()` and the backend `jsonschema` validator will both
+enforce the new shape automatically.
 See [Agent Integration](./agent-integration#schema-validation) for the full setup.
