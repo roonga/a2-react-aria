@@ -1,12 +1,17 @@
+import json
 import logging
+import os
 import re
+import urllib.request
 from datetime import date, timedelta
+from functools import lru_cache
 
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.agents.llm_agent import Agent
 from google.adk.models.llm_request import LlmRequest
 from google.adk.models.llm_response import LlmResponse
 from google.genai import types
+from jsonschema import Draft7Validator
 
 from .restaurant_data import (
     build_confirmation_card,
@@ -22,6 +27,30 @@ from .restaurant_data import (
 )
 
 _log = logging.getLogger(__name__)
+
+
+@lru_cache(maxsize=1)
+def _get_validator() -> Draft7Validator:
+    url = os.getenv("A2UI_SCHEMA_URL", "http://web:6001/a2ui-schema.json")
+    _log.info("loading a2UI schema from %s", url)
+    with urllib.request.urlopen(url, timeout=5) as r:
+        schema = json.load(r)
+    return Draft7Validator(schema)
+
+
+def _validate(nodes: list) -> None:
+    validator = _get_validator()
+    for node in nodes:
+        errors = list(validator.iter_errors(node))
+        if errors:
+            raise ValueError(
+                f"a2UI node '{node.get('type')}' failed schema validation: {errors[0].message}"
+            )
+
+
+def _emit(nodes: list) -> LlmResponse:
+    _validate(nodes)
+    return _llm_response(f"<a2ui-json>{serialize(nodes)}</a2ui-json>")
 
 _A2UI_TOOLS = {"search_restaurants", "get_available_slots", "confirm_booking"}
 
@@ -188,7 +217,7 @@ def _before_model(
                 guests_value=party_size,
                 date_value=date_iso,
             )
-        return _llm_response(f"<a2ui-json>{serialize(nodes)}</a2ui-json>")
+        return _emit(nodes)
 
     latest = contents[-1]
 
@@ -222,7 +251,7 @@ def _before_model(
                 guests_value=party_size,
                 date_value=date_val,
             )
-            return _llm_response(f"<a2ui-json>{serialize(nodes)}</a2ui-json>")
+            return _emit(nodes)
 
         # Case 2 — search form submitted
         if _FIND_RE.match(text):
@@ -248,7 +277,7 @@ def _before_model(
                     guests_value=party_size,
                     date_value=date_val,
                 )
-                return _llm_response(f"<a2ui-json>{serialize(nodes)}</a2ui-json>")
+                return _emit(nodes)
 
             _log.info("intercept: Find Restaurants(%s, %s, %d)", location, cuisine, party_size)
             return _llm_response(search_restaurants(location, cuisine, party_size))
@@ -257,7 +286,7 @@ def _before_model(
         if _BOOK_ANOTHER_RE.match(text):
             _log.info("intercept: Book Another Table → search form")
             nodes = build_search_form()
-            return _llm_response(f"<a2ui-json>{serialize(nodes)}</a2ui-json>")
+            return _emit(nodes)
 
         # Case 4 — time slot picker
         m = _BOOK_RE.match(text)
@@ -282,11 +311,11 @@ def _before_model(
                         restaurant, ctx["date"], ctx["party_size"],
                         time_error="Please select a time slot",
                     )
-                    return _llm_response(f"<a2ui-json>{serialize(nodes)}</a2ui-json>")
+                    return _emit(nodes)
 
             _log.info("intercept: Continue → guest form (%s, %s, %s)", restaurant_name, ctx["date"], time_slot)
             nodes = build_guest_form(restaurant_name, ctx["date"], time_slot, ctx["party_size"])
-            return _llm_response(f"<a2ui-json>{serialize(nodes)}</a2ui-json>")
+            return _emit(nodes)
 
         # Case 6 — confirmation
         if _CONFIRM_RE.match(text):
@@ -307,7 +336,7 @@ def _before_model(
                     restaurant_name, ctx["date"], time_slot, ctx["party_size"],
                     name_error=name_error, email_error=email_error,
                 )
-                return _llm_response(f"<a2ui-json>{serialize(nodes)}</a2ui-json>")
+                return _emit(nodes)
 
             _log.info(
                 "intercept: Confirm Booking → confirm(%s, %s, %s, %s)",
@@ -332,6 +361,7 @@ def search_restaurants(location: str, cuisine: str = "any", party_size: int = 2)
     if not results:
         return f"No restaurants found for {cuisine} cuisine in {location}. Try a different cuisine or location."
     nodes = build_search_results(results)
+    _validate(nodes)
     return f"Here are {len(results)} restaurants in {location}:\n<a2ui-json>{serialize(nodes)}</a2ui-json>"
 
 
@@ -347,6 +377,7 @@ def get_available_slots(restaurant_name: str, date: str, party_size: int = 2) ->
     if not restaurant:
         return f"Could not find a restaurant matching '{restaurant_name}'. Please check the name and try again."
     nodes = build_slots_card(restaurant, date, party_size)
+    _validate(nodes)
     return (
         f"Available times at {restaurant['name']} on {date}:\n"
         f"<a2ui-json>{serialize(nodes)}</a2ui-json>"
@@ -380,6 +411,7 @@ def confirm_booking(
     nodes = build_confirmation_card(
         restaurant, date, time_slot, party_size, guest_name, email, confirmation
     )
+    _validate(nodes)
     _log.info("booking confirmed: %s %s %s %s", confirmation, restaurant["name"], date, time_slot)
     return f"<a2ui-json>{serialize(nodes)}</a2ui-json>"
 

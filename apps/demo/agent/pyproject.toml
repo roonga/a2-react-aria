@@ -10,6 +10,7 @@ dependencies = [
     "litellm>=1.84.0",
     "uvicorn>=0.32.0",
     "python-dotenv>=1.0.0",
+    "jsonschema>=4.23.0",
 ]
 
 [tool.pytest.ini_options]
