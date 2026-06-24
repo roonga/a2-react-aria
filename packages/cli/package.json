@@ -1,6 +1,6 @@
 {
 	"name": "@a2ra/cli",
-	"version": "0.1.0-preview.0",
+	"version": "0.1.0-preview.1",
 	"private": false,
 	"description": "Add React Aria a2UI components to your project, shadcn-style — you own the source.",
 	"author": {
