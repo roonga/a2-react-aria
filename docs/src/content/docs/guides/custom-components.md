@@ -148,4 +148,4 @@ npx @a2ra/cli schema
 
 The client-side `registry.validate()` and the backend `jsonschema` validator will both
 enforce the new shape automatically.
-See [Agent Integration](./agent-integration#schema-validation) for the full setup.
+See [Agent Integration](../agent-integration#schema-validation) for the full setup.
