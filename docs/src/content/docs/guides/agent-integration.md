@@ -5,8 +5,8 @@ sidebar:
   order: 7
 ---
 
-a2UI is designed as the rendering layer for AI agents. Agents emit a2UI JSON; `A2Renderer`
-validates it with Zod and turns it into accessible React components. Because a2UI JSON is
+A2UI is designed as the rendering layer for AI agents. Agents emit A2UI JSON; `A2Renderer`
+validates it with Zod and turns it into accessible React components. Because A2UI JSON is
 plain JSON, any agent that can return structured output works. No third-party SDK required.
 
 ## One-shot response
@@ -67,7 +67,7 @@ export function StreamingAgentUI() {
 }
 ```
 
-Your agent emits an `ui_node` event with the a2UI JSON payload:
+Your agent emits an `ui_node` event with the A2UI JSON payload:
 
 ```python
 # Python (any framework)
@@ -113,7 +113,7 @@ from langchain_core.output_parsers import JsonOutputParser
 parser = JsonOutputParser()
 
 node = parser.parse(llm.invoke(
-    "Return an a2UI JSON Form node with a TextField and a Button."
+    "Return an A2UI JSON Form node with a TextField and a Button."
 ))
 # { "type": "Form", "children": [...] }
 ```
@@ -124,7 +124,7 @@ Any model that supports structured or JSON output works. Include the component s
 your system prompt:
 
 ```text
-You may return UI using a2UI JSON. The root node must have a "type" field matching
+You may return UI using A2UI JSON. The root node must have a "type" field matching
 one of: Button, TextField, NumberField, Checkbox, CheckboxGroup, RadioGroup, Switch,
 Select, Form, Dialog, Tooltip, Popover, Menu, Tabs, Breadcrumb, DatePicker,
 DateRangePicker, Table, Text, Card, Flex, Grid.

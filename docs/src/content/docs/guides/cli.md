@@ -38,8 +38,8 @@ This produces:
   "schema": {
     "entry": "lib/registry-schemas.ts",
     "out": "a2ui-schema.json",
-    "title": "a2UI Schema",
-    "description": "JSON Schema for a2UI nodes accepted by this app."
+    "title": "A2UI Schema",
+    "description": "JSON Schema for A2UI nodes accepted by this app."
   }
 }
 ```
@@ -67,7 +67,7 @@ Copies one or more components into `componentsDir`. Each component ships four fi
 |------|-------------|
 | `<name>.tsx` | React component |
 | `<name>.styles.ts` | Tailwind class variants |
-| `<name>.schema.ts` | Zod schema for the a2UI JSON node |
+| `<name>.schema.ts` | Zod schema for the A2UI JSON node |
 | `index.ts` | Barrel export |
 
 After adding, the CLI prints the npm peer dependencies to install:

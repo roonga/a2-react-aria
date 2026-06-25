@@ -1,6 +1,6 @@
 ---
 title: Custom Components
-description: Register your own components alongside the built-in a2UI library.
+description: Register your own components alongside the built-in A2UI library.
 sidebar:
   order: 9
 ---

@@ -1,6 +1,6 @@
 ---
 title: Client-Side Validation
-description: Validate a2UI nodes in the browser before they reach the renderer.
+description: Validate A2UI nodes in the browser before they reach the renderer.
 sidebar:
   order: 8
 ---
@@ -48,7 +48,7 @@ const result = registry.validate(nodes)
 
 if (!result.success) {
   // result.error describes the first failing node
-  throw new Error(`Invalid a2UI nodes: ${result.error}`)
+  throw new Error(`Invalid A2UI nodes: ${result.error}`)
 }
 
 // result.data is the typed, validated node list
