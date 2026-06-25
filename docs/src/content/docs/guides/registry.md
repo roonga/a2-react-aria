@@ -57,7 +57,7 @@ if (!result.success) throw new Error(`Invalid nodes: ${result.error}`)
 ```
 
 The schema is generated at dev time with `a2ra schema` and imported as plain JSON.
-See [Client-Side Validation](../client-side-validation) for the full setup.
+See [Client-Side Validation](../client-side-validation/) for the full setup.
 
 ## Global registry
 
@@ -116,7 +116,7 @@ resolve it to your custom component.
 
 For the full walkthrough, including connecting a custom component to the action pipeline
 and writing a system-prompt description for the agent, see the
-[Custom Components guide](../custom-components).
+[Custom Components guide](../custom-components/).
 
 ## Interactive rendering: onAction
 
@@ -133,4 +133,4 @@ Without `onAction`, `A2Renderer` is stateless. With it, all built-in form fields
 automatically report their values and all built-in buttons fire the compound string to
 `handleAction`. No HOC wrapping or extra setup required.
 
-See [Building a Form Block](../building-a-form-block) for the full usage guide.
+See [Building a Form Block](../building-a-form-block/) for the full usage guide.

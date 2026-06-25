@@ -38,6 +38,9 @@ jobs:
       - name: Type check
         run: pnpm --filter @a2ra/core exec tsc --noEmit
 
+      - name: Install Playwright browsers
+        run: pnpm --filter @a2ra/docs exec playwright install --with-deps chromium
+
       - name: Test
         run: pnpm test
 
