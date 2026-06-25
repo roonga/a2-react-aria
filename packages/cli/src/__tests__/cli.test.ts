@@ -4,6 +4,7 @@ import { join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
 import { collectDependencies, writeItems } from "../commands/add.js"
+import { init } from "../commands/init.js"
 import { resolveRegistry } from "../config.js"
 import { diffLines } from "../diff.js"
 import { loadA2uiSchema, loadIndex, resolveItems } from "../registry.js"
@@ -92,6 +93,45 @@ describe("detectPackageManager", () => {
 	})
 })
 
+describe("init", () => {
+	let dir: string
+	beforeEach(() => {
+		dir = mkdtempSync(join(tmpdir(), "a2ra-init-"))
+	})
+	afterEach(() => {
+		rmSync(dir, { recursive: true, force: true })
+	})
+
+	it("creates a2ra.json with defaults", () => {
+		const orig = process.cwd()
+		process.chdir(dir)
+		try {
+			init({})
+			const config = JSON.parse(readFileSync(join(dir, "a2ra.json"), "utf8")) as Record<string, unknown>
+			expect(config.componentsDir).toBe("components/a2ui")
+			expect(config.schema).toBeUndefined()
+		} finally {
+			process.chdir(orig)
+		}
+	})
+
+	it("writes schema block when --entry is provided", () => {
+		const orig = process.cwd()
+		process.chdir(dir)
+		try {
+			init({ entry: "lib/registry-schemas.ts" })
+			const config = JSON.parse(readFileSync(join(dir, "a2ra.json"), "utf8")) as Record<string, unknown>
+			const schema = config.schema as Record<string, unknown>
+			expect(schema.entry).toBe("lib/registry-schemas.ts")
+			expect(schema.out).toBe("public/a2ui-schema.json")
+			expect(typeof schema.title).toBe("string")
+			expect(typeof schema.description).toBe("string")
+		} finally {
+			process.chdir(orig)
+		}
+	})
+})
+
 describe("resolveRegistry", () => {
 	it("prefers the explicit flag over config and default", () => {
 		expect(resolveRegistry("./flag", { componentsDir: "x", registry: "./cfg" })).toBe("./flag")
@@ -133,5 +173,37 @@ describe("loadA2uiSchema (local)", () => {
 			.filter(Boolean)
 		expect(types).toContain("Button")
 		expect(types).toContain("TextField")
+	})
+})
+
+describe("schema --entry (generateFromEntry)", () => {
+	// Use apps/demo/web as cwd so the gen script can resolve zod (it's a devDependency there).
+	const DEMO_WEB = resolve(fileURLToPath(new URL(".", import.meta.url)), "../../../../apps/demo/web")
+	let entryPath: string
+	let outPath: string
+
+	beforeEach(() => {
+		const suffix = Date.now()
+		entryPath = join(DEMO_WEB, `.a2ra-test-entry-${suffix}.ts`)
+		outPath = join(DEMO_WEB, `.a2ra-test-out-${suffix}.json`)
+	})
+	afterEach(() => {
+		rmSync(entryPath, { force: true })
+		rmSync(outPath, { force: true })
+	})
+
+	it("generates a JSON Schema file from a local registry-schemas entry", async () => {
+		writeFileSync(
+			entryPath,
+			`import { z } from "zod"\nexport const registrySchemas = { Foo: z.object({ type: z.literal("Foo") }), Bar: z.object({ type: z.literal("Bar") }) }\n`,
+		)
+
+		const { schema } = await import("../commands/schema.js")
+		await schema({ entry: entryPath, out: outPath, title: "Test Schema", cwd: DEMO_WEB })
+
+		const written = JSON.parse(readFileSync(outPath, "utf8")) as Record<string, unknown>
+		expect(written.title).toBe("Test Schema")
+		const entries = (written.anyOf ?? written.oneOf) as unknown[]
+		expect(entries).toHaveLength(2)
 	})
 })

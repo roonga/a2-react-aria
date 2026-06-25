@@ -1,7 +1,7 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema#",
-	"title": "a2UI Node",
-	"description": "JSON Schema for a2UI nodes accepted by this app (12 component types). Validate agent output against this before rendering.",
+	"title": "a2UI Restaurant Demo",
+	"description": "JSON Schema for a2UI nodes rendered by the restaurant booking demo. Includes all built-in components plus FeedbackSurvey.",
 	"anyOf": [
 		{
 			"type": "object",

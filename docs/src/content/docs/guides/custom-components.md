@@ -2,7 +2,7 @@
 title: Custom Components
 description: Register your own components alongside the built-in a2UI library.
 sidebar:
-  order: 8
+  order: 9
 ---
 
 The registry accepts any React component, not just the 18 built-in types.
@@ -111,13 +111,12 @@ resolves it to your component.
 
 ## Validate the node shape (optional)
 
-If you want server-side validation before the node reaches the client, write a Zod schema
-and call `safeParseNode`:
+Write a Zod schema for your component and include it when creating the registry:
 
 ```ts
 import { z } from "zod"
 
-const FeedbackSurveySchema = z.object({
+export const FeedbackSurveySchema = z.object({
   type: z.literal("FeedbackSurvey"),
   props: z.object({
     title: z.string().optional(),
@@ -128,5 +127,25 @@ const FeedbackSurveySchema = z.object({
 })
 ```
 
-Custom schemas are validated independently. They are not part of the `safeParseNode`
-built-in set, which only covers the 18 core components.
+Add it to `lib/registry-schemas.ts` alongside the built-in schemas:
+
+```ts
+import { ButtonSchema, TextFieldSchema } from "@a2ra/core"
+import { FeedbackSurveySchema } from "./components/custom/feedback-survey.schema"
+
+export const registrySchemas = {
+  Button: ButtonSchema,
+  TextField: TextFieldSchema,
+  FeedbackSurvey: FeedbackSurveySchema,
+}
+```
+
+Then regenerate the JSON Schema file so the backend picks up the new type:
+
+```bash
+npx @a2ra/cli schema
+```
+
+The client-side `registry.validate()` and the backend `jsonschema` validator will both
+enforce the new shape automatically.
+See [Agent Integration](../agent-integration#schema-validation) for the full setup.

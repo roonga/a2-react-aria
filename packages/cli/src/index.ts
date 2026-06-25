@@ -27,7 +27,7 @@ ${bold("Commands:")}
   list                 List available components in the registry
   add <component...>   Copy one or more components into your project
   diff [component]     Compare installed components against the registry
-  schema               Print the JSON Schema for all registered a2UI component types
+  schema               Generate or fetch the JSON Schema for a2UI component types
 
 ${bold("Options:")}
   --registry <url>     Registry URL or local path (default: official registry)
@@ -35,15 +35,19 @@ ${bold("Options:")}
   --overwrite          Overwrite existing files (add)
   --force              Overwrite existing a2ra.json (init)
   --json               Machine-readable output (list)
-  --out <file>         Write output to a file instead of stdout (schema)
+  --entry <file>       Schema entry: path to file exporting registrySchemas (init, schema)
+  --out <file>         Output path, default public/a2ui-schema.json (schema)
+  --title <string>     Schema title (schema)
+  --description <str>  Schema description (schema)
   -h, --help           Show this help
   -v, --version        Show version
 
 ${bold("Examples:")}
-  ${dim("$")} ${cyan("a2ra init")}
+  ${dim("$")} ${cyan("a2ra init --entry lib/registry-schemas.ts")}
   ${dim("$")} ${cyan("a2ra add button text-field")}
   ${dim("$")} ${cyan("a2ra list --registry ./registry")}
-`
+  ${dim("$")} ${cyan("a2ra schema --entry lib/registry-schemas.ts")}
+  ${dim("$")} ${cyan('a2ra schema --entry lib/registry-schemas.ts --out public/a2ui-schema.json --title "My App"')}`
 
 async function main(): Promise<void> {
 	const { values, positionals } = parseArgs({
@@ -55,6 +59,9 @@ async function main(): Promise<void> {
 			json: { type: "boolean" },
 			force: { type: "boolean" },
 			out: { type: "string" },
+			entry: { type: "string" },
+			title: { type: "string" },
+			description: { type: "string" },
 			help: { type: "boolean", short: "h" },
 			version: { type: "boolean", short: "v" },
 		},
@@ -74,7 +81,7 @@ async function main(): Promise<void> {
 
 	switch (command) {
 		case "init":
-			init({ dir: values.dir, registry: values.registry, force: values.force })
+			init({ dir: values.dir, registry: values.registry, force: values.force, entry: values.entry })
 			break
 		case "list":
 			await list({ registry: values.registry, json: values.json })
@@ -86,7 +93,13 @@ async function main(): Promise<void> {
 			await diff(args[0], { registry: values.registry, dir: values.dir })
 			break
 		case "schema":
-			await schema({ registry: values.registry, out: values.out })
+			await schema({
+				registry: values.registry,
+				out: values.out,
+				entry: values.entry,
+				title: values.title,
+				description: values.description,
+			})
 			break
 		default:
 			fail(`Unknown command: ${command}\nRun \`a2ra --help\` for usage.`)

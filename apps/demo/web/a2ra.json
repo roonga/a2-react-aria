@@ -1,3 +1,9 @@
 {
-	"componentsDir": "components/a2ui"
+	"componentsDir": "components/a2ui",
+	"schema": {
+		"entry": "lib/registry-schemas.ts",
+		"out": "public/a2ui-schema.json",
+		"title": "a2UI Restaurant Demo",
+		"description": "JSON Schema for a2UI nodes rendered by the restaurant booking demo. Includes all built-in components plus FeedbackSurvey."
+	}
 }

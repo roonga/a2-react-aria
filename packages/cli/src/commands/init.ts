@@ -8,6 +8,7 @@ interface InitOptions {
 	dir?: string
 	registry?: string
 	force?: boolean
+	entry?: string
 }
 
 export function init(opts: InitOptions): void {
@@ -21,9 +22,24 @@ export function init(opts: InitOptions): void {
 		componentsDir: opts.dir ?? DEFAULT_CONFIG.componentsDir,
 	}
 	if (opts.registry) config.registry = opts.registry
+	if (opts.entry) {
+		config.schema = {
+			entry: opts.entry,
+			out: "public/a2ui-schema.json",
+			title: "a2UI Schema",
+			description:
+				"JSON Schema for a2UI nodes accepted by this app. Validate agent output against this before rendering.",
+		}
+	}
 
 	writeConfig(config)
 	success(`Created ${bold(CONFIG_FILE)}`)
 	info(`  componentsDir: ${config.componentsDir}`)
-	info("Run `a2ra add <component>` to add your first component.")
+	if (config.schema) {
+		info(`  schema.entry:  ${config.schema.entry}`)
+		info(`  schema.out:    ${config.schema.out}`)
+		info("Run `a2ra schema` to generate your schema file.")
+	} else {
+		info("Run `a2ra add <component>` to add your first component.")
+	}
 }

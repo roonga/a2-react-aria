@@ -6,7 +6,7 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"gen-schema": "node --experimental-strip-types scripts/gen-schema.mts",
+		"gen-schema": "a2ra schema",
 		"test:e2e": "playwright test",
 		"test:e2e:ui": "playwright test --ui"
 	},

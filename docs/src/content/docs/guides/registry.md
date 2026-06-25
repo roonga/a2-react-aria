@@ -41,6 +41,24 @@ const registry = createRegistry({
 Only the components in the registry are bundled. Agents that emit unknown types will
 hit the error boundary instead of crashing the page.
 
+## Registry-aware validation
+
+Pass a prebuilt JSON Schema as the second argument to `createRegistry` to get a
+`.validate()` method that checks both node shape and allowed types in one call:
+
+```tsx
+import { createRegistry } from "@a2ra/core"
+import schema from "./a2ui-schema.json"
+
+const registry = createRegistry({ Button, TextField }, schema)
+
+const result = registry.validate(nodes)
+if (!result.success) throw new Error(`Invalid nodes: ${result.error}`)
+```
+
+The schema is generated at dev time with `a2ra schema` and imported as plain JSON.
+See [Client-Side Validation](../client-side-validation) for the full setup.
+
 ## Global registry
 
 `registerAllComponents` registers all built-in components into the global singleton.
@@ -98,7 +116,7 @@ resolve it to your custom component.
 
 For the full walkthrough, including connecting a custom component to the action pipeline
 and writing a system-prompt description for the agent, see the
-[Custom Components guide](./custom-components).
+[Custom Components guide](../custom-components).
 
 ## Interactive rendering: onAction
 
@@ -115,4 +133,4 @@ Without `onAction`, `A2Renderer` is stateless. With it, all built-in form fields
 automatically report their values and all built-in buttons fire the compound string to
 `handleAction`. No HOC wrapping or extra setup required.
 
-See [Building a Form Block](./building-a-form-block) for the full usage guide.
+See [Building a Form Block](../building-a-form-block) for the full usage guide.

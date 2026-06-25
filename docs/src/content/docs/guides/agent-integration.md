@@ -100,7 +100,7 @@ I found a table for you.
 <a2ui-json>[{"type":"Card","children":[...]}]</a2ui-json>
 ```
 
-See [Building a Form Block](./building-a-form-block) for a complete streaming + form
+See [Building a Form Block](../building-a-form-block) for a complete streaming + form
 integration example.
 
 ## Agent-side: generating valid nodes
@@ -141,16 +141,9 @@ Example:
 
 ## Schema validation
 
-`A2Renderer` validates nodes with Zod before rendering. You can also validate on the
-server before sending to the client:
+Validate agent output against the generated JSON Schema before rendering or sending it.
+The schema is standard JSON Schema Draft 7 and works with any conformant validator
+in any language.
 
-```ts
-import { safeParseNode } from "@a2ra/core"
-
-const result = safeParseNode(llmOutput)
-if (!result.success) {
-  console.error(result.error)
-  return
-}
-// result.data is the typed A2Node
-```
+- **Frontend** — see [Client-Side Validation](../client-side-validation)
+- **Agent / backend** — see [Server-Side Validation](../server-side-validation)

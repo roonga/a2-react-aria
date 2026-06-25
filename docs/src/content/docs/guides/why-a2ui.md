@@ -63,13 +63,13 @@ generate valid nodes from a short system prompt. It is far simpler than JSX for 
 produce correctly.
 
 **You own the renderer.** a2ra copies component source into your project
-([shadcn-style](/a2-react-aria/guides/getting-started/)). The A2UI schema is the public API;
+([shadcn-style](../getting-started)). The A2UI schema is the public API;
 the rendered output is entirely under your control.
 
 ## The component schema
 
 Each component has a Zod schema that defines its valid props. Browse them in the
-[Components](/a2-react-aria/components/button/) section. The schema pages show every accepted
+[Components](../../components/button/) section. The schema pages show every accepted
 prop, its type, and an example node.
 
 A minimal system prompt for an agent looks like:
@@ -91,5 +91,5 @@ Example:
 }
 ```
 
-See [Agent Integration](/a2-react-aria/guides/agent-integration/) for wiring this to a real
+See [Agent Integration](../agent-integration) for wiring this to a real
 agent backend.
