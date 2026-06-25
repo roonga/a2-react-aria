@@ -63,7 +63,7 @@ generate valid nodes from a short system prompt. It is far simpler than JSX for 
 produce correctly.
 
 **You own the renderer.** a2ra copies component source into your project
-([shadcn-style](../getting-started)). The A2UI schema is the public API;
+([shadcn-style](../getting-started/)). The A2UI schema is the public API;
 the rendered output is entirely under your control.
 
 ## The component schema
@@ -91,5 +91,5 @@ Example:
 }
 ```
 
-See [Agent Integration](../agent-integration) for wiring this to a real
+See [Agent Integration](../agent-integration/) for wiring this to a real
 agent backend.

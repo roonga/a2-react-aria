@@ -10,7 +10,7 @@ node with the wrong prop type, an unknown component name, or a missing required 
 will produce a broken UI at best and a runtime crash at worst. Catching it at the
 boundary — before any rendering attempt — surfaces a clear, actionable error.
 
-The generated JSON Schema (see [Server-Side Validation](../server-side-validation)) is the
+The generated JSON Schema (see [Server-Side Validation](../server-side-validation/)) is the
 same contract used on the client. Import it as plain JSON and pass it to `createRegistry`.
 No Zod, no extra runtime — just a standard JSON Schema file.
 
@@ -72,7 +72,7 @@ The schema file is standard JSON Schema Draft 7. It covers:
 - Child node arrays where the schema defines them
 
 Add custom components by including their Zod schemas in `lib/registry-schemas.ts` and
-re-running `a2ra schema`. See [Custom Components](../custom-components#validate-the-node-shape-optional)
+re-running `a2ra schema`. See [Custom Components](../custom-components/#validate-the-node-shape-optional)
 for the full pattern.
 
 ## Error handling
@@ -94,4 +94,4 @@ function AgentBlock({ nodes }) {
 ```
 
 For the backend equivalent — catching bad nodes at the agent before they are sent —
-see [Server-Side Validation](../server-side-validation).
+see [Server-Side Validation](../server-side-validation/).

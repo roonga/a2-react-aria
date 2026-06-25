@@ -100,7 +100,7 @@ I found a table for you.
 <a2ui-json>[{"type":"Card","children":[...]}]</a2ui-json>
 ```
 
-See [Building a Form Block](../building-a-form-block) for a complete streaming + form
+See [Building a Form Block](../building-a-form-block/) for a complete streaming + form
 integration example.
 
 ## Agent-side: generating valid nodes
@@ -145,5 +145,5 @@ Validate agent output against the generated JSON Schema before rendering or send
 The schema is standard JSON Schema Draft 7 and works with any conformant validator
 in any language.
 
-- **Frontend** — see [Client-Side Validation](../client-side-validation)
-- **Agent / backend** — see [Server-Side Validation](../server-side-validation)
+- **Frontend** — see [Client-Side Validation](../client-side-validation/)
+- **Agent / backend** — see [Server-Side Validation](../server-side-validation/)
