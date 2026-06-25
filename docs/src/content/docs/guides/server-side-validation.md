@@ -1,12 +1,12 @@
 ---
 title: Server-Side Validation
-description: Validate a2UI nodes on the backend before they reach the renderer.
+description: Validate A2UI nodes on the backend before they reach the renderer.
 sidebar:
   order: 8.5
 ---
 
 Think of this like OpenAPI: you define a schema for your API contract, generate a spec
-file, and both the client and the server validate against it. a2UI works the same way.
+file, and both the client and the server validate against it. A2UI works the same way.
 `a2ra schema` generates a standard **JSON Schema (Draft 7)** file that describes every
 component type your app accepts. JSON Schema is a widely supported open standard with
 validator libraries in every major language — Python, Go, Ruby, Java, Rust, .NET and
@@ -71,7 +71,7 @@ def validate_nodes(nodes: list) -> None:
         errors = list(_VALIDATOR.iter_errors(node))
         if errors:
             raise ValueError(
-                f"a2UI node '{node.get('type')}' failed validation: {errors[0].message}"
+                f"A2UI node '{node.get('type')}' failed validation: {errors[0].message}"
             )
 ```
 
@@ -103,7 +103,7 @@ function validateNodes(nodes: unknown[]): void {
   for (const node of nodes) {
     if (!validate(node)) {
       throw new Error(
-        `Invalid a2UI node: ${ajv.errorsText(validate.errors)}`
+        `Invalid A2UI node: ${ajv.errorsText(validate.errors)}`
       )
     }
   }

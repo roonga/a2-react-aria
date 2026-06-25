@@ -1,12 +1,12 @@
 ---
 title: Registry
-description: How the a2UI component registry works and how to build a custom one.
+description: How the A2UI component registry works and how to build a custom one.
 sidebar:
   order: 6
 ---
 
 `A2Renderer` resolves component types through a **registry**, a `Map<string, ComponentEntry>`
-that maps a2UI JSON `type` strings to React components.
+that maps A2UI JSON `type` strings to React components.
 
 ## defaultRegistry
 

@@ -115,7 +115,8 @@ pnpm storybook   # component explorer on :6006
 
 ## Contributing
 
-See [CLAUDE.md](CLAUDE.md) for architecture, rules, and development setup.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to get started, branch and commit conventions,
+and the component authoring workflow.
 
 ## License
 
