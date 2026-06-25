@@ -120,4 +120,4 @@ and the component authoring workflow.
 
 ## License
 
-MIT — [Ravi Mohan](https://github.com/roonga)
+[MIT](LICENSE) — [Ravi Mohan](https://github.com/roonga)

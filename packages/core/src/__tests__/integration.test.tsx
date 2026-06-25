@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import axe from "axe-core"
+import type React from "react"
 import { describe, expect, it } from "vitest"
 import { Breadcrumb } from "../components/breadcrumb"
 import { Button } from "../components/button"
@@ -1277,5 +1278,60 @@ describe("Accessibility — axe-core", () => {
 			const { violations } = await axe.run(container, AXE_CONFIG)
 			expect(violations).toHaveLength(0)
 		})
+	})
+})
+
+describe("A2Renderer security", () => {
+	// Simple components that pass props directly to DOM elements for testing sanitization
+	const Anchor = ({ href, children }: { href?: string; children?: React.ReactNode }) => <a href={href}>{children}</a>
+	const Img = ({ src }: { src?: string }) => <img src={src} alt="" />
+	const securityRegistry = createRegistry({
+		Anchor: { component: Anchor as Parameters<typeof createRegistry>[0][string]["component"] },
+		Img: { component: Img as Parameters<typeof createRegistry>[0][string]["component"] },
+		Text: { component: Text },
+	})
+
+	it("replaces javascript: href with about:blank", () => {
+		const { container } = render(
+			<A2Renderer
+				node={{ type: "Anchor", props: { href: "javascript:alert(1)" }, children: "Click" }}
+				registry={securityRegistry}
+			/>,
+		)
+		expect(container.querySelector("a")?.getAttribute("href")).toBe("about:blank")
+	})
+
+	it("replaces data: src with about:blank", () => {
+		const { container } = render(
+			<A2Renderer
+				node={{ type: "Img", props: { src: "data:text/html,<script>alert(1)</script>" } }}
+				registry={securityRegistry}
+			/>,
+		)
+		expect(container.querySelector("img")?.getAttribute("src")).toBe("about:blank")
+	})
+
+	it("allows safe https: href through unchanged", () => {
+		const { container } = render(
+			<A2Renderer
+				node={{ type: "Anchor", props: { href: "https://example.com" }, children: "Link" }}
+				registry={securityRegistry}
+			/>,
+		)
+		expect(container.querySelector("a")?.getAttribute("href")).toBe("https://example.com")
+	})
+
+	it("renders fallback when render depth exceeds 50", () => {
+		const buildDeep = (depth: number): { type: string; children?: unknown } =>
+			depth === 0 ? { type: "Text", children: "leaf" } : { type: "Text", children: buildDeep(depth - 1) }
+
+		const { container } = render(
+			<A2Renderer
+				node={buildDeep(55) as Parameters<typeof A2Renderer>[0]["node"]}
+				registry={securityRegistry}
+				fallback={<span data-testid="depth-fallback">error</span>}
+			/>,
+		)
+		expect(container.querySelector("[data-testid='depth-fallback']")).not.toBeNull()
 	})
 })
