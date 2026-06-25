@@ -7,7 +7,12 @@ Components are distributed shadcn-style: consumers own the source via `npx @a2ra
 
 ### Commits
 
-Do not add `Co-Authored-By` attribution to commit messages.
+- Do not add `Co-Authored-By` attribution to commit messages.
+- Every commit must be clean and logical: a single coherent unit of work with a descriptive
+  conventional commit message (`type(scope): description`).
+- No WIP, fixup, or partial commits on a PR branch. Squash or amend before opening a PR.
+- Preferred merge strategy: **rebase and merge** to preserve individual commits on main.
+  Use squash merge only when a branch has noisy intermediate commits that add no history value.
 
 ### Package / library / tool / MCP approval
 
