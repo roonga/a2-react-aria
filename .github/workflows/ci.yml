@@ -52,6 +52,9 @@ jobs:
           git diff --exit-code registry \
             || (echo "::error::registry/ is stale — run 'pnpm build:registry' and commit the result." && exit 1)
 
+      - name: Install Playwright browsers
+        run: pnpm --filter @a2ra/docs exec playwright install --with-deps chromium
+
       - name: Test
         run: pnpm test
 
