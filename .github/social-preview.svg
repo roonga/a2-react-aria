@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="1280" height="640">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0D0B1A"/>
+      <stop offset="100%" stop-color="#1A1030"/>
+    </linearGradient>
+    <linearGradient id="icon-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#4C1D95"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="640" fill="url(#bg)"/>
+
+  <!-- Subtle grid pattern -->
+  <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+    <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#FFFFFF" stroke-width="0.3" stroke-opacity="0.04"/>
+  </pattern>
+  <rect width="1280" height="640" fill="url(#grid)"/>
+
+  <!-- Icon square -->
+  <rect x="80" y="220" width="120" height="120" rx="28" fill="url(#icon-bg)"/>
+  <text
+    x="140" y="302"
+    font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    font-weight="800"
+    font-size="56"
+    text-anchor="middle"
+    fill="#E9D5FF"
+  >ra</text>
+
+  <!-- Wordmark: a2ra -->
+  <text
+    font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    font-weight="800"
+    fill="#FFFFFF"
+  >
+    <tspan x="232" y="318" font-size="96">a</tspan><tspan font-size="64" dy="-12" dx="4">2</tspan><tspan font-size="96" dy="12" dx="4" fill="#B8A4FF">ra</tspan>
+  </text>
+
+  <!-- Tagline -->
+  <text
+    x="232" y="370"
+    font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    font-weight="400"
+    font-size="28"
+    fill="#9B87CC"
+    letter-spacing="0.01em"
+  >A2UI JSON → Accessible React Aria Components</text>
+
+  <!-- Divider -->
+  <line x1="232" y1="398" x2="900" y2="398" stroke="#3B2D6A" stroke-width="1.5"/>
+
+  <!-- Pills -->
+  <rect x="232" y="418" width="180" height="44" rx="22" fill="#1E1540" stroke="#3B2D6A" stroke-width="1.5"/>
+  <text x="322" y="446" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="20" text-anchor="middle" fill="#C4B5FD">shadcn-style</text>
+
+  <rect x="428" y="418" width="176" height="44" rx="22" fill="#1E1540" stroke="#3B2D6A" stroke-width="1.5"/>
+  <text x="516" y="446" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="20" text-anchor="middle" fill="#C4B5FD">AI-native UI</text>
+
+  <rect x="620" y="418" width="230" height="44" rx="22" fill="#1E1540" stroke="#3B2D6A" stroke-width="1.5"/>
+  <text x="735" y="446" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="20" text-anchor="middle" fill="#C4B5FD">WCAG accessible</text>
+
+  <!-- GitHub URL -->
+  <text
+    x="232" y="510"
+    font-family="'Cascadia Code', 'JetBrains Mono', 'Fira Code', ui-monospace, Consolas, monospace"
+    font-size="22"
+    fill="#5B4A8A"
+  >github.com/roonga/a2-react-aria</text>
+</svg>
