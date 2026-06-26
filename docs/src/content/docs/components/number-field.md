@@ -1,8 +1,6 @@
 ---
 title: NumberField
 description: A numeric input with increment/decrement controls, min/max, and step support.
-sidebar:
-  order: 4
 ---
 
 A wrapper around React Aria's `NumberField` component. Provides keyboard-accessible

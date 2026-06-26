@@ -1,8 +1,6 @@
 ---
 title: Tag / TagGroup
 description: Selectable tags for filtering, labelling, and multi-select chip lists.
-sidebar:
-  order: 18
 ---
 
 `Tag` and `TagGroup` are built on React Aria's `Tag` and `TagGroup` primitives. They support

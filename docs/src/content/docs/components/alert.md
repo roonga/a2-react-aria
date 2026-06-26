@@ -1,8 +1,6 @@
 ---
 title: Alert
 description: A contextual status message with info, success, warning, and error variants.
-sidebar:
-  order: 2
 ---
 
 A non-interactive status banner with an optional title. Uses `role="alert"` so screen readers

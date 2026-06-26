@@ -1,8 +1,6 @@
 ---
 title: Menu
 description: A trigger button that opens a listbox of actionable items.
-sidebar:
-  order: 15
 ---
 
 A wrapper around React Aria's `MenuTrigger` and `Menu` components. Supports single and

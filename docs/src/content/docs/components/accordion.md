@@ -1,8 +1,6 @@
 ---
 title: Accordion
 description: Collapsible disclosure panels for FAQs, settings sections, and expandable content.
-sidebar:
-  order: 1
 ---
 
 `Accordion` and `AccordionItem` are built on React Aria's `DisclosureGroup` and `Disclosure`

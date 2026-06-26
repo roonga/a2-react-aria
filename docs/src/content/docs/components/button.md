@@ -1,8 +1,6 @@
 ---
 title: Button
 description: A pressable button with variants, sizes, and pending state.
-sidebar:
-  order: 1
 ---
 
 A wrapper around React Aria's `Button` component. Handles keyboard, mouse, and touch
