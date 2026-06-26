@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react"
 import axe from "axe-core"
 import type React from "react"
 import { describe, expect, it } from "vitest"
+import { Accordion, AccordionItem } from "../components/accordion"
 import { Alert } from "../components/alert"
 import { Breadcrumb } from "../components/breadcrumb"
 import { Button } from "../components/button"
@@ -29,6 +30,8 @@ import { A2Renderer, createRegistry } from "../index"
 const AXE_CONFIG: axe.RunOptions = { rules: { "color-contrast": { enabled: false } } }
 
 const registry = createRegistry({
+	Accordion: { component: Accordion },
+	AccordionItem: { component: AccordionItem },
 	Alert: { component: Alert },
 	Tag: { component: Tag },
 	TagGroup: { component: TagGroup },
@@ -1371,6 +1374,58 @@ describe("Accessibility — axe-core", () => {
 							{ type: "Tag", props: { id: "a" }, children: "Alpha" },
 							{ type: "Tag", props: { id: "b" }, children: "Beta" },
 						],
+					}}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("Accordion component", () => {
+		it("renders accordion items with headings", () => {
+			render(
+				<A2Renderer
+					node={{
+						type: "Accordion",
+						children: [
+							{ type: "AccordionItem", props: { id: "a", heading: "Section A" }, children: "Content A" },
+							{ type: "AccordionItem", props: { id: "b", heading: "Section B" }, children: "Content B" },
+						],
+					}}
+					registry={registry}
+				/>,
+			)
+			expect(screen.getByText("Section A")).toBeDefined()
+			expect(screen.getByText("Section B")).toBeDefined()
+		})
+
+		it("renders expanded content when defaultExpanded is true", () => {
+			render(
+				<A2Renderer
+					node={{
+						type: "Accordion",
+						children: [
+							{
+								type: "AccordionItem",
+								props: { id: "faq", heading: "What is this?", defaultExpanded: true },
+								children: "This is a collapsible section.",
+							},
+						],
+					}}
+					registry={registry}
+				/>,
+			)
+			expect(screen.getByText("This is a collapsible section.")).toBeDefined()
+		})
+
+		it("has no axe violations", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "Accordion",
+						children: [{ type: "AccordionItem", props: { id: "x", heading: "Item X" }, children: "Content X" }],
 					}}
 					registry={registry}
 				/>,

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest"
+import { AccordionItemSchema, AccordionSchema } from "../components/accordion"
 import { AlertSchema } from "../components/alert"
 import { BreadcrumbSchema } from "../components/breadcrumb"
 import { ButtonSchema } from "../components/button"
@@ -1527,5 +1528,51 @@ describe("TagGroupSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(TagGroupSchema.safeParse({ type: "taggroup" }).success).toBe(false)
+	})
+})
+
+describe("AccordionItemSchema", () => {
+	it("parses a minimal accordion item", () => {
+		expect(AccordionItemSchema.safeParse({ type: "AccordionItem", props: { heading: "FAQ" } }).success).toBe(true)
+	})
+
+	it("accepts id, defaultExpanded, and isDisabled", () => {
+		expect(
+			AccordionItemSchema.safeParse({
+				type: "AccordionItem",
+				props: { heading: "FAQ", id: "faq", defaultExpanded: true, isDisabled: false },
+			}).success,
+		).toBe(true)
+	})
+
+	it("rejects missing heading", () => {
+		expect(AccordionItemSchema.safeParse({ type: "AccordionItem", props: {} }).success).toBe(false)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(AccordionItemSchema.safeParse({ type: "accordionitem" }).success).toBe(false)
+	})
+})
+
+describe("AccordionSchema", () => {
+	it("parses a minimal accordion node", () => {
+		expect(AccordionSchema.safeParse({ type: "Accordion" }).success).toBe(true)
+	})
+
+	it("accepts allowsMultipleExpanded and isDisabled", () => {
+		expect(
+			AccordionSchema.safeParse({ type: "Accordion", props: { allowsMultipleExpanded: true, isDisabled: false } })
+				.success,
+		).toBe(true)
+	})
+
+	it("rejects non-boolean allowsMultipleExpanded", () => {
+		expect(AccordionSchema.safeParse({ type: "Accordion", props: { allowsMultipleExpanded: "yes" } }).success).toBe(
+			false,
+		)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(AccordionSchema.safeParse({ type: "accordion" }).success).toBe(false)
 	})
 })
