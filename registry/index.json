@@ -4,6 +4,15 @@
   "homepage": "https://github.com/roonga/a2-react-aria",
   "components": [
     {
+      "name": "alert",
+      "title": "alert",
+      "description": "alert component.",
+      "dependencies": [
+        "zod"
+      ],
+      "files": 4
+    },
+    {
       "name": "breadcrumb",
       "title": "Breadcrumb",
       "description": "Hierarchical navigation with React Aria Breadcrumbs.",
