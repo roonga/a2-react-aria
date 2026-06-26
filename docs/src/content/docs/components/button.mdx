@@ -3,6 +3,8 @@ title: Button
 description: A pressable button with variants, sizes, and pending state.
 ---
 
+import { ComponentPreview } from "../../../components/ComponentPreview"
+
 A wrapper around React Aria's `Button` component. Handles keyboard, mouse, and touch
 activation with full accessibility support.
 
@@ -25,7 +27,43 @@ npx @a2ra/cli add button
 | `value` | `string` | — | Form field value |
 | `children` | `string \| node[]` | — | Button label text or child nodes |
 
-## Example
+## Variants
+
+<ComponentPreview client:only="react" node={{
+  type: "Flex",
+  props: { gap: "md", align: "center", wrap: true },
+  children: [
+    { type: "Button", props: { variant: "primary" }, children: "Primary" },
+    { type: "Button", props: { variant: "secondary" }, children: "Secondary" },
+    { type: "Button", props: { variant: "danger" }, children: "Danger" },
+    { type: "Button", props: { variant: "ghost" }, children: "Ghost" },
+  ]
+}} />
+
+## Sizes
+
+<ComponentPreview client:only="react" node={{
+  type: "Flex",
+  props: { gap: "md", align: "center" },
+  children: [
+    { type: "Button", props: { variant: "primary", size: "sm" }, children: "Small" },
+    { type: "Button", props: { variant: "primary", size: "md" }, children: "Medium" },
+    { type: "Button", props: { variant: "primary", size: "lg" }, children: "Large" },
+  ]
+}} />
+
+## Disabled state
+
+<ComponentPreview client:only="react" node={{
+  type: "Flex",
+  props: { gap: "md", align: "center" },
+  children: [
+    { type: "Button", props: { variant: "primary", isDisabled: true }, children: "Primary" },
+    { type: "Button", props: { variant: "danger", isDisabled: true }, children: "Danger" },
+  ]
+}} />
+
+## Example JSON
 
 ```json
 {
@@ -35,19 +73,6 @@ npx @a2ra/cli add button
     "size": "md"
   },
   "children": "Save changes"
-}
-```
-
-Disabled state:
-
-```json
-{
-  "type": "Button",
-  "props": {
-    "variant": "danger",
-    "isDisabled": true
-  },
-  "children": "Delete"
 }
 ```
 
