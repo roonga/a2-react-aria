@@ -1,8 +1,6 @@
 ---
 title: Tabs
 description: A tabbed navigation component for switching between content panels.
-sidebar:
-  order: 14
 ---
 
 A wrapper around React Aria's `Tabs`, `TabList`, `Tab`, and `TabPanel` components.

@@ -1,8 +1,6 @@
 ---
 title: Card
 description: A surface container with configurable padding, shadow, and border radius.
-sidebar:
-  order: 12
 ---
 
 A layout primitive for grouping content into a visually distinct surface. All visual

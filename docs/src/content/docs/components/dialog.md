@@ -1,8 +1,6 @@
 ---
 title: Dialog
 description: A modal dialog with a trigger button, title, description, and dismissal support.
-sidebar:
-  order: 18
 ---
 
 A wrapper around React Aria's `DialogTrigger`, `Modal`, and `Dialog` components.

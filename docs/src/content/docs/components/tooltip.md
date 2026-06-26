@@ -1,8 +1,6 @@
 ---
 title: Tooltip
 description: A non-interactive overlay that provides context for a trigger element.
-sidebar:
-  order: 16
 ---
 
 A wrapper around React Aria's `TooltipTrigger` and `Tooltip` components. Shows on hover

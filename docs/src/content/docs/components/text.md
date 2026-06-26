@@ -1,8 +1,6 @@
 ---
 title: Text
 description: A polymorphic text node for headings, paragraphs, and inline text.
-sidebar:
-  order: 2
 ---
 
 Renders `h1` through `h4`, `p`, `span`, and `label` elements with size,
