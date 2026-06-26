@@ -1,0 +1,34 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roonga/a2-react-aria/main/registry/schema.json",
+  "name": "accordion",
+  "type": "registry:component",
+  "title": "accordion",
+  "description": "accordion component.",
+  "dependencies": [
+    "react-aria-components",
+    "zod"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "accordion/Accordion.tsx",
+      "content": "import type { ReactNode } from \"react\"\nimport { Button, Disclosure, DisclosureGroup, DisclosurePanel, Heading } from \"react-aria-components\"\nimport {\n\taccordionChevronStyles,\n\taccordionGroupStyles,\n\taccordionItemStyles,\n\taccordionPanelStyles,\n\taccordionTriggerStyles,\n} from \"./accordion.styles\"\n\ninterface AccordionItemProps {\n\tid?: string\n\theading: string\n\tdefaultExpanded?: boolean\n\tisDisabled?: boolean\n\tchildren?: ReactNode\n}\n\nexport function AccordionItem({ id, heading, defaultExpanded, isDisabled, children }: AccordionItemProps) {\n\treturn (\n\t\t<Disclosure id={id} defaultExpanded={defaultExpanded} isDisabled={isDisabled} className={accordionItemStyles}>\n\t\t\t<Heading>\n\t\t\t\t<Button slot=\"trigger\" className={accordionTriggerStyles}>\n\t\t\t\t\t<span>{heading}</span>\n\t\t\t\t\t<svg\n\t\t\t\t\t\taria-hidden\n\t\t\t\t\t\trole=\"presentation\"\n\t\t\t\t\t\txmlns=\"http://www.w3.org/2000/svg\"\n\t\t\t\t\t\tviewBox=\"0 0 24 24\"\n\t\t\t\t\t\tfill=\"none\"\n\t\t\t\t\t\tstroke=\"currentColor\"\n\t\t\t\t\t\tstrokeWidth=\"2\"\n\t\t\t\t\t\tstrokeLinecap=\"round\"\n\t\t\t\t\t\tstrokeLinejoin=\"round\"\n\t\t\t\t\t\tclassName={accordionChevronStyles}\n\t\t\t\t\t>\n\t\t\t\t\t\t<path d=\"m6 9 6 6 6-6\" />\n\t\t\t\t\t</svg>\n\t\t\t\t</Button>\n\t\t\t</Heading>\n\t\t\t<DisclosurePanel className={accordionPanelStyles}>{children}</DisclosurePanel>\n\t\t</Disclosure>\n\t)\n}\n\ninterface AccordionProps {\n\tallowsMultipleExpanded?: boolean\n\tisDisabled?: boolean\n\tchildren?: ReactNode\n}\n\nexport function Accordion({ allowsMultipleExpanded = false, isDisabled, children }: AccordionProps) {\n\treturn (\n\t\t<DisclosureGroup\n\t\t\tallowsMultipleExpanded={allowsMultipleExpanded}\n\t\t\tisDisabled={isDisabled}\n\t\t\tclassName={accordionGroupStyles}\n\t\t>\n\t\t\t{children}\n\t\t</DisclosureGroup>\n\t)\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "accordion/accordion.schema.ts",
+      "content": "import { z } from \"zod\"\n\nexport const AccordionItemSchema = z.object({\n\ttype: z.literal(\"AccordionItem\"),\n\tprops: z\n\t\t.object({\n\t\t\tid: z.string().optional(),\n\t\t\theading: z.string(),\n\t\t\tdefaultExpanded: z.boolean().optional(),\n\t\t\tisDisabled: z.boolean().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.union([z.string(), z.array(z.unknown())]).optional(),\n})\n\nexport type AccordionItemNode = z.infer<typeof AccordionItemSchema>\n\nexport const AccordionSchema = z.object({\n\ttype: z.literal(\"Accordion\"),\n\tprops: z\n\t\t.object({\n\t\t\tallowsMultipleExpanded: z.boolean().optional(),\n\t\t\tisDisabled: z.boolean().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.array(z.unknown()).optional(),\n})\n\nexport type AccordionNode = z.infer<typeof AccordionSchema>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "accordion/accordion.styles.ts",
+      "content": "export const accordionGroupStyles =\n\t\"w-full divide-y divide-[var(--color-border)] rounded-md border border-[var(--color-border)]\"\n\nexport const accordionItemStyles = \"w-full\"\n\nexport const accordionTriggerStyles = [\n\t\"flex w-full items-center justify-between gap-2 px-4 py-3\",\n\t\"text-sm font-medium text-[var(--color-text)] bg-[var(--color-surface)]\",\n\t\"cursor-default outline-none transition-colors\",\n\t\"hover:bg-[var(--color-surface-hover)]\",\n\t\"focus-visible:ring-2 focus-visible:ring-[var(--color-focus-ring)] focus-visible:ring-inset\",\n\t\"disabled:opacity-50 disabled:cursor-not-allowed\",\n].join(\" \")\n\nexport const accordionChevronStyles =\n\t\"h-4 w-4 shrink-0 text-[var(--color-text-muted)] transition-transform duration-200 [[data-expanded]_&]:rotate-180\"\n\nexport const accordionPanelStyles = \"px-4 py-3 text-sm text-[var(--color-text-muted)] bg-[var(--color-surface)]\"\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "accordion/index.ts",
+      "content": "export { Accordion, AccordionItem } from \"./Accordion\"\nexport type { AccordionItemNode, AccordionNode } from \"./accordion.schema\"\nexport { AccordionItemSchema, AccordionSchema } from \"./accordion.schema\"\n",
+      "type": "registry:component"
+    }
+  ]
+}

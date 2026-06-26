@@ -4,6 +4,16 @@
   "homepage": "https://github.com/roonga/a2-react-aria",
   "components": [
     {
+      "name": "accordion",
+      "title": "accordion",
+      "description": "accordion component.",
+      "dependencies": [
+        "react-aria-components",
+        "zod"
+      ],
+      "files": 4
+    },
+    {
       "name": "alert",
       "title": "alert",
       "description": "alert component.",
