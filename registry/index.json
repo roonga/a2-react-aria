@@ -172,6 +172,16 @@
       "files": 4
     },
     {
+      "name": "tag",
+      "title": "tag",
+      "description": "tag component.",
+      "dependencies": [
+        "react-aria-components",
+        "zod"
+      ],
+      "files": 4
+    },
+    {
       "name": "text",
       "title": "Text",
       "description": "Typographic text primitive.",
