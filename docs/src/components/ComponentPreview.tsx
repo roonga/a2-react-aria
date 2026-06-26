@@ -154,6 +154,7 @@ export function ComponentPreview({ node }: Props) {
 			<div
 				style={{
 					display: "flex",
+					alignItems: "flex-end",
 					borderBottom: "1px solid var(--sl-color-hairline)",
 					background: "var(--sl-color-bg-nav)",
 					paddingInline: "0.5rem",
@@ -178,14 +179,22 @@ export function ComponentPreview({ node }: Props) {
 					style={{
 						padding: "2.5rem 2rem",
 						display: "flex",
-						flexWrap: "wrap",
-						gap: "0.75rem",
 						alignItems: "center",
 						justifyContent: "center",
 						minHeight: "8rem",
 					}}
 				>
-					<A2Renderer node={node} registry={registry} />
+					<div
+						style={{
+							display: "flex",
+							flexWrap: "wrap",
+							gap: "0.75rem",
+							alignItems: "center",
+							justifyContent: "center",
+						}}
+					>
+						<A2Renderer node={node} registry={registry} />
+					</div>
 				</div>
 			)}
 
