@@ -1,5 +1,7 @@
 export type { ActionCtx } from "./action-context"
 export { ActionContext } from "./action-context"
+export type { AccordionItemNode, AccordionNode } from "./components/accordion"
+export { Accordion, AccordionItem, AccordionItemSchema, AccordionSchema } from "./components/accordion"
 export type { AlertNode } from "./components/alert"
 export { Alert, AlertSchema } from "./components/alert"
 export type { BreadcrumbItem, BreadcrumbNode } from "./components/breadcrumb"
