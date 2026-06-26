@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react"
 import axe from "axe-core"
 import type React from "react"
 import { describe, expect, it } from "vitest"
+import { Alert } from "../components/alert"
 import { Breadcrumb } from "../components/breadcrumb"
 import { Button } from "../components/button"
 import { Card } from "../components/card"
@@ -27,6 +28,7 @@ import { A2Renderer, createRegistry } from "../index"
 const AXE_CONFIG: axe.RunOptions = { rules: { "color-contrast": { enabled: false } } }
 
 const registry = createRegistry({
+	Alert: { component: Alert },
 	Breadcrumb: { component: Breadcrumb },
 	Button: { component: Button },
 	Card: { component: Card },
@@ -1274,6 +1276,50 @@ describe("Accessibility — axe-core", () => {
 		it("has no axe violations", async () => {
 			const { container } = render(
 				<A2Renderer node={{ type: "Text", props: { as: "p" }, children: "Accessible text" }} registry={registry} />,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("Alert component", () => {
+		it("renders with role=alert", () => {
+			const { container } = render(
+				<A2Renderer
+					node={{ type: "Alert", props: { variant: "info" }, children: "Info message" }}
+					registry={registry}
+				/>,
+			)
+			expect(container.querySelector("[role='alert']")).not.toBeNull()
+		})
+
+		it("renders title and children", () => {
+			render(
+				<A2Renderer
+					node={{ type: "Alert", props: { variant: "success", title: "Done" }, children: "Operation succeeded." }}
+					registry={registry}
+				/>,
+			)
+			expect(screen.getByText("Done")).toBeDefined()
+			expect(screen.getByText("Operation succeeded.")).toBeDefined()
+		})
+
+		it("renders without title", () => {
+			const { container } = render(
+				<A2Renderer
+					node={{ type: "Alert", props: { variant: "warning" }, children: "Watch out" }}
+					registry={registry}
+				/>,
+			)
+			expect(container.querySelector("[role='alert']")).not.toBeNull()
+		})
+
+		it("has no axe violations", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{ type: "Alert", props: { variant: "error", title: "Error" }, children: "Something went wrong." }}
+					registry={registry}
+				/>,
 			)
 			const { violations } = await axe.run(container, AXE_CONFIG)
 			expect(violations).toHaveLength(0)

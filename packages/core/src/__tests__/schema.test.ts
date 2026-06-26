@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest"
+import { AlertSchema } from "../components/alert"
 import { BreadcrumbSchema } from "../components/breadcrumb"
 import { ButtonSchema } from "../components/button"
 import { CardSchema } from "../components/card"
@@ -1452,5 +1453,33 @@ describe("FormSchema — Tier 6 props", () => {
 
 	it("rejects non-string target", () => {
 		expect(FormSchema.safeParse({ type: "Form", props: { target: 42 } }).success).toBe(false)
+	})
+})
+
+describe("AlertSchema", () => {
+	it("parses a minimal alert node", () => {
+		expect(AlertSchema.safeParse({ type: "Alert" }).success).toBe(true)
+	})
+
+	it("parses all valid variants", () => {
+		for (const variant of ["info", "success", "warning", "error"]) {
+			expect(AlertSchema.safeParse({ type: "Alert", props: { variant } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid variant", () => {
+		expect(AlertSchema.safeParse({ type: "Alert", props: { variant: "danger" } }).success).toBe(false)
+	})
+
+	it("accepts a title string", () => {
+		expect(AlertSchema.safeParse({ type: "Alert", props: { title: "Heads up" } }).success).toBe(true)
+	})
+
+	it("rejects non-string title", () => {
+		expect(AlertSchema.safeParse({ type: "Alert", props: { title: 42 } }).success).toBe(false)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(AlertSchema.safeParse({ type: "alert" }).success).toBe(false)
 	})
 })

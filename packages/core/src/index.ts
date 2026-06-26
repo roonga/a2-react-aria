@@ -1,5 +1,7 @@
 export type { ActionCtx } from "./action-context"
 export { ActionContext } from "./action-context"
+export type { AlertNode } from "./components/alert"
+export { Alert, AlertSchema } from "./components/alert"
 export type { BreadcrumbItem, BreadcrumbNode } from "./components/breadcrumb"
 export { Breadcrumb, BreadcrumbSchema } from "./components/breadcrumb"
 export type { ButtonNode } from "./components/button"
