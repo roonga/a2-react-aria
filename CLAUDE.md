@@ -8,6 +8,9 @@ Components are distributed shadcn-style: consumers own the source via `npx @a2ra
 ### Commits
 
 - Do not add `Co-Authored-By` attribution to commit messages.
+- **Never commit directly to `main`.** All changes must go through a PR branch and be merged
+  via GitHub. The only exception is a repository-wide housekeeping commit explicitly approved
+  by the user in the current session (e.g. fixing a typo in a just-merged commit before CI runs).
 - Every commit must be clean and logical: a single coherent unit of work with a descriptive
   conventional commit message (`type(scope): description`).
 - No WIP, fixup, or partial commits on a PR branch. Squash or amend before opening a PR.
