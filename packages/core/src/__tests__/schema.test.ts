@@ -16,6 +16,7 @@ import { SelectSchema } from "../components/select"
 import { SwitchSchema } from "../components/switch"
 import { TableSchema } from "../components/table"
 import { TabsSchema } from "../components/tabs"
+import { TagGroupSchema, TagSchema } from "../components/tag"
 import { TextSchema } from "../components/text"
 import { TextFieldSchema } from "../components/text-field"
 import { TooltipSchema } from "../components/tooltip"
@@ -1481,5 +1482,50 @@ describe("AlertSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(AlertSchema.safeParse({ type: "alert" }).success).toBe(false)
+	})
+})
+
+describe("TagSchema", () => {
+	it("parses a minimal tag node", () => {
+		expect(TagSchema.safeParse({ type: "Tag" }).success).toBe(true)
+	})
+
+	it("accepts id and isDisabled props", () => {
+		expect(TagSchema.safeParse({ type: "Tag", props: { id: "news", isDisabled: false } }).success).toBe(true)
+	})
+
+	it("accepts string children", () => {
+		expect(TagSchema.safeParse({ type: "Tag", children: "News" }).success).toBe(true)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(TagSchema.safeParse({ type: "tag" }).success).toBe(false)
+	})
+})
+
+describe("TagGroupSchema", () => {
+	it("parses a minimal tag group node", () => {
+		expect(TagGroupSchema.safeParse({ type: "TagGroup" }).success).toBe(true)
+	})
+
+	it("parses all valid selectionModes", () => {
+		for (const mode of ["none", "single", "multiple"]) {
+			expect(TagGroupSchema.safeParse({ type: "TagGroup", props: { selectionMode: mode } }).success).toBe(true)
+		}
+	})
+
+	it("rejects an invalid selectionMode", () => {
+		expect(TagGroupSchema.safeParse({ type: "TagGroup", props: { selectionMode: "multi" } }).success).toBe(false)
+	})
+
+	it("accepts label and description", () => {
+		expect(
+			TagGroupSchema.safeParse({ type: "TagGroup", props: { label: "Topics", description: "Pick some topics" } })
+				.success,
+		).toBe(true)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(TagGroupSchema.safeParse({ type: "taggroup" }).success).toBe(false)
 	})
 })

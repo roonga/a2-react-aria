@@ -19,6 +19,7 @@ import { Select } from "../components/select"
 import { Switch } from "../components/switch"
 import { Table } from "../components/table"
 import { Tabs } from "../components/tabs"
+import { Tag, TagGroup } from "../components/tag"
 import { Text } from "../components/text"
 import { TextField } from "../components/text-field"
 import { Tooltip } from "../components/tooltip"
@@ -29,6 +30,8 @@ const AXE_CONFIG: axe.RunOptions = { rules: { "color-contrast": { enabled: false
 
 const registry = createRegistry({
 	Alert: { component: Alert },
+	Tag: { component: Tag },
+	TagGroup: { component: TagGroup },
 	Breadcrumb: { component: Breadcrumb },
 	Button: { component: Button },
 	Card: { component: Card },
@@ -1318,6 +1321,57 @@ describe("Accessibility — axe-core", () => {
 			const { container } = render(
 				<A2Renderer
 					node={{ type: "Alert", props: { variant: "error", title: "Error" }, children: "Something went wrong." }}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
+	})
+
+	describe("TagGroup component", () => {
+		it("renders tags from children", () => {
+			render(
+				<A2Renderer
+					node={{
+						type: "TagGroup",
+						children: [
+							{ type: "Tag", props: { id: "news" }, children: "News" },
+							{ type: "Tag", props: { id: "travel" }, children: "Travel" },
+						],
+					}}
+					registry={registry}
+				/>,
+			)
+			expect(screen.getByText("News")).toBeDefined()
+			expect(screen.getByText("Travel")).toBeDefined()
+		})
+
+		it("renders with a label", () => {
+			render(
+				<A2Renderer
+					node={{
+						type: "TagGroup",
+						props: { label: "Categories" },
+						children: [{ type: "Tag", props: { id: "ai" }, children: "AI" }],
+					}}
+					registry={registry}
+				/>,
+			)
+			expect(screen.getByText("Categories")).toBeDefined()
+		})
+
+		it("has no axe violations", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{
+						type: "TagGroup",
+						props: { label: "Topics" },
+						children: [
+							{ type: "Tag", props: { id: "a" }, children: "Alpha" },
+							{ type: "Tag", props: { id: "b" }, children: "Beta" },
+						],
+					}}
 					registry={registry}
 				/>,
 			)
