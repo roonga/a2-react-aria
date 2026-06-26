@@ -28,7 +28,7 @@ For stricter validation, pass a Zod schema per component entry in `createRegistr
 
 Please do **not** open a public GitHub issue for security vulnerabilities.
 
-Email: **ravi.mohan@roonga.com.au**
+Email: **a2ra@roonga.com.au**
 
 Include:
 - A description of the vulnerability
