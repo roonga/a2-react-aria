@@ -90,7 +90,7 @@ function buildItem(name: string): RegistryItem {
 
 	for (const file of sourceFiles.sort()) {
 		const abs = join(dir, file)
-		const content = readFileSync(abs, "utf8")
+		const content = readFileSync(abs, "utf8").replace(/\r\n/g, "\n")
 		for (const d of extractNpmDeps(content)) deps.add(d)
 		files.push({
 			path: `${name}/${file}`,
