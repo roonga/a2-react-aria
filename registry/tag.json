@@ -1,0 +1,34 @@
+{
+  "$schema": "https://raw.githubusercontent.com/roonga/a2-react-aria/main/registry/schema.json",
+  "name": "tag",
+  "type": "registry:component",
+  "title": "tag",
+  "description": "tag component.",
+  "dependencies": [
+    "react-aria-components",
+    "zod"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "tag/Tag.tsx",
+      "content": "import type { ReactNode } from \"react\"\nimport { Label, Tag as RACTag, TagGroup as RACTagGroup, TagList, Text } from \"react-aria-components\"\nimport {\n\tgetTagStyles,\n\ttagGroupDescriptionStyles,\n\ttagGroupLabelStyles,\n\ttagGroupListStyles,\n\ttagGroupStyles,\n} from \"./tag.styles\"\n\ninterface TagProps {\n\tid?: string\n\tisDisabled?: boolean\n\tchildren?: string\n}\n\nexport function Tag({ id, isDisabled, children }: TagProps) {\n\treturn (\n\t\t<RACTag\n\t\t\tid={id}\n\t\t\tisDisabled={isDisabled}\n\t\t\ttextValue={children}\n\t\t\tclassName={({ isSelected, isDisabled: dis }) => getTagStyles({ isSelected, isDisabled: dis })}\n\t\t>\n\t\t\t{children}\n\t\t</RACTag>\n\t)\n}\n\ninterface TagGroupProps {\n\tlabel?: string\n\tselectionMode?: \"none\" | \"single\" | \"multiple\"\n\tdescription?: string\n\tchildren?: ReactNode\n}\n\nexport function TagGroup({ label, selectionMode = \"none\", description, children }: TagGroupProps) {\n\treturn (\n\t\t<RACTagGroup selectionMode={selectionMode} className={tagGroupStyles}>\n\t\t\t{label && <Label className={tagGroupLabelStyles}>{label}</Label>}\n\t\t\t<TagList className={tagGroupListStyles}>{children}</TagList>\n\t\t\t{description && (\n\t\t\t\t<Text slot=\"description\" className={tagGroupDescriptionStyles}>\n\t\t\t\t\t{description}\n\t\t\t\t</Text>\n\t\t\t)}\n\t\t</RACTagGroup>\n\t)\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "tag/index.ts",
+      "content": "export { Tag, TagGroup } from \"./Tag\"\nexport type { TagGroupNode, TagNode } from \"./tag.schema\"\nexport { TagGroupSchema, TagSchema } from \"./tag.schema\"\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "tag/tag.schema.ts",
+      "content": "import { z } from \"zod\"\n\nexport const TagSchema = z.object({\n\ttype: z.literal(\"Tag\"),\n\tprops: z\n\t\t.object({\n\t\t\tid: z.string().optional(),\n\t\t\tisDisabled: z.boolean().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.string().optional(),\n})\n\nexport type TagNode = z.infer<typeof TagSchema>\n\nexport const TagGroupSchema = z.object({\n\ttype: z.literal(\"TagGroup\"),\n\tprops: z\n\t\t.object({\n\t\t\tlabel: z.string().optional(),\n\t\t\tselectionMode: z.enum([\"none\", \"single\", \"multiple\"]).optional(),\n\t\t\tdescription: z.string().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.array(z.unknown()).optional(),\n})\n\nexport type TagGroupNode = z.infer<typeof TagGroupSchema>\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "tag/tag.styles.ts",
+      "content": "export const tagGroupStyles = \"flex flex-col gap-2\"\nexport const tagGroupLabelStyles = \"text-sm font-medium text-[var(--color-text)]\"\nexport const tagGroupListStyles = \"flex flex-wrap gap-1.5\"\nexport const tagGroupDescriptionStyles = \"text-sm text-[var(--color-text-muted)] mt-1\"\n\nexport const getTagStyles = ({\n\tisSelected = false,\n\tisDisabled = false,\n}: {\n\tisSelected?: boolean\n\tisDisabled?: boolean\n} = {}) =>\n\t[\n\t\t\"inline-flex items-center rounded-full border px-3 py-0.5 text-xs font-medium transition-colors\",\n\t\t\"cursor-default select-none outline-none\",\n\t\t\"focus-visible:ring-2 focus-visible:ring-[var(--color-focus-ring)] focus-visible:ring-offset-1\",\n\t\tisSelected\n\t\t\t? \"bg-[var(--color-primary)] border-[var(--color-primary)] text-[var(--color-primary-foreground)]\"\n\t\t\t: \"bg-[var(--color-surface)] border-[var(--color-border)] text-[var(--color-text)]\",\n\t\tisDisabled ? \"opacity-50 cursor-not-allowed\" : \"hover:border-[var(--color-border-strong)]\",\n\t]\n\t\t.filter(Boolean)\n\t\t.join(\" \")\n",
+      "type": "registry:component"
+    }
+  ]
+}
