@@ -11,22 +11,22 @@
   "files": [
     {
       "path": "alert/Alert.tsx",
-      "content": "import type { ReactNode } from \"react\"\r\nimport { alertBodyStyles, alertTitleStyles, getAlertStyles } from \"./alert.styles\"\r\n\r\ninterface AlertProps {\r\n\tvariant?: \"info\" | \"success\" | \"warning\" | \"error\"\r\n\ttitle?: string\r\n\tchildren?: ReactNode\r\n}\r\n\r\nexport function Alert({ variant = \"info\", title, children }: AlertProps) {\r\n\treturn (\r\n\t\t<div role=\"alert\" className={getAlertStyles(variant)}>\r\n\t\t\t{title && <p className={alertTitleStyles}>{title}</p>}\r\n\t\t\t{children && <div className={alertBodyStyles}>{children}</div>}\r\n\t\t</div>\r\n\t)\r\n}\r\n",
+      "content": "import type { ReactNode } from \"react\"\nimport { alertBodyStyles, alertTitleStyles, getAlertStyles } from \"./alert.styles\"\n\ninterface AlertProps {\n\tvariant?: \"info\" | \"success\" | \"warning\" | \"error\"\n\ttitle?: string\n\tchildren?: ReactNode\n}\n\nexport function Alert({ variant = \"info\", title, children }: AlertProps) {\n\treturn (\n\t\t<div role=\"alert\" className={getAlertStyles(variant)}>\n\t\t\t{title && <p className={alertTitleStyles}>{title}</p>}\n\t\t\t{children && <div className={alertBodyStyles}>{children}</div>}\n\t\t</div>\n\t)\n}\n",
       "type": "registry:component"
     },
     {
       "path": "alert/alert.schema.ts",
-      "content": "import { z } from \"zod\"\r\n\r\nexport const AlertSchema = z.object({\r\n\ttype: z.literal(\"Alert\"),\r\n\tprops: z\r\n\t\t.object({\r\n\t\t\tvariant: z.enum([\"info\", \"success\", \"warning\", \"error\"]).optional(),\r\n\t\t\ttitle: z.string().optional(),\r\n\t\t})\r\n\t\t.optional(),\r\n\tchildren: z.union([z.string(), z.array(z.unknown())]).optional(),\r\n})\r\n\r\nexport type AlertNode = z.infer<typeof AlertSchema>\r\n",
+      "content": "import { z } from \"zod\"\n\nexport const AlertSchema = z.object({\n\ttype: z.literal(\"Alert\"),\n\tprops: z\n\t\t.object({\n\t\t\tvariant: z.enum([\"info\", \"success\", \"warning\", \"error\"]).optional(),\n\t\t\ttitle: z.string().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.union([z.string(), z.array(z.unknown())]).optional(),\n})\n\nexport type AlertNode = z.infer<typeof AlertSchema>\n",
       "type": "registry:component"
     },
     {
       "path": "alert/alert.styles.ts",
-      "content": "type Variant = \"info\" | \"success\" | \"warning\" | \"error\"\r\n\r\nconst variantStyles: Record<Variant, string> = {\r\n\tinfo: \"bg-[var(--color-info-subtle)] border-[var(--color-info)] text-[var(--color-info-fg)]\",\r\n\tsuccess: \"bg-[var(--color-success-subtle)] border-[var(--color-success)] text-[var(--color-success-fg)]\",\r\n\twarning: \"bg-[var(--color-warning-subtle)] border-[var(--color-warning)] text-[var(--color-warning-fg)]\",\r\n\terror: \"bg-[var(--color-danger-subtle)] border-[var(--color-danger)] text-[var(--color-danger-fg)]\",\r\n}\r\n\r\nexport const getAlertStyles = (variant: Variant = \"info\") =>\r\n\t[\"rounded-md border px-4 py-3 text-sm\", variantStyles[variant]].join(\" \")\r\n\r\nexport const alertTitleStyles = \"font-semibold mb-1\"\r\nexport const alertBodyStyles = \"leading-relaxed\"\r\n",
+      "content": "type Variant = \"info\" | \"success\" | \"warning\" | \"error\"\n\nconst variantStyles: Record<Variant, string> = {\n\tinfo: \"bg-[var(--color-info-subtle)] border-[var(--color-info)] text-[var(--color-info-fg)]\",\n\tsuccess: \"bg-[var(--color-success-subtle)] border-[var(--color-success)] text-[var(--color-success-fg)]\",\n\twarning: \"bg-[var(--color-warning-subtle)] border-[var(--color-warning)] text-[var(--color-warning-fg)]\",\n\terror: \"bg-[var(--color-danger-subtle)] border-[var(--color-danger)] text-[var(--color-danger-fg)]\",\n}\n\nexport const getAlertStyles = (variant: Variant = \"info\") =>\n\t[\"rounded-md border px-4 py-3 text-sm\", variantStyles[variant]].join(\" \")\n\nexport const alertTitleStyles = \"font-semibold mb-1\"\nexport const alertBodyStyles = \"leading-relaxed\"\n",
       "type": "registry:component"
     },
     {
       "path": "alert/index.ts",
-      "content": "export { Alert } from \"./Alert\"\r\nexport type { AlertNode } from \"./alert.schema\"\r\nexport { AlertSchema } from \"./alert.schema\"\r\n",
+      "content": "export { Alert } from \"./Alert\"\nexport type { AlertNode } from \"./alert.schema\"\nexport { AlertSchema } from \"./alert.schema\"\n",
       "type": "registry:component"
     }
   ]
