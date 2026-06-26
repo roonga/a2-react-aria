@@ -1,4 +1,6 @@
+import react from "@astrojs/react"
 import starlight from "@astrojs/starlight"
+import tailwindcss from "@tailwindcss/vite"
 import { defineConfig } from "astro/config"
 
 export default defineConfig({
@@ -42,7 +44,11 @@ export default defineConfig({
 				},
 			],
 		}),
+		react(),
 	],
+	vite: {
+		plugins: [tailwindcss()],
+	},
 	site: "https://roonga.github.io",
 	base: "/a2-react-aria",
 })
