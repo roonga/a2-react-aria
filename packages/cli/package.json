@@ -44,10 +44,12 @@
 		"build": "tsc -p tsconfig.json",
 		"dev": "tsc -p tsconfig.json --watch",
 		"test": "vitest run",
+		"test:coverage": "vitest run --coverage --reporter=verbose",
 		"prepublishOnly": "pnpm build"
 	},
 	"devDependencies": {
 		"@types/node": "^20",
+		"@vitest/coverage-v8": "^4.1.8",
 		"typescript": "6.0.3",
 		"vitest": "^4.1.8"
 	}

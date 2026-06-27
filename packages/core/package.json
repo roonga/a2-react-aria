@@ -50,7 +50,7 @@
 		"build:schema": "node --experimental-strip-types scripts/gen-a2ui-schema.mts",
 		"test": "vitest run",
 		"test:ui": "vitest --ui",
-		"test:coverage": "vitest run --coverage",
+		"test:coverage": "vitest run --coverage --reporter=verbose",
 		"prepublishOnly": "pnpm build"
 	},
 	"dependencies": {
@@ -69,6 +69,7 @@
 		"@types/react-dom": "^19.0.0",
 		"@vitejs/plugin-react": "^6.0.2",
 		"@vitejs/plugin-react-swc": "^4.3.1",
+		"@vitest/coverage-v8": "^4.1.8",
 		"axe-core": "^4.12.1",
 		"jsdom": "^26.0.0",
 		"react": "^19.0.0",
