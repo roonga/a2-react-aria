@@ -33,6 +33,42 @@ import {
 } from "@a2ra/core"
 import { useState } from "react"
 
+function CopyButton({ text }: { text: string }) {
+	const [copied, setCopied] = useState(false)
+
+	const handleCopy = () => {
+		navigator.clipboard.writeText(text).then(() => {
+			setCopied(true)
+			setTimeout(() => setCopied(false), 2000)
+		})
+	}
+
+	return (
+		<button
+			type="button"
+			onClick={handleCopy}
+			title="Copy JSON"
+			style={{
+				position: "absolute",
+				top: "0.6rem",
+				right: "0.6rem",
+				padding: "0.25rem 0.6rem",
+				fontSize: "0.72rem",
+				fontWeight: 500,
+				borderRadius: "0.3rem",
+				border: "1px solid var(--sl-color-hairline-light)",
+				background: copied ? "var(--sl-color-accent-low)" : "var(--sl-color-bg-nav)",
+				color: copied ? "var(--sl-color-accent-high)" : "var(--sl-color-gray-3)",
+				cursor: "pointer",
+				transition: "all 0.15s ease",
+				outline: "none",
+			}}
+		>
+			{copied ? "Copied!" : "Copy"}
+		</button>
+	)
+}
+
 const registry = createRegistry({
 	Accordion: { component: Accordion },
 	AccordionItem: { component: AccordionItem },
@@ -75,24 +111,28 @@ const TAB_INACTIVE = "border-transparent text-[var(--sl-color-gray-3)] hover:tex
 function JsonView({ node }: { node: A2Node }) {
 	const json = JSON.stringify(node, null, 2)
 	return (
-		<pre
-			style={{
-				margin: 0,
-				padding: "1.25rem 1.5rem",
-				overflowX: "auto",
-				fontSize: "0.82rem",
-				lineHeight: 1.65,
-				fontFamily: "'Cascadia Code','JetBrains Mono','Fira Code',ui-monospace,Consolas,monospace",
-				color: "var(--sl-color-text)",
-			}}
-		>
-			<code>
-				{json.split("\n").map((line, i) => (
-					// biome-ignore lint/suspicious/noArrayIndexKey: JSON lines have no stable identity
-					<ColorizedLine key={i} line={line} />
-				))}
-			</code>
-		</pre>
+		<div style={{ position: "relative" }}>
+			<CopyButton text={json} />
+			<pre
+				style={{
+					margin: 0,
+					padding: "1.25rem 1.5rem",
+					paddingRight: "4.5rem",
+					overflowX: "auto",
+					fontSize: "0.82rem",
+					lineHeight: 1.65,
+					fontFamily: "'Cascadia Code','JetBrains Mono','Fira Code',ui-monospace,Consolas,monospace",
+					color: "var(--sl-color-text)",
+				}}
+			>
+				<code>
+					{json.split("\n").map((line, i) => (
+						// biome-ignore lint/suspicious/noArrayIndexKey: JSON lines have no stable identity
+						<ColorizedLine key={i} line={line} />
+					))}
+				</code>
+			</pre>
+		</div>
 	)
 }
 
@@ -142,6 +182,7 @@ export function ComponentPreview({ node }: Props) {
 
 	return (
 		<div
+			className="not-content"
 			style={{
 				border: "1px solid var(--sl-color-hairline-light)",
 				borderRadius: "0.6rem",
