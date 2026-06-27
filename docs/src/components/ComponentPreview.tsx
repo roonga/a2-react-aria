@@ -118,6 +118,8 @@ function JsonView({ node }: { node: A2Node }) {
 					margin: 0,
 					padding: "1.25rem 1.5rem",
 					paddingRight: "4.5rem",
+					maxHeight: "20rem",
+					overflowY: "auto",
 					overflowX: "auto",
 					fontSize: "0.82rem",
 					lineHeight: 1.65,
