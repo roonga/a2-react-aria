@@ -362,6 +362,32 @@ table {
 	white-space: nowrap;
 }
 
+/* Constrain Type column so Description gets more room */
+.sl-markdown-content table th:nth-child(2),
+.sl-markdown-content table td:nth-child(2) {
+	max-width: 13rem;
+	white-space: normal;
+}
+
+.sl-markdown-content table td:nth-child(2) code {
+	white-space: normal;
+}
+
+.prop-default-badge {
+	display: inline-block;
+	margin-left: 0.4rem;
+	padding: 0.05rem 0.35rem;
+	font-size: 0.65rem;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	border-radius: 0.25rem;
+	background: var(--sl-color-accent-low);
+	color: var(--sl-color-accent-high);
+	vertical-align: middle;
+	line-height: 1.4;
+}
+
 /* ---- Logo sizing ---- */
 .site-title img,
 .site-title svg {
