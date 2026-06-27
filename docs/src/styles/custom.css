@@ -331,7 +331,6 @@ starlight-toc a[aria-current="true"] {
 /* ---- Tables ---- */
 table {
 	border-radius: 0.5rem;
-	overflow: hidden;
 }
 
 [data-theme="dark"] table {
@@ -344,6 +343,23 @@ table {
 
 [data-theme="dark"] tbody tr:nth-child(even) {
 	background: hsl(0, 0%, 7%);
+}
+
+/* Prop tables: keep prop names and inline code from wrapping mid-token */
+.sl-markdown-content table {
+	display: block;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.sl-markdown-content table td:first-child,
+.sl-markdown-content table th:first-child {
+	white-space: nowrap;
+}
+
+.sl-markdown-content table td code,
+.sl-markdown-content table th code {
+	white-space: nowrap;
 }
 
 /* ---- Logo sizing ---- */
