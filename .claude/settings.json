@@ -1,7 +1,6 @@
 {
   "permissions": {
     "allow": [
-      "Bash(GIT_EDITOR=true git *)",
       "Bash(Remove-Item *)",
       "Bash(Select-Object *)",
       "Bash(Select-String *)",
@@ -22,8 +21,6 @@
       "Bash(sonar-scanner*)",
       "Bash(start pnpm *)",
       "Bash(where git)",
-      "Read(//tmp/**)",
-      "Skill(update-config)",
       "TaskCreate",
       "TaskGet",
       "TaskList",
