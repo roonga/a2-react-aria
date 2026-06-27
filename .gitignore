@@ -30,6 +30,9 @@ Thumbs.db
 .claude/settings.json
 .claude/settings.local.json
 
+# VS Code local settings (machine-specific)
+.vscode/settings.local.json
+
 # Log files
 *.log
 
