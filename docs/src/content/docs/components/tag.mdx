@@ -1,0 +1,80 @@
+---
+title: Tag / TagGroup
+description: A collection of interactive tag chips with optional selection and removal.
+---
+
+import { ComponentPreview } from "../../../components/ComponentPreview"
+
+Two components: `TagGroup` (the container) and `Tag` (individual chips). Built on React
+Aria's `TagGroup` and `Tag` primitives with keyboard navigation and ARIA group labelling.
+
+## Add via CLI
+
+```bash
+npx @a2ra/cli add tag
+```
+
+## Read-only tags
+
+<ComponentPreview client:only="react" node={{
+  type: "TagGroup",
+  props: { label: "Technologies" },
+  children: [
+    { type: "Tag", props: { id: "react" }, children: "React" },
+    { type: "Tag", props: { id: "ts" }, children: "TypeScript" },
+    { type: "Tag", props: { id: "aria" }, children: "React Aria" },
+  ]
+}} />
+
+## Selectable tags
+
+<ComponentPreview client:only="react" node={{
+  type: "TagGroup",
+  props: { label: "Filter by status", selectionMode: "multiple" },
+  children: [
+    { type: "Tag", props: { id: "active" }, children: "Active" },
+    { type: "Tag", props: { id: "pending" }, children: "Pending" },
+    { type: "Tag", props: { id: "archived" }, children: "Archived" },
+    { type: "Tag", props: { id: "draft" }, children: "Draft" },
+  ]
+}} />
+
+## Example JSON
+
+```json
+{
+  "type": "TagGroup",
+  "props": {
+    "label": "Filter by status",
+    "selectionMode": "multiple"
+  },
+  "children": [
+    { "type": "Tag", "props": { "id": "active" }, "children": "Active" },
+    { "type": "Tag", "props": { "id": "pending" }, "children": "Pending" },
+    { "type": "Tag", "props": { "id": "archived" }, "children": "Archived" }
+  ]
+}
+```
+
+## TagGroup props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `label` | `string` | Visible group label |
+| `selectionMode` | `none` <span className="prop-default-badge">default</span><br />`single`<br />`multiple` | Selection behaviour |
+| `description` | `string` | Helper text shown below the group |
+| `children` | `node[]` | `Tag` child nodes |
+
+## Tag props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `id` | `string` | Unique identifier for selection tracking |
+| `isDisabled` | `true`<br />`false` <span className="prop-default-badge">default</span> | Disables this tag |
+| `children` | `string` | Tag label text |
+
+## Notes
+
+- `selectionMode: "none"` (default) renders tags as static labels.
+- With `selectionMode: "single"` or `"multiple"`, tags become interactive toggle buttons.
+- Arrow keys navigate between tags; `Space` or `Enter` selects the focused tag.

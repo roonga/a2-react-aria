@@ -1,0 +1,90 @@
+---
+title: Text
+description: A polymorphic text primitive for headings, paragraphs, spans, and labels.
+---
+
+import { ComponentPreview } from "../../../components/ComponentPreview"
+
+Renders a single text node as any semantic HTML element. Uses design tokens for size,
+weight, and color so text always respects the consumer's theme.
+
+## Add via CLI
+
+```bash
+npx @a2ra/cli add text
+```
+
+## Sizes
+
+<ComponentPreview client:only="react" node={{
+  type: "Flex",
+  props: { direction: "column", gap: "xs" },
+  children: [
+    { type: "Text", props: { size: "2xl", weight: "bold" }, children: "2xl / Bold" },
+    { type: "Text", props: { size: "xl", weight: "semibold" }, children: "xl / Semibold" },
+    { type: "Text", props: { size: "lg", weight: "medium" }, children: "lg / Medium" },
+    { type: "Text", props: { size: "md" }, children: "md / Normal (default)" },
+    { type: "Text", props: { size: "sm", color: "muted" }, children: "sm / Muted" },
+    { type: "Text", props: { size: "xs", color: "muted" }, children: "xs / Muted" },
+  ]
+}} />
+
+## Colors
+
+<ComponentPreview client:only="react" node={{
+  type: "Flex",
+  props: { direction: "column", gap: "xs" },
+  children: [
+    { type: "Text", children: "Default color" },
+    { type: "Text", props: { color: "muted" }, children: "Muted color" },
+    { type: "Text", props: { color: "primary" }, children: "Primary color" },
+    { type: "Text", props: { color: "danger" }, children: "Danger color" },
+  ]
+}} />
+
+## Semantic elements
+
+<ComponentPreview client:only="react" node={{
+  type: "Flex",
+  props: { direction: "column", gap: "xs" },
+  children: [
+    { type: "Text", props: { as: "h2", size: "xl", weight: "bold" }, children: "Heading 2" },
+    { type: "Text", props: { as: "h3", size: "lg", weight: "semibold" }, children: "Heading 3" },
+    { type: "Text", props: { as: "p" }, children: "Body paragraph text that wraps naturally." },
+  ]
+}} />
+
+## Example JSON
+
+```json
+{
+  "type": "Text",
+  "props": {
+    "as": "h2",
+    "size": "xl",
+    "weight": "semibold",
+    "color": "default"
+  },
+  "children": "Account settings"
+}
+```
+
+## Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `as` | `p` <span className="prop-default-badge">default</span><br />`h1`<br />`h2`<br />`h3`<br />`h4`<br />`span`<br />`label` | HTML element to render |
+| `size` | `xs`<br />`sm`<br />`md` <span className="prop-default-badge">default</span><br />`lg`<br />`xl`<br />`2xl` | Font size |
+| `weight` | `normal` <span className="prop-default-badge">default</span><br />`medium`<br />`semibold`<br />`bold` | Font weight |
+| `color` | `default` <span className="prop-default-badge">default</span><br />`muted`<br />`primary`<br />`danger` | Text color token |
+| `align` | `left` <span className="prop-default-badge">default</span><br />`center`<br />`right`<br />`justify` | Text alignment |
+| `italic` | `true`<br />`false` <span className="prop-default-badge">default</span> | Italic style |
+| `truncate` | `true`<br />`false` <span className="prop-default-badge">default</span> | Single-line truncation with ellipsis |
+| `children` | `string`<br />`node[]` | Text content |
+
+## Notes
+
+- Use `as` to choose the right semantic element. All font size and weight values are independent
+  of the element, so `as: "h2"` does not automatically make the text large.
+- `truncate: true` adds `overflow-hidden text-ellipsis whitespace-nowrap` and requires a fixed
+  or constrained width on the parent to take effect.

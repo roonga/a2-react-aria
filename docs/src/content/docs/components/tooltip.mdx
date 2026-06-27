@@ -1,0 +1,58 @@
+---
+title: Tooltip
+description: A non-interactive hint that appears on hover or focus of a trigger.
+---
+
+import { ComponentPreview } from "../../../components/ComponentPreview"
+
+A wrapper around React Aria's `TooltipTrigger` and `Tooltip` components. Appears on
+hover or keyboard focus after a short delay and is announced by screen readers.
+
+## Add via CLI
+
+```bash
+npx @a2ra/cli add tooltip
+```
+
+## Basic
+
+<ComponentPreview client:only="react" node={{
+  type: "Flex",
+  props: { gap: "lg", align: "center", justify: "center" },
+  children: [
+    { type: "Tooltip", props: { content: "Shown above", triggerLabel: "Hover me (top)", placement: "top" } },
+    { type: "Tooltip", props: { content: "Shown below", triggerLabel: "Hover me (bottom)", placement: "bottom" } },
+  ]
+}} />
+
+## Example JSON
+
+```json
+{
+  "type": "Tooltip",
+  "props": {
+    "content": "This action cannot be undone.",
+    "triggerLabel": "Delete",
+    "placement": "top"
+  }
+}
+```
+
+## Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `content` | `string` | Tooltip text |
+| `triggerLabel` | `string` | Label for the trigger button |
+| `placement` | `top` <span className="prop-default-badge">default</span><br />`bottom`<br />`left`<br />`right` | Preferred position |
+| `isOpen` | `boolean` | Controlled open state |
+| `defaultOpen` | `true`<br />`false` <span className="prop-default-badge">default</span> | Open on mount |
+| `offset` | `number` | Distance from the trigger in pixels. Default: `8` |
+| `crossOffset` | `number` | Perpendicular offset in pixels. Default: `0` |
+| `shouldFlip` | `true` <span className="prop-default-badge">default</span><br />`false` | Flip to opposite side when out of bounds |
+
+## Notes
+
+- `Tooltip` is for non-interactive hints only. For interactive content, use `Popover` instead.
+- The tooltip appears after a 1.5s delay on hover and immediately on keyboard focus.
+- Screen readers announce the tooltip content when the trigger is focused.

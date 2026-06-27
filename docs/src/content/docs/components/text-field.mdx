@@ -1,0 +1,106 @@
+---
+title: TextField
+description: A labeled text input with validation, description, and error message support.
+---
+
+import { ComponentPreview } from "../../../components/ComponentPreview"
+
+A wrapper around React Aria's `TextField` component. Manages label association,
+validation state, and error messages automatically.
+
+## Add via CLI
+
+```bash
+npx @a2ra/cli add text-field
+```
+
+## Basic
+
+<ComponentPreview client:only="react" node={{
+  type: "TextField",
+  props: {
+    label: "Email address",
+    type: "email",
+    name: "email",
+    isRequired: true,
+    autoComplete: "email",
+    description: "We'll never share your email."
+  }
+}} />
+
+## Types
+
+<ComponentPreview client:only="react" node={{
+  type: "Flex",
+  props: { direction: "column", gap: "md" },
+  children: [
+    { type: "TextField", props: { label: "Text", type: "text", placeholder: "Enter text" } },
+    { type: "TextField", props: { label: "Password", type: "password" } },
+    { type: "TextField", props: { label: "Phone", type: "tel", placeholder: "+1 (555) 000-0000" } },
+  ]
+}} />
+
+## Disabled state
+
+<ComponentPreview client:only="react" node={{
+  type: "TextField",
+  props: { label: "Username", defaultValue: "jsmith", isDisabled: true }
+}} />
+
+## With validation error
+
+<ComponentPreview client:only="react" node={{
+  type: "TextField",
+  props: {
+    label: "Username",
+    name: "username",
+    defaultValue: "jsmith",
+    isInvalid: true,
+    errorMessage: "Username is already taken."
+  }
+}} />
+
+## Example JSON
+
+```json
+{
+  "type": "TextField",
+  "props": {
+    "label": "Email address",
+    "type": "email",
+    "name": "email",
+    "isRequired": true,
+    "description": "We'll never share your email."
+  }
+}
+```
+
+## Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `label` | `string` | Visible label (required for accessibility) |
+| `placeholder` | `string` | Placeholder text |
+| `type` | `text` <span className="prop-default-badge">default</span><br />`email`<br />`password`<br />`number`<br />`tel`<br />`url` | Input type |
+| `name` | `string` | Form field name |
+| `value` | `string` | Controlled value |
+| `defaultValue` | `string` | Uncontrolled default |
+| `autoComplete` | `string` | Browser autocomplete hint |
+| `inputMode` | `text`<br />`numeric`<br />`decimal`<br />`email`<br />`tel`<br />`url`<br />`search` | Virtual keyboard hint |
+| `minLength` | `number` | Minimum character length |
+| `maxLength` | `number` | Maximum character length |
+| `pattern` | `string` | Regex validation pattern |
+| `isDisabled` | `true`<br />`false` <span className="prop-default-badge">default</span> | Disables the input |
+| `isRequired` | `true`<br />`false` <span className="prop-default-badge">default</span> | Marks field as required |
+| `isReadOnly` | `true`<br />`false` <span className="prop-default-badge">default</span> | Prevents editing |
+| `isInvalid` | `true`<br />`false` <span className="prop-default-badge">default</span> | Shows error styling |
+| `autoFocus` | `true`<br />`false` <span className="prop-default-badge">default</span> | Focuses the field on mount |
+| `validationBehavior` | `aria` <span className="prop-default-badge">default</span><br />`native` | Validation reporting strategy |
+| `description` | `string` | Helper text shown below the input |
+| `errorMessage` | `string` | Error text shown when `isInvalid` is true |
+
+## Notes
+
+- Always provide a `label`. React Aria associates it with the input via ARIA attributes.
+- `errorMessage` is only shown when `isInvalid: true`.
+- Use `validationBehavior: "native"` for HTML form constraint validation with browser-native messages.

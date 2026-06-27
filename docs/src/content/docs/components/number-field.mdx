@@ -1,0 +1,95 @@
+---
+title: NumberField
+description: A numeric input with increment/decrement controls, min/max, and step support.
+---
+
+import { ComponentPreview } from "../../../components/ComponentPreview"
+
+A wrapper around React Aria's `NumberField` component. Provides keyboard-accessible
+increment/decrement buttons and locale-aware number formatting.
+
+## Add via CLI
+
+```bash
+npx @a2ra/cli add number-field
+```
+
+## Basic
+
+<ComponentPreview client:only="react" node={{
+  type: "NumberField",
+  props: {
+    label: "Quantity",
+    name: "qty",
+    minValue: 1,
+    maxValue: 100,
+    defaultValue: 1
+  }
+}} />
+
+## Disabled state
+
+<ComponentPreview client:only="react" node={{
+  type: "NumberField",
+  props: {
+    label: "Price (USD)",
+    defaultValue: 29.99,
+    isDisabled: true
+  }
+}} />
+
+## With validation
+
+<ComponentPreview client:only="react" node={{
+  type: "NumberField",
+  props: {
+    label: "Price (USD)",
+    name: "price",
+    minValue: 0,
+    isInvalid: true,
+    errorMessage: "Price cannot be negative."
+  }
+}} />
+
+## Example JSON
+
+```json
+{
+  "type": "NumberField",
+  "props": {
+    "label": "Quantity",
+    "name": "qty",
+    "minValue": 1,
+    "maxValue": 100,
+    "step": 1,
+    "defaultValue": 1
+  }
+}
+```
+
+## Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `label` | `string` | Visible label |
+| `placeholder` | `string` | Placeholder text |
+| `minValue` | `number` | Minimum allowed value |
+| `maxValue` | `number` | Maximum allowed value |
+| `step` | `number` | Increment/decrement step |
+| `value` | `number` | Controlled value |
+| `defaultValue` | `number` | Uncontrolled default |
+| `name` | `string` | Form field name |
+| `isRequired` | `true`<br />`false` <span className="prop-default-badge">default</span> | Marks field as required |
+| `isDisabled` | `true`<br />`false` <span className="prop-default-badge">default</span> | Disables the input |
+| `isReadOnly` | `true`<br />`false` <span className="prop-default-badge">default</span> | Prevents editing |
+| `isInvalid` | `true`<br />`false` <span className="prop-default-badge">default</span> | Shows error styling |
+| `isWheelDisabled` | `true`<br />`false` <span className="prop-default-badge">default</span> | Prevents mouse wheel from changing the value |
+| `validationBehavior` | `aria` <span className="prop-default-badge">default</span><br />`native` | Validation reporting strategy |
+| `description` | `string` | Helper text |
+| `errorMessage` | `string` | Error text shown when `isInvalid` is true |
+
+## Notes
+
+- `isWheelDisabled: true` is recommended in forms to prevent accidental value changes
+  when the user scrolls the page.
+- The increment/decrement buttons are keyboard-accessible and ARIA-labelled automatically.

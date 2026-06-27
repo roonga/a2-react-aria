@@ -1,0 +1,75 @@
+---
+title: Form
+description: A layout container that groups form fields with consistent spacing.
+---
+
+import { ComponentPreview } from "../../../components/ComponentPreview"
+
+A wrapper around React Aria's `Form` component. Handles server-side validation errors,
+form-wide disabled state, and vertical spacing between fields.
+
+## Add via CLI
+
+```bash
+npx @a2ra/cli add form
+```
+
+## Basic
+
+<ComponentPreview client:only="react" node={{
+  type: "Form",
+  props: { gap: "md" },
+  children: [
+    { type: "TextField", props: { label: "Full name", name: "name", isRequired: true } },
+    { type: "TextField", props: { label: "Email", name: "email", type: "email", isRequired: true } },
+    { type: "Button", props: { variant: "primary", type: "submit" }, children: "Create account" },
+  ]
+}} />
+
+## With server validation
+
+<ComponentPreview client:only="react" node={{
+  type: "Form",
+  props: {
+    gap: "md",
+    validationErrors: { email: "This email is already registered." }
+  },
+  children: [
+    { type: "TextField", props: { label: "Email", name: "email", type: "email" } },
+    { type: "Button", props: { variant: "primary", type: "submit" }, children: "Continue" },
+  ]
+}} />
+
+## Example JSON
+
+```json
+{
+  "type": "Form",
+  "props": { "gap": "md" },
+  "children": [
+    { "type": "TextField", "props": { "label": "Full name", "name": "name", "isRequired": true } },
+    { "type": "TextField", "props": { "label": "Email", "name": "email", "type": "email", "isRequired": true } },
+    { "type": "Button", "props": { "variant": "primary", "type": "submit" }, "children": "Create account" }
+  ]
+}
+```
+
+## Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `gap` | `sm`<br />`md` <span className="prop-default-badge">default</span><br />`lg` | Vertical spacing between child fields |
+| `validationBehavior` | `aria` <span className="prop-default-badge">default</span><br />`native` | Validation reporting strategy |
+| `validationErrors` | `Record<string, string \| string[]>` | Server-side errors keyed by field name |
+| `action` | `string` | Form action URL |
+| `method` | `get`<br />`post` | HTTP method |
+| `encType` | `string` | Encoding type |
+| `autoComplete` | `on`<br />`off` | Browser autocomplete hint |
+| `target` | `string` | Form submission target |
+| `children` | `node[]` | Form field nodes |
+
+## Notes
+
+- `validationErrors` keys must match the `name` prop of the field they target.
+- Use `validationBehavior: "native"` when submitting to a plain HTML form endpoint.
+- `Form` does not submit on its own. Pair it with a `Button` with `type: "submit"`.

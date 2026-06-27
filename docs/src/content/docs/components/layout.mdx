@@ -1,0 +1,90 @@
+---
+title: "Flex / Grid Layout"
+description: Structural layout nodes for composing component trees.
+---
+
+import { ComponentPreview } from "../../../components/ComponentPreview"
+
+Two layout primitives: `Flex` for one-dimensional layouts (row or column) and `Grid` for
+two-dimensional column grids. Both render as plain `<div>` elements using design-token spacing.
+
+## Add via CLI
+
+```bash
+npx @a2ra/cli add layout
+```
+
+## Flex row
+
+<ComponentPreview client:only="react" node={{
+  type: "Flex",
+  props: { direction: "row", justify: "between", align: "center", gap: "sm" },
+  children: [
+    { type: "Text", props: { weight: "semibold" }, children: "Invoice #1042" },
+    { type: "Button", props: { variant: "ghost" }, children: "Download" },
+  ]
+}} />
+
+## Flex column
+
+<ComponentPreview client:only="react" node={{
+  type: "Flex",
+  props: { direction: "column", gap: "md" },
+  children: [
+    { type: "TextField", props: { label: "First name" } },
+    { type: "TextField", props: { label: "Last name" } },
+    { type: "Button", props: { variant: "primary" }, children: "Continue" },
+  ]
+}} />
+
+## Grid
+
+<ComponentPreview client:only="react" node={{
+  type: "Grid",
+  props: { columns: 3, gap: "md" },
+  children: [
+    { type: "Card", children: [{ type: "Text", props: { size: "sm" }, children: "Item 1" }] },
+    { type: "Card", children: [{ type: "Text", props: { size: "sm" }, children: "Item 2" }] },
+    { type: "Card", children: [{ type: "Text", props: { size: "sm" }, children: "Item 3" }] },
+  ]
+}} />
+
+## Example JSON
+
+```json
+{
+  "type": "Grid",
+  "props": { "columns": 3, "gap": "md" },
+  "children": [
+    { "type": "Card", "children": [{ "type": "Text", "children": "Item 1" }] },
+    { "type": "Card", "children": [{ "type": "Text", "children": "Item 2" }] },
+    { "type": "Card", "children": [{ "type": "Text", "children": "Item 3" }] }
+  ]
+}
+```
+
+## Flex props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `direction` | `row` <span className="prop-default-badge">default</span><br />`column`<br />`row-reverse`<br />`column-reverse` | Flex direction |
+| `gap` | `none`<br />`xs`<br />`sm`<br />`md` <span className="prop-default-badge">default</span><br />`lg`<br />`xl` | Gap between children |
+| `align` | `start` <span className="prop-default-badge">default</span><br />`center`<br />`end`<br />`stretch`<br />`baseline` | Cross-axis alignment |
+| `justify` | `start` <span className="prop-default-badge">default</span><br />`center`<br />`end`<br />`between`<br />`around`<br />`evenly` | Main-axis distribution |
+| `wrap` | `true`<br />`false` <span className="prop-default-badge">default</span> | Allow children to wrap |
+| `children` | `node[]` | Child nodes |
+
+## Grid props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `columns` | `number` (1-12) | Number of equal-width columns. Default: `2` |
+| `gap` | `none`<br />`xs`<br />`sm`<br />`md` <span className="prop-default-badge">default</span><br />`lg`<br />`xl` | Gap between cells |
+| `align` | `start` <span className="prop-default-badge">default</span><br />`center`<br />`end`<br />`stretch` | Row alignment |
+| `children` | `node[]` | Child nodes |
+
+## Notes
+
+- `Flex` and `Grid` render as plain `<div>` elements with no semantic meaning.
+- For form layouts, prefer `Form` over `Flex` — `Form` wires up React Aria validation context.
+- `Grid` columns are always equal-width. For asymmetric layouts, nest multiple `Flex` nodes.

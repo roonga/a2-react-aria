@@ -1,0 +1,67 @@
+---
+title: Breadcrumb
+description: A navigation trail showing the current page's location in the hierarchy.
+---
+
+import { ComponentPreview } from "../../../components/ComponentPreview"
+
+A wrapper around React Aria's `Breadcrumbs` and `Breadcrumb` components.
+Renders a `<nav>` with `aria-label` and marks the last item as the current page.
+
+## Add via CLI
+
+```bash
+npx @a2ra/cli add breadcrumb
+```
+
+## Basic
+
+<ComponentPreview client:only="react" node={{
+  type: "Breadcrumb",
+  props: {
+    ariaLabel: "Page location",
+    items: [
+      { id: "home", label: "Home", href: "/" },
+      { id: "products", label: "Products", href: "/products" },
+      { id: "detail", label: "Wireless Keyboard" },
+    ]
+  }
+}} />
+
+## Example JSON
+
+```json
+{
+  "type": "Breadcrumb",
+  "props": {
+    "ariaLabel": "Page location",
+    "items": [
+      { "id": "home", "label": "Home", "href": "/" },
+      { "id": "products", "label": "Products", "href": "/products" },
+      { "id": "detail", "label": "Wireless Keyboard" }
+    ]
+  }
+}
+```
+
+## Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `items` | `BreadcrumbItem[]` | Ordered list of crumbs |
+| `ariaLabel` | `string` | ARIA label for the `<nav>` element. Default: `"Breadcrumb"` |
+| `isDisabled` | `true`<br />`false` <span className="prop-default-badge">default</span> | Disables all breadcrumb links |
+
+### BreadcrumbItem shape
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `string` | Unique identifier |
+| `label` | `string` | Visible text |
+| `href` | `string` | Link destination (omit for the current page) |
+
+## Notes
+
+- The last item (no `href`) is automatically marked `aria-current="page"`.
+- Items without `href` render as plain text, not links.
+- Breadcrumbs are wrapped in `<nav>` with the `aria-label` for landmark navigation.

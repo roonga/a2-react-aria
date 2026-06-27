@@ -1,0 +1,89 @@
+---
+title: Menu
+description: A trigger button that opens a listbox of actionable items.
+---
+
+import { ComponentPreview } from "../../../components/ComponentPreview"
+
+A wrapper around React Aria's `MenuTrigger` and `Menu` components. Supports single and
+multiple selection, disabled items, and full keyboard navigation.
+
+## Add via CLI
+
+```bash
+npx @a2ra/cli add menu
+```
+
+## Basic
+
+<ComponentPreview client:only="react" node={{
+  type: "Menu",
+  props: {
+    triggerLabel: "Actions",
+    items: [
+      { id: "edit", label: "Edit" },
+      { id: "duplicate", label: "Duplicate" },
+      { id: "delete", label: "Delete", isDisabled: true },
+    ]
+  }
+}} />
+
+## With selection
+
+<ComponentPreview client:only="react" node={{
+  type: "Menu",
+  props: {
+    triggerLabel: "View",
+    selectionMode: "single",
+    defaultSelectedKeys: ["grid"],
+    items: [
+      { id: "grid", label: "Grid view" },
+      { id: "list", label: "List view" },
+      { id: "compact", label: "Compact view" },
+    ]
+  }
+}} />
+
+## Example JSON
+
+```json
+{
+  "type": "Menu",
+  "props": {
+    "triggerLabel": "Actions",
+    "items": [
+      { "id": "edit", "label": "Edit" },
+      { "id": "duplicate", "label": "Duplicate" },
+      { "id": "delete", "label": "Delete" }
+    ],
+    "disabledKeys": ["delete"]
+  }
+}
+```
+
+## Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `triggerLabel` | `string` | Label for the trigger button |
+| `items` | `MenuItemEntry[]` | Menu items (see below) |
+| `placement` | `top`<br />`bottom` <span className="prop-default-badge">default</span><br />`left`<br />`right` | Preferred menu position |
+| `isOpen` | `boolean` | Controlled open state |
+| `selectionMode` | `none` <span className="prop-default-badge">default</span><br />`single`<br />`multiple` | Selection behaviour |
+| `selectedKeys` | `string[]` | Controlled selected item IDs |
+| `defaultSelectedKeys` | `string[]` | Uncontrolled default selection |
+| `disabledKeys` | `string[]` | IDs of non-interactive items |
+
+### MenuItemEntry shape
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `string` | Unique item identifier |
+| `label` | `string` | Visible item text |
+| `isDisabled` | `boolean` | Disables this item |
+
+## Notes
+
+- Arrow keys navigate items; `Enter` or `Space` activates the focused item.
+- `selectionMode: "none"` (default) is for action menus. Use `"single"` or `"multiple"`
+  for menus that represent a persistent state choice (e.g. view mode).

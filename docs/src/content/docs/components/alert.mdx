@@ -1,0 +1,55 @@
+---
+title: Alert
+description: A contextual status message with info, success, warning, and error variants.
+---
+
+import { ComponentPreview } from "../../../components/ComponentPreview"
+
+A non-interactive status banner with an optional title. Uses `role="alert"` so screen readers
+announce it immediately when it appears.
+
+## Add via CLI
+
+```bash
+npx @a2ra/cli add alert
+```
+
+## Variants
+
+<ComponentPreview client:only="react" node={{
+  type: "Flex",
+  props: { direction: "column", gap: "sm" },
+  children: [
+    { type: "Alert", props: { variant: "info", title: "Info" }, children: "This is an informational message." },
+    { type: "Alert", props: { variant: "success", title: "Success" }, children: "Your changes have been saved." },
+    { type: "Alert", props: { variant: "warning", title: "Warning" }, children: "This action may have side effects." },
+    { type: "Alert", props: { variant: "error", title: "Error" }, children: "Something went wrong. Please try again." },
+  ]
+}} />
+
+## Example JSON
+
+```json
+{
+  "type": "Alert",
+  "props": {
+    "variant": "success",
+    "title": "Payment received"
+  },
+  "children": "Your order has been confirmed."
+}
+```
+
+## Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `variant` | `info` <span className="prop-default-badge">default</span><br />`success`<br />`warning`<br />`error` | Color scheme and semantic meaning |
+| `title` | `string` | Bold heading rendered above the body |
+| `children` | `string`<br />`node[]` | Body content |
+
+## Notes
+
+- The element carries `role="alert"`, which triggers an ARIA live-region announcement on mount.
+  Only render it when the message is genuinely new information; avoid re-rendering the same alert on every tick.
+- Choose the variant that matches the semantic meaning, not just the desired colour.
