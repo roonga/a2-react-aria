@@ -28,7 +28,6 @@ playwright-report/
 Thumbs.db
 
 # Claude Code local settings (machine-specific)
-.claude/settings.json
 .claude/settings.local.json
 
 # VS Code local settings (machine-specific)
