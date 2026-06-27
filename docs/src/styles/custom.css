@@ -345,9 +345,10 @@ table {
 	background: hsl(0, 0%, 7%);
 }
 
-/* Prop tables: keep prop names and inline code from wrapping mid-token */
+/* Prop tables: full-width, scrollable, prop names never break */
 .sl-markdown-content table {
-	display: block;
+	display: table;
+	width: 100%;
 	overflow-x: auto;
 	-webkit-overflow-scrolling: touch;
 }
@@ -357,25 +358,20 @@ table {
 	white-space: nowrap;
 }
 
-.sl-markdown-content table td code,
-.sl-markdown-content table th code {
-	white-space: nowrap;
-}
-
-/* Constrain Type and Description columns so they wrap */
+/* Type column: allow wrapping; code tokens stay intact */
 .sl-markdown-content table th:nth-child(2),
 .sl-markdown-content table td:nth-child(2) {
-	max-width: 13rem;
 	white-space: normal;
+	width: 28%;
 }
 
 .sl-markdown-content table td:nth-child(2) code {
-	white-space: normal;
+	white-space: nowrap;
 }
 
+/* Description column: allow wrapping */
 .sl-markdown-content table th:nth-child(3),
 .sl-markdown-content table td:nth-child(3) {
-	max-width: 16rem;
 	white-space: normal;
 }
 
