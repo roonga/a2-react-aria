@@ -42,7 +42,7 @@ export function collectDependencies(items: RegistryItem[]): string[] {
 	for (const item of items) {
 		for (const d of item.dependencies ?? []) deps.add(d)
 	}
-	return [...deps].sort()
+	return [...deps].sort((a, b) => a.localeCompare(b))
 }
 
 export async function add(names: string[], opts: AddOptions): Promise<void> {
@@ -63,8 +63,9 @@ export async function add(names: string[], opts: AddOptions): Promise<void> {
 
 	const { written, skipped } = writeItems(items, targetDir, opts.overwrite ?? false)
 
+	const prefix = dim(`${config.componentsDir}/`)
 	for (const path of written) {
-		success(`${dim(`${config.componentsDir}/`)}${path}`)
+		success(`${prefix}${path}`)
 	}
 	for (const path of skipped) {
 		warn(`skipped ${path} (exists — use --overwrite)`)

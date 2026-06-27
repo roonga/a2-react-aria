@@ -106,6 +106,8 @@ async function main(): Promise<void> {
 	}
 }
 
-main().catch((err: unknown) => {
+try {
+	await main()
+} catch (err: unknown) {
 	fail(err instanceof Error ? err.message : String(err))
-})
+}

@@ -4,6 +4,20 @@ import json
 import random
 import string
 
+# Time slot constants shared across multiple restaurant records
+_T530 = "5:30 PM"
+_T600 = "6:00 PM"
+_T630 = "6:30 PM"
+_T700 = "7:00 PM"
+_T730 = "7:30 PM"
+_T800 = "8:00 PM"
+_T830 = "8:30 PM"
+_T900 = "9:00 PM"
+
+# Suburb and cuisine constants shared across multiple restaurant records
+_SURRY_HILLS = "Surry Hills"
+_MODERN_AUSTRALIAN = "Modern Australian"
+
 _RESTAURANTS = [
     {
         "id": "la-dolce-vita",
@@ -12,25 +26,25 @@ _RESTAURANTS = [
         "suburb": "CBD",
         "rating": "4.8",
         "price_range": "$$",
-        "time_slots": ["6:00 PM", "6:30 PM", "7:00 PM", "7:30 PM", "8:00 PM", "8:30 PM"],
+        "time_slots": [_T600, _T630, _T700, _T730, _T800, _T830],
     },
     {
         "id": "osteria-roma",
         "name": "Osteria Roma",
         "cuisine": "Italian",
-        "suburb": "Surry Hills",
+        "suburb": _SURRY_HILLS,
         "rating": "4.6",
         "price_range": "$$$",
-        "time_slots": ["6:30 PM", "7:00 PM", "7:30 PM", "8:00 PM", "9:00 PM"],
+        "time_slots": [_T630, _T700, _T730, _T800, _T900],
     },
     {
         "id": "sakura-garden",
         "name": "Sakura Garden",
         "cuisine": "Japanese",
-        "suburb": "Surry Hills",
+        "suburb": _SURRY_HILLS,
         "rating": "4.7",
         "price_range": "$$",
-        "time_slots": ["6:00 PM", "6:30 PM", "7:00 PM", "8:00 PM", "8:30 PM"],
+        "time_slots": [_T600, _T630, _T700, _T800, _T830],
     },
     {
         "id": "nobu-sydney",
@@ -39,7 +53,7 @@ _RESTAURANTS = [
         "suburb": "CBD",
         "rating": "4.9",
         "price_range": "$$$",
-        "time_slots": ["7:00 PM", "7:30 PM", "8:00 PM", "8:30 PM"],
+        "time_slots": [_T700, _T730, _T800, _T830],
     },
     {
         "id": "thai-orchid",
@@ -48,7 +62,7 @@ _RESTAURANTS = [
         "suburb": "Newtown",
         "rating": "4.5",
         "price_range": "$",
-        "time_slots": ["5:30 PM", "6:00 PM", "6:30 PM", "7:00 PM", "7:30 PM", "8:00 PM"],
+        "time_slots": [_T530, _T600, _T630, _T700, _T730, _T800],
     },
     {
         "id": "spice-of-siam",
@@ -57,25 +71,25 @@ _RESTAURANTS = [
         "suburb": "Glebe",
         "rating": "4.4",
         "price_range": "$",
-        "time_slots": ["6:00 PM", "6:30 PM", "7:00 PM", "7:30 PM", "8:00 PM"],
+        "time_slots": [_T600, _T630, _T700, _T730, _T800],
     },
     {
         "id": "quay-restaurant",
         "name": "Quay Restaurant",
-        "cuisine": "Modern Australian",
+        "cuisine": _MODERN_AUSTRALIAN,
         "suburb": "The Rocks",
         "rating": "4.9",
         "price_range": "$$$$",
-        "time_slots": ["6:30 PM", "7:00 PM", "7:30 PM", "8:00 PM"],
+        "time_slots": [_T630, _T700, _T730, _T800],
     },
     {
         "id": "bentley-restaurant",
         "name": "Bentley Restaurant",
-        "cuisine": "Modern Australian",
+        "cuisine": _MODERN_AUSTRALIAN,
         "suburb": "CBD",
         "rating": "4.7",
         "price_range": "$$$",
-        "time_slots": ["6:00 PM", "6:30 PM", "7:00 PM", "7:30 PM", "8:00 PM", "8:30 PM"],
+        "time_slots": [_T600, _T630, _T700, _T730, _T800, _T830],
     },
     {
         "id": "passage-to-india",
@@ -84,24 +98,24 @@ _RESTAURANTS = [
         "suburb": "CBD",
         "rating": "4.6",
         "price_range": "$$",
-        "time_slots": ["6:00 PM", "6:30 PM", "7:00 PM", "7:30 PM", "8:00 PM", "8:30 PM"],
+        "time_slots": [_T600, _T630, _T700, _T730, _T800, _T830],
     },
     {
         "id": "malabar-coast",
         "name": "Malabar Coast",
         "cuisine": "Indian",
-        "suburb": "Surry Hills",
+        "suburb": _SURRY_HILLS,
         "rating": "4.5",
         "price_range": "$$",
-        "time_slots": ["6:30 PM", "7:00 PM", "7:30 PM", "8:00 PM", "9:00 PM"],
+        "time_slots": [_T630, _T700, _T730, _T800, _T900],
     },
 ]
 
 _CUISINES = ["Italian", "Japanese", "Thai", "Indian", "Modern Australian"]
 
 
-def find_restaurants(location: str, cuisine: str = "any", party_size: int = 2) -> list[dict]:
-    """Filter restaurants by cuisine. Location is accepted but not filtered (demo data)."""
+def find_restaurants(_location: str, cuisine: str = "any", _party_size: int = 2) -> list[dict]:
+    """Filter restaurants by cuisine. Location and party size are accepted but not filtered (demo data)."""
     if cuisine.lower() == "any":
         return _RESTAURANTS
     return [r for r in _RESTAURANTS if r["cuisine"].lower() == cuisine.lower()]

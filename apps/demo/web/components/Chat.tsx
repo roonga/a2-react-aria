@@ -20,6 +20,13 @@ const A2UIBlock = dynamic(
 	},
 )
 
+function bubbleClass(role: string, content: string): string {
+	if (role === "user") return "bg-(--color-primary) text-white"
+	if (content.startsWith("Error:"))
+		return "border border-(--color-danger) bg-(--color-backgroundMuted) text-(--color-danger) shadow-sm"
+	return "bg-(--color-surface) text-(--color-text) shadow-md"
+}
+
 export default function Chat() {
 	const {
 		messages,
@@ -43,15 +50,7 @@ export default function Chat() {
 				{messages.map((msg, idx) => (
 					// biome-ignore lint/suspicious/noArrayIndexKey: chat messages have no stable IDs
 					<div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-						<div
-							className={`max-w-[85%] rounded-lg px-4 py-3 ${
-								msg.role === "user"
-									? "bg-(--color-primary) text-white"
-									: msg.content.startsWith("Error:")
-										? "border border-(--color-danger) bg-(--color-backgroundMuted) text-(--color-danger) shadow-sm"
-										: "bg-(--color-surface) text-(--color-text) shadow-md"
-							}`}
-						>
+						<div className={`max-w-[85%] rounded-lg px-4 py-3 ${bubbleClass(msg.role, msg.content)}`}>
 							{msg.thought && <ThinkingBlock text={msg.thought} />}
 							{msg.content && <p className="whitespace-pre-wrap">{msg.content}</p>}
 							{msg.a2uiJson && <A2UIBlock nodes={msg.a2uiJson} onAction={handleAction} />}
