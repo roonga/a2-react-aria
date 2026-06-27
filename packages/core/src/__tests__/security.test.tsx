@@ -18,12 +18,18 @@ import { safeParseNode } from "../schema"
 
 // Minimal anchor/image wrappers that pass href/src through to the DOM.
 // Real components don't expose href/src at all; these let us test sanitizeProps.
-const Anchor = ({ href, children }: { href?: string; children?: React.ReactNode }) => (
-	<a href={href}>{children}</a>
-)
+const Anchor = ({ href, children }: { href?: string; children?: React.ReactNode }) => <a href={href}>{children}</a>
 const Img = ({ src }: { src?: string }) => <img src={src} alt="" />
-const AnchorWithAction = ({ action }: { action?: string }) => <form action={action}><button type="submit">go</button></form>
-const AnchorWithFormaction = ({ formaction }: { formaction?: string }) => <button formAction={formaction}>go</button>
+const AnchorWithAction = ({ action }: { action?: string }) => (
+	<form action={action}>
+		<button type="submit">go</button>
+	</form>
+)
+const AnchorWithFormaction = ({ formaction }: { formaction?: string }) => (
+	<button type="submit" formAction={formaction}>
+		go
+	</button>
+)
 const AnchorWithImageUrl = ({ imageUrl }: { imageUrl?: string }) => <img src={imageUrl} alt="" />
 const AnchorWithProfileHref = ({ profileHref }: { profileHref?: string }) => <a href={profileHref}>profile</a>
 const AnchorWithThumbnailSrc = ({ thumbnailSrc }: { thumbnailSrc?: string }) => <img src={thumbnailSrc} alt="" />
@@ -32,10 +38,16 @@ const registry = createRegistry({
 	Anchor: { component: Anchor as Parameters<typeof createRegistry>[0][string]["component"] },
 	Img: { component: Img as Parameters<typeof createRegistry>[0][string]["component"] },
 	AnchorWithAction: { component: AnchorWithAction as Parameters<typeof createRegistry>[0][string]["component"] },
-	AnchorWithFormaction: { component: AnchorWithFormaction as Parameters<typeof createRegistry>[0][string]["component"] },
+	AnchorWithFormaction: {
+		component: AnchorWithFormaction as Parameters<typeof createRegistry>[0][string]["component"],
+	},
 	AnchorWithImageUrl: { component: AnchorWithImageUrl as Parameters<typeof createRegistry>[0][string]["component"] },
-	AnchorWithProfileHref: { component: AnchorWithProfileHref as Parameters<typeof createRegistry>[0][string]["component"] },
-	AnchorWithThumbnailSrc: { component: AnchorWithThumbnailSrc as Parameters<typeof createRegistry>[0][string]["component"] },
+	AnchorWithProfileHref: {
+		component: AnchorWithProfileHref as Parameters<typeof createRegistry>[0][string]["component"],
+	},
+	AnchorWithThumbnailSrc: {
+		component: AnchorWithThumbnailSrc as Parameters<typeof createRegistry>[0][string]["component"],
+	},
 	Text: { component: Text },
 	TextField: { component: TextField },
 })
@@ -45,10 +57,7 @@ const registry = createRegistry({
 describe("A03 XSS — HTML in string content is escaped by React", () => {
 	it("renders a <script> tag in children as literal text, not an executable element", () => {
 		const { container } = render(
-			<A2Renderer
-				node={{ type: "Text", children: "<script>window.__xss=1</script>" }}
-				registry={registry}
-			/>,
+			<A2Renderer node={{ type: "Text", children: "<script>window.__xss=1</script>" }} registry={registry} />,
 		)
 		expect(container.querySelector("script")).toBeNull()
 		expect((window as Record<string, unknown>).__xss).toBeUndefined()
@@ -57,10 +66,7 @@ describe("A03 XSS — HTML in string content is escaped by React", () => {
 
 	it("renders an <img onerror> payload in children as text, not an element", () => {
 		const { container } = render(
-			<A2Renderer
-				node={{ type: "Text", children: '<img src=x onerror="window.__xss2=1">' }}
-				registry={registry}
-			/>,
+			<A2Renderer node={{ type: "Text", children: '<img src=x onerror="window.__xss2=1">' }} registry={registry} />,
 		)
 		expect(container.querySelector("img")).toBeNull()
 		expect((window as Record<string, unknown>).__xss2).toBeUndefined()
@@ -68,10 +74,7 @@ describe("A03 XSS — HTML in string content is escaped by React", () => {
 
 	it("renders HTML markup in a TextField label as literal text", () => {
 		const { container } = render(
-			<A2Renderer
-				node={{ type: "TextField", props: { label: "<b>Name</b>" } }}
-				registry={registry}
-			/>,
+			<A2Renderer node={{ type: "TextField", props: { label: "<b>Name</b>" } }} registry={registry} />,
 		)
 		// No <b> element injected into the DOM; text appears as a literal string
 		expect(container.querySelector("b")).toBeNull()
@@ -83,7 +86,7 @@ describe("A03 XSS — HTML in string content is escaped by React", () => {
 			<A2Renderer
 				node={{
 					type: "TextField",
-					props: { label: "Email", isInvalid: true, errorMessage: "<svg onload=\"window.__xss3=1\">" },
+					props: { label: "Email", isInvalid: true, errorMessage: '<svg onload="window.__xss3=1">' },
 				}}
 				registry={registry}
 			/>,
@@ -98,42 +101,60 @@ describe("A03 XSS — HTML in string content is escaped by React", () => {
 describe("A03 URL injection — javascript: scheme is blocked regardless of casing/whitespace", () => {
 	it("blocks lowercase javascript: href", () => {
 		const { container } = render(
-			<A2Renderer node={{ type: "Anchor", props: { href: "javascript:alert(1)" }, children: "x" }} registry={registry} />,
+			<A2Renderer
+				node={{ type: "Anchor", props: { href: "javascript:alert(1)" }, children: "x" }}
+				registry={registry}
+			/>,
 		)
 		expect(container.querySelector("a")?.getAttribute("href")).toBe("about:blank")
 	})
 
 	it("blocks uppercase JAVASCRIPT: href", () => {
 		const { container } = render(
-			<A2Renderer node={{ type: "Anchor", props: { href: "JAVASCRIPT:alert(1)" }, children: "x" }} registry={registry} />,
+			<A2Renderer
+				node={{ type: "Anchor", props: { href: "JAVASCRIPT:alert(1)" }, children: "x" }}
+				registry={registry}
+			/>,
 		)
 		expect(container.querySelector("a")?.getAttribute("href")).toBe("about:blank")
 	})
 
 	it("blocks mixed-case JavaScript: href", () => {
 		const { container } = render(
-			<A2Renderer node={{ type: "Anchor", props: { href: "JavaScript:alert(1)" }, children: "x" }} registry={registry} />,
+			<A2Renderer
+				node={{ type: "Anchor", props: { href: "JavaScript:alert(1)" }, children: "x" }}
+				registry={registry}
+			/>,
 		)
 		expect(container.querySelector("a")?.getAttribute("href")).toBe("about:blank")
 	})
 
 	it("blocks javascript: href with leading spaces", () => {
 		const { container } = render(
-			<A2Renderer node={{ type: "Anchor", props: { href: "   javascript:alert(1)" }, children: "x" }} registry={registry} />,
+			<A2Renderer
+				node={{ type: "Anchor", props: { href: "   javascript:alert(1)" }, children: "x" }}
+				registry={registry}
+			/>,
 		)
 		expect(container.querySelector("a")?.getAttribute("href")).toBe("about:blank")
 	})
 
 	it("blocks javascript: href with leading tab", () => {
 		const { container } = render(
-			<A2Renderer node={{ type: "Anchor", props: { href: "\tjavascript:alert(1)" }, children: "x" }} registry={registry} />,
+			<A2Renderer
+				node={{ type: "Anchor", props: { href: "\tjavascript:alert(1)" }, children: "x" }}
+				registry={registry}
+			/>,
 		)
 		expect(container.querySelector("a")?.getAttribute("href")).toBe("about:blank")
 	})
 
 	it("blocks javascript: href with leading newline", () => {
 		const { container } = render(
-			<A2Renderer node={{ type: "Anchor", props: { href: "\njavascript:alert(1)" }, children: "x" }} registry={registry} />,
+			<A2Renderer
+				node={{ type: "Anchor", props: { href: "\njavascript:alert(1)" }, children: "x" }}
+				registry={registry}
+			/>,
 		)
 		expect(container.querySelector("a")?.getAttribute("href")).toBe("about:blank")
 	})
@@ -142,14 +163,20 @@ describe("A03 URL injection — javascript: scheme is blocked regardless of casi
 describe("A03 URL injection — vbscript: scheme is blocked", () => {
 	it("blocks vbscript: href", () => {
 		const { container } = render(
-			<A2Renderer node={{ type: "Anchor", props: { href: "vbscript:MsgBox(1)" }, children: "x" }} registry={registry} />,
+			<A2Renderer
+				node={{ type: "Anchor", props: { href: "vbscript:MsgBox(1)" }, children: "x" }}
+				registry={registry}
+			/>,
 		)
 		expect(container.querySelector("a")?.getAttribute("href")).toBe("about:blank")
 	})
 
 	it("blocks VBSCRIPT: href (uppercase)", () => {
 		const { container } = render(
-			<A2Renderer node={{ type: "Anchor", props: { href: "VBSCRIPT:MsgBox(1)" }, children: "x" }} registry={registry} />,
+			<A2Renderer
+				node={{ type: "Anchor", props: { href: "VBSCRIPT:MsgBox(1)" }, children: "x" }}
+				registry={registry}
+			/>,
 		)
 		expect(container.querySelector("a")?.getAttribute("href")).toBe("about:blank")
 	})
@@ -178,10 +205,7 @@ describe("A03 URL injection — data: scheme is blocked in URL props", () => {
 
 	it("blocks javascript: in a form action prop", () => {
 		const { container } = render(
-			<A2Renderer
-				node={{ type: "AnchorWithAction", props: { action: "javascript:alert(1)" } }}
-				registry={registry}
-			/>,
+			<A2Renderer node={{ type: "AnchorWithAction", props: { action: "javascript:alert(1)" } }} registry={registry} />,
 		)
 		expect(container.querySelector("form")?.getAttribute("action")).toBe("about:blank")
 	})
@@ -250,10 +274,7 @@ describe("A03 URL injection — safe URLs are allowed through unchanged", () => 
 
 	it("allows relative href", () => {
 		const { container } = render(
-			<A2Renderer
-				node={{ type: "Anchor", props: { href: "/about" }, children: "link" }}
-				registry={registry}
-			/>,
+			<A2Renderer node={{ type: "Anchor", props: { href: "/about" }, children: "link" }} registry={registry} />,
 		)
 		expect(container.querySelector("a")?.getAttribute("href")).toBe("/about")
 	})
@@ -271,10 +292,7 @@ describe("A03 URL injection — safe URLs are allowed through unchanged", () => 
 	it("does not sanitize non-URL props that happen to contain 'data:'", () => {
 		// A prop named 'label' is not a URL prop — data: value must pass through
 		const { container } = render(
-			<A2Renderer
-				node={{ type: "TextField", props: { label: "data:driven form" } }}
-				registry={registry}
-			/>,
+			<A2Renderer node={{ type: "TextField", props: { label: "data:driven form" } }} registry={registry} />,
 		)
 		expect(screen.getByText("data:driven form")).toBeDefined()
 		expect(container.textContent).toContain("data:driven form")
@@ -419,12 +437,7 @@ describe("A05 DoS — render depth limits prevent stack overflow from deeply nes
 			type: "Text" as const,
 			children: `item-${i}`,
 		}))
-		const { container } = render(
-			<A2Renderer
-				node={{ type: "Text", children: items }}
-				registry={registry}
-			/>,
-		)
+		const { container } = render(<A2Renderer node={{ type: "Text", children: items }} registry={registry} />)
 		// All items should render (not truncated or errored)
 		expect(container.textContent).toContain("item-0")
 		expect(container.textContent).toContain("item-999")
