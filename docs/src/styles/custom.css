@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@700;800&display=swap");
+@import "tailwindcss";
 @source "../../../packages/core/src";
 
 /* Inter for hero/brand headings — oldstyle numerals keep "2" at x-height */
