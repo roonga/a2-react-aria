@@ -9,6 +9,7 @@ services:
       - OPENAI_API_KEY=lm-studio
       - OPENAI_BASE_URL=http://host.docker.internal:1234/v1
       - A2UI_SCHEMA_URL=http://web:6001/a2ui-schema.json
+      - UVICORN_HOST=0.0.0.0
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:

@@ -14,7 +14,7 @@ export function ThinkingBlock({ text }: ThinkingBlockProps) {
 		>
 			<summary className="flex cursor-pointer select-none list-none items-center gap-1.5 px-3 py-1.5 font-medium text-(--color-textMuted)">
 				<span>{open ? "▾" : "▸"}</span>
-				Thinking
+				<span>Thinking</span>
 			</summary>
 			<p className="whitespace-pre-wrap px-3 pt-1 pb-2 text-(--color-text) italic leading-relaxed">{text.trim()}</p>
 		</details>
