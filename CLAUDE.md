@@ -5,6 +5,12 @@ Components are distributed shadcn-style: consumers own the source via `npx @a2ra
 
 ## Rules
 
+### Shell commands
+
+When using `cd`, always use paths relative to the repository root (e.g. `cd packages/core`,
+not `cd H:/source/a2-react-aria/packages/core`). This keeps permission patterns tight and
+commands portable across machines and worktrees.
+
 ### Commits
 
 - Do not add `Co-Authored-By` attribution to commit messages.
