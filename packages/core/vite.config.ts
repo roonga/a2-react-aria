@@ -6,6 +6,12 @@ export default defineConfig({
 	test: {
 		environment: "jsdom",
 		globals: true,
+		coverage: {
+			provider: "v8",
+			reporter: ["lcov", "text"],
+			include: ["src/**/*.{ts,tsx}"],
+			exclude: ["src/__tests__/**", "**/*.test.{ts,tsx}", "**/*.spec.{ts,tsx}"],
+		},
 	},
 	build: {
 		lib: {

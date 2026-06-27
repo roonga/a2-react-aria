@@ -1,0 +1,99 @@
+# SonarQube Community Server for local static code analysis.
+#
+# Start server:  docker compose -f docker-compose.sonarqube.yml up -d
+# Stop server:   docker compose -f docker-compose.sonarqube.yml down
+# Run scan:      SONAR_TOKEN=<token> docker compose -f docker-compose.sonarqube.yml run --rm scanner
+#
+# First-run setup
+# ---------------
+# 1. Open http://localhost:9000 and log in (admin / admin); change the password.
+# 2. Create a new project with key "a2-react-aria" (or let the scanner create it automatically).
+# 3. Generate a project analysis token under My Account > Security.
+# 4. Export the token: $env:SONAR_TOKEN = "<your-token>"  (PowerShell)
+#                      export SONAR_TOKEN=<your-token>     (bash)
+# 5. Run: docker compose -f docker-compose.sonarqube.yml run --rm scanner
+#
+# Coverage reports
+# ----------------
+# Generate LCOV before scanning for richer metrics:
+#   pnpm --filter @a2ra/core test:coverage
+#   pnpm --filter @a2ra/cli  test:coverage
+#
+# Production Linux hosts
+# ----------------------
+# Remove SONAR_ES_BOOTSTRAP_CHECKS_DISABLE and set the following on the host:
+#   sysctl -w vm.max_map_count=524288
+#   sysctl -w fs.file-max=131072
+
+name: a2ra-sonarqube
+
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB: sonar
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sonar -d sonar"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - sonar
+
+  sonarqube:
+    image: sonarqube:community
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://db:5432/sonar
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+      # Disables Elasticsearch bootstrap checks that require kernel-level settings.
+      # Safe for Docker Desktop (Windows/Mac). Remove on production Linux hosts.
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9000/api/system/status | grep -q '\"status\":\"UP\"'"]
+      interval: 30s
+      timeout: 10s
+      retries: 15
+      start_period: 120s
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+    ports:
+      - "9000:9000"
+    restart: unless-stopped
+    networks:
+      - sonar
+
+  # Run with:  SONAR_TOKEN=<token> docker compose -f docker-compose.sonarqube.yml run --rm scanner
+  scanner:
+    image: sonarsource/sonar-scanner-cli:latest
+    profiles: [scan]
+    depends_on:
+      sonarqube:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src
+    working_dir: /usr/src
+    environment:
+      SONAR_HOST_URL: http://sonarqube:9000
+      SONAR_TOKEN: ${SONAR_TOKEN}
+    networks:
+      - sonar
+
+networks:
+  sonar:
+
+volumes:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+  postgresql_data:
