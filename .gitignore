@@ -17,6 +17,7 @@ docs/dist/
 # Playwright
 test-results/
 playwright-report/
+.playwright-mcp/
 
 # Environment — never commit real secrets
 .env.local
