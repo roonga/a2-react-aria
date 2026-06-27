@@ -362,7 +362,7 @@ table {
 	white-space: nowrap;
 }
 
-/* Constrain Type column so Description gets more room */
+/* Constrain Type and Description columns so they wrap */
 .sl-markdown-content table th:nth-child(2),
 .sl-markdown-content table td:nth-child(2) {
 	max-width: 13rem;
@@ -370,6 +370,12 @@ table {
 }
 
 .sl-markdown-content table td:nth-child(2) code {
+	white-space: normal;
+}
+
+.sl-markdown-content table th:nth-child(3),
+.sl-markdown-content table td:nth-child(3) {
+	max-width: 16rem;
 	white-space: normal;
 }
 
