@@ -1,0 +1,96 @@
+---
+title: Dialog
+description: A modal overlay with a built-in trigger button and focus management.
+---
+
+import { ComponentPreview } from "../../../components/ComponentPreview"
+
+A wrapper around React Aria's `DialogTrigger`, `Modal`, and `Dialog` components.
+Focus is trapped inside the dialog while it is open and returns to the trigger on close.
+
+## Add via CLI
+
+```bash
+npx @a2ra/cli add dialog
+```
+
+## Basic
+
+<ComponentPreview client:only="react" node={{
+  type: "Dialog",
+  props: {
+    triggerLabel: "Open dialog",
+    title: "Confirm action",
+    description: "This cannot be undone. Are you sure you want to continue?"
+  },
+  children: [
+    { type: "Flex", props: { gap: "sm", justify: "end" }, children: [
+      { type: "Button", props: { variant: "secondary" }, children: "Cancel" },
+      { type: "Button", props: { variant: "danger" }, children: "Delete" },
+    ]}
+  ]
+}} />
+
+## Alert dialog
+
+<ComponentPreview client:only="react" node={{
+  type: "Dialog",
+  props: {
+    triggerLabel: "Open alert",
+    title: "Session expiring",
+    description: "Your session will expire in 5 minutes.",
+    role: "alertdialog",
+    isDismissable: false
+  },
+  children: [
+    { type: "Flex", props: { gap: "sm", justify: "end" }, children: [
+      { type: "Button", props: { variant: "primary" }, children: "Keep me signed in" },
+    ]}
+  ]
+}} />
+
+## Example JSON
+
+```json
+{
+  "type": "Dialog",
+  "props": {
+    "triggerLabel": "Delete account",
+    "title": "Delete account",
+    "description": "This will permanently delete your account and all data.",
+    "role": "alertdialog",
+    "isDismissable": false
+  },
+  "children": [
+    {
+      "type": "Flex",
+      "props": { "gap": "sm", "justify": "end" },
+      "children": [
+        { "type": "Button", "props": { "variant": "secondary" }, "children": "Cancel" },
+        { "type": "Button", "props": { "variant": "danger" }, "children": "Delete" }
+      ]
+    }
+  ]
+}
+```
+
+## Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `triggerLabel` | `string` | Label for the button that opens the dialog |
+| `title` | `string` | Dialog heading |
+| `description` | `string` | Supporting text shown below the title |
+| `role` | `dialog` <span className="prop-default-badge">default</span><br />`alertdialog` | ARIA role (`alertdialog` prevents dismissal by clicking outside) |
+| `isDismissable` | `true` <span className="prop-default-badge">default</span><br />`false` | Allow closing by clicking the backdrop |
+| `isKeyboardDismissDisabled` | `true`<br />`false` <span className="prop-default-badge">default</span> | Prevent `Escape` from closing |
+| `isOpen` | `boolean` | Controlled open state |
+| `defaultOpen` | `true`<br />`false` <span className="prop-default-badge">default</span> | Open on mount |
+| `children` | `node[]` | Content rendered inside the dialog body |
+
+## Notes
+
+- `role: "alertdialog"` tells screen readers this is a message requiring attention; it also disables
+  backdrop-click dismissal regardless of `isDismissable`.
+- Focus is trapped inside the dialog and returns to the trigger on close.
+- `Escape` closes the dialog by default unless `isKeyboardDismissDisabled` is true.

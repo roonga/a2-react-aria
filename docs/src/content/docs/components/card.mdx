@@ -1,0 +1,67 @@
+---
+title: Card
+description: A surface container with configurable padding, shadow, and border radius.
+---
+
+import { ComponentPreview } from "../../../components/ComponentPreview"
+
+A layout primitive for grouping content into a visually distinct surface. All visual
+properties use design tokens so cards respect the consumer's theme.
+
+## Add via CLI
+
+```bash
+npx @a2ra/cli add card
+```
+
+## Sizes
+
+<ComponentPreview client:only="react" node={{
+  type: "Flex",
+  props: { gap: "md", align: "center", justify: "center", wrap: true },
+  children: [
+    { type: "Card", props: { padding: "sm", shadow: "sm" }, children: [{ type: "Text", props: { size: "sm", weight: "medium" }, children: "Small padding" }] },
+    { type: "Card", props: { padding: "md", shadow: "md" }, children: [{ type: "Text", props: { size: "sm", weight: "medium" }, children: "Medium padding" }] },
+    { type: "Card", props: { padding: "lg", shadow: "lg" }, children: [{ type: "Text", props: { size: "sm", weight: "medium" }, children: "Large padding" }] },
+  ]
+}} />
+
+## Without border
+
+<ComponentPreview client:only="react" node={{
+  type: "Card",
+  props: { padding: "lg", shadow: "md", border: false },
+  children: [
+    { type: "Text", props: { as: "h3", weight: "semibold" }, children: "Floating card" },
+    { type: "Text", props: { size: "sm", color: "muted" }, children: "No border, shadow only." },
+  ]
+}} />
+
+## Example JSON
+
+```json
+{
+  "type": "Card",
+  "props": { "padding": "lg", "shadow": "md" },
+  "children": [
+    { "type": "Text", "props": { "as": "h3", "weight": "semibold" }, "children": "Usage this month" },
+    { "type": "Text", "props": { "size": "2xl", "weight": "bold" }, "children": "12,483" }
+  ]
+}
+```
+
+## Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `padding` | `none`<br />`sm`<br />`md` <span className="prop-default-badge">default</span><br />`lg` | Internal padding |
+| `shadow` | `none`<br />`sm` <span className="prop-default-badge">default</span><br />`md`<br />`lg` | Drop shadow depth |
+| `radius` | `none`<br />`sm`<br />`md` <span className="prop-default-badge">default</span><br />`lg` | Border radius |
+| `border` | `true` <span className="prop-default-badge">default</span><br />`false` | Show a border |
+| `children` | `node[]` | Content rendered inside the card |
+
+## Notes
+
+- `Card` is a plain `<div>` with no semantic role. Wrap with a parent layout node if landmark semantics are needed.
+- `border: false` combined with a shadow is the standard "floating card" look.
+- Nest `Form` or `Flex` inside `Card` to build structured layouts.

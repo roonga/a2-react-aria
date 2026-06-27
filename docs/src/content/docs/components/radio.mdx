@@ -1,0 +1,98 @@
+---
+title: RadioGroup
+description: A labelled group of mutually exclusive radio buttons.
+---
+
+import { ComponentPreview } from "../../../components/ComponentPreview"
+
+Two components: `RadioGroup` (the container) and `Radio` (individual options). Built on
+React Aria's `RadioGroup` and `Radio` primitives with full keyboard and screen reader support.
+
+## Add via CLI
+
+```bash
+npx @a2ra/cli add radio
+```
+
+## Basic
+
+<ComponentPreview client:only="react" node={{
+  type: "RadioGroup",
+  props: {
+    label: "Subscription plan",
+    name: "plan",
+    defaultValue: "monthly"
+  },
+  children: [
+    { type: "Radio", props: { value: "monthly", label: "Monthly" } },
+    { type: "Radio", props: { value: "annual", label: "Annual" } },
+    { type: "Radio", props: { value: "lifetime", label: "Lifetime" } },
+  ]
+}} />
+
+## Horizontal
+
+<ComponentPreview client:only="react" node={{
+  type: "RadioGroup",
+  props: {
+    label: "Priority",
+    orientation: "horizontal",
+    defaultValue: "medium"
+  },
+  children: [
+    { type: "Radio", props: { value: "low", label: "Low" } },
+    { type: "Radio", props: { value: "medium", label: "Medium" } },
+    { type: "Radio", props: { value: "high", label: "High" } },
+  ]
+}} />
+
+## Example JSON
+
+```json
+{
+  "type": "RadioGroup",
+  "props": {
+    "label": "Subscription plan",
+    "name": "plan",
+    "defaultValue": "monthly",
+    "orientation": "horizontal"
+  },
+  "children": [
+    { "type": "Radio", "props": { "value": "monthly", "label": "Monthly" } },
+    { "type": "Radio", "props": { "value": "annual", "label": "Annual" } },
+    { "type": "Radio", "props": { "value": "lifetime", "label": "Lifetime" } }
+  ]
+}
+```
+
+## RadioGroup props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `label` | `string` | Group label |
+| `value` | `string` | Controlled selected value |
+| `defaultValue` | `string` | Uncontrolled default |
+| `orientation` | `horizontal`<br />`vertical` <span className="prop-default-badge">default</span> | Layout direction |
+| `isDisabled` | `true`<br />`false` <span className="prop-default-badge">default</span> | Disables all radios |
+| `isRequired` | `true`<br />`false` <span className="prop-default-badge">default</span> | Marks group as required |
+| `isReadOnly` | `true`<br />`false` <span className="prop-default-badge">default</span> | Prevents selection changes |
+| `isInvalid` | `true`<br />`false` <span className="prop-default-badge">default</span> | Shows error styling |
+| `validationBehavior` | `aria` <span className="prop-default-badge">default</span><br />`native` | Validation strategy |
+| `name` | `string` | Form field name |
+| `description` | `string` | Helper text |
+| `errorMessage` | `string` | Error text when `isInvalid` is true |
+| `children` | `node[]` | `Radio` child nodes |
+
+## Radio props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `value` | `string` | The value submitted when this radio is selected (required) |
+| `label` | `string` | Visible label text |
+| `isDisabled` | `true`<br />`false` <span className="prop-default-badge">default</span> | Disables just this option |
+
+## Notes
+
+- `Radio.value` is required. The `RadioGroup` uses it to track and submit the selection.
+- Arrow keys move focus between options; `Space` selects the focused option.
+- Only one `Radio` per group can be selected at a time.

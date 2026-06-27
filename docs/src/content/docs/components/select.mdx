@@ -1,0 +1,99 @@
+---
+title: Select
+description: A dropdown selector with keyboard navigation and typeahead search.
+---
+
+import { ComponentPreview } from "../../../components/ComponentPreview"
+
+A wrapper around React Aria's `Select` component. Renders a button that opens a listbox
+with full keyboard navigation, typeahead search, and screen reader announcements.
+
+## Add via CLI
+
+```bash
+npx @a2ra/cli add select
+```
+
+## Basic
+
+<ComponentPreview client:only="react" node={{
+  type: "Select",
+  props: {
+    label: "Country",
+    name: "country",
+    placeholder: "Select a country",
+    isRequired: true,
+    items: [
+      { label: "Australia", value: "AU" },
+      { label: "United Kingdom", value: "GB" },
+      { label: "United States", value: "US" },
+    ]
+  }
+}} />
+
+## Disabled option
+
+<ComponentPreview client:only="react" node={{
+  type: "Select",
+  props: {
+    label: "Plan",
+    placeholder: "Choose a plan",
+    items: [
+      { label: "Starter", value: "starter" },
+      { label: "Pro", value: "pro" },
+      { label: "Enterprise (contact us)", value: "enterprise", isDisabled: true },
+    ]
+  }
+}} />
+
+## Example JSON
+
+```json
+{
+  "type": "Select",
+  "props": {
+    "label": "Country",
+    "name": "country",
+    "placeholder": "Select a country",
+    "isRequired": true,
+    "items": [
+      { "label": "Australia", "value": "AU" },
+      { "label": "United Kingdom", "value": "GB" },
+      { "label": "United States", "value": "US" }
+    ]
+  }
+}
+```
+
+## Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `label` | `string` | Visible label |
+| `placeholder` | `string` | Placeholder shown when nothing is selected |
+| `items` | `SelectItem[]` | List of options (see below) |
+| `value` | `string` | Controlled selected value |
+| `defaultValue` | `string` | Uncontrolled default |
+| `name` | `string` | Form field name |
+| `isDisabled` | `true`<br />`false` <span className="prop-default-badge">default</span> | Disables the select |
+| `isRequired` | `true`<br />`false` <span className="prop-default-badge">default</span> | Marks as required |
+| `isOpen` | `boolean` | Controlled open state |
+| `defaultOpen` | `true`<br />`false` <span className="prop-default-badge">default</span> | Opens the listbox on mount |
+| `disabledKeys` | `string[]` | Values of disabled options |
+| `isInvalid` | `true`<br />`false` <span className="prop-default-badge">default</span> | Shows error styling |
+| `validationBehavior` | `aria` <span className="prop-default-badge">default</span><br />`native` | Validation strategy |
+| `description` | `string` | Helper text |
+| `errorMessage` | `string` | Error text when `isInvalid` is true |
+
+### SelectItem shape
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `label` | `string` | Visible option text |
+| `value` | `string` | Submitted value |
+| `isDisabled` | `boolean` | Disables this option |
+
+## Notes
+
+- Type any character to jump to the first option starting with that letter (typeahead).
+- Arrow keys navigate options; `Enter` or `Space` confirms the selection.

@@ -1,0 +1,96 @@
+---
+title: Checkbox / CheckboxGroup
+description: A single checkbox or a labelled group of checkboxes with validation support.
+---
+
+import { ComponentPreview } from "../../../components/ComponentPreview"
+
+Two components: `Checkbox` for a standalone toggle, and `CheckboxGroup` for a labelled
+set of related checkboxes. Both wrap the corresponding React Aria primitives.
+
+## Add via CLI
+
+```bash
+npx @a2ra/cli add checkbox
+```
+
+## Standalone
+
+<ComponentPreview client:only="react" node={{
+  type: "Flex",
+  props: { gap: "md", align: "center", justify: "center", wrap: true },
+  children: [
+    { type: "Checkbox", props: { label: "I agree to the terms", name: "terms", value: "agreed" } },
+    { type: "Checkbox", props: { label: "Disabled", isDisabled: true } },
+    { type: "Checkbox", props: { label: "Indeterminate", isIndeterminate: true } },
+  ]
+}} />
+
+## Group
+
+<ComponentPreview client:only="react" node={{
+  type: "CheckboxGroup",
+  props: { label: "Interests", orientation: "horizontal" },
+  children: [
+    { type: "Checkbox", props: { label: "Design", value: "design" } },
+    { type: "Checkbox", props: { label: "Engineering", value: "eng" } },
+    { type: "Checkbox", props: { label: "Product", value: "product" } },
+  ]
+}} />
+
+## Example JSON
+
+```json
+{
+  "type": "CheckboxGroup",
+  "props": {
+    "label": "Interests",
+    "name": "interests",
+    "orientation": "horizontal"
+  },
+  "children": [
+    { "type": "Checkbox", "props": { "label": "Design", "value": "design" } },
+    { "type": "Checkbox", "props": { "label": "Engineering", "value": "eng" } }
+  ]
+}
+```
+
+## Checkbox props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `label` | `string` | Visible label text |
+| `value` | `string` | Value submitted with the form |
+| `name` | `string` | Form field name |
+| `isSelected` | `boolean` | Controlled checked state |
+| `defaultSelected` | `true`<br />`false` <span className="prop-default-badge">default</span> | Uncontrolled default |
+| `isDisabled` | `true`<br />`false` <span className="prop-default-badge">default</span> | Disables the checkbox |
+| `isRequired` | `true`<br />`false` <span className="prop-default-badge">default</span> | Marks as required |
+| `isIndeterminate` | `true`<br />`false` <span className="prop-default-badge">default</span> | Shows indeterminate state |
+| `isReadOnly` | `true`<br />`false` <span className="prop-default-badge">default</span> | Prevents toggling |
+| `isInvalid` | `true`<br />`false` <span className="prop-default-badge">default</span> | Shows error styling |
+| `validationBehavior` | `aria` <span className="prop-default-badge">default</span><br />`native` | Validation strategy |
+| `errorMessage` | `string` | Error text when `isInvalid` is true |
+
+## CheckboxGroup props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `label` | `string` | Group label |
+| `value` | `string[]` | Controlled selected values |
+| `defaultValue` | `string[]` | Uncontrolled default |
+| `isDisabled` | `true`<br />`false` <span className="prop-default-badge">default</span> | Disables all checkboxes |
+| `isRequired` | `true`<br />`false` <span className="prop-default-badge">default</span> | Marks group as required |
+| `isReadOnly` | `true`<br />`false` <span className="prop-default-badge">default</span> | Prevents any changes |
+| `isInvalid` | `true`<br />`false` <span className="prop-default-badge">default</span> | Shows error styling on the group |
+| `validationBehavior` | `aria` <span className="prop-default-badge">default</span><br />`native` | Validation strategy |
+| `orientation` | `horizontal`<br />`vertical` <span className="prop-default-badge">default</span> | Layout direction |
+| `name` | `string` | Form field name |
+| `description` | `string` | Helper text |
+| `errorMessage` | `string` | Error text when `isInvalid` is true |
+| `children` | `node[]` | `Checkbox` child nodes |
+
+## Notes
+
+- `CheckboxGroup` manages keyboard navigation and ARIA group labelling automatically.
+- `isIndeterminate` is a visual-only state; it does not affect the submitted form value.
