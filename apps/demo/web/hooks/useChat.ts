@@ -5,6 +5,7 @@ import type React from "react"
 import { useCallback, useEffect, useRef, useState } from "react"
 
 export interface Message {
+	id: string
 	role: "user" | "assistant"
 	content: string
 	thought?: string
@@ -18,6 +19,7 @@ const USER_ID = "user_1"
 const genReqId = () => Math.random().toString(36).slice(2, 10)
 
 const INITIAL_MESSAGE: Message = {
+	id: "initial",
 	role: "assistant",
 	content: "Hi! I can help you find and book a restaurant in Australia. What are you looking for?",
 }
@@ -31,24 +33,26 @@ type SSEEvent = {
 
 type StreamState = { accumulated: string; accumulatedThought: string }
 
+function applySnapshotParts(parts: Array<{ text?: string; thought?: boolean }>, state: StreamState): StreamState {
+	let turnText = ""
+	let finalThought = ""
+	for (const part of parts) {
+		if (!part.text) continue
+		if (part.thought) finalThought += part.text
+		else turnText += part.text
+	}
+	return {
+		accumulated: turnText || state.accumulated,
+		accumulatedThought: finalThought || state.accumulatedThought,
+	}
+}
+
 function applyParts(
 	parts: Array<{ text?: string; thought?: boolean }>,
 	isSnapshot: boolean,
 	state: StreamState,
 ): StreamState {
-	if (isSnapshot) {
-		let turnText = ""
-		let finalThought = ""
-		for (const part of parts) {
-			if (!part.text) continue
-			if (part.thought) finalThought += part.text
-			else turnText += part.text
-		}
-		return {
-			accumulated: turnText || state.accumulated,
-			accumulatedThought: finalThought || state.accumulatedThought,
-		}
-	}
+	if (isSnapshot) return applySnapshotParts(parts, state)
 	let { accumulated, accumulatedThought } = state
 	for (const part of parts) {
 		if (!part.text) continue
@@ -152,7 +156,7 @@ export function useChat() {
 
 		isLoadingRef.current = true
 		const rid = genReqId()
-		setMessages((prev) => [...prev, { role: "user", content: userMessage }])
+		setMessages((prev) => [...prev, { id: genReqId(), role: "user", content: userMessage }])
 		setInput("")
 		setIsLoading(true)
 		setStreamingText("")
@@ -163,6 +167,7 @@ export function useChat() {
 			setMessages((prev) => [
 				...prev,
 				{
+					id: genReqId(),
 					role: "assistant",
 					content: plainText,
 					thought: state.accumulatedThought.trim() || undefined,
@@ -198,7 +203,7 @@ export function useChat() {
 				},
 				commitMessage,
 				(msg) => {
-					setMessages((prev) => [...prev, { role: "assistant", content: `Error: ${msg}` }])
+					setMessages((prev) => [...prev, { id: genReqId(), role: "assistant", content: `Error: ${msg}` }])
 					setStreamingText("")
 					setStreamingThought("")
 				},
@@ -209,7 +214,11 @@ export function useChat() {
 		} catch (error) {
 			setMessages((prev) => [
 				...prev,
-				{ role: "assistant", content: `Error: ${error instanceof Error ? error.message : "Unknown error"}` },
+				{
+					id: genReqId(),
+					role: "assistant",
+					content: `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
+				},
 			])
 		} finally {
 			isLoadingRef.current = false

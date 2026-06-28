@@ -1,8 +1,9 @@
 import type { Message } from "../hooks/useChat"
 
 const FEEDBACK_DEMO_MESSAGES: Message[] = [
-	{ role: "user", content: "Leave feedback" },
+	{ id: "feedback-user", role: "user", content: "Leave feedback" },
 	{
+		id: "feedback-assistant",
 		role: "assistant",
 		content: "Thanks for dining with us! We'd love to hear how it went.",
 		a2uiJson: [
