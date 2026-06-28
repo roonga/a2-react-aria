@@ -47,9 +47,8 @@ export default function Chat() {
 	return (
 		<div className="overflow-hidden rounded-lg bg-(--color-surface) shadow-2xl">
 			<div ref={messagesContainerRef} className="h-150 space-y-4 overflow-y-auto bg-(--color-backgroundMuted) p-6">
-				{messages.map((msg, idx) => (
-					// biome-ignore lint/suspicious/noArrayIndexKey: chat messages have no stable IDs
-					<div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+				{messages.map((msg) => (
+					<div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
 						<div className={`max-w-[85%] rounded-lg px-4 py-3 ${bubbleClass(msg.role, msg.content)}`}>
 							{msg.thought && <ThinkingBlock text={msg.thought} />}
 							{msg.content && <p className="whitespace-pre-wrap">{msg.content}</p>}
