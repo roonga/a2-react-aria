@@ -2,14 +2,14 @@ import type { ReactNode } from "react"
 import { getTextStyles } from "./text.styles"
 
 interface TextProps {
-	as?: "h1" | "h2" | "h3" | "h4" | "p" | "span" | "label"
-	size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl"
-	weight?: "normal" | "medium" | "semibold" | "bold"
-	color?: "default" | "muted" | "primary" | "danger"
-	align?: "left" | "center" | "right" | "justify"
-	italic?: boolean
-	truncate?: boolean
-	children?: ReactNode
+	readonly as?: "h1" | "h2" | "h3" | "h4" | "p" | "span" | "label"
+	readonly size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl"
+	readonly weight?: "normal" | "medium" | "semibold" | "bold"
+	readonly color?: "default" | "muted" | "primary" | "danger"
+	readonly align?: "left" | "center" | "right" | "justify"
+	readonly italic?: boolean
+	readonly truncate?: boolean
+	readonly children?: ReactNode
 }
 
 export function Text({

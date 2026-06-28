@@ -15,24 +15,24 @@ import type { SelectItem } from "./select.schema"
 import { getSelectStyles } from "./select.styles"
 
 interface SelectProps {
-	label?: string
-	placeholder?: string
-	items?: SelectItem[]
-	value?: string
-	defaultValue?: string
-	isDisabled?: boolean
-	isRequired?: boolean
-	isInvalid?: boolean
-	isOpen?: boolean
-	defaultOpen?: boolean
-	disabledKeys?: string[]
-	validationBehavior?: "aria" | "native"
-	validate?: (value: string) => string | string[] | true | null | undefined
-	name?: string
-	description?: string
-	errorMessage?: string
-	onChange?: (value: string) => void
-	onOpenChange?: (isOpen: boolean) => void
+	readonly label?: string
+	readonly placeholder?: string
+	readonly items?: SelectItem[]
+	readonly value?: string
+	readonly defaultValue?: string
+	readonly isDisabled?: boolean
+	readonly isRequired?: boolean
+	readonly isInvalid?: boolean
+	readonly isOpen?: boolean
+	readonly defaultOpen?: boolean
+	readonly disabledKeys?: string[]
+	readonly validationBehavior?: "aria" | "native"
+	readonly validate?: (value: string) => string | string[] | true | null | undefined
+	readonly name?: string
+	readonly description?: string
+	readonly errorMessage?: string
+	readonly onChange?: (value: string) => void
+	readonly onOpenChange?: (isOpen: boolean) => void
 }
 
 export function Select({

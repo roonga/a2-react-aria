@@ -61,7 +61,13 @@ function A2RendererInner({
 	return (<Component {...safeProps}>{resolvedChildren}</Component>) as ReactElement
 }
 
-function InteractiveWrapper({ onAction, children }: { onAction: (text: string) => void; children: ReactNode }) {
+function InteractiveWrapper({
+	onAction,
+	children,
+}: {
+	readonly onAction: (text: string) => void
+	readonly children: ReactNode
+}) {
 	const fieldsRef = useRef<Record<string, string>>({})
 
 	const formState = useMemo<FormStateCtx>(
@@ -99,10 +105,10 @@ export function A2Renderer({ node, nodes, registry, fallback, onAction }: A2Rend
 			// biome-ignore lint/suspicious/noArrayIndexKey: A2UI nodes have no stable IDs
 			<A2RendererInner key={i} node={n as A2Node} registry={reg} fallback={fallback} /> // NOSONAR
 		))
-	} else if (node !== undefined) {
-		inner = <A2RendererInner node={node} registry={reg} fallback={fallback} />
-	} else {
+	} else if (node === undefined) {
 		return null
+	} else {
+		inner = <A2RendererInner node={node} registry={reg} fallback={fallback} />
 	}
 
 	return (

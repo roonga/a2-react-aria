@@ -37,8 +37,8 @@ const REGISTRY = createRegistry(
 )
 
 interface Props {
-	nodes: unknown[]
-	onAction?: (text: string) => void
+	readonly nodes: unknown[]
+	readonly onAction?: (text: string) => void
 }
 
 export default function A2UIBlock({ nodes, onAction }: Props) {

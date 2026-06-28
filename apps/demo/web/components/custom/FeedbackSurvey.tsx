@@ -4,11 +4,11 @@ import { useState } from "react"
 import { getFeedbackSurveyStyles } from "./feedback-survey.styles"
 
 interface FeedbackSurveyProps {
-	title?: string
-	description?: string
-	submitLabel?: string
-	commentPlaceholder?: string
-	onSubmit?: (rating: number, comment: string) => void
+	readonly title?: string
+	readonly description?: string
+	readonly submitLabel?: string
+	readonly commentPlaceholder?: string
+	readonly onSubmit?: (rating: number, comment: string) => void
 }
 
 export function FeedbackSurvey({
@@ -55,7 +55,7 @@ export function FeedbackSurvey({
 					<button
 						key={star}
 						type="button"
-						aria-label={`${star} star${star !== 1 ? "s" : ""}`}
+						aria-label={`${star} star${star === 1 ? "" : "s"}`}
 						aria-pressed={rating === star ? "true" : "false"}
 						onClick={() => setRating(star)}
 						onMouseEnter={() => setHovered(star)}

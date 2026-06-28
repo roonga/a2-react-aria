@@ -11,7 +11,7 @@
   "files": [
     {
       "path": "card/Card.tsx",
-      "content": "import type { ReactNode } from \"react\"\nimport { getCardStyles } from \"./card.styles\"\n\ninterface CardProps {\n\tpadding?: \"none\" | \"sm\" | \"md\" | \"lg\"\n\tshadow?: \"none\" | \"sm\" | \"md\" | \"lg\"\n\tradius?: \"none\" | \"sm\" | \"md\" | \"lg\"\n\tborder?: boolean\n\tchildren?: ReactNode\n}\n\nexport function Card({ padding = \"md\", shadow = \"none\", radius = \"md\", border = false, children }: CardProps) {\n\treturn <div className={getCardStyles(padding, shadow, radius, border)}>{children}</div>\n}\n",
+      "content": "import type { ReactNode } from \"react\"\nimport { type CardSize, getCardStyles } from \"./card.styles\"\n\ninterface CardProps {\n\treadonly padding?: CardSize\n\treadonly shadow?: CardSize\n\treadonly radius?: CardSize\n\treadonly border?: boolean\n\treadonly children?: ReactNode\n}\n\nexport function Card({ padding = \"md\", shadow = \"none\", radius = \"md\", border = false, children }: CardProps) {\n\treturn <div className={getCardStyles(padding, shadow, radius, border)}>{children}</div>\n}\n",
       "type": "registry:component"
     },
     {
@@ -21,7 +21,7 @@
     },
     {
       "path": "card/card.styles.ts",
-      "content": "const paddingMap = { none: \"p-0\", sm: \"p-3\", md: \"p-4\", lg: \"p-6\" }\nconst shadowMap = { none: \"shadow-none\", sm: \"shadow-sm\", md: \"shadow-md\", lg: \"shadow-lg\" }\nconst radiusMap = { none: \"rounded-none\", sm: \"rounded-sm\", md: \"rounded-md\", lg: \"rounded-lg\" }\n\nexport const getCardStyles = (\n\tpadding: \"none\" | \"sm\" | \"md\" | \"lg\" = \"md\",\n\tshadow: \"none\" | \"sm\" | \"md\" | \"lg\" = \"none\",\n\tradius: \"none\" | \"sm\" | \"md\" | \"lg\" = \"md\",\n\tborder = false,\n) =>\n\t[\n\t\t\"bg-(--color-surface)\",\n\t\tpaddingMap[padding],\n\t\tshadowMap[shadow],\n\t\tradiusMap[radius],\n\t\tborder ? \"border border-(--color-border)\" : \"\",\n\t]\n\t\t.filter(Boolean)\n\t\t.join(\" \")\n",
+      "content": "export type CardSize = \"none\" | \"sm\" | \"md\" | \"lg\"\n\nconst paddingMap = { none: \"p-0\", sm: \"p-3\", md: \"p-4\", lg: \"p-6\" }\nconst shadowMap = { none: \"shadow-none\", sm: \"shadow-sm\", md: \"shadow-md\", lg: \"shadow-lg\" }\nconst radiusMap = { none: \"rounded-none\", sm: \"rounded-sm\", md: \"rounded-md\", lg: \"rounded-lg\" }\n\nexport const getCardStyles = (\n\tpadding: CardSize = \"md\",\n\tshadow: CardSize = \"none\",\n\tradius: CardSize = \"md\",\n\tborder = false,\n) =>\n\t[\n\t\t\"bg-(--color-surface)\",\n\t\tpaddingMap[padding],\n\t\tshadowMap[shadow],\n\t\tradiusMap[radius],\n\t\tborder ? \"border border-(--color-border)\" : \"\",\n\t]\n\t\t.filter(Boolean)\n\t\t.join(\" \")\n",
       "type": "registry:component"
     },
     {

@@ -6,7 +6,7 @@ export const metadata: Metadata = {
 	description: "ADK agent demo using @a2ra/core components",
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { readonly children: React.ReactNode }) {
 	return (
 		<html lang="en">
 			<body className="min-h-screen bg-(--color-background) text-(--color-text)">{children}</body>

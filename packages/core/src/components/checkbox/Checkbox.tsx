@@ -2,21 +2,21 @@ import { CheckboxButton, CheckboxField, FieldError } from "react-aria-components
 import { getCheckboxStyles } from "./checkbox.styles"
 
 interface CheckboxProps {
-	label?: string
-	value?: string
-	name?: string
-	isSelected?: boolean
-	defaultSelected?: boolean
-	isDisabled?: boolean
-	isRequired?: boolean
-	isReadOnly?: boolean
-	isIndeterminate?: boolean
-	isInvalid?: boolean
-	autoFocus?: boolean
-	validationBehavior?: "aria" | "native"
-	validate?: (value: boolean) => string | string[] | true | null | undefined
-	errorMessage?: string
-	onChange?: (isSelected: boolean) => void
+	readonly label?: string
+	readonly value?: string
+	readonly name?: string
+	readonly isSelected?: boolean
+	readonly defaultSelected?: boolean
+	readonly isDisabled?: boolean
+	readonly isRequired?: boolean
+	readonly isReadOnly?: boolean
+	readonly isIndeterminate?: boolean
+	readonly isInvalid?: boolean
+	readonly autoFocus?: boolean
+	readonly validationBehavior?: "aria" | "native"
+	readonly validate?: (value: boolean) => string | string[] | true | null | undefined
+	readonly errorMessage?: string
+	readonly onChange?: (isSelected: boolean) => void
 }
 
 export function Checkbox({

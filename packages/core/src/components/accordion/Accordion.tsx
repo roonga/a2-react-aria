@@ -9,11 +9,11 @@ import {
 } from "./accordion.styles"
 
 interface AccordionItemProps {
-	id?: string
-	heading: string
-	defaultExpanded?: boolean
-	isDisabled?: boolean
-	children?: ReactNode
+	readonly id?: string
+	readonly heading: string
+	readonly defaultExpanded?: boolean
+	readonly isDisabled?: boolean
+	readonly children?: ReactNode
 }
 
 export function AccordionItem({ id, heading, defaultExpanded, isDisabled, children }: AccordionItemProps) {
@@ -44,9 +44,9 @@ export function AccordionItem({ id, heading, defaultExpanded, isDisabled, childr
 }
 
 interface AccordionProps {
-	allowsMultipleExpanded?: boolean
-	isDisabled?: boolean
-	children?: ReactNode
+	readonly allowsMultipleExpanded?: boolean
+	readonly isDisabled?: boolean
+	readonly children?: ReactNode
 }
 
 export function Accordion({ allowsMultipleExpanded = false, isDisabled, children }: AccordionProps) {

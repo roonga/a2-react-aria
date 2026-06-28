@@ -11,12 +11,12 @@
   "files": [
     {
       "path": "layout/Flex.tsx",
-      "content": "import type { ReactNode } from \"react\"\nimport { getFlexStyles } from \"./layout.styles\"\n\ninterface FlexProps {\n\tdirection?: \"row\" | \"column\" | \"row-reverse\" | \"column-reverse\"\n\tgap?: \"none\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\"\n\talign?: \"start\" | \"center\" | \"end\" | \"stretch\" | \"baseline\"\n\tjustify?: \"start\" | \"center\" | \"end\" | \"between\" | \"around\" | \"evenly\"\n\twrap?: boolean\n\tchildren?: ReactNode\n}\n\nexport function Flex({\n\tdirection = \"row\",\n\tgap = \"md\",\n\talign = \"stretch\",\n\tjustify = \"start\",\n\twrap = false,\n\tchildren,\n}: FlexProps) {\n\treturn <div className={getFlexStyles(direction, gap, align, justify, wrap)}>{children}</div>\n}\n",
+      "content": "import type { ReactNode } from \"react\"\nimport { getFlexStyles } from \"./layout.styles\"\n\ninterface FlexProps {\n\treadonly direction?: \"row\" | \"column\" | \"row-reverse\" | \"column-reverse\"\n\treadonly gap?: \"none\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\"\n\treadonly align?: \"start\" | \"center\" | \"end\" | \"stretch\" | \"baseline\"\n\treadonly justify?: \"start\" | \"center\" | \"end\" | \"between\" | \"around\" | \"evenly\"\n\treadonly wrap?: boolean\n\treadonly children?: ReactNode\n}\n\nexport function Flex({\n\tdirection = \"row\",\n\tgap = \"md\",\n\talign = \"stretch\",\n\tjustify = \"start\",\n\twrap = false,\n\tchildren,\n}: FlexProps) {\n\treturn <div className={getFlexStyles(direction, gap, align, justify, wrap)}>{children}</div>\n}\n",
       "type": "registry:component"
     },
     {
       "path": "layout/Grid.tsx",
-      "content": "import type { ReactNode } from \"react\"\nimport { getGridStyles } from \"./layout.styles\"\n\ninterface GridProps {\n\tcolumns?: number\n\tgap?: \"none\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\"\n\talign?: \"start\" | \"center\" | \"end\" | \"stretch\"\n\tchildren?: ReactNode\n}\n\nexport function Grid({ columns = 1, gap = \"md\", align = \"start\", children }: GridProps) {\n\treturn <div className={getGridStyles(columns, gap, align)}>{children}</div>\n}\n",
+      "content": "import type { ReactNode } from \"react\"\nimport { getGridStyles } from \"./layout.styles\"\n\ninterface GridProps {\n\treadonly columns?: number\n\treadonly gap?: \"none\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\"\n\treadonly align?: \"start\" | \"center\" | \"end\" | \"stretch\"\n\treadonly children?: ReactNode\n}\n\nexport function Grid({ columns = 1, gap = \"md\", align = \"start\", children }: GridProps) {\n\treturn <div className={getGridStyles(columns, gap, align)}>{children}</div>\n}\n",
       "type": "registry:component"
     },
     {

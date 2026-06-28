@@ -10,6 +10,33 @@ interface DiffOptions {
 	dir?: string
 }
 
+async function diffComponent(
+	name: string,
+	base: string,
+	targetDir: string,
+	nameWasRequested: boolean,
+): Promise<{ anyChanges: boolean; anyLocal: boolean }> {
+	const item = await loadItem(base, name)
+	let anyChanges = false
+	let anyLocal = false
+	for (const file of item.files) {
+		const dest = resolve(targetDir, file.path)
+		if (!existsSync(dest)) {
+			if (nameWasRequested) warn(`${file.path} not found locally`)
+			continue
+		}
+		anyLocal = true
+		const local = readFileSync(dest, "utf8")
+		const d = diffLines(local, file.content)
+		if (d) {
+			anyChanges = true
+			info(bold(`\n── ${file.path} ──`))
+			info(d)
+		}
+	}
+	return { anyChanges, anyLocal }
+}
+
 // Show differences between locally installed component files and the registry version.
 // With no name, diffs every component present in the index that exists locally.
 export async function diff(name: string | undefined, opts: DiffOptions): Promise<void> {
@@ -33,31 +60,17 @@ export async function diff(name: string | undefined, opts: DiffOptions): Promise
 	let anyLocal = false
 
 	for (const n of names) {
-		const item = await loadItem(base, n)
-		for (const file of item.files) {
-			const dest = resolve(targetDir, file.path)
-			if (!existsSync(dest)) {
-				// Only report missing files when the component was explicitly requested.
-				if (name) warn(`${file.path} not found locally`)
-				continue
-			}
-			anyLocal = true
-			const local = readFileSync(dest, "utf8")
-			const d = diffLines(local, file.content)
-			if (d) {
-				anyChanges = true
-				info(bold(`\n── ${file.path} ──`))
-				info(d)
-			}
-		}
+		const result = await diffComponent(n, base, targetDir, !!name)
+		if (result.anyChanges) anyChanges = true
+		if (result.anyLocal) anyLocal = true
 	}
 
 	info("")
-	if (!anyLocal) {
-		warn("No installed components found to compare.")
-	} else if (!anyChanges) {
+	if (anyChanges) {
+		info(dim("Run `a2ra add <name> --overwrite` to update."))
+	} else if (anyLocal) {
 		success("All installed components are up to date.")
 	} else {
-		info(dim("Run `a2ra add <name> --overwrite` to update."))
+		warn("No installed components found to compare.")
 	}
 }

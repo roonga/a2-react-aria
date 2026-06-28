@@ -5,10 +5,10 @@ import { useContext } from "react"
 import { FeedbackSurvey } from "./FeedbackSurvey"
 
 interface FeedbackSurveyCardProps {
-	title?: string
-	description?: string
-	submitLabel?: string
-	commentPlaceholder?: string
+	readonly title?: string
+	readonly description?: string
+	readonly submitLabel?: string
+	readonly commentPlaceholder?: string
 }
 
 export function FeedbackSurveyCard({ title, description, submitLabel, commentPlaceholder }: FeedbackSurveyCardProps) {

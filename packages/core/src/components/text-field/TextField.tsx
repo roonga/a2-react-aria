@@ -4,27 +4,27 @@ import { FormStateContext } from "../../form-state"
 import { getTextFieldStyles } from "./text-field.styles"
 
 interface TextFieldProps {
-	label?: string
-	placeholder?: string
-	type?: "text" | "email" | "password" | "number" | "tel" | "url"
-	name?: string
-	value?: string
-	defaultValue?: string
-	isDisabled?: boolean
-	isRequired?: boolean
-	isReadOnly?: boolean
-	isInvalid?: boolean
-	autoFocus?: boolean
-	autoComplete?: string
-	inputMode?: "text" | "numeric" | "decimal" | "email" | "tel" | "url" | "search"
-	validationBehavior?: "aria" | "native"
-	validate?: (value: string) => string | string[] | true | null | undefined
-	minLength?: number
-	maxLength?: number
-	pattern?: string
-	description?: string
-	errorMessage?: string
-	onChange?: (value: string) => void
+	readonly label?: string
+	readonly placeholder?: string
+	readonly type?: "text" | "email" | "password" | "number" | "tel" | "url"
+	readonly name?: string
+	readonly value?: string
+	readonly defaultValue?: string
+	readonly isDisabled?: boolean
+	readonly isRequired?: boolean
+	readonly isReadOnly?: boolean
+	readonly isInvalid?: boolean
+	readonly autoFocus?: boolean
+	readonly autoComplete?: string
+	readonly inputMode?: "text" | "numeric" | "decimal" | "email" | "tel" | "url" | "search"
+	readonly validationBehavior?: "aria" | "native"
+	readonly validate?: (value: string) => string | string[] | true | null | undefined
+	readonly minLength?: number
+	readonly maxLength?: number
+	readonly pattern?: string
+	readonly description?: string
+	readonly errorMessage?: string
+	readonly onChange?: (value: string) => void
 }
 
 export function TextField({

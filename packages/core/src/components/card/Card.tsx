@@ -1,12 +1,12 @@
 import type { ReactNode } from "react"
-import { getCardStyles } from "./card.styles"
+import { type CardSize, getCardStyles } from "./card.styles"
 
 interface CardProps {
-	padding?: "none" | "sm" | "md" | "lg"
-	shadow?: "none" | "sm" | "md" | "lg"
-	radius?: "none" | "sm" | "md" | "lg"
-	border?: boolean
-	children?: ReactNode
+	readonly padding?: CardSize
+	readonly shadow?: CardSize
+	readonly radius?: CardSize
+	readonly border?: boolean
+	readonly children?: ReactNode
 }
 
 export function Card({ padding = "md", shadow = "none", radius = "md", border = false, children }: CardProps) {

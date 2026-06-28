@@ -1,7 +1,7 @@
 import { useState } from "react"
 
 interface ThinkingBlockProps {
-	text: string
+	readonly text: string
 }
 
 export function ThinkingBlock({ text }: ThinkingBlockProps) {
@@ -9,7 +9,7 @@ export function ThinkingBlock({ text }: ThinkingBlockProps) {
 	return (
 		<details
 			open={open}
-			onToggle={(e) => setOpen((e.currentTarget as HTMLDetailsElement).open)}
+			onToggle={(e) => setOpen(e.currentTarget.open)}
 			className="mb-2 rounded-md border border-(--color-border) bg-(--color-backgroundMuted) text-xs"
 		>
 			<summary className="flex cursor-pointer select-none list-none items-center gap-1.5 px-3 py-1.5 font-medium text-(--color-textMuted)">

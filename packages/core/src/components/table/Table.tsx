@@ -3,17 +3,17 @@ import type { TableColumn, TableRow } from "./table.schema"
 import { getTableStyles } from "./table.styles"
 
 interface TableProps {
-	ariaLabel?: string
-	columns?: TableColumn[]
-	rows?: TableRow[]
-	selectionMode?: "none" | "single" | "multiple"
-	selectedKeys?: string[]
-	defaultSelectedKeys?: string[]
-	disabledKeys?: string[]
-	sortDescriptor?: { column: string; direction: "ascending" | "descending" }
-	onRowAction?: (id: string) => void
-	onSelectionChange?: (keys: string[]) => void
-	onSortChange?: (descriptor: { column: string; direction: "ascending" | "descending" }) => void
+	readonly ariaLabel?: string
+	readonly columns?: TableColumn[]
+	readonly rows?: TableRow[]
+	readonly selectionMode?: "none" | "single" | "multiple"
+	readonly selectedKeys?: string[]
+	readonly defaultSelectedKeys?: string[]
+	readonly disabledKeys?: string[]
+	readonly sortDescriptor?: { column: string; direction: "ascending" | "descending" }
+	readonly onRowAction?: (id: string) => void
+	readonly onSelectionChange?: (keys: string[]) => void
+	readonly onSortChange?: (descriptor: { column: string; direction: "ascending" | "descending" }) => void
 }
 
 export function Table({

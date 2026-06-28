@@ -11,7 +11,7 @@
   "files": [
     {
       "path": "alert/Alert.tsx",
-      "content": "import type { ReactNode } from \"react\"\nimport { alertBodyStyles, alertTitleStyles, getAlertStyles } from \"./alert.styles\"\n\ninterface AlertProps {\n\tvariant?: \"info\" | \"success\" | \"warning\" | \"error\"\n\ttitle?: string\n\tchildren?: ReactNode\n}\n\nexport function Alert({ variant = \"info\", title, children }: AlertProps) {\n\treturn (\n\t\t<div role=\"alert\" className={getAlertStyles(variant)}>\n\t\t\t{title && <p className={alertTitleStyles}>{title}</p>}\n\t\t\t{children && <div className={alertBodyStyles}>{children}</div>}\n\t\t</div>\n\t)\n}\n",
+      "content": "import type { ReactNode } from \"react\"\nimport { alertBodyStyles, alertTitleStyles, getAlertStyles } from \"./alert.styles\"\n\ninterface AlertProps {\n\treadonly variant?: \"info\" | \"success\" | \"warning\" | \"error\"\n\treadonly title?: string\n\treadonly children?: ReactNode\n}\n\nexport function Alert({ variant = \"info\", title, children }: AlertProps) {\n\treturn (\n\t\t<div role=\"alert\" className={getAlertStyles(variant)}>\n\t\t\t{title && <p className={alertTitleStyles}>{title}</p>}\n\t\t\t{children && <div className={alertBodyStyles}>{children}</div>}\n\t\t</div>\n\t)\n}\n",
       "type": "registry:component"
     },
     {

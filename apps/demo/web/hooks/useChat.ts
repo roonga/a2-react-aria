@@ -29,6 +29,76 @@ type SSEEvent = {
 	errorMessage?: string
 }
 
+type StreamState = { accumulated: string; accumulatedThought: string }
+
+function applyParts(
+	parts: Array<{ text?: string; thought?: boolean }>,
+	isSnapshot: boolean,
+	state: StreamState,
+): StreamState {
+	if (isSnapshot) {
+		let turnText = ""
+		let finalThought = ""
+		for (const part of parts) {
+			if (!part.text) continue
+			if (part.thought) finalThought += part.text
+			else turnText += part.text
+		}
+		return {
+			accumulated: turnText || state.accumulated,
+			accumulatedThought: finalThought || state.accumulatedThought,
+		}
+	}
+	let { accumulated, accumulatedThought } = state
+	for (const part of parts) {
+		if (!part.text) continue
+		if (part.thought) accumulatedThought += part.text
+		else accumulated += part.text
+	}
+	return { accumulated, accumulatedThought }
+}
+
+type LineResult = { state: StreamState; turnComplete: boolean; errorMessage?: string }
+
+function processSSELine(line: string, state: StreamState): LineResult {
+	if (!line.startsWith("data: ")) return { state, turnComplete: false }
+	let event: SSEEvent
+	try {
+		event = JSON.parse(line.slice(6)) as SSEEvent
+	} catch {
+		return { state, turnComplete: false }
+	}
+	const next = event.content?.parts ? applyParts(event.content.parts, event.partial === false, state) : state
+	return { state: next, turnComplete: !!event.turnComplete, errorMessage: event.errorMessage }
+}
+
+async function readSSEStream(
+	reader: ReadableStreamDefaultReader<Uint8Array>,
+	onStateUpdate: (s: StreamState) => void,
+	onTurnComplete: (s: StreamState) => void,
+	onError: (msg: string) => void,
+): Promise<StreamState> {
+	const decoder = new TextDecoder()
+	let state: StreamState = { accumulated: "", accumulatedThought: "" }
+	while (true) {
+		const { done, value } = await reader.read()
+		if (done) break
+		for (const line of decoder.decode(value, { stream: true }).split("\n")) {
+			const result = processSSELine(line, state)
+			state = result.state
+			onStateUpdate(state)
+			if (result.errorMessage) {
+				onError(result.errorMessage)
+				state = { accumulated: "", accumulatedThought: "" }
+			} else if (result.turnComplete) {
+				onTurnComplete(state)
+				state = { accumulated: "", accumulatedThought: "" }
+			}
+		}
+	}
+	return state
+}
+
 export function useChat() {
 	const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE])
 	const [input, setInput] = useState("")
@@ -43,21 +113,22 @@ export function useChat() {
 	// Create ADK session on mount
 	useEffect(() => {
 		const rid = genReqId()
-		sessionPromise.current = fetch(`${API_BASE}/apps/${APP_NAME}/users/${USER_ID}/sessions`, {
-			method: "POST",
-			headers: { "Content-Type": "application/json", "X-Request-ID": rid },
-			body: "{}",
-		})
-			.then((r) => r.json())
-			.then((data: { id: string }) => {
+		sessionPromise.current = (async () => {
+			try {
+				const r = await fetch(`${API_BASE}/apps/${APP_NAME}/users/${USER_ID}/sessions`, {
+					method: "POST",
+					headers: { "Content-Type": "application/json", "X-Request-ID": rid },
+					body: "{}",
+				})
+				const data = (await r.json()) as { id: string }
 				sessionId.current = data.id
 				console.info(`[Chat] [req:${rid}] session created: ${data.id}`)
 				return data.id
-			})
-			.catch((err: unknown) => {
+			} catch (err: unknown) {
 				console.error(`[Chat] [req:${rid}] session create failed:`, err)
 				throw err
-			})
+			}
+		})()
 	}, [])
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: intentionally scrolls on any chat state change
@@ -87,23 +158,19 @@ export function useChat() {
 		setStreamingText("")
 		setStreamingThought("")
 
-		// Helpers scoped to this send invocation
-		const clearStreaming = () => {
-			setStreamingText("")
-			setStreamingThought("")
-		}
-		const commitMessage = (text: string, thought: string) => {
-			const { plainText, a2uiJson } = extractA2ui(text)
+		const commitMessage = (state: StreamState) => {
+			const { plainText, a2uiJson } = extractA2ui(state.accumulated)
 			setMessages((prev) => [
 				...prev,
 				{
 					role: "assistant",
 					content: plainText,
-					thought: thought.trim() || undefined,
+					thought: state.accumulatedThought.trim() || undefined,
 					a2uiJson: a2uiJson ?? undefined,
 				},
 			])
-			clearStreaming()
+			setStreamingText("")
+			setStreamingThought("")
 		}
 
 		try {
@@ -120,73 +187,25 @@ export function useChat() {
 			})
 
 			if (!response.ok) throw new Error(`HTTP ${response.status}`)
-
 			const reader = response.body?.getReader()
 			if (!reader) throw new Error("No response body")
 
-			const decoder = new TextDecoder()
-			let accumulated = ""
-			let accumulatedThought = ""
-
-			while (true) {
-				const { done, value } = await reader.read()
-				if (done) break
-
-				for (const line of decoder.decode(value, { stream: true }).split("\n")) {
-					if (!line.startsWith("data: ")) continue
-					try {
-						const event = JSON.parse(line.slice(6)) as SSEEvent
-
-						if (event.content?.parts) {
-							if (event.partial === false) {
-								// Full-turn snapshot: replace accumulated, don't append
-								let turnText = ""
-								let finalThought = ""
-								for (const part of event.content.parts) {
-									if (!part.text) continue
-									if (part.thought) finalThought += part.text
-									else turnText += part.text
-								}
-								if (turnText) {
-									accumulated = turnText
-									setStreamingText(accumulated)
-								}
-								if (finalThought) accumulatedThought = finalThought
-								setStreamingThought(accumulatedThought)
-							} else {
-								for (const part of event.content.parts) {
-									if (!part.text) continue
-									if (part.thought) {
-										accumulatedThought += part.text
-										setStreamingThought(accumulatedThought)
-									} else {
-										accumulated += part.text
-										setStreamingText(accumulated)
-									}
-								}
-							}
-						}
-
-						if (event.turnComplete) {
-							commitMessage(accumulated, accumulatedThought)
-							accumulated = ""
-							accumulatedThought = ""
-						}
-
-						if (event.errorMessage) {
-							setMessages((prev) => [...prev, { role: "assistant", content: `Error: ${event.errorMessage}` }])
-							clearStreaming()
-							accumulated = ""
-							accumulatedThought = ""
-						}
-					} catch {
-						// ignore unparseable SSE lines
-					}
-				}
-			}
+			const finalState = await readSSEStream(
+				reader,
+				(s) => {
+					setStreamingText(s.accumulated)
+					setStreamingThought(s.accumulatedThought)
+				},
+				commitMessage,
+				(msg) => {
+					setMessages((prev) => [...prev, { role: "assistant", content: `Error: ${msg}` }])
+					setStreamingText("")
+					setStreamingThought("")
+				},
+			)
 
 			// Fallback: stream ended without turnComplete
-			if (accumulated) commitMessage(accumulated, accumulatedThought)
+			if (finalState.accumulated) commitMessage(finalState)
 		} catch (error) {
 			setMessages((prev) => [
 				...prev,
@@ -195,7 +214,8 @@ export function useChat() {
 		} finally {
 			isLoadingRef.current = false
 			setIsLoading(false)
-			clearStreaming()
+			setStreamingText("")
+			setStreamingThought("")
 		}
 	}
 

@@ -2,9 +2,9 @@ import { RadioButton, RadioField } from "react-aria-components"
 import { getRadioStyles } from "./radio.styles"
 
 interface RadioProps {
-	label?: string
-	value: string
-	isDisabled?: boolean
+	readonly label?: string
+	readonly value: string
+	readonly isDisabled?: boolean
 }
 
 export function Radio({ label, value, isDisabled = false }: RadioProps) {

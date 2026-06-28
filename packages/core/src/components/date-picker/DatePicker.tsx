@@ -22,27 +22,27 @@ import { FormStateContext } from "../../form-state"
 import { getDatePickerStyles } from "./date-picker.styles"
 
 interface DatePickerProps {
-	label?: string
-	name?: string
-	description?: string
-	errorMessage?: string
-	isDisabled?: boolean
-	isRequired?: boolean
-	isInvalid?: boolean
-	isReadOnly?: boolean
-	autoFocus?: boolean
-	isOpen?: boolean
-	defaultOpen?: boolean
-	granularity?: "day" | "hour" | "minute" | "second"
-	firstDayOfWeek?: "sun" | "mon" | "tue" | "wed" | "thu" | "fri" | "sat"
-	validationBehavior?: "aria" | "native"
-	validate?: (value: DateValue | null) => string | string[] | true | null | undefined
-	value?: string
-	defaultValue?: string
-	minValue?: string
-	maxValue?: string
-	onChange?: (value: string) => void
-	onOpenChange?: (isOpen: boolean) => void
+	readonly label?: string
+	readonly name?: string
+	readonly description?: string
+	readonly errorMessage?: string
+	readonly isDisabled?: boolean
+	readonly isRequired?: boolean
+	readonly isInvalid?: boolean
+	readonly isReadOnly?: boolean
+	readonly autoFocus?: boolean
+	readonly isOpen?: boolean
+	readonly defaultOpen?: boolean
+	readonly granularity?: "day" | "hour" | "minute" | "second"
+	readonly firstDayOfWeek?: "sun" | "mon" | "tue" | "wed" | "thu" | "fri" | "sat"
+	readonly validationBehavior?: "aria" | "native"
+	readonly validate?: (value: DateValue | null) => string | string[] | true | null | undefined
+	readonly value?: string
+	readonly defaultValue?: string
+	readonly minValue?: string
+	readonly maxValue?: string
+	readonly onChange?: (value: string) => void
+	readonly onOpenChange?: (isOpen: boolean) => void
 }
 
 export function DatePicker({

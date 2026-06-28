@@ -1,13 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(Remove-Item *)",
       "Bash(Select-Object *)",
       "Bash(Select-String *)",
       "Bash(cd *)",
-      "Bash(cd *)",
-      "Bash(claude *)",
-      "Bash(curl *)",
       "Bash(docker *)",
       "Bash(gh *)",
       "Bash(git *)",
@@ -15,7 +11,6 @@
       "Bash(node_modules/.bin/astro*)",
       "Bash(npm *)",
       "Bash(npx *)",
-      "Bash(pkill *)",
       "Bash(pnpm *)",
       "Bash(powershell *)",
       "Bash(sonar-scanner*)",
@@ -29,7 +24,6 @@
       "TaskUpdate",
       "WebFetch(domain:docs.npmjs.com)",
       "WebFetch(domain:github.blog)",
-      "WebFetch(domain:github.com)",
       "WebFetch(domain:marketplace.visualstudio.com)",
       "WebFetch(domain:react-spectrum.adobe.com)",
       "WebFetch(domain:www.npmjs.com)",
@@ -43,7 +37,6 @@
   },
   "enabledMcpjsonServers": [
     "react-aria",
-    "github",
     "copilotkit",
     "storybook",
     "vitest",

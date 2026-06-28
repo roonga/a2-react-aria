@@ -4,25 +4,25 @@ import { FormStateContext } from "../../form-state"
 import { getNumberFieldStyles } from "./number-field.styles"
 
 interface NumberFieldProps {
-	label?: string
-	placeholder?: string
-	minValue?: number
-	maxValue?: number
-	step?: number
-	value?: number
-	defaultValue?: number
-	isRequired?: boolean
-	isDisabled?: boolean
-	isReadOnly?: boolean
-	isInvalid?: boolean
-	isWheelDisabled?: boolean
-	formatOptions?: Intl.NumberFormatOptions
-	validationBehavior?: "aria" | "native"
-	validate?: (value: number) => string | string[] | true | null | undefined
-	name?: string
-	description?: string
-	errorMessage?: string
-	onChange?: (value: number) => void
+	readonly label?: string
+	readonly placeholder?: string
+	readonly minValue?: number
+	readonly maxValue?: number
+	readonly step?: number
+	readonly value?: number
+	readonly defaultValue?: number
+	readonly isRequired?: boolean
+	readonly isDisabled?: boolean
+	readonly isReadOnly?: boolean
+	readonly isInvalid?: boolean
+	readonly isWheelDisabled?: boolean
+	readonly formatOptions?: Intl.NumberFormatOptions
+	readonly validationBehavior?: "aria" | "native"
+	readonly validate?: (value: number) => string | string[] | true | null | undefined
+	readonly name?: string
+	readonly description?: string
+	readonly errorMessage?: string
+	readonly onChange?: (value: number) => void
 }
 
 export function NumberField({

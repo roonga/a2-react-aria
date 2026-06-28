@@ -20,28 +20,30 @@ import {
 import { getDatePickerStyles } from "./date-picker.styles"
 
 interface DateRangePickerProps {
-	label?: string
-	description?: string
-	errorMessage?: string
-	isDisabled?: boolean
-	isRequired?: boolean
-	isInvalid?: boolean
-	isReadOnly?: boolean
-	isOpen?: boolean
-	defaultOpen?: boolean
-	startName?: string
-	endName?: string
-	granularity?: "day" | "hour" | "minute" | "second"
-	firstDayOfWeek?: "sun" | "mon" | "tue" | "wed" | "thu" | "fri" | "sat"
-	allowsNonContiguousRanges?: boolean
-	validationBehavior?: "aria" | "native"
-	validate?: (value: { start: DateValue; end: DateValue } | null) => string | string[] | true | null | undefined
-	value?: { start: string; end: string }
-	defaultValue?: { start: string; end: string }
-	minValue?: string
-	maxValue?: string
-	onChange?: (value: { start: string; end: string }) => void
-	onOpenChange?: (isOpen: boolean) => void
+	readonly label?: string
+	readonly description?: string
+	readonly errorMessage?: string
+	readonly isDisabled?: boolean
+	readonly isRequired?: boolean
+	readonly isInvalid?: boolean
+	readonly isReadOnly?: boolean
+	readonly isOpen?: boolean
+	readonly defaultOpen?: boolean
+	readonly startName?: string
+	readonly endName?: string
+	readonly granularity?: "day" | "hour" | "minute" | "second"
+	readonly firstDayOfWeek?: "sun" | "mon" | "tue" | "wed" | "thu" | "fri" | "sat"
+	readonly allowsNonContiguousRanges?: boolean
+	readonly validationBehavior?: "aria" | "native"
+	readonly validate?: (
+		value: { start: DateValue; end: DateValue } | null,
+	) => string | string[] | true | null | undefined
+	readonly value?: { start: string; end: string }
+	readonly defaultValue?: { start: string; end: string }
+	readonly minValue?: string
+	readonly maxValue?: string
+	readonly onChange?: (value: { start: string; end: string }) => void
+	readonly onOpenChange?: (isOpen: boolean) => void
 }
 
 export function DateRangePicker({
