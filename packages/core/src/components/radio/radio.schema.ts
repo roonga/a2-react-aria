@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { groupSchemaFields } from "../group-schema-fields.ts"
 
 export const RadioSchema = z.object({
 	type: z.literal("Radio"),
@@ -20,15 +21,7 @@ export const RadioGroupSchema = z.object({
 			label: z.string().optional(),
 			value: z.string().optional(),
 			defaultValue: z.string().optional(),
-			isDisabled: z.boolean().optional(),
-			isRequired: z.boolean().optional(),
-			isReadOnly: z.boolean().optional(),
-			isInvalid: z.boolean().optional(),
-			validationBehavior: z.enum(["aria", "native"]).optional(),
-			orientation: z.enum(["horizontal", "vertical"]).optional(),
-			name: z.string().optional(),
-			description: z.string().optional(),
-			errorMessage: z.string().optional(),
+			...groupSchemaFields,
 		})
 		.optional(),
 	children: z.array(z.unknown()).optional(),

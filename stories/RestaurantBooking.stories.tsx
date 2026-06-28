@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react-vite"
+﻿import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect } from "storybook/test"
 import {
 	A2Renderer,
@@ -77,6 +77,26 @@ const meta = {
 
 export default meta
 type Story = StoryObj<typeof meta>
+
+function makeRestaurantCard(name: string, cuisineArea: string, rating: string) {
+	return {
+		type: "Card",
+		props: { padding: "md", shadow: "sm", radius: "md", border: true },
+		children: [
+			{ type: "Text", props: { as: "h3", size: "md", weight: "semibold" }, children: name },
+			{ type: "Text", props: { as: "p", size: "sm", color: "muted" }, children: cuisineArea },
+			{ type: "Text", props: { as: "p", size: "sm" }, children: rating },
+			{
+				type: "Flex",
+				props: { justify: "between", align: "center" },
+				children: [
+					{ type: "Text", props: { as: "span", size: "sm", color: "primary" }, children: "Available tonight" },
+					{ type: "Button", props: { variant: "primary", size: "sm" }, children: "Book" },
+				],
+			},
+		],
+	}
+}
 
 export const SearchScreen: Story = {
 	args: {
@@ -194,132 +214,9 @@ export const RestaurantListing: Story = {
 					type: "Grid",
 					props: { columns: 3, gap: "md" },
 					children: [
-						{
-							type: "Card",
-							props: {
-								padding: "md",
-								shadow: "sm",
-								radius: "md",
-								border: true,
-							},
-							children: [
-								{
-									type: "Text",
-									props: { as: "h3", size: "md", weight: "semibold" },
-									children: "La Dolce Vita",
-								},
-								{
-									type: "Text",
-									props: { as: "p", size: "sm", color: "muted" },
-									children: "Italian · CBD",
-								},
-								{
-									type: "Text",
-									props: { as: "p", size: "sm" },
-									children: "⭐ 4.8 · $$",
-								},
-								{
-									type: "Flex",
-									props: { justify: "between", align: "center" },
-									children: [
-										{
-											type: "Text",
-											props: { as: "span", size: "sm", color: "primary" },
-											children: "Available tonight",
-										},
-										{
-											type: "Button",
-											props: { variant: "primary", size: "sm" },
-											children: "Book",
-										},
-									],
-								},
-							],
-						},
-						{
-							type: "Card",
-							props: {
-								padding: "md",
-								shadow: "sm",
-								radius: "md",
-								border: true,
-							},
-							children: [
-								{
-									type: "Text",
-									props: { as: "h3", size: "md", weight: "semibold" },
-									children: "Sakura Garden",
-								},
-								{
-									type: "Text",
-									props: { as: "p", size: "sm", color: "muted" },
-									children: "Japanese · Surry Hills",
-								},
-								{
-									type: "Text",
-									props: { as: "p", size: "sm" },
-									children: "⭐ 4.6 · $$$",
-								},
-								{
-									type: "Flex",
-									props: { justify: "between", align: "center" },
-									children: [
-										{
-											type: "Text",
-											props: { as: "span", size: "sm", color: "primary" },
-											children: "Available tonight",
-										},
-										{
-											type: "Button",
-											props: { variant: "primary", size: "sm" },
-											children: "Book",
-										},
-									],
-								},
-							],
-						},
-						{
-							type: "Card",
-							props: {
-								padding: "md",
-								shadow: "sm",
-								radius: "md",
-								border: true,
-							},
-							children: [
-								{
-									type: "Text",
-									props: { as: "h3", size: "md", weight: "semibold" },
-									children: "Thai Orchid",
-								},
-								{
-									type: "Text",
-									props: { as: "p", size: "sm", color: "muted" },
-									children: "Thai · Newtown",
-								},
-								{
-									type: "Text",
-									props: { as: "p", size: "sm" },
-									children: "⭐ 4.7 · $$",
-								},
-								{
-									type: "Flex",
-									props: { justify: "between", align: "center" },
-									children: [
-										{
-											type: "Text",
-											props: { as: "span", size: "sm", color: "primary" },
-											children: "Available tonight",
-										},
-										{
-											type: "Button",
-											props: { variant: "primary", size: "sm" },
-											children: "Book",
-										},
-									],
-								},
-							],
-						},
+						makeRestaurantCard("La Dolce Vita", "Italian · CBD", "⭐ 4.8 · $$"),
+						makeRestaurantCard("Sakura Garden", "Japanese · Surry Hills", "⭐ 4.6 · $$$"),
+						makeRestaurantCard("Thai Orchid", "Thai · Newtown", "⭐ 4.7 · $$"),
 					],
 				},
 			],

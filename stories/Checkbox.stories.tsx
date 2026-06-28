@@ -17,6 +17,18 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+function checkboxGroup(
+	label: string,
+	items: Array<{ label: string; value: string }>,
+	extraProps?: Record<string, unknown>,
+) {
+	return {
+		type: "CheckboxGroup",
+		props: { label, ...extraProps },
+		children: items.map((item) => ({ type: "Checkbox", props: item })),
+	}
+}
+
 export const Default: Story = {
 	args: {
 		node: {
@@ -109,15 +121,11 @@ export const WithOnChange: Story = {
 
 export const Group: Story = {
 	args: {
-		node: {
-			type: "CheckboxGroup",
-			props: { label: "Favourite fruits" },
-			children: [
-				{ type: "Checkbox", props: { label: "Apple", value: "apple" } },
-				{ type: "Checkbox", props: { label: "Banana", value: "banana" } },
-				{ type: "Checkbox", props: { label: "Cherry", value: "cherry" } },
-			],
-		},
+		node: checkboxGroup("Favourite fruits", [
+			{ label: "Apple", value: "apple" },
+			{ label: "Banana", value: "banana" },
+			{ label: "Cherry", value: "cherry" },
+		]),
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement)
@@ -190,19 +198,18 @@ export const GroupDisabled: Story = {
 
 export const GroupWithDescriptionAndError: Story = {
 	args: {
-		node: {
-			type: "CheckboxGroup",
-			props: {
-				label: "Agree to policies",
+		node: checkboxGroup(
+			"Agree to policies",
+			[
+				{ label: "Privacy Policy", value: "privacy" },
+				{ label: "Terms of Service", value: "terms" },
+			],
+			{
 				isInvalid: true,
 				description: "You must agree to all policies before proceeding.",
 				errorMessage: "Please select at least one option.",
 			},
-			children: [
-				{ type: "Checkbox", props: { label: "Privacy Policy", value: "privacy" } },
-				{ type: "Checkbox", props: { label: "Terms of Service", value: "terms" } },
-			],
-		},
+		),
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement)
