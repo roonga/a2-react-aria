@@ -1,22 +1,15 @@
 import { type DateValue, parseDate } from "@internationalized/date"
 import {
 	Button,
-	CalendarCell,
-	CalendarGrid,
-	CalendarGridBody,
-	CalendarGridHeader,
-	CalendarHeaderCell,
 	DateInput,
 	DateSegment,
-	FieldError,
 	Group,
-	Heading,
 	Label,
 	Popover,
 	DateRangePicker as RACDateRangePicker,
 	RangeCalendar,
-	Text,
 } from "react-aria-components"
+import { CalendarNavigation, PickerHelpText } from "./date-picker.shared"
 import { getDatePickerStyles } from "./date-picker.styles"
 
 interface DateRangePickerProps {
@@ -112,27 +105,10 @@ export function DateRangePicker({
 				</DateInput>
 				<Button className={styles.button}>▼</Button>
 			</Group>
-			{description && (
-				<Text slot="description" className={styles.description}>
-					{description}
-				</Text>
-			)}
-			{errorMessage && <FieldError className={styles.error}>{errorMessage}</FieldError>}
+			<PickerHelpText description={description} errorMessage={errorMessage} styles={styles} />
 			<Popover className={styles.popover}>
 				<RangeCalendar firstDayOfWeek={firstDayOfWeek} className={styles.calendar}>
-					<header className={styles.calendarHeader}>
-						<Button slot="previous" className={styles.navButton}>
-							◀
-						</Button>
-						<Heading className={styles.calendarHeading} />
-						<Button slot="next" className={styles.navButton}>
-							▶
-						</Button>
-					</header>
-					<CalendarGrid className={styles.grid}>
-						<CalendarGridHeader>{(day) => <CalendarHeaderCell>{day}</CalendarHeaderCell>}</CalendarGridHeader>
-						<CalendarGridBody>{(date) => <CalendarCell date={date} className={styles.cell} />}</CalendarGridBody>
-					</CalendarGrid>
+					<CalendarNavigation styles={styles} />
 				</RangeCalendar>
 			</Popover>
 		</RACDateRangePicker>

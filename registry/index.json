@@ -70,7 +70,7 @@
         "react-aria-components",
         "zod"
       ],
-      "files": 5
+      "files": 6
     },
     {
       "name": "dialog",

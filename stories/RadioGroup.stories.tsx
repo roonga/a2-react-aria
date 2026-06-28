@@ -17,17 +17,25 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+function radioGroup(
+	label: string,
+	items: Array<{ label: string; value: string }>,
+	extraProps?: Record<string, unknown>,
+) {
+	return {
+		type: "RadioGroup",
+		props: { label, ...extraProps },
+		children: items.map((item) => ({ type: "Radio", props: item })),
+	}
+}
+
 export const Default: Story = {
 	args: {
-		node: {
-			type: "RadioGroup",
-			props: { label: "Favourite pet" },
-			children: [
-				{ type: "Radio", props: { label: "Dog", value: "dog" } },
-				{ type: "Radio", props: { label: "Cat", value: "cat" } },
-				{ type: "Radio", props: { label: "Dragon", value: "dragon" } },
-			],
-		},
+		node: radioGroup("Favourite pet", [
+			{ label: "Dog", value: "dog" },
+			{ label: "Cat", value: "cat" },
+			{ label: "Dragon", value: "dragon" },
+		]),
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement)
@@ -126,20 +134,19 @@ export const Disabled: Story = {
 
 export const WithDescriptionAndError: Story = {
 	args: {
-		node: {
-			type: "RadioGroup",
-			props: {
-				label: "Notification frequency",
+		node: radioGroup(
+			"Notification frequency",
+			[
+				{ label: "Daily", value: "daily" },
+				{ label: "Weekly", value: "weekly" },
+				{ label: "Never", value: "never" },
+			],
+			{
 				isInvalid: true,
 				description: "Choose how often you want to receive notifications.",
 				errorMessage: "A frequency selection is required.",
 			},
-			children: [
-				{ type: "Radio", props: { label: "Daily", value: "daily" } },
-				{ type: "Radio", props: { label: "Weekly", value: "weekly" } },
-				{ type: "Radio", props: { label: "Never", value: "never" } },
-			],
-		},
+		),
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement)

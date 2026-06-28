@@ -3,22 +3,15 @@ import { useContext, useEffect } from "react"
 import {
 	Button,
 	Calendar,
-	CalendarCell,
-	CalendarGrid,
-	CalendarGridBody,
-	CalendarGridHeader,
-	CalendarHeaderCell,
 	DateInput,
 	DateSegment,
-	FieldError,
 	Group,
-	Heading,
 	Label,
 	Popover,
 	DatePicker as RACDatePicker,
-	Text,
 } from "react-aria-components"
 import { FormStateContext } from "../../form-state"
+import { CalendarNavigation, PickerHelpText } from "./date-picker.shared"
 import { getDatePickerStyles } from "./date-picker.styles"
 
 interface DatePickerProps {
@@ -108,27 +101,10 @@ export function DatePicker({
 				</DateInput>
 				<Button className={styles.button}>▼</Button>
 			</Group>
-			{description && (
-				<Text slot="description" className={styles.description}>
-					{description}
-				</Text>
-			)}
-			{errorMessage && <FieldError className={styles.error}>{errorMessage}</FieldError>}
+			<PickerHelpText description={description} errorMessage={errorMessage} styles={styles} />
 			<Popover className={styles.popover}>
 				<Calendar firstDayOfWeek={firstDayOfWeek} className={styles.calendar}>
-					<header className={styles.calendarHeader}>
-						<Button slot="previous" className={styles.navButton}>
-							◀
-						</Button>
-						<Heading className={styles.calendarHeading} />
-						<Button slot="next" className={styles.navButton}>
-							▶
-						</Button>
-					</header>
-					<CalendarGrid className={styles.grid}>
-						<CalendarGridHeader>{(day) => <CalendarHeaderCell>{day}</CalendarHeaderCell>}</CalendarGridHeader>
-						<CalendarGridBody>{(date) => <CalendarCell date={date} className={styles.cell} />}</CalendarGridBody>
-					</CalendarGrid>
+					<CalendarNavigation styles={styles} />
 				</Calendar>
 			</Popover>
 		</RACDatePicker>
