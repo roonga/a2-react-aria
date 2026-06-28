@@ -3,17 +3,17 @@ import { Button, DialogTrigger, Popover as RACPopover } from "react-aria-compone
 import { getPopoverStyles } from "./popover.styles"
 
 interface PopoverProps {
-	triggerLabel?: string
-	placement?: "top" | "bottom" | "left" | "right"
-	isOpen?: boolean
-	defaultOpen?: boolean
-	offset?: number
-	crossOffset?: number
-	shouldFlip?: boolean
-	isKeyboardDismissDisabled?: boolean
-	maxHeight?: number
-	onOpenChange?: (isOpen: boolean) => void
-	children?: ReactNode
+	readonly triggerLabel?: string
+	readonly placement?: "top" | "bottom" | "left" | "right"
+	readonly isOpen?: boolean
+	readonly defaultOpen?: boolean
+	readonly offset?: number
+	readonly crossOffset?: number
+	readonly shouldFlip?: boolean
+	readonly isKeyboardDismissDisabled?: boolean
+	readonly maxHeight?: number
+	readonly onOpenChange?: (isOpen: boolean) => void
+	readonly children?: ReactNode
 }
 
 export function Popover({

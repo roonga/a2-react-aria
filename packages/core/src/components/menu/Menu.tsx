@@ -3,18 +3,18 @@ import type { MenuItemEntry } from "./menu.schema"
 import { getMenuStyles } from "./menu.styles"
 
 interface MenuProps {
-	triggerLabel?: string
-	items?: MenuItemEntry[]
-	placement?: "top" | "bottom" | "left" | "right"
-	isOpen?: boolean
-	selectionMode?: "none" | "single" | "multiple"
-	selectedKeys?: string[]
-	defaultSelectedKeys?: string[]
-	disabledKeys?: string[]
-	onAction?: (key: string) => void
-	onSelectionChange?: (keys: string[]) => void
-	onClose?: () => void
-	onOpenChange?: (isOpen: boolean) => void
+	readonly triggerLabel?: string
+	readonly items?: MenuItemEntry[]
+	readonly placement?: "top" | "bottom" | "left" | "right"
+	readonly isOpen?: boolean
+	readonly selectionMode?: "none" | "single" | "multiple"
+	readonly selectedKeys?: string[]
+	readonly defaultSelectedKeys?: string[]
+	readonly disabledKeys?: string[]
+	readonly onAction?: (key: string) => void
+	readonly onSelectionChange?: (keys: string[]) => void
+	readonly onClose?: () => void
+	readonly onOpenChange?: (isOpen: boolean) => void
 }
 
 export function Menu({

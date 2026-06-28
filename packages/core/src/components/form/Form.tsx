@@ -3,18 +3,18 @@ import { Form as RACForm } from "react-aria-components"
 import { getFormStyles } from "./form.styles"
 
 interface FormProps {
-	gap?: "sm" | "md" | "lg"
-	validationBehavior?: "aria" | "native"
-	validationErrors?: Record<string, string | string[]>
-	action?: string
-	method?: "get" | "post"
-	encType?: "application/x-www-form-urlencoded" | "multipart/form-data" | "text/plain"
-	autoComplete?: "on" | "off"
-	target?: "_blank" | "_self" | "_parent" | "_top"
-	onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void
-	onReset?: (e: React.FormEvent<HTMLFormElement>) => void
-	onInvalid?: (e: React.FormEvent<HTMLFormElement>) => void
-	children?: ReactNode
+	readonly gap?: "sm" | "md" | "lg"
+	readonly validationBehavior?: "aria" | "native"
+	readonly validationErrors?: Record<string, string | string[]>
+	readonly action?: string
+	readonly method?: "get" | "post"
+	readonly encType?: "application/x-www-form-urlencoded" | "multipart/form-data" | "text/plain"
+	readonly autoComplete?: "on" | "off"
+	readonly target?: "_blank" | "_self" | "_parent" | "_top"
+	readonly onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void
+	readonly onReset?: (e: React.FormEvent<HTMLFormElement>) => void
+	readonly onInvalid?: (e: React.FormEvent<HTMLFormElement>) => void
+	readonly children?: ReactNode
 }
 
 export function Form({

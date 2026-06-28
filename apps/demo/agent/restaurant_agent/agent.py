@@ -292,28 +292,18 @@ def _handle_case_confirm(text: str, llm_request: LlmRequest) -> LlmResponse:
     )
 
 
-def _before_model(
-    callback_context: CallbackContext, *, llm_request: LlmRequest
-) -> LlmResponse | None:
-    """Bypass the LLM for all a2UI form actions — deterministic routing."""
-    contents = llm_request.contents or []
-    if not contents:
-        return None
-
-    # Case 0: First user message
-    if not any(c.role == "model" for c in contents):
-        return _handle_case0(contents)
-
-    latest = contents[-1]
-
-    # Case 1: A2UI tool response pass-through
+def _handle_tool_response(latest) -> LlmResponse | None:
+    """Case 1: A2UI tool response pass-through."""
     for part in latest.parts or []:
         if part.function_response and part.function_response.name in _A2UI_TOOLS:
             result = (part.function_response.response or {}).get("result", "")
             _log.info("intercept: %s → pass through", part.function_response.name)
             return _llm_response(result)
+    return None
 
-    # Form action routing
+
+def _route_action(latest, llm_request: LlmRequest) -> LlmResponse | None:
+    """Route a form action from the latest content text parts."""
     for part in latest.parts or []:
         if not part.text:
             continue
@@ -331,8 +321,20 @@ def _before_model(
             return _handle_case_continue(text, llm_request)
         if _CONFIRM_RE.match(text):
             return _handle_case_confirm(text, llm_request)
-
     return None
+
+
+def _before_model(
+    callback_context: CallbackContext, *, llm_request: LlmRequest
+) -> LlmResponse | None:
+    """Bypass the LLM for all a2UI form actions — deterministic routing."""
+    contents = llm_request.contents or []
+    if not contents:
+        return None
+    if not any(c.role == "model" for c in contents):
+        return _handle_case0(contents)
+    latest = contents[-1]
+    return _handle_tool_response(latest) or _route_action(latest, llm_request)
 
 
 def search_restaurants(location: str, cuisine: str = "any", party_size: int = 2) -> str:

@@ -113,21 +113,22 @@ export function useChat() {
 	// Create ADK session on mount
 	useEffect(() => {
 		const rid = genReqId()
-		sessionPromise.current = fetch(`${API_BASE}/apps/${APP_NAME}/users/${USER_ID}/sessions`, {
-			method: "POST",
-			headers: { "Content-Type": "application/json", "X-Request-ID": rid },
-			body: "{}",
-		})
-			.then((r) => r.json())
-			.then((data: { id: string }) => {
+		sessionPromise.current = (async () => {
+			try {
+				const r = await fetch(`${API_BASE}/apps/${APP_NAME}/users/${USER_ID}/sessions`, {
+					method: "POST",
+					headers: { "Content-Type": "application/json", "X-Request-ID": rid },
+					body: "{}",
+				})
+				const data = (await r.json()) as { id: string }
 				sessionId.current = data.id
 				console.info(`[Chat] [req:${rid}] session created: ${data.id}`)
 				return data.id
-			})
-			.catch((err: unknown) => {
+			} catch (err: unknown) {
 				console.error(`[Chat] [req:${rid}] session create failed:`, err)
 				throw err
-			})
+			}
+		})()
 	}, [])
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: intentionally scrolls on any chat state change

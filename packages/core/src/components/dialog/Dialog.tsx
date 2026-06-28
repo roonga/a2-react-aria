@@ -3,16 +3,16 @@ import { Button, DialogTrigger, Heading, Modal, ModalOverlay, Dialog as RACDialo
 import { getDialogStyles } from "./dialog.styles"
 
 interface DialogProps {
-	title?: string
-	description?: string
-	triggerLabel?: string
-	isDismissable?: boolean
-	isKeyboardDismissDisabled?: boolean
-	role?: "dialog" | "alertdialog"
-	isOpen?: boolean
-	defaultOpen?: boolean
-	onOpenChange?: (isOpen: boolean) => void
-	children?: ReactNode
+	readonly title?: string
+	readonly description?: string
+	readonly triggerLabel?: string
+	readonly isDismissable?: boolean
+	readonly isKeyboardDismissDisabled?: boolean
+	readonly role?: "dialog" | "alertdialog"
+	readonly isOpen?: boolean
+	readonly defaultOpen?: boolean
+	readonly onOpenChange?: (isOpen: boolean) => void
+	readonly children?: ReactNode
 }
 
 export function Dialog({

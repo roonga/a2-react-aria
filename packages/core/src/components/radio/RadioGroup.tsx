@@ -5,21 +5,21 @@ import { FormStateContext } from "../../form-state"
 import { getRadioGroupStyles } from "./radio.styles"
 
 interface RadioGroupProps {
-	label?: string
-	value?: string
-	defaultValue?: string
-	isDisabled?: boolean
-	isRequired?: boolean
-	isReadOnly?: boolean
-	isInvalid?: boolean
-	validationBehavior?: "aria" | "native"
-	validate?: (value: string) => string | string[] | true | null | undefined
-	orientation?: "horizontal" | "vertical"
-	name?: string
-	description?: string
-	errorMessage?: string
-	onChange?: (value: string) => void
-	children?: ReactNode
+	readonly label?: string
+	readonly value?: string
+	readonly defaultValue?: string
+	readonly isDisabled?: boolean
+	readonly isRequired?: boolean
+	readonly isReadOnly?: boolean
+	readonly isInvalid?: boolean
+	readonly validationBehavior?: "aria" | "native"
+	readonly validate?: (value: string) => string | string[] | true | null | undefined
+	readonly orientation?: "horizontal" | "vertical"
+	readonly name?: string
+	readonly description?: string
+	readonly errorMessage?: string
+	readonly onChange?: (value: string) => void
+	readonly children?: ReactNode
 }
 
 export function RadioGroup({

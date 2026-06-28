@@ -2,9 +2,9 @@ import type { ReactNode } from "react"
 import { alertBodyStyles, alertTitleStyles, getAlertStyles } from "./alert.styles"
 
 interface AlertProps {
-	variant?: "info" | "success" | "warning" | "error"
-	title?: string
-	children?: ReactNode
+	readonly variant?: "info" | "success" | "warning" | "error"
+	readonly title?: string
+	readonly children?: ReactNode
 }
 
 export function Alert({ variant = "info", title, children }: AlertProps) {

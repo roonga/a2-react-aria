@@ -9,9 +9,9 @@ import {
 } from "./tag.styles"
 
 interface TagProps {
-	id?: string
-	isDisabled?: boolean
-	children?: string
+	readonly id?: string
+	readonly isDisabled?: boolean
+	readonly children?: string
 }
 
 export function Tag({ id, isDisabled, children }: TagProps) {
@@ -28,10 +28,10 @@ export function Tag({ id, isDisabled, children }: TagProps) {
 }
 
 interface TagGroupProps {
-	label?: string
-	selectionMode?: "none" | "single" | "multiple"
-	description?: string
-	children?: ReactNode
+	readonly label?: string
+	readonly selectionMode?: "none" | "single" | "multiple"
+	readonly description?: string
+	readonly children?: ReactNode
 }
 
 export function TagGroup({ label, selectionMode = "none", description, children }: TagGroupProps) {

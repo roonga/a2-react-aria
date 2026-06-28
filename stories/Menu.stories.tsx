@@ -96,7 +96,7 @@ export const WithOnAction: Story = {
 		const onAction = fn()
 		const node = {
 			...args.node,
-			props: { ...(args.node.props ?? {}), onAction },
+			props: { ...args.node.props, onAction },
 		}
 		return <A2Renderer node={node} registry={registry} />
 	},

@@ -5,15 +5,15 @@ import { ActionContext } from "../../action-context"
 import { getButtonStyles, getSizeStyles } from "./button.styles"
 
 interface ButtonProps {
-	children?: ReactNode
-	isDisabled?: boolean
-	isPending?: boolean
-	type?: "button" | "reset" | "submit"
-	name?: string
-	value?: string
-	variant?: "primary" | "secondary" | "danger" | "ghost"
-	size?: "sm" | "md" | "lg"
-	onPress?: () => void
+	readonly children?: ReactNode
+	readonly isDisabled?: boolean
+	readonly isPending?: boolean
+	readonly type?: "button" | "reset" | "submit"
+	readonly name?: string
+	readonly value?: string
+	readonly variant?: "primary" | "secondary" | "danger" | "ghost"
+	readonly size?: "sm" | "md" | "lg"
+	readonly onPress?: () => void
 }
 
 export function Button({

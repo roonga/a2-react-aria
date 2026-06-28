@@ -4,15 +4,15 @@ import type { TabItem } from "./tabs.schema"
 import { getTabsStyles } from "./tabs.styles"
 
 interface TabsProps {
-	tabs?: TabItem[]
-	defaultSelectedKey?: string
-	selectedKey?: string
-	disabledKeys?: string[]
-	onSelectionChange?: (key: string) => void
-	orientation?: "horizontal" | "vertical"
-	keyboardActivation?: "automatic" | "manual"
-	ariaLabel?: string
-	children?: ReactNode
+	readonly tabs?: TabItem[]
+	readonly defaultSelectedKey?: string
+	readonly selectedKey?: string
+	readonly disabledKeys?: string[]
+	readonly onSelectionChange?: (key: string) => void
+	readonly orientation?: "horizontal" | "vertical"
+	readonly keyboardActivation?: "automatic" | "manual"
+	readonly ariaLabel?: string
+	readonly children?: ReactNode
 }
 
 export function Tabs({

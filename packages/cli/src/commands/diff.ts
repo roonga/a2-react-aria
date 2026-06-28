@@ -66,11 +66,11 @@ export async function diff(name: string | undefined, opts: DiffOptions): Promise
 	}
 
 	info("")
-	if (!anyLocal) {
-		warn("No installed components found to compare.")
-	} else if (!anyChanges) {
+	if (anyChanges) {
+		info(dim("Run `a2ra add <name> --overwrite` to update."))
+	} else if (anyLocal) {
 		success("All installed components are up to date.")
 	} else {
-		info(dim("Run `a2ra add <name> --overwrite` to update."))
+		warn("No installed components found to compare.")
 	}
 }

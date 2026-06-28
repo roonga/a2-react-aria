@@ -3,10 +3,10 @@ import type { BreadcrumbItem } from "./breadcrumb.schema"
 import { getBreadcrumbStyles } from "./breadcrumb.styles"
 
 interface BreadcrumbProps {
-	items?: BreadcrumbItem[]
-	ariaLabel?: string
-	isDisabled?: boolean
-	onAction?: (id: string) => void
+	readonly items?: BreadcrumbItem[]
+	readonly ariaLabel?: string
+	readonly isDisabled?: boolean
+	readonly onAction?: (id: string) => void
 }
 
 export function Breadcrumb({ items = [], ariaLabel = "Breadcrumb", isDisabled, onAction }: BreadcrumbProps) {

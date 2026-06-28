@@ -15,7 +15,7 @@ const FEEDBACK_DEMO_MESSAGES: Message[] = [
 ]
 
 interface FeedbackDemoButtonProps {
-	onAdd: (msgs: Message[]) => void
+	readonly onAdd: (msgs: Message[]) => void
 }
 
 export function FeedbackDemoButton({ onAdd }: FeedbackDemoButtonProps) {

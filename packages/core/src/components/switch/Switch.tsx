@@ -2,21 +2,21 @@ import { FieldError, SwitchButton, SwitchField, Text } from "react-aria-componen
 import { getSwitchStyles } from "./switch.styles"
 
 interface SwitchProps {
-	label?: string
-	isSelected?: boolean
-	defaultSelected?: boolean
-	isDisabled?: boolean
-	isRequired?: boolean
-	isInvalid?: boolean
-	isReadOnly?: boolean
-	autoFocus?: boolean
-	validationBehavior?: "aria" | "native"
-	validate?: (value: boolean) => string | string[] | true | null | undefined
-	name?: string
-	value?: string
-	description?: string
-	errorMessage?: string
-	onChange?: (isSelected: boolean) => void
+	readonly label?: string
+	readonly isSelected?: boolean
+	readonly defaultSelected?: boolean
+	readonly isDisabled?: boolean
+	readonly isRequired?: boolean
+	readonly isInvalid?: boolean
+	readonly isReadOnly?: boolean
+	readonly autoFocus?: boolean
+	readonly validationBehavior?: "aria" | "native"
+	readonly validate?: (value: boolean) => string | string[] | true | null | undefined
+	readonly name?: string
+	readonly value?: string
+	readonly description?: string
+	readonly errorMessage?: string
+	readonly onChange?: (isSelected: boolean) => void
 }
 
 export function Switch({

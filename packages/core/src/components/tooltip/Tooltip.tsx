@@ -2,15 +2,15 @@ import { Button, Tooltip as RACTooltip, TooltipTrigger } from "react-aria-compon
 import { getTooltipStyles } from "./tooltip.styles"
 
 interface TooltipProps {
-	content?: string
-	triggerLabel?: string
-	placement?: "top" | "bottom" | "left" | "right"
-	isOpen?: boolean
-	defaultOpen?: boolean
-	offset?: number
-	crossOffset?: number
-	shouldFlip?: boolean
-	onOpenChange?: (isOpen: boolean) => void
+	readonly content?: string
+	readonly triggerLabel?: string
+	readonly placement?: "top" | "bottom" | "left" | "right"
+	readonly isOpen?: boolean
+	readonly defaultOpen?: boolean
+	readonly offset?: number
+	readonly crossOffset?: number
+	readonly shouldFlip?: boolean
+	readonly onOpenChange?: (isOpen: boolean) => void
 }
 
 export function Tooltip({
