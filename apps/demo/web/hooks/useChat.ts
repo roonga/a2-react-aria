@@ -158,10 +158,6 @@ export function useChat() {
 		setStreamingText("")
 		setStreamingThought("")
 
-		const clearStreaming = () => {
-			setStreamingText("")
-			setStreamingThought("")
-		}
 		const commitMessage = (state: StreamState) => {
 			const { plainText, a2uiJson } = extractA2ui(state.accumulated)
 			setMessages((prev) => [
@@ -173,7 +169,8 @@ export function useChat() {
 					a2uiJson: a2uiJson ?? undefined,
 				},
 			])
-			clearStreaming()
+			setStreamingText("")
+			setStreamingThought("")
 		}
 
 		try {
@@ -202,7 +199,8 @@ export function useChat() {
 				commitMessage,
 				(msg) => {
 					setMessages((prev) => [...prev, { role: "assistant", content: `Error: ${msg}` }])
-					clearStreaming()
+					setStreamingText("")
+					setStreamingThought("")
 				},
 			)
 
@@ -216,7 +214,8 @@ export function useChat() {
 		} finally {
 			isLoadingRef.current = false
 			setIsLoading(false)
-			clearStreaming()
+			setStreamingText("")
+			setStreamingThought("")
 		}
 	}
 

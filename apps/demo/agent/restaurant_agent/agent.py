@@ -302,25 +302,31 @@ def _handle_tool_response(latest) -> LlmResponse | None:
     return None
 
 
+def _dispatch_text_action(text: str, llm_request: LlmRequest) -> LlmResponse | None:
+    if _EDIT_SEARCH_RE.match(text):
+        return _handle_case_edit_search(text)
+    if _FIND_RE.match(text):
+        return _handle_case_find(text)
+    if _BOOK_ANOTHER_RE.match(text):
+        _log.info("intercept: Book Another Table → search form")
+        return _emit(build_search_form())
+    if _BOOK_RE.match(text):
+        return _handle_case_book(text, llm_request)
+    if _CONTINUE_RE.match(text):
+        return _handle_case_continue(text, llm_request)
+    if _CONFIRM_RE.match(text):
+        return _handle_case_confirm(text, llm_request)
+    return None
+
+
 def _route_action(latest, llm_request: LlmRequest) -> LlmResponse | None:
     """Route a form action from the latest content text parts."""
     for part in latest.parts or []:
         if not part.text:
             continue
-        text = part.text.strip()
-        if _EDIT_SEARCH_RE.match(text):
-            return _handle_case_edit_search(text)
-        if _FIND_RE.match(text):
-            return _handle_case_find(text)
-        if _BOOK_ANOTHER_RE.match(text):
-            _log.info("intercept: Book Another Table → search form")
-            return _emit(build_search_form())
-        if _BOOK_RE.match(text):
-            return _handle_case_book(text, llm_request)
-        if _CONTINUE_RE.match(text):
-            return _handle_case_continue(text, llm_request)
-        if _CONFIRM_RE.match(text):
-            return _handle_case_confirm(text, llm_request)
+        result = _dispatch_text_action(part.text.strip(), llm_request)
+        if result is not None:
+            return result
     return None
 
 
