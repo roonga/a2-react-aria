@@ -1,9 +1,9 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs"
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { writeItems } from "../commands/add.js"
+import { add, writeItems } from "../commands/add.js"
 import { diff } from "../commands/diff.js"
 import { list } from "../commands/list.js"
 import { loadIndex, resolveItems } from "../registry.js"
@@ -80,6 +80,57 @@ describe("diff", () => {
 		vi.spyOn(console, "log").mockImplementation(() => {})
 		await diff(undefined, { registry: REGISTRY, dir })
 		expect(warns.some((w) => w.includes("No installed components"))).toBe(true)
+	})
+})
+
+describe("add command", () => {
+	let dir: string
+	beforeEach(() => {
+		dir = mkdtempSync(join(tmpdir(), "a2ra-add-"))
+	})
+	afterEach(() => {
+		vi.restoreAllMocks()
+		rmSync(dir, { recursive: true, force: true })
+	})
+
+	it("writes component files to the target directory and reports success", async () => {
+		const logs: string[] = []
+		vi.spyOn(console, "log").mockImplementation((...args) => {
+			logs.push(args.join(" "))
+		})
+		await add(["button"], { registry: REGISTRY, dir })
+		expect(existsSync(join(dir, "button", "Button.tsx"))).toBe(true)
+		expect(logs.some((l) => l.includes("Added") && l.includes("button"))).toBe(true)
+	})
+
+	it("prints install dependency instructions when component has npm deps", async () => {
+		const logs: string[] = []
+		vi.spyOn(console, "log").mockImplementation((...args) => {
+			logs.push(args.join(" "))
+		})
+		await add(["button"], { registry: REGISTRY, dir })
+		expect(logs.some((l) => l.includes("Install required dependencies"))).toBe(true)
+	})
+
+	it("skips existing files and warns when overwrite is not set", async () => {
+		vi.spyOn(console, "log").mockImplementation(() => {})
+		await add(["alert"], { registry: REGISTRY, dir })
+
+		const warns: string[] = []
+		vi.spyOn(console, "warn").mockImplementation((...args) => {
+			warns.push(args.join(" "))
+		})
+		await add(["alert"], { registry: REGISTRY, dir })
+		expect(warns.some((w) => w.includes("skipped"))).toBe(true)
+	})
+
+	it("exits with an error message when no component names are given", async () => {
+		const exitSpy = vi.spyOn(process, "exit").mockImplementation((() => {
+			throw new Error("process.exit")
+		}) as never)
+		vi.spyOn(console, "error").mockImplementation(() => {})
+		await expect(add([], { registry: REGISTRY, dir })).rejects.toThrow("process.exit")
+		exitSpy.mockRestore()
 	})
 })
 
