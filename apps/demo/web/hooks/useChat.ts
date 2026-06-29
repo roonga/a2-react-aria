@@ -16,7 +16,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9080"
 const APP_NAME = "restaurant_agent"
 const USER_ID = "user_1"
 
-const genReqId = () => Math.random().toString(36).slice(2, 10)
+const genReqId = () => crypto.randomUUID().slice(0, 8)
 
 const INITIAL_MESSAGE: Message = {
 	id: "initial",

@@ -1,7 +1,7 @@
 """Mock restaurant data and a2UI JSON builders."""
 
 import json
-import random
+import secrets
 import string
 
 # Time slot constants shared across multiple restaurant records
@@ -131,7 +131,7 @@ def find_restaurant_by_name(name: str) -> dict | None:
 
 
 def generate_confirmation_number() -> str:
-    suffix = "".join(random.choices(string.digits, k=4))
+    suffix = "".join(secrets.choice(string.digits) for _ in range(4))
     return f"RB-20260615-{suffix}"
 
 
