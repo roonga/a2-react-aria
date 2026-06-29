@@ -15,6 +15,30 @@ const REGISTRY = resolve(fileURLToPath(new URL(".", import.meta.url)), "../../..
 describe("list", () => {
 	afterEach(() => vi.restoreAllMocks())
 
+	it("exits with error when the registry cannot be loaded", async () => {
+		const exitSpy = vi.spyOn(process, "exit").mockImplementation((() => {
+			throw new Error("process.exit")
+		}) as never)
+		vi.spyOn(console, "error").mockImplementation(() => {})
+		await expect(list({ registry: "/no/such/registry/path" })).rejects.toThrow("process.exit")
+		exitSpy.mockRestore()
+	})
+
+	it("renders blank when a component has no description (covers description ?? '' branch)", async () => {
+		const tmpReg = mkdtempSync(join(tmpdir(), "a2ra-list-nodesc-"))
+		writeFileSync(
+			join(tmpReg, "index.json"),
+			JSON.stringify({ components: [{ name: "widget", title: "Widget", files: 0 }] }),
+		)
+		const logs: string[] = []
+		vi.spyOn(console, "log").mockImplementation((...args) => {
+			logs.push(args.join(" "))
+		})
+		await list({ registry: tmpReg })
+		expect(logs.some((l) => l.includes("widget"))).toBe(true)
+		rmSync(tmpReg, { recursive: true, force: true })
+	})
+
 	it("outputs components as a JSON array when the json flag is set", async () => {
 		const lines: string[] = []
 		vi.spyOn(console, "log").mockImplementation((...args) => {
@@ -210,10 +234,10 @@ describe("list command — text output description branch", () => {
 	})
 })
 
-describe("schema command — download error path", () => {
+describe("schema command — download paths", () => {
 	let dir: string
 	beforeEach(() => {
-		dir = mkdtempSync(join(tmpdir(), "a2ra-schema-err-"))
+		dir = mkdtempSync(join(tmpdir(), "a2ra-schema-"))
 	})
 	afterEach(() => {
 		vi.restoreAllMocks()
@@ -226,6 +250,57 @@ describe("schema command — download error path", () => {
 		}) as never)
 		vi.spyOn(console, "error").mockImplementation(() => {})
 		await expect(schema({ registry: "/no/such/registry/path" })).rejects.toThrow("process.exit")
+		exitSpy.mockRestore()
+	})
+
+	it("prints schema to stdout when no --out option is given", async () => {
+		const logs: string[] = []
+		vi.spyOn(console, "log").mockImplementation((...args) => {
+			logs.push(args.join(" "))
+		})
+		await schema({ registry: REGISTRY })
+		expect(logs.some((l) => l.includes('"$schema"'))).toBe(true)
+	})
+
+	it("writes schema to file when --out is provided", async () => {
+		const out = join(dir, "schema.json")
+		vi.spyOn(console, "log").mockImplementation(() => {})
+		await schema({ registry: REGISTRY, out })
+		expect(existsSync(out)).toBe(true)
+		const content = JSON.parse(readFileSync(out, "utf8")) as Record<string, unknown>
+		expect(content.$schema).toBeDefined()
+	})
+
+	it("exits with error when --entry file does not exist", async () => {
+		const exitSpy = vi.spyOn(process, "exit").mockImplementation((() => {
+			throw new Error("process.exit")
+		}) as never)
+		vi.spyOn(console, "error").mockImplementation(() => {})
+		vi.spyOn(process, "cwd").mockReturnValue(dir)
+		await expect(schema({ entry: "nonexistent-entry.ts", out: join(dir, "out.json") })).rejects.toThrow("process.exit")
+		exitSpy.mockRestore()
+	})
+
+	it("uses default out path when --out is not given (covers opts.out ?? outDefault branch)", async () => {
+		const exitSpy = vi.spyOn(process, "exit").mockImplementation((() => {
+			throw new Error("process.exit")
+		}) as never)
+		vi.spyOn(console, "error").mockImplementation(() => {})
+		vi.spyOn(process, "cwd").mockReturnValue(dir)
+		// No 'out' → opts.out is undefined → falls back to outDefault; entry missing → fail at exists check
+		await expect(schema({ entry: "nonexistent-entry.ts" })).rejects.toThrow("process.exit")
+		exitSpy.mockRestore()
+	})
+
+	it("exits with error when execFileSync fails in generateFromEntry", async () => {
+		const exitSpy = vi.spyOn(process, "exit").mockImplementation((() => {
+			throw new Error("process.exit")
+		}) as never)
+		vi.spyOn(console, "error").mockImplementation(() => {})
+		const brokenEntry = join(dir, "broken.ts")
+		writeFileSync(brokenEntry, "throw new Error('intentional failure')\n")
+		vi.spyOn(process, "cwd").mockReturnValue(dir)
+		await expect(schema({ entry: brokenEntry, out: join(dir, "out.json"), cwd: dir })).rejects.toThrow("process.exit")
 		exitSpy.mockRestore()
 	})
 })
