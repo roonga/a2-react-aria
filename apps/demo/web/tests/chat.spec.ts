@@ -119,8 +119,10 @@ test.beforeEach(async ({ page }) => {
 
 test("chat UI loads with welcome message", async ({ page }) => {
 	await page.goto("/")
-	await expect(page.getByText("Welcome!")).toBeVisible()
-	await expect(page.getByPlaceholder("Type your message…")).toBeVisible()
+	await expect(
+		page.getByText("Hi! I can help you find and book a restaurant in Australia. What are you looking for?"),
+	).toBeVisible()
+	await expect(page.getByPlaceholder("Or type a message…")).toBeVisible()
 	await expect(page.getByRole("button", { name: "Send" })).toBeVisible()
 })
 
@@ -134,7 +136,7 @@ test("search returns restaurant cards", async ({ page }) => {
 	)
 
 	await page.goto("/")
-	await page.getByPlaceholder("Type your message…").fill("Italian restaurants in Sydney for 2")
+	await page.getByPlaceholder("Or type a message…").fill("Italian restaurants in Sydney for 2")
 	await page.getByRole("button", { name: "Send" }).click()
 
 	// The plain-text prefix before the a2ui-json block
@@ -164,7 +166,7 @@ test("clicking Book button sends restaurant name as message", async ({ page }) =
 	})
 
 	await page.goto("/")
-	await page.getByPlaceholder("Type your message…").fill("Italian restaurants in Sydney for 2")
+	await page.getByPlaceholder("Or type a message…").fill("Italian restaurants in Sydney for 2")
 	await page.getByRole("button", { name: "Send" }).click()
 	await expect(page.getByRole("button", { name: "Book La Dolce Vita" })).toBeVisible({ timeout: 10_000 })
 
@@ -191,7 +193,7 @@ test("slot selection shows available times", async ({ page }) => {
 	})
 
 	await page.goto("/")
-	const input = page.getByPlaceholder("Type your message…")
+	const input = page.getByPlaceholder("Or type a message…")
 
 	await input.fill("Italian restaurants in Sydney for 2")
 	await page.getByRole("button", { name: "Send" }).click()
@@ -223,7 +225,7 @@ test("booking confirmation renders all details", async ({ page }) => {
 	})
 
 	await page.goto("/")
-	const input = page.getByPlaceholder("Type your message…")
+	const input = page.getByPlaceholder("Or type a message…")
 
 	await input.fill("Italian restaurants in Sydney for 2")
 	await page.getByRole("button", { name: "Send" }).click()
