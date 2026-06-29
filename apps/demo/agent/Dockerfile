@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 ENV UV_PYTHON_DOWNLOADS=auto
 ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
+ENV UV_PYTHON_INSTALL_DIR=/app/.python
 
 COPY pyproject.toml uv.lock ./
 RUN uv sync --no-dev --frozen
