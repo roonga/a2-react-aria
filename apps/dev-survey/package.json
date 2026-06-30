@@ -18,7 +18,6 @@
 		"zod": "^4.4.3"
 	},
 	"devDependencies": {
-		"@a2ra/cli": "workspace:*",
 		"@tailwindcss/postcss": "^4",
 		"@types/node": "^20",
 		"@types/react": "^19",

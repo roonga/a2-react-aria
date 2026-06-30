@@ -1,0 +1,10 @@
+name: a2ui-dev-survey
+
+services:
+  web:
+    build:
+      context: ../..
+      dockerfile: apps/dev-survey/Dockerfile
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
