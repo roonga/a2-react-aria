@@ -2,6 +2,7 @@ packages:
   - "packages/*"
   - "apps/test-harness"
   - "apps/demo/web"
+  - "apps/dev-survey"
   - "docs"
   - "catalog"
 allowBuilds:
