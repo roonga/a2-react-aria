@@ -5,11 +5,13 @@
     "a2ui-demo-web": "0.1.0",
     "@a2ra/docs": "0.1.0",
     "@a2ra/cli": "0.1.0-preview.0",
-    "@a2ra/core": "0.1.0-preview.0"
+    "@a2ra/core": "0.1.0-preview.0",
+    "a2ui-dev-survey": "0.1.0"
   },
   "changesets": [
     "add-default-registry",
     "registry-schema-export",
-    "remove-hoc-wiring"
+    "remove-hoc-wiring",
+    "sync-cli-to-v1"
   ]
 }
