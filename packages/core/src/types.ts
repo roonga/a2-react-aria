@@ -8,7 +8,7 @@ export interface A2Node {
 
 /** Minimal interface satisfied by both Zod v3 and v4 schema objects. */
 export interface SchemaLike {
-	safeParse(data: unknown): { success: boolean }
+	safeParse(data: unknown): { success: boolean; error?: unknown }
 }
 
 /**

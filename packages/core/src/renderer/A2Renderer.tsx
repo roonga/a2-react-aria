@@ -55,6 +55,12 @@ function A2RendererInner({
 		)
 	const entry = registry.get(node.type)
 	if (!entry) throw new Error(`[A2Renderer] Unknown component type: "${node.type}"`)
+	if (entry.schema) {
+		const result = entry.schema.safeParse(node)
+		if (!result.success) {
+			throw new Error(`[A2Renderer] Invalid props for "${node.type}": ${String(result.error)}`)
+		}
+	}
 	const { component: Component } = entry
 	const resolvedChildren = resolveChildren(node.children, registry, fallback, depth + 1)
 	const safeProps = sanitizeProps(node.props ?? {})
