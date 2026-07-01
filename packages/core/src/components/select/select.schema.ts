@@ -1,10 +1,12 @@
 import { z } from "zod"
 
-const SelectItemSchema = z.object({
-	label: z.string(),
-	value: z.string(),
-	isDisabled: z.boolean().optional(),
-}).strict()
+const SelectItemSchema = z
+	.object({
+		label: z.string(),
+		value: z.string(),
+		isDisabled: z.boolean().optional(),
+	})
+	.strict()
 
 export const SelectSchema = z.object({
 	type: z.literal("Select"),

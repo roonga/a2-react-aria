@@ -1,15 +1,19 @@
 import { z } from "zod"
 
-const TableColumnSchema = z.object({
-	id: z.string(),
-	label: z.string(),
-	isRowHeader: z.boolean().optional(),
-}).strict()
+const TableColumnSchema = z
+	.object({
+		id: z.string(),
+		label: z.string(),
+		isRowHeader: z.boolean().optional(),
+	})
+	.strict()
 
-const TableRowSchema = z.object({
-	id: z.string(),
-	data: z.record(z.string(), z.string()),
-}).strict()
+const TableRowSchema = z
+	.object({
+		id: z.string(),
+		data: z.record(z.string(), z.string()),
+	})
+	.strict()
 
 export type TableColumn = z.infer<typeof TableColumnSchema>
 export type TableRow = z.infer<typeof TableRowSchema>
