@@ -4,7 +4,7 @@ const MenuItemSchema = z.object({
 	id: z.string(),
 	label: z.string(),
 	isDisabled: z.boolean().optional(),
-})
+}).strict()
 
 export type MenuItemEntry = z.infer<typeof MenuItemSchema>
 
@@ -21,6 +21,7 @@ export const MenuSchema = z.object({
 			defaultSelectedKeys: z.array(z.string()).optional(),
 			disabledKeys: z.array(z.string()).optional(),
 		})
+		.strict()
 		.optional(),
 })
 

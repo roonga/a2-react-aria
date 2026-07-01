@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { A2NodeSchema } from "../../schema"
 
 export const PopoverSchema = z.object({
 	type: z.literal("Popover"),
@@ -14,8 +15,9 @@ export const PopoverSchema = z.object({
 			isKeyboardDismissDisabled: z.boolean().optional(),
 			maxHeight: z.number().optional(),
 		})
+		.strict()
 		.optional(),
-	children: z.array(z.unknown()).optional(),
+	children: z.array(A2NodeSchema).optional(),
 })
 
 export type PopoverNode = z.infer<typeof PopoverSchema>

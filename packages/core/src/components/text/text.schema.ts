@@ -12,8 +12,9 @@ export const TextSchema = z.object({
 			italic: z.boolean().optional(),
 			truncate: z.boolean().optional(),
 		})
+		.strict()
 		.optional(),
-	children: z.union([z.string(), z.array(z.unknown())]).optional(),
+	children: z.string().optional(),
 })
 
 export type TextNode = z.infer<typeof TextSchema>

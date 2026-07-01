@@ -7,6 +7,7 @@ export const TagSchema = z.object({
 			id: z.string().optional(),
 			isDisabled: z.boolean().optional(),
 		})
+		.strict()
 		.optional(),
 	children: z.string().optional(),
 })
@@ -21,8 +22,9 @@ export const TagGroupSchema = z.object({
 			selectionMode: z.enum(["none", "single", "multiple"]).optional(),
 			description: z.string().optional(),
 		})
+		.strict()
 		.optional(),
-	children: z.array(z.unknown()).optional(),
+	children: z.array(TagSchema).optional(),
 })
 
 export type TagGroupNode = z.infer<typeof TagGroupSchema>

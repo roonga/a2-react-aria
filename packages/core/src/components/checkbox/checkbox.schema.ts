@@ -19,6 +19,7 @@ export const CheckboxSchema = z.object({
 			validationBehavior: z.enum(["aria", "native"]).optional(),
 			errorMessage: z.string().optional(),
 		})
+		.strict()
 		.optional(),
 })
 
@@ -33,8 +34,9 @@ export const CheckboxGroupSchema = z.object({
 			defaultValue: z.array(z.string()).optional(),
 			...groupSchemaFields,
 		})
+		.strict()
 		.optional(),
-	children: z.array(z.unknown()).optional(),
+	children: z.array(CheckboxSchema).optional(),
 })
 
 export type CheckboxGroupNode = z.infer<typeof CheckboxGroupSchema>

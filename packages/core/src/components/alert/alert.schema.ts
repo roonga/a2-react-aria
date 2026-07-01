@@ -7,8 +7,9 @@ export const AlertSchema = z.object({
 			variant: z.enum(["info", "success", "warning", "error"]).optional(),
 			title: z.string().optional(),
 		})
+		.strict()
 		.optional(),
-	children: z.union([z.string(), z.array(z.unknown())]).optional(),
+	children: z.string().optional(),
 })
 
 export type AlertNode = z.infer<typeof AlertSchema>

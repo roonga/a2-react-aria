@@ -23,6 +23,7 @@ export const DatePickerSchema = z.object({
 			minValue: z.string().optional(),
 			maxValue: z.string().optional(),
 		})
+		.strict()
 		.optional(),
 })
 
@@ -52,16 +53,19 @@ export const DateRangePickerSchema = z.object({
 					start: z.string(),
 					end: z.string(),
 				})
+				.strict()
 				.optional(),
 			defaultValue: z
 				.object({
 					start: z.string(),
 					end: z.string(),
 				})
+				.strict()
 				.optional(),
 			minValue: z.string().optional(),
 			maxValue: z.string().optional(),
 		})
+		.strict()
 		.optional(),
 })
 

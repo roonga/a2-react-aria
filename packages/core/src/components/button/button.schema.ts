@@ -12,8 +12,9 @@ export const ButtonSchema = z.object({
 			name: z.string().optional(),
 			value: z.string().optional(),
 		})
+		.strict()
 		.optional(),
-	children: z.union([z.string(), z.array(z.unknown())]).optional(),
+	children: z.string().optional(),
 })
 
 export type ButtonNode = z.infer<typeof ButtonSchema>

@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { A2NodeSchema } from "../../schema"
 
 export const FormSchema = z.object({
 	type: z.literal("Form"),
@@ -13,8 +14,9 @@ export const FormSchema = z.object({
 			autoComplete: z.enum(["on", "off"]).optional(),
 			target: z.string().optional(),
 		})
+		.strict()
 		.optional(),
-	children: z.array(z.unknown()).optional(),
+	children: z.array(A2NodeSchema).optional(),
 })
 
 export type FormNode = z.infer<typeof FormSchema>

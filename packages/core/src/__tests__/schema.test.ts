@@ -104,9 +104,8 @@ describe("ButtonSchema", () => {
 		expect(ButtonSchema.safeParse({ type: "Button", props: { isDisabled: true } }).success).toBe(true)
 	})
 
-	it("strips old DOM prop name 'disabled'", () => {
-		const parsed = ButtonSchema.parse({ type: "Button", props: { disabled: true } })
-		expect((parsed.props as Record<string, unknown>)?.disabled).toBeUndefined()
+	it("rejects old DOM prop name 'disabled'", () => {
+		expect(ButtonSchema.safeParse({ type: "Button", props: { disabled: true } }).success).toBe(false)
 	})
 })
 
@@ -180,14 +179,11 @@ describe("TextFieldSchema", () => {
 	})
 
 	it("rejects old DOM prop name 'disabled'", () => {
-		// Zod strips unknown keys by default — 'disabled' is not in the schema
-		const parsed = TextFieldSchema.parse({ type: "TextField", props: { disabled: true } })
-		expect((parsed.props as Record<string, unknown>)?.disabled).toBeUndefined()
+		expect(TextFieldSchema.safeParse({ type: "TextField", props: { disabled: true } }).success).toBe(false)
 	})
 
 	it("rejects old DOM prop name 'required'", () => {
-		const parsed = TextFieldSchema.parse({ type: "TextField", props: { required: true } })
-		expect((parsed.props as Record<string, unknown>)?.required).toBeUndefined()
+		expect(TextFieldSchema.safeParse({ type: "TextField", props: { required: true } }).success).toBe(false)
 	})
 
 	it("parses validation constraint props", () => {
@@ -1264,8 +1260,8 @@ describe("TextSchema", () => {
 		expect(TextSchema.safeParse({ type: "Text", children: "Hello world" }).success).toBe(true)
 	})
 
-	it("parses children as an array", () => {
-		expect(TextSchema.safeParse({ type: "Text", children: [{ type: "Button" }] }).success).toBe(true)
+	it("rejects children as an array", () => {
+		expect(TextSchema.safeParse({ type: "Text", children: [{ type: "Button" }] }).success).toBe(false)
 	})
 
 	it("rejects wrong type literal", () => {
