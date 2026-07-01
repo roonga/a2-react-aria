@@ -22,7 +22,7 @@
     },
     {
       "path": "popover/popover.schema.ts",
-      "content": "import { z } from \"zod\"\n\nexport const PopoverSchema = z.object({\n\ttype: z.literal(\"Popover\"),\n\tprops: z\n\t\t.object({\n\t\t\ttriggerLabel: z.string().optional(),\n\t\t\tplacement: z.enum([\"top\", \"bottom\", \"left\", \"right\"]).optional(),\n\t\t\tisOpen: z.boolean().optional(),\n\t\t\tdefaultOpen: z.boolean().optional(),\n\t\t\toffset: z.number().optional(),\n\t\t\tcrossOffset: z.number().optional(),\n\t\t\tshouldFlip: z.boolean().optional(),\n\t\t\tisKeyboardDismissDisabled: z.boolean().optional(),\n\t\t\tmaxHeight: z.number().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.array(z.unknown()).optional(),\n})\n\nexport type PopoverNode = z.infer<typeof PopoverSchema>\n",
+      "content": "import { z } from \"zod\"\nimport { A2NodeSchema } from \"../../schema/index.ts\"\n\nexport const PopoverSchema = z.object({\n\ttype: z.literal(\"Popover\"),\n\tprops: z\n\t\t.object({\n\t\t\ttriggerLabel: z.string().optional(),\n\t\t\tplacement: z.enum([\"top\", \"bottom\", \"left\", \"right\"]).optional(),\n\t\t\tisOpen: z.boolean().optional(),\n\t\t\tdefaultOpen: z.boolean().optional(),\n\t\t\toffset: z.number().optional(),\n\t\t\tcrossOffset: z.number().optional(),\n\t\t\tshouldFlip: z.boolean().optional(),\n\t\t\tisKeyboardDismissDisabled: z.boolean().optional(),\n\t\t\tmaxHeight: z.number().optional(),\n\t\t})\n\t\t.strict()\n\t\t.optional(),\n\tchildren: z.array(A2NodeSchema).optional(),\n})\n\nexport type PopoverNode = z.infer<typeof PopoverSchema>\n",
       "type": "registry:component"
     },
     {

@@ -16,7 +16,7 @@
     },
     {
       "path": "alert/alert.schema.ts",
-      "content": "import { z } from \"zod\"\n\nexport const AlertSchema = z.object({\n\ttype: z.literal(\"Alert\"),\n\tprops: z\n\t\t.object({\n\t\t\tvariant: z.enum([\"info\", \"success\", \"warning\", \"error\"]).optional(),\n\t\t\ttitle: z.string().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.union([z.string(), z.array(z.unknown())]).optional(),\n})\n\nexport type AlertNode = z.infer<typeof AlertSchema>\n",
+      "content": "import { z } from \"zod\"\n\nexport const AlertSchema = z.object({\n\ttype: z.literal(\"Alert\"),\n\tprops: z\n\t\t.object({\n\t\t\tvariant: z.enum([\"info\", \"success\", \"warning\", \"error\"]).optional(),\n\t\t\ttitle: z.string().optional(),\n\t\t})\n\t\t.strict()\n\t\t.optional(),\n\tchildren: z.string().optional(),\n})\n\nexport type AlertNode = z.infer<typeof AlertSchema>\n",
       "type": "registry:component"
     },
     {

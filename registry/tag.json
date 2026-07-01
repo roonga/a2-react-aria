@@ -22,7 +22,7 @@
     },
     {
       "path": "tag/tag.schema.ts",
-      "content": "import { z } from \"zod\"\n\nexport const TagSchema = z.object({\n\ttype: z.literal(\"Tag\"),\n\tprops: z\n\t\t.object({\n\t\t\tid: z.string().optional(),\n\t\t\tisDisabled: z.boolean().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.string().optional(),\n})\n\nexport type TagNode = z.infer<typeof TagSchema>\n\nexport const TagGroupSchema = z.object({\n\ttype: z.literal(\"TagGroup\"),\n\tprops: z\n\t\t.object({\n\t\t\tlabel: z.string().optional(),\n\t\t\tselectionMode: z.enum([\"none\", \"single\", \"multiple\"]).optional(),\n\t\t\tdescription: z.string().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.array(z.unknown()).optional(),\n})\n\nexport type TagGroupNode = z.infer<typeof TagGroupSchema>\n",
+      "content": "import { z } from \"zod\"\n\nexport const TagSchema = z.object({\n\ttype: z.literal(\"Tag\"),\n\tprops: z\n\t\t.object({\n\t\t\tid: z.string().optional(),\n\t\t\tisDisabled: z.boolean().optional(),\n\t\t})\n\t\t.strict()\n\t\t.optional(),\n\tchildren: z.string().optional(),\n})\n\nexport type TagNode = z.infer<typeof TagSchema>\n\nexport const TagGroupSchema = z.object({\n\ttype: z.literal(\"TagGroup\"),\n\tprops: z\n\t\t.object({\n\t\t\tlabel: z.string().optional(),\n\t\t\tselectionMode: z.enum([\"none\", \"single\", \"multiple\"]).optional(),\n\t\t\tdescription: z.string().optional(),\n\t\t})\n\t\t.strict()\n\t\t.optional(),\n\tchildren: z.array(TagSchema).optional(),\n})\n\nexport type TagGroupNode = z.infer<typeof TagGroupSchema>\n",
       "type": "registry:component"
     },
     {
