@@ -390,7 +390,7 @@ export const SURVEY_STEPS: SurveyStep[] = [
 	{
 		id: "salary",
 		title: "Compensation",
-		skip: (a) => a["employment"] === "Student" || a["employment"] === "Not employed and not looking",
+		skip: (a) => a.employment === "Student" || a.employment === "Not employed and not looking",
 		nodes: [
 			{
 				type: "Card",
