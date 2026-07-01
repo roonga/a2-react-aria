@@ -1,11 +1,13 @@
 import { z } from "zod"
-import { A2NodeSchema } from "../../schema"
+import { A2NodeSchema } from "../../schema/index.ts"
 
-const TabItemSchema = z.object({
-	id: z.string(),
-	label: z.string(),
-	isDisabled: z.boolean().optional(),
-}).strict()
+const TabItemSchema = z
+	.object({
+		id: z.string(),
+		label: z.string(),
+		isDisabled: z.boolean().optional(),
+	})
+	.strict()
 
 export type TabItem = z.infer<typeof TabItemSchema>
 

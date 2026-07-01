@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { A2NodeSchema } from "../../schema"
+import { A2NodeSchema } from "../../schema/index.ts"
 
 export const CardSchema = z.object({
 	type: z.literal("Card"),
