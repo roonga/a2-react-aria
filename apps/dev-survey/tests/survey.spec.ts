@@ -10,12 +10,26 @@ const SURVEY_STEPS = [
 				type: "Card",
 				props: { padding: "lg" },
 				children: [
-					{ type: "Text", props: { as: "h2", size: "xl", weight: "bold", align: "center" }, children: "Developer Survey 2026" },
-					{ type: "Text", props: { color: "muted", align: "center", size: "sm" }, children: "10 minutes · anonymous · helps us understand the developer community" },
+					{
+						type: "Text",
+						props: { as: "h2", size: "xl", weight: "bold", align: "center" },
+						children: "Developer Survey 2026",
+					},
+					{
+						type: "Text",
+						props: { color: "muted", align: "center", size: "sm" },
+						children: "10 minutes · anonymous · helps us understand the developer community",
+					},
 					{
 						type: "Flex",
 						props: { gap: "sm", justify: "center" },
-						children: [{ type: "Button", props: { variant: "primary", size: "lg", value: "__next__" }, children: "Start Survey" }],
+						children: [
+							{
+								type: "Button",
+								props: { variant: "primary", size: "lg", value: "__next__" },
+								children: "Start Survey",
+							},
+						],
 					},
 				],
 			},
@@ -66,8 +80,16 @@ const SURVEY_STEPS = [
 				type: "Card",
 				props: { padding: "lg" },
 				children: [
-					{ type: "Text", props: { as: "h2", size: "xl", weight: "bold", color: "primary", align: "center" }, children: "Thank you!" },
-					{ type: "Text", props: { color: "muted", align: "center" }, children: "Your responses have been recorded. Results will be published later this year." },
+					{
+						type: "Text",
+						props: { as: "h2", size: "xl", weight: "bold", color: "primary", align: "center" },
+						children: "Thank you!",
+					},
+					{
+						type: "Text",
+						props: { color: "muted", align: "center" },
+						children: "Your responses have been recorded. Results will be published later this year.",
+					},
 				],
 			},
 		],
@@ -158,9 +180,7 @@ test("done step shows completion message", async ({ page }) => {
 
 test("error state is shown when API fails", async ({ page }) => {
 	// Override the steps route from beforeEach with an error response
-	await page.route("**/api/survey/steps", (route) =>
-		route.fulfill({ status: 500, body: "Internal Server Error" }),
-	)
+	await page.route("**/api/survey/steps", (route) => route.fulfill({ status: 500, body: "Internal Server Error" }))
 
 	await page.goto("/")
 	// Use a partial regex match since the error message includes the HTTP status

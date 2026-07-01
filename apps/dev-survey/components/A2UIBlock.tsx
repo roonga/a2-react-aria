@@ -6,6 +6,7 @@ import {
 	Card,
 	Checkbox,
 	CheckboxGroup,
+	createRegistry,
 	Flex,
 	Grid,
 	Radio,
@@ -13,7 +14,6 @@ import {
 	Select,
 	Text,
 	TextField,
-	createRegistry,
 } from "@a2ra/core"
 
 const REGISTRY = createRegistry({
