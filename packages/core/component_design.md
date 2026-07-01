@@ -136,6 +136,65 @@ create a new `<feature>.test.ts(x)` file when the feature warrants its own descr
 Any change to `packages/core` or `packages/cli` must be scanned with SonarQube before the
 PR is opened. Fix all new issues before requesting review.
 
+## Accessibility
+
+React Aria Components handle WCAG compliance by default. Work with it, not around it.
+
+### Props
+
+Always use RAC's a11y props so RAC manages the corresponding ARIA states correctly:
+
+```ts
+// Correct
+isDisabled, isRequired, isInvalid, isReadOnly
+
+// Wrong — bypasses RAC's ARIA management
+disabled, required, aria-disabled
+```
+
+### Labels
+
+Every interactive component must be labelled. No unlabelled inputs or buttons.
+
+```tsx
+// Correct — visible label
+<Label>{label}</Label>
+
+// Correct — screen-reader-only label
+<Button aria-label={ariaLabel} />
+
+// Wrong — no label at all
+<TextField />
+```
+
+### Validation errors
+
+Validation error messages must use RAC's `<Text slot="errorMessage">` so the message is
+programmatically associated with the field. Never use a raw `<span>` or `<p>`.
+
+```tsx
+// Correct
+<Text slot="errorMessage">{errorMessage}</Text>
+
+// Wrong
+<span className="error">{errorMessage}</span>
+```
+
+### Focus
+
+Never suppress `:focus-visible` styles. Keyboard users depend on them. Do not add
+`tabIndex={-1}` or `role` overrides without a documented reason.
+
+### Two axe gates: both must pass before merging
+
+1. **Vitest** (`pnpm test`): `axe-core` runs on every component render in `integration.test.tsx`.
+   Color contrast is disabled here because jsdom cannot compute CSS. All other axe rules run.
+
+2. **Storybook** (`run-story-tests`): `@storybook/addon-a11y` runs full axe after every story.
+   `parameters.a11y.test` is set to `'error'` in `preview.tsx`, so any axe violation fails the
+   story test. Color contrast runs here because CSS tokens are defined in `.storybook/tailwind.css`.
+   Run story tests after every component or story change.
+
 ## Component interface
 
 - Use a plain `interface ComponentProps`. Never derive props from the schema type with
