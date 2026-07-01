@@ -19,7 +19,7 @@ RUN pnpm install --filter=@a2ra/core --filter=a2ui-dev-survey --frozen-lockfile
 
 # Build @a2ra/core so dist/index.js has the latest renderer
 WORKDIR /repo/packages/core
-RUN node_modules/.bin/vite build
+RUN pnpm build
 
 WORKDIR /repo/apps/dev-survey
 EXPOSE 3001

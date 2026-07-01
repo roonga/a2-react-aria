@@ -7,6 +7,23 @@ import A2UIBlock from "./A2UIBlock"
 
 type SurveyAnswers = Record<string, string | string[]>
 
+type A2Node = { type?: string; props?: Record<string, unknown>; children?: unknown }
+
+function buildLabelToNameMap(nodes: unknown[]): Record<string, string> {
+	const map: Record<string, string> = {}
+	function walk(n: unknown): void {
+		if (!n || typeof n !== "object") return
+		const node = n as A2Node
+		const { label, name } = node.props ?? {}
+		if (typeof label === "string" && typeof name === "string") map[label] = name
+		const c = node.children
+		if (Array.isArray(c)) c.forEach(walk)
+		else if (c) walk(c)
+	}
+	nodes.forEach(walk)
+	return map
+}
+
 function evaluateSkip(step: BackendSurveyStep, answers: SurveyAnswers): boolean {
 	if (!step.skipIf) return false
 	const value = answers[step.skipIf.field]
@@ -29,9 +46,15 @@ export default function Survey() {
 	const totalSteps = visibleSteps.length
 	const progress = Math.round((stepIndex / Math.max(totalSteps - 1, 1)) * 100)
 
-	const setValue = useCallback((label: string, value: string) => {
-		setStepValues((prev) => ({ ...prev, [label]: value }))
-	}, [])
+	const labelToName = useMemo(() => buildLabelToNameMap(currentStep?.nodes ?? []), [currentStep])
+
+	const setValue = useCallback(
+		(label: string, value: string) => {
+			const key = labelToName[label] ?? label
+			setStepValues((prev) => ({ ...prev, [key]: value }))
+		},
+		[labelToName],
+	)
 
 	const handleAction = useCallback(
 		(action: string) => {
@@ -51,11 +74,12 @@ export default function Survey() {
 	useEffect(() => {
 		if (currentStep?.id === "done" && !submitted) {
 			setSubmitted(true)
-			submitSurvey(answers).catch((err: unknown) => {
+			const finalAnswers = { ...answers, ...stepValues }
+			submitSurvey(finalAnswers).catch((err: unknown) => {
 				console.error("[Survey] submit failed:", err)
 			})
 		}
-	}, [currentStep, submitted, answers])
+	}, [currentStep, submitted, answers, stepValues])
 
 	if (isLoading) {
 		return (

@@ -50,7 +50,7 @@ const SURVEY_STEPS = [
 							label: "Which country are you based in?",
 							name: "country",
 							isRequired: true,
-							options: [{ value: "Australia", label: "Australia" }],
+							items: [{ value: "Australia", label: "Australia" }],
 						},
 					},
 					{
