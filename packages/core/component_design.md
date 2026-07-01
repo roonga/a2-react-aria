@@ -86,7 +86,7 @@ children: z.array(A2NodeSchema).optional()
 Valid open containers in the current registry:
 
 | Component | Reason |
-|---|---|
+| --- | --- |
 | `Card` | Layout shell that wraps any combination of content components |
 | `Dialog` | Overlay that holds text, action buttons, and optional forms |
 | `Flex` | Pure layout primitive; child types are unrestricted by design |
@@ -116,6 +116,25 @@ passed via `props.label`, not as node `children`.
 Rationale: `A2Renderer` unconditionally passes resolved `children` to every component.
 Using `props.label` keeps the schema contract explicit in `RadioSchema`/`CheckboxSchema`
 and avoids conflating string-body leaves with open-container nodes.
+
+## Testing: every new function must have tests
+
+Any new function, hook, or renderer behaviour added to `@a2ra/core` must be covered by tests
+before the PR is merged. This includes schema changes, renderer logic, and utility functions.
+
+Minimum coverage for renderer or logic changes:
+
+- Happy path: valid input produces the expected output
+- Rejection path: invalid input triggers the expected error or fallback
+- No-op path: absent optional feature does not affect other behaviour
+
+Tests live in `packages/core/src/__tests__/`. Add to an existing file when the scope is narrow;
+create a new `<feature>.test.ts(x)` file when the feature warrants its own describe block.
+
+## Package changes: run SonarQube scan before opening a PR
+
+Any change to `packages/core` or `packages/cli` must be scanned with SonarQube before the
+PR is opened. Fix all new issues before requesting review.
 
 ## Component interface
 
