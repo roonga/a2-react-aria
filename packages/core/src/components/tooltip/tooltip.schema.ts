@@ -15,6 +15,7 @@ export const TooltipSchema = z.object({
 			crossOffset: z.number().optional(),
 			shouldFlip: z.boolean().optional(),
 		})
+		.strict()
 		.optional(),
 })
 

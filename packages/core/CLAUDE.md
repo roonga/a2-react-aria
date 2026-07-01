@@ -3,6 +3,9 @@
 Rules and workflow for authoring components in `@a2ra/core`.
 Root [CLAUDE.md](../../CLAUDE.md) rules also apply.
 
+For schema design decisions (props strictness, children typing, leaf label convention)
+see [component_design.md](component_design.md). Read it before authoring or modifying any schema.
+
 ## Storybook MCP: component authoring
 
 When `pnpm storybook` is running the `storybook` MCP server is live at `http://localhost:6006/mcp`.

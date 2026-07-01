@@ -24,6 +24,7 @@ export const TextFieldSchema = z.object({
 			description: z.string().optional(),
 			errorMessage: z.string().optional(),
 		})
+		.strict()
 		.optional(),
 })
 

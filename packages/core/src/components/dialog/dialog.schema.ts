@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { A2NodeSchema } from "../../schema/index.ts"
 
 export const DialogSchema = z.object({
 	type: z.literal("Dialog"),
@@ -13,8 +14,9 @@ export const DialogSchema = z.object({
 			isOpen: z.boolean().optional(),
 			defaultOpen: z.boolean().optional(),
 		})
+		.strict()
 		.optional(),
-	children: z.array(z.unknown()).optional(),
+	children: z.array(A2NodeSchema).optional(),
 })
 
 export type DialogNode = z.infer<typeof DialogSchema>

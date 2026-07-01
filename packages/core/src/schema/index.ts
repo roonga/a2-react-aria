@@ -1,2 +1,2 @@
-export type { A2NodeInput } from "./node"
-export { A2NodeSchema, parseNode, safeParseNode } from "./node"
+export type { A2NodeInput } from "./node.ts"
+export { A2NodeSchema, parseNode, safeParseNode } from "./node.ts"

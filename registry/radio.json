@@ -27,7 +27,7 @@
     },
     {
       "path": "radio/radio.schema.ts",
-      "content": "import { z } from \"zod\"\nimport { groupSchemaFields } from \"../group-schema-fields.ts\"\n\nexport const RadioSchema = z.object({\n\ttype: z.literal(\"Radio\"),\n\tprops: z\n\t\t.object({\n\t\t\tlabel: z.string().optional(),\n\t\t\tvalue: z.string(),\n\t\t\tisDisabled: z.boolean().optional(),\n\t\t})\n\t\t.optional(),\n})\n\nexport type RadioNode = z.infer<typeof RadioSchema>\n\nexport const RadioGroupSchema = z.object({\n\ttype: z.literal(\"RadioGroup\"),\n\tprops: z\n\t\t.object({\n\t\t\tlabel: z.string().optional(),\n\t\t\tvalue: z.string().optional(),\n\t\t\tdefaultValue: z.string().optional(),\n\t\t\t...groupSchemaFields,\n\t\t})\n\t\t.optional(),\n\tchildren: z.array(z.unknown()).optional(),\n})\n\nexport type RadioGroupNode = z.infer<typeof RadioGroupSchema>\n",
+      "content": "import { z } from \"zod\"\nimport { groupSchemaFields } from \"../group-schema-fields.ts\"\n\nexport const RadioSchema = z.object({\n\ttype: z.literal(\"Radio\"),\n\tprops: z\n\t\t.object({\n\t\t\tlabel: z.string().optional(),\n\t\t\tvalue: z.string(),\n\t\t\tisDisabled: z.boolean().optional(),\n\t\t})\n\t\t.strict()\n\t\t.optional(),\n})\n\nexport type RadioNode = z.infer<typeof RadioSchema>\n\nexport const RadioGroupSchema = z.object({\n\ttype: z.literal(\"RadioGroup\"),\n\tprops: z\n\t\t.object({\n\t\t\tlabel: z.string().optional(),\n\t\t\tvalue: z.string().optional(),\n\t\t\tdefaultValue: z.string().optional(),\n\t\t\t...groupSchemaFields,\n\t\t})\n\t\t.strict()\n\t\t.optional(),\n\tchildren: z.array(RadioSchema).optional(),\n})\n\nexport type RadioGroupNode = z.infer<typeof RadioGroupSchema>\n",
       "type": "registry:component"
     },
     {

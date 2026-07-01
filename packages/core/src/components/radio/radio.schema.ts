@@ -9,6 +9,7 @@ export const RadioSchema = z.object({
 			value: z.string(),
 			isDisabled: z.boolean().optional(),
 		})
+		.strict()
 		.optional(),
 })
 
@@ -23,8 +24,9 @@ export const RadioGroupSchema = z.object({
 			defaultValue: z.string().optional(),
 			...groupSchemaFields,
 		})
+		.strict()
 		.optional(),
-	children: z.array(z.unknown()).optional(),
+	children: z.array(RadioSchema).optional(),
 })
 
 export type RadioGroupNode = z.infer<typeof RadioGroupSchema>

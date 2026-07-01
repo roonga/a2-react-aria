@@ -22,7 +22,7 @@
     },
     {
       "path": "switch/switch.schema.ts",
-      "content": "import { z } from \"zod\"\n\nexport const SwitchSchema = z.object({\n\ttype: z.literal(\"Switch\"),\n\tprops: z\n\t\t.object({\n\t\t\tlabel: z.string().optional(),\n\t\t\tisSelected: z.boolean().optional(),\n\t\t\tdefaultSelected: z.boolean().optional(),\n\t\t\tisDisabled: z.boolean().optional(),\n\t\t\tisRequired: z.boolean().optional(),\n\t\t\tisInvalid: z.boolean().optional(),\n\t\t\tisReadOnly: z.boolean().optional(),\n\t\t\tautoFocus: z.boolean().optional(),\n\t\t\tvalidationBehavior: z.enum([\"aria\", \"native\"]).optional(),\n\t\t\tname: z.string().optional(),\n\t\t\tvalue: z.string().optional(),\n\t\t\tdescription: z.string().optional(),\n\t\t\terrorMessage: z.string().optional(),\n\t\t})\n\t\t.optional(),\n})\n\nexport type SwitchNode = z.infer<typeof SwitchSchema>\n",
+      "content": "import { z } from \"zod\"\n\nexport const SwitchSchema = z.object({\n\ttype: z.literal(\"Switch\"),\n\tprops: z\n\t\t.object({\n\t\t\tlabel: z.string().optional(),\n\t\t\tisSelected: z.boolean().optional(),\n\t\t\tdefaultSelected: z.boolean().optional(),\n\t\t\tisDisabled: z.boolean().optional(),\n\t\t\tisRequired: z.boolean().optional(),\n\t\t\tisInvalid: z.boolean().optional(),\n\t\t\tisReadOnly: z.boolean().optional(),\n\t\t\tautoFocus: z.boolean().optional(),\n\t\t\tvalidationBehavior: z.enum([\"aria\", \"native\"]).optional(),\n\t\t\tname: z.string().optional(),\n\t\t\tvalue: z.string().optional(),\n\t\t\tdescription: z.string().optional(),\n\t\t\terrorMessage: z.string().optional(),\n\t\t})\n\t\t.strict()\n\t\t.optional(),\n})\n\nexport type SwitchNode = z.infer<typeof SwitchSchema>\n",
       "type": "registry:component"
     },
     {

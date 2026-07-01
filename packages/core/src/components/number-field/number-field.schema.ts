@@ -21,6 +21,7 @@ export const NumberFieldSchema = z.object({
 			description: z.string().optional(),
 			errorMessage: z.string().optional(),
 		})
+		.strict()
 		.optional(),
 })
 

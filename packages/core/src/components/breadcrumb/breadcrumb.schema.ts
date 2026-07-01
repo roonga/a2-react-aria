@@ -1,10 +1,12 @@
 import { z } from "zod"
 
-const BreadcrumbItemSchema = z.object({
-	id: z.string(),
-	label: z.string(),
-	href: z.string().optional(),
-})
+const BreadcrumbItemSchema = z
+	.object({
+		id: z.string(),
+		label: z.string(),
+		href: z.string().optional(),
+	})
+	.strict()
 
 export type BreadcrumbItem = z.infer<typeof BreadcrumbItemSchema>
 
@@ -16,6 +18,7 @@ export const BreadcrumbSchema = z.object({
 			ariaLabel: z.string().optional(),
 			isDisabled: z.boolean().optional(),
 		})
+		.strict()
 		.optional(),
 })
 

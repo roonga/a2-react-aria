@@ -101,15 +101,7 @@
           "additionalProperties": false
         },
         "children": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "array",
-              "items": {}
-            }
-          ]
+          "type": "string"
         }
       },
       "required": [
@@ -162,7 +154,9 @@
         },
         "children": {
           "type": "array",
-          "items": {}
+          "items": {
+            "$ref": "#/definitions/__schema0"
+          }
         }
       },
       "required": [
@@ -297,7 +291,68 @@
         },
         "children": {
           "type": "array",
-          "items": {}
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "Checkbox"
+              },
+              "props": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "isSelected": {
+                    "type": "boolean"
+                  },
+                  "defaultSelected": {
+                    "type": "boolean"
+                  },
+                  "isDisabled": {
+                    "type": "boolean"
+                  },
+                  "isRequired": {
+                    "type": "boolean"
+                  },
+                  "isIndeterminate": {
+                    "type": "boolean"
+                  },
+                  "isReadOnly": {
+                    "type": "boolean"
+                  },
+                  "isInvalid": {
+                    "type": "boolean"
+                  },
+                  "autoFocus": {
+                    "type": "boolean"
+                  },
+                  "validationBehavior": {
+                    "type": "string",
+                    "enum": [
+                      "aria",
+                      "native"
+                    ]
+                  },
+                  "errorMessage": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          }
         }
       },
       "required": [
@@ -561,7 +616,9 @@
         },
         "children": {
           "type": "array",
-          "items": {}
+          "items": {
+            "$ref": "#/definitions/__schema0"
+          }
         }
       },
       "required": [
@@ -628,7 +685,9 @@
         },
         "children": {
           "type": "array",
-          "items": {}
+          "items": {
+            "$ref": "#/definitions/__schema0"
+          }
         }
       },
       "required": [
@@ -713,7 +772,9 @@
         },
         "children": {
           "type": "array",
-          "items": {}
+          "items": {
+            "$ref": "#/definitions/__schema0"
+          }
         }
       },
       "required": [
@@ -761,7 +822,9 @@
         },
         "children": {
           "type": "array",
-          "items": {}
+          "items": {
+            "$ref": "#/definitions/__schema0"
+          }
         }
       },
       "required": [
@@ -970,7 +1033,9 @@
         },
         "children": {
           "type": "array",
-          "items": {}
+          "items": {
+            "$ref": "#/definitions/__schema0"
+          }
         }
       },
       "required": [
@@ -1068,7 +1133,37 @@
         },
         "children": {
           "type": "array",
-          "items": {}
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "Radio"
+              },
+              "props": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  },
+                  "isDisabled": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          }
         }
       },
       "required": [
@@ -1409,7 +1504,9 @@
         },
         "children": {
           "type": "array",
-          "items": {}
+          "items": {
+            "$ref": "#/definitions/__schema0"
+          }
         }
       },
       "required": [
@@ -1487,15 +1584,7 @@
           "additionalProperties": false
         },
         "children": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "array",
-              "items": {}
-            }
-          ]
+          "type": "string"
         }
       },
       "required": [
@@ -1649,5 +1738,43 @@
       ],
       "additionalProperties": false
     }
-  ]
+  ],
+  "definitions": {
+    "__schema0": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "props": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {}
+        },
+        "children": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/__schema0"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/__schema0"
+              }
+            },
+            {
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    }
+  }
 }

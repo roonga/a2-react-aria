@@ -17,7 +17,7 @@
     },
     {
       "path": "button/button.schema.ts",
-      "content": "import { z } from \"zod\"\n\nexport const ButtonSchema = z.object({\n\ttype: z.literal(\"Button\"),\n\tprops: z\n\t\t.object({\n\t\t\tvariant: z.enum([\"primary\", \"secondary\", \"danger\", \"ghost\"]).optional(),\n\t\t\tisDisabled: z.boolean().optional(),\n\t\t\tisPending: z.boolean().optional(),\n\t\t\tsize: z.enum([\"sm\", \"md\", \"lg\"]).optional(),\n\t\t\ttype: z.enum([\"button\", \"reset\", \"submit\"]).optional(),\n\t\t\tname: z.string().optional(),\n\t\t\tvalue: z.string().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.union([z.string(), z.array(z.unknown())]).optional(),\n})\n\nexport type ButtonNode = z.infer<typeof ButtonSchema>\n",
+      "content": "import { z } from \"zod\"\n\nexport const ButtonSchema = z.object({\n\ttype: z.literal(\"Button\"),\n\tprops: z\n\t\t.object({\n\t\t\tvariant: z.enum([\"primary\", \"secondary\", \"danger\", \"ghost\"]).optional(),\n\t\t\tisDisabled: z.boolean().optional(),\n\t\t\tisPending: z.boolean().optional(),\n\t\t\tsize: z.enum([\"sm\", \"md\", \"lg\"]).optional(),\n\t\t\ttype: z.enum([\"button\", \"reset\", \"submit\"]).optional(),\n\t\t\tname: z.string().optional(),\n\t\t\tvalue: z.string().optional(),\n\t\t})\n\t\t.strict()\n\t\t.optional(),\n\tchildren: z.string().optional(),\n})\n\nexport type ButtonNode = z.infer<typeof ButtonSchema>\n",
       "type": "registry:component"
     },
     {

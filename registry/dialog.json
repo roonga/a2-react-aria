@@ -17,7 +17,7 @@
     },
     {
       "path": "dialog/dialog.schema.ts",
-      "content": "import { z } from \"zod\"\n\nexport const DialogSchema = z.object({\n\ttype: z.literal(\"Dialog\"),\n\tprops: z\n\t\t.object({\n\t\t\ttitle: z.string().optional(),\n\t\t\tdescription: z.string().optional(),\n\t\t\ttriggerLabel: z.string().optional(),\n\t\t\tisDismissable: z.boolean().optional(),\n\t\t\tisKeyboardDismissDisabled: z.boolean().optional(),\n\t\t\trole: z.enum([\"dialog\", \"alertdialog\"]).optional(),\n\t\t\tisOpen: z.boolean().optional(),\n\t\t\tdefaultOpen: z.boolean().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.array(z.unknown()).optional(),\n})\n\nexport type DialogNode = z.infer<typeof DialogSchema>\n",
+      "content": "import { z } from \"zod\"\nimport { A2NodeSchema } from \"../../schema/index.ts\"\n\nexport const DialogSchema = z.object({\n\ttype: z.literal(\"Dialog\"),\n\tprops: z\n\t\t.object({\n\t\t\ttitle: z.string().optional(),\n\t\t\tdescription: z.string().optional(),\n\t\t\ttriggerLabel: z.string().optional(),\n\t\t\tisDismissable: z.boolean().optional(),\n\t\t\tisKeyboardDismissDisabled: z.boolean().optional(),\n\t\t\trole: z.enum([\"dialog\", \"alertdialog\"]).optional(),\n\t\t\tisOpen: z.boolean().optional(),\n\t\t\tdefaultOpen: z.boolean().optional(),\n\t\t})\n\t\t.strict()\n\t\t.optional(),\n\tchildren: z.array(A2NodeSchema).optional(),\n})\n\nexport type DialogNode = z.infer<typeof DialogSchema>\n",
       "type": "registry:component"
     },
     {

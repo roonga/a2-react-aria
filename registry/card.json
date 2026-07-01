@@ -16,7 +16,7 @@
     },
     {
       "path": "card/card.schema.ts",
-      "content": "import { z } from \"zod\"\n\nexport const CardSchema = z.object({\n\ttype: z.literal(\"Card\"),\n\tprops: z\n\t\t.object({\n\t\t\tpadding: z.enum([\"none\", \"sm\", \"md\", \"lg\"]).optional(),\n\t\t\tshadow: z.enum([\"none\", \"sm\", \"md\", \"lg\"]).optional(),\n\t\t\tradius: z.enum([\"none\", \"sm\", \"md\", \"lg\"]).optional(),\n\t\t\tborder: z.boolean().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.array(z.unknown()).optional(),\n})\n\nexport type CardNode = z.infer<typeof CardSchema>\n",
+      "content": "import { z } from \"zod\"\nimport { A2NodeSchema } from \"../../schema/index.ts\"\n\nexport const CardSchema = z.object({\n\ttype: z.literal(\"Card\"),\n\tprops: z\n\t\t.object({\n\t\t\tpadding: z.enum([\"none\", \"sm\", \"md\", \"lg\"]).optional(),\n\t\t\tshadow: z.enum([\"none\", \"sm\", \"md\", \"lg\"]).optional(),\n\t\t\tradius: z.enum([\"none\", \"sm\", \"md\", \"lg\"]).optional(),\n\t\t\tborder: z.boolean().optional(),\n\t\t})\n\t\t.strict()\n\t\t.optional(),\n\tchildren: z.array(A2NodeSchema).optional(),\n})\n\nexport type CardNode = z.infer<typeof CardSchema>\n",
       "type": "registry:component"
     },
     {

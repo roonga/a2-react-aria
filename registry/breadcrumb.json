@@ -17,7 +17,7 @@
     },
     {
       "path": "breadcrumb/breadcrumb.schema.ts",
-      "content": "import { z } from \"zod\"\n\nconst BreadcrumbItemSchema = z.object({\n\tid: z.string(),\n\tlabel: z.string(),\n\thref: z.string().optional(),\n})\n\nexport type BreadcrumbItem = z.infer<typeof BreadcrumbItemSchema>\n\nexport const BreadcrumbSchema = z.object({\n\ttype: z.literal(\"Breadcrumb\"),\n\tprops: z\n\t\t.object({\n\t\t\titems: z.array(BreadcrumbItemSchema).optional(),\n\t\t\tariaLabel: z.string().optional(),\n\t\t\tisDisabled: z.boolean().optional(),\n\t\t})\n\t\t.optional(),\n})\n\nexport type BreadcrumbNode = z.infer<typeof BreadcrumbSchema>\n",
+      "content": "import { z } from \"zod\"\n\nconst BreadcrumbItemSchema = z\n\t.object({\n\t\tid: z.string(),\n\t\tlabel: z.string(),\n\t\thref: z.string().optional(),\n\t})\n\t.strict()\n\nexport type BreadcrumbItem = z.infer<typeof BreadcrumbItemSchema>\n\nexport const BreadcrumbSchema = z.object({\n\ttype: z.literal(\"Breadcrumb\"),\n\tprops: z\n\t\t.object({\n\t\t\titems: z.array(BreadcrumbItemSchema).optional(),\n\t\t\tariaLabel: z.string().optional(),\n\t\t\tisDisabled: z.boolean().optional(),\n\t\t})\n\t\t.strict()\n\t\t.optional(),\n})\n\nexport type BreadcrumbNode = z.infer<typeof BreadcrumbSchema>\n",
       "type": "registry:component"
     },
     {

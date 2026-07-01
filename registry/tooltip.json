@@ -22,7 +22,7 @@
     },
     {
       "path": "tooltip/tooltip.schema.ts",
-      "content": "import { z } from \"zod\"\n\nconst placement = z.enum([\"top\", \"bottom\", \"left\", \"right\"])\n\nexport const TooltipSchema = z.object({\n\ttype: z.literal(\"Tooltip\"),\n\tprops: z\n\t\t.object({\n\t\t\tcontent: z.string().optional(),\n\t\t\ttriggerLabel: z.string().optional(),\n\t\t\tplacement: placement.optional(),\n\t\t\tisOpen: z.boolean().optional(),\n\t\t\tdefaultOpen: z.boolean().optional(),\n\t\t\toffset: z.number().optional(),\n\t\t\tcrossOffset: z.number().optional(),\n\t\t\tshouldFlip: z.boolean().optional(),\n\t\t})\n\t\t.optional(),\n})\n\nexport type TooltipNode = z.infer<typeof TooltipSchema>\n",
+      "content": "import { z } from \"zod\"\n\nconst placement = z.enum([\"top\", \"bottom\", \"left\", \"right\"])\n\nexport const TooltipSchema = z.object({\n\ttype: z.literal(\"Tooltip\"),\n\tprops: z\n\t\t.object({\n\t\t\tcontent: z.string().optional(),\n\t\t\ttriggerLabel: z.string().optional(),\n\t\t\tplacement: placement.optional(),\n\t\t\tisOpen: z.boolean().optional(),\n\t\t\tdefaultOpen: z.boolean().optional(),\n\t\t\toffset: z.number().optional(),\n\t\t\tcrossOffset: z.number().optional(),\n\t\t\tshouldFlip: z.boolean().optional(),\n\t\t})\n\t\t.strict()\n\t\t.optional(),\n})\n\nexport type TooltipNode = z.infer<typeof TooltipSchema>\n",
       "type": "registry:component"
     },
     {

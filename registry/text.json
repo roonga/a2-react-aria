@@ -21,7 +21,7 @@
     },
     {
       "path": "text/text.schema.ts",
-      "content": "import { z } from \"zod\"\n\nexport const TextSchema = z.object({\n\ttype: z.literal(\"Text\"),\n\tprops: z\n\t\t.object({\n\t\t\tas: z.enum([\"h1\", \"h2\", \"h3\", \"h4\", \"p\", \"span\", \"label\"]).optional(),\n\t\t\tsize: z.enum([\"xs\", \"sm\", \"md\", \"lg\", \"xl\", \"2xl\"]).optional(),\n\t\t\tweight: z.enum([\"normal\", \"medium\", \"semibold\", \"bold\"]).optional(),\n\t\t\tcolor: z.enum([\"default\", \"muted\", \"primary\", \"danger\"]).optional(),\n\t\t\talign: z.enum([\"left\", \"center\", \"right\", \"justify\"]).optional(),\n\t\t\titalic: z.boolean().optional(),\n\t\t\ttruncate: z.boolean().optional(),\n\t\t})\n\t\t.optional(),\n\tchildren: z.union([z.string(), z.array(z.unknown())]).optional(),\n})\n\nexport type TextNode = z.infer<typeof TextSchema>\n",
+      "content": "import { z } from \"zod\"\n\nexport const TextSchema = z.object({\n\ttype: z.literal(\"Text\"),\n\tprops: z\n\t\t.object({\n\t\t\tas: z.enum([\"h1\", \"h2\", \"h3\", \"h4\", \"p\", \"span\", \"label\"]).optional(),\n\t\t\tsize: z.enum([\"xs\", \"sm\", \"md\", \"lg\", \"xl\", \"2xl\"]).optional(),\n\t\t\tweight: z.enum([\"normal\", \"medium\", \"semibold\", \"bold\"]).optional(),\n\t\t\tcolor: z.enum([\"default\", \"muted\", \"primary\", \"danger\"]).optional(),\n\t\t\talign: z.enum([\"left\", \"center\", \"right\", \"justify\"]).optional(),\n\t\t\titalic: z.boolean().optional(),\n\t\t\ttruncate: z.boolean().optional(),\n\t\t})\n\t\t.strict()\n\t\t.optional(),\n\tchildren: z.string().optional(),\n})\n\nexport type TextNode = z.infer<typeof TextSchema>\n",
       "type": "registry:component"
     },
     {
