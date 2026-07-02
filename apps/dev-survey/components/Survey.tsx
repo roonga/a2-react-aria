@@ -1,7 +1,7 @@
 "use client"
 
 import { FormStateContext } from "@a2ra/core"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { type CSSProperties, useCallback, useEffect, useMemo, useState } from "react"
 import { type BackendSurveyStep, submitSurvey, useSurveyData } from "@/hooks/useSurveyData"
 import A2UIBlock from "./A2UIBlock"
 
@@ -35,7 +35,7 @@ function getVisibleSteps(steps: BackendSurveyStep[], answers: SurveyAnswers): Ba
 }
 
 export default function Survey() {
-	const { steps, isLoading, error } = useSurveyData()
+	const { steps, theme, isLoading, error } = useSurveyData()
 	const [stepIndex, setStepIndex] = useState(0)
 	const [answers, setAnswers] = useState<SurveyAnswers>({})
 	const [stepValues, setStepValues] = useState<Record<string, string>>({})
@@ -103,7 +103,7 @@ export default function Survey() {
 	const isWelcome = currentStep.id === "welcome"
 
 	return (
-		<div className="flex flex-col gap-4">
+		<div style={theme as CSSProperties} className="flex flex-col gap-4">
 			{!isDone && !isWelcome && (
 				<div className="flex items-center gap-3">
 					<div className="h-2 flex-1 overflow-hidden rounded-full bg-(--color-backgroundMuted)">
