@@ -65,7 +65,7 @@ instead of the Python constant.
 All admin routes live under `/admin` in the existing `apps/dev-survey` Next.js app.
 No separate app, no auth (local dev tool).
 
-```
+```text
 /admin                                  Survey list + "New Survey" button
 /admin/surveys/[id]                     Step list, reorder, publish toggle
 /admin/surveys/[id]/steps/[stepId]      Step editor (question builder + flow rule)
@@ -98,7 +98,7 @@ A collapsible "JSON preview" pane shows the raw A2UI output for power users.
 
 Below the question builder, a "Conditional skip" section:
 
-```
+```text
 Skip this step if  [field dropdown]  is one of  [value chips]
 ```
 
