@@ -1,0 +1,28 @@
+name: a2ui-dev-survey
+
+services:
+  agent:
+    build: ./agent
+    ports:
+      - "9081:9081"
+    environment:
+      - UVICORN_HOST=0.0.0.0
+      - UVICORN_PORT=9081
+    volumes:
+      - agent-data:/app/data
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ../..
+      dockerfile: apps/dev-survey/Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:9081
+    depends_on:
+      - agent
+    restart: unless-stopped
+
+volumes:
+  agent-data:

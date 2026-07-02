@@ -1,14 +1,20 @@
 "use client"
 
-import { A2Renderer, createRegistry } from "@a2ra/core"
-import { Button } from "./a2ui/button"
-import { Card } from "./a2ui/card"
-import { Checkbox, CheckboxGroup } from "./a2ui/checkbox"
-import { Flex, Grid } from "./a2ui/layout"
-import { Radio, RadioGroup } from "./a2ui/radio"
-import { Select } from "./a2ui/select"
-import { Text } from "./a2ui/text"
-import { TextField } from "./a2ui/text-field"
+import {
+	A2Renderer,
+	Button,
+	Card,
+	Checkbox,
+	CheckboxGroup,
+	createRegistry,
+	Flex,
+	Grid,
+	Radio,
+	RadioGroup,
+	Select,
+	Text,
+	TextField,
+} from "@a2ra/core"
 
 const REGISTRY = createRegistry({
 	Button: { component: Button },

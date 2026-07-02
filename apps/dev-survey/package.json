@@ -5,7 +5,10 @@
 	"scripts": {
 		"dev": "next dev --port 3001",
 		"build": "next build",
-		"start": "next start --port 3001"
+		"start": "next start --port 3001",
+		"test:e2e": "playwright test",
+		"test:e2e:ui": "playwright test --ui",
+		"test:e2e:docker": "playwright test --config playwright.docker.config.ts"
 	},
 	"type": "module",
 	"packageManager": "pnpm@10.33.0",
@@ -18,7 +21,7 @@
 		"zod": "^4.4.3"
 	},
 	"devDependencies": {
-		"@a2ra/cli": "workspace:*",
+		"@playwright/test": "^1.50.0",
 		"@tailwindcss/postcss": "^4",
 		"@types/node": "^20",
 		"@types/react": "^19",
