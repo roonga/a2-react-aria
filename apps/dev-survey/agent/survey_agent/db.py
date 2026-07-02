@@ -41,6 +41,11 @@ def init(db_path: Path) -> None:
                 UNIQUE(step_id)
             );
         """)
+    try:
+        with _conn() as conn:
+            conn.execute("ALTER TABLE surveys ADD COLUMN theme_json TEXT NOT NULL DEFAULT '{}'")
+    except sqlite3.OperationalError:
+        pass
     _maybe_seed()
 
 
@@ -96,7 +101,11 @@ def list_surveys() -> list[dict]:
 def get_survey(survey_id: str) -> dict | None:
     with _conn() as conn:
         row = conn.execute("SELECT * FROM surveys WHERE id = ?", (survey_id,)).fetchone()
-    return dict(row) if row else None
+    if not row:
+        return None
+    result = dict(row)
+    result["theme"] = json.loads(result.pop("theme_json") or "{}")
+    return result
 
 
 def create_survey(title: str, description: str = "") -> dict:
@@ -110,16 +119,22 @@ def create_survey(title: str, description: str = "") -> dict:
     return get_survey(survey_id)  # type: ignore[return-value]
 
 
-def update_survey(survey_id: str, title: str | None = None, description: str | None = None) -> dict | None:
+def update_survey(
+    survey_id: str,
+    title: str | None = None,
+    description: str | None = None,
+    theme: dict | None = None,
+) -> dict | None:
     survey = get_survey(survey_id)
     if not survey:
         return None
     conn_title = title if title is not None else survey["title"]
     conn_desc = description if description is not None else survey["description"]
+    conn_theme = json.dumps(theme) if theme is not None else json.dumps(survey["theme"])
     with _conn() as conn:
         conn.execute(
-            "UPDATE surveys SET title=?, description=?, updated_at=? WHERE id=?",
-            (conn_title, conn_desc, _now(), survey_id),
+            "UPDATE surveys SET title=?, description=?, theme_json=?, updated_at=? WHERE id=?",
+            (conn_title, conn_desc, conn_theme, _now(), survey_id),
         )
     return get_survey(survey_id)
 
@@ -144,25 +159,28 @@ def publish_survey(survey_id: str) -> dict | None:
     return get_survey(survey_id)
 
 
-def get_published_steps() -> list[dict[str, Any]]:
-    """Return steps from the published survey for the public /api/survey/steps endpoint."""
+def get_published_steps() -> dict[str, Any]:
+    """Return steps and theme from the published survey for the public /api/survey/steps endpoint."""
     with _conn() as conn:
-        survey = conn.execute("SELECT id FROM surveys WHERE status='published' LIMIT 1").fetchone()
+        survey = conn.execute(
+            "SELECT id, theme_json FROM surveys WHERE status='published' LIMIT 1"
+        ).fetchone()
         if not survey:
-            return []
+            return {"steps": [], "theme": {}}
         rows = conn.execute(
             "SELECT s.slug, s.title, s.nodes_json, f.condition_field, f.condition_values "
             "FROM steps s LEFT JOIN flow_rules f ON f.step_id = s.id "
             "WHERE s.survey_id = ? ORDER BY s.position",
             (survey["id"],),
         ).fetchall()
+        theme: dict[str, Any] = json.loads(survey["theme_json"] or "{}")
     result: list[dict[str, Any]] = []
     for r in rows:
         step: dict[str, Any] = {"id": r["slug"], "title": r["title"], "nodes": json.loads(r["nodes_json"])}
         if r["condition_field"]:
             step["skipIf"] = {"field": r["condition_field"], "oneOf": json.loads(r["condition_values"])}
         result.append(step)
-    return result
+    return {"steps": result, "theme": theme}
 
 
 # ── Step CRUD ──────────────────────────────────────────────────────────────────
