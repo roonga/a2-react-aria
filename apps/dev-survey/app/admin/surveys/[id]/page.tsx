@@ -1,13 +1,12 @@
 "use client"
 
 import Link from "next/link"
-import { useParams, useRouter } from "next/navigation"
+import { useParams } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import { adminApi, type Step, type SurveyDetail } from "@/hooks/useAdminData"
 
 export default function SurveyDetailPage() {
 	const { id } = useParams<{ id: string }>()
-	const _router = useRouter()
 	const [survey, setSurvey] = useState<SurveyDetail | null>(null)
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
@@ -234,7 +233,6 @@ export default function SurveyDetailPage() {
 			) : (
 				<ul className="space-y-2">
 					{survey.steps.map((step: Step, index: number) => (
-						// biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: drag-and-drop reorder list
 						<li
 							key={step.id}
 							draggable

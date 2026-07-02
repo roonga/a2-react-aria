@@ -9,9 +9,27 @@ import { adminApi, type SurveyDetail } from "@/hooks/useAdminData"
 
 interface PreviewStep {
 	id: string
+	slug: string
 	title: string
 	nodes: unknown[]
 	skip_if: { field: string; one_of: string[] } | null
+}
+
+type A2Node = { props?: Record<string, unknown>; children?: unknown }
+
+function buildLabelToNameMap(nodes: unknown[]): Record<string, string> {
+	const map: Record<string, string> = {}
+	function walk(n: unknown): void {
+		if (!n || typeof n !== "object") return
+		const node = n as A2Node
+		const { label, name } = node.props ?? {}
+		if (typeof label === "string" && typeof name === "string") map[label] = name
+		const c = node.children
+		if (Array.isArray(c)) c.forEach(walk)
+		else if (c) walk(c)
+	}
+	nodes.forEach(walk)
+	return map
 }
 
 function evaluateSkip(step: PreviewStep, answers: Record<string, string>): boolean {
@@ -46,8 +64,11 @@ export default function PreviewPage() {
 	const totalSteps = visibleSteps.length
 	const progress = Math.round((stepIndex / Math.max(totalSteps - 1, 1)) * 100)
 
+	const labelToName = buildLabelToNameMap(currentStep?.nodes ?? [])
+
 	function setValue(label: string, value: string) {
-		setStepValues((prev) => ({ ...prev, [label]: value }))
+		const key = labelToName[label] ?? label
+		setStepValues((prev) => ({ ...prev, [key]: value }))
 	}
 
 	function handleAction(action: string) {
@@ -61,8 +82,8 @@ export default function PreviewPage() {
 		}
 	}
 
-	const isDone = currentStep?.id === "done"
-	const isWelcome = currentStep?.id === "welcome"
+	const isDone = currentStep?.slug === "done"
+	const isWelcome = currentStep?.slug === "welcome"
 
 	return (
 		<div>
