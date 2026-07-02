@@ -19,7 +19,7 @@ export const A2NodeSchema: z.ZodType<A2NodeInput> = z.lazy(() =>
 )
 
 export function parseNode(input: unknown): A2NodeInput {
-	return A2NodeSchema.parse(input) as A2NodeInput
+	return A2NodeSchema.parse(input)
 }
 
 export function safeParseNode(input: unknown): ReturnType<typeof A2NodeSchema.safeParse> {

@@ -5,13 +5,14 @@ Run locally (from the agent/ directory):
 API at: http://localhost:9081
 """
 
-import json
 import logging
 import sqlite3
 import sys
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
+
+import json
 
 _root = Path(__file__).parent
 if str(_root) not in sys.path:
@@ -25,37 +26,38 @@ from fastapi import FastAPI  # noqa: E402
 from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
 from pydantic import BaseModel  # noqa: E402
 
-from survey_agent.survey_data import SURVEY_STEPS  # noqa: E402
+from survey_agent import db  # noqa: E402
+from survey_agent.admin_routes import router as admin_router  # noqa: E402
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s — %(message)s")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s - %(message)s")
 _log = logging.getLogger(__name__)
 
 _data_dir = _root / "data"
 _data_dir.mkdir(exist_ok=True)
 _db_path = _data_dir / "submissions.db"
 
+db.init(_db_path)
 
-def _init_db() -> None:
-    with sqlite3.connect(_db_path) as conn:
-        conn.execute("""
-            CREATE TABLE IF NOT EXISTS submissions (
-                id TEXT PRIMARY KEY,
-                answers TEXT NOT NULL,
-                created_at TEXT NOT NULL
-            )
-        """)
+# Keep submissions table for backward compatibility
+with sqlite3.connect(_db_path) as _conn:
+    _conn.execute("""
+        CREATE TABLE IF NOT EXISTS submissions (
+            id TEXT PRIMARY KEY,
+            answers TEXT NOT NULL,
+            created_at TEXT NOT NULL
+        )
+    """)
 
-
-_init_db()
-
-app = FastAPI(title="survey-agent", version="0.1.0")
+app = FastAPI(title="survey-agent", version="0.2.0")
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3001", "http://localhost:3000"],
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
+
+app.include_router(admin_router)
 
 
 @app.get("/api/health")
@@ -65,7 +67,7 @@ def health():
 
 @app.get("/api/survey/steps")
 def get_steps():
-    return {"steps": SURVEY_STEPS}
+    return {"steps": db.get_published_steps()}
 
 
 class SubmitRequest(BaseModel):
