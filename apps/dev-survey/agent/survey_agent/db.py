@@ -218,6 +218,7 @@ def create_step(survey_id: str, slug: str, title: str, nodes: list, position: in
 
 def update_step(
     step_id: str,
+    survey_id: str | None = None,
     slug: str | None = None,
     title: str | None = None,
     nodes: list | None = None,
@@ -226,6 +227,8 @@ def update_step(
 ) -> dict | None:
     step = get_step(step_id)
     if not step:
+        return None
+    if survey_id is not None and step.get("survey_id") != survey_id:
         return None
     new_slug = slug if slug is not None else step["slug"]
     new_title = title if title is not None else step["title"]
@@ -253,7 +256,12 @@ def update_step(
     return get_step(step_id)
 
 
-def delete_step(step_id: str) -> bool:
+def delete_step(step_id: str, survey_id: str | None = None) -> bool:
+    step = get_step(step_id)
+    if not step:
+        return False
+    if survey_id is not None and step.get("survey_id") != survey_id:
+        return False
     with _conn() as conn:
         result = conn.execute("DELETE FROM steps WHERE id=?", (step_id,))
     return result.rowcount > 0

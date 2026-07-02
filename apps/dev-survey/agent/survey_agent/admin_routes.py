@@ -103,6 +103,7 @@ def create_step(survey_id: str, body: StepCreate):
 def update_step(survey_id: str, step_id: str, body: StepUpdate):
     updated = db.update_step(
         step_id,
+        survey_id=survey_id,
         slug=body.slug,
         title=body.title,
         nodes=body.nodes,
@@ -116,5 +117,5 @@ def update_step(survey_id: str, step_id: str, body: StepUpdate):
 
 @router.delete("/surveys/{survey_id}/steps/{step_id}", status_code=204)
 def delete_step(survey_id: str, step_id: str):
-    if not db.delete_step(step_id):
+    if not db.delete_step(step_id, survey_id=survey_id):
         raise HTTPException(404, "Step not found")
