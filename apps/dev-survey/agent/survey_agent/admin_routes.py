@@ -15,7 +15,7 @@ class SurveyCreate(BaseModel):
 class SurveyUpdate(BaseModel):
     title: str | None = None
     description: str | None = None
-    theme: dict | None = None
+    theme: dict[str, str] | None = None
 
 
 class SkipIf(BaseModel):

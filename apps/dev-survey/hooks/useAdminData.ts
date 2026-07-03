@@ -10,7 +10,7 @@ export interface Survey {
 	created_at: string
 	updated_at: string
 	step_count?: number
-	theme: Record<string, string>
+	theme?: Record<string, string>
 }
 
 export interface SkipIf {

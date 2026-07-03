@@ -104,7 +104,12 @@ def get_survey(survey_id: str) -> dict | None:
     if not row:
         return None
     result = dict(row)
-    result["theme"] = json.loads(result.pop("theme_json") or "{}")
+    raw = result.pop("theme_json", "{}")
+    try:
+        parsed = json.loads(raw or "{}")
+        result["theme"] = parsed if isinstance(parsed, dict) else {}
+    except json.JSONDecodeError:
+        result["theme"] = {}
     return result
 
 
@@ -173,7 +178,11 @@ def get_published_steps() -> dict[str, Any]:
             "WHERE s.survey_id = ? ORDER BY s.position",
             (survey["id"],),
         ).fetchall()
-        theme: dict[str, Any] = json.loads(survey["theme_json"] or "{}")
+        try:
+            parsed_theme = json.loads(survey["theme_json"] or "{}")
+            theme: dict[str, Any] = parsed_theme if isinstance(parsed_theme, dict) else {}
+        except json.JSONDecodeError:
+            theme = {}
     result: list[dict[str, Any]] = []
     for r in rows:
         step: dict[str, Any] = {"id": r["slug"], "title": r["title"], "nodes": json.loads(r["nodes_json"])}

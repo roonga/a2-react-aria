@@ -103,7 +103,10 @@ export default function Survey() {
 	const isWelcome = currentStep.id === "welcome"
 
 	return (
-		<div style={theme as CSSProperties} className="flex flex-col gap-4">
+		<div
+			style={Object.fromEntries(Object.entries(theme).filter(([k]) => k.startsWith("--"))) as CSSProperties}
+			className="flex flex-col gap-4"
+		>
 			{!isDone && !isWelcome && (
 				<div className="flex items-center gap-3">
 					<div className="h-2 flex-1 overflow-hidden rounded-full bg-(--color-backgroundMuted)">

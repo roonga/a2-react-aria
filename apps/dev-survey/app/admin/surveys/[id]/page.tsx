@@ -326,14 +326,20 @@ export default function SurveyDetailPage() {
 									type="color"
 									aria-label={`${label} colour picker`}
 									value={/^#[0-9a-fA-F]{6}$/.test(theme[token] ?? "") ? theme[token] : "#000000"}
-									onChange={(e) => setTheme((t) => ({ ...t, [token]: e.target.value }))}
+									onChange={(e) => {
+										setTheme((t) => ({ ...t, [token]: e.target.value }))
+										setThemeSuccess(false)
+									}}
 									className="h-7 w-7 shrink-0 cursor-pointer rounded border border-(--color-border) p-0.5"
 								/>
 								<input
 									id={`theme-${token}`}
 									type="text"
 									value={theme[token] ?? ""}
-									onChange={(e) => setTheme((t) => ({ ...t, [token]: e.target.value }))}
+									onChange={(e) => {
+										setTheme((t) => ({ ...t, [token]: e.target.value }))
+										setThemeSuccess(false)
+									}}
 									placeholder="inherit from :root"
 									className="flex-1 rounded-md border border-(--color-border) bg-(--color-background) px-3 py-1.5 text-(--color-text) text-sm focus:outline-none focus:ring-(--color-primary) focus:ring-2"
 								/>

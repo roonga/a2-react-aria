@@ -195,7 +195,7 @@ Files: `apps/dev-survey/tests/theme.spec.ts` (new)
 - [ ] SonarQube gate: OK, zero new violations
 
   ```powershell
-  $env:SONAR_TOKEN = "sqa_92caaa7a83b4d17546d60c1fa62b42d93afd6316"
+  $env:SONAR_TOKEN = "<your-sonar-token>"
   docker compose -f docker-compose.sonarqube.yml run --rm scanner
   ```
 
