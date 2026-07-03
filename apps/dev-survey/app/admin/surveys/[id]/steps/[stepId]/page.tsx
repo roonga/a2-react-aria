@@ -129,7 +129,9 @@ function questionToNode(q: Question): unknown {
 		return {
 			type: "RadioGroup",
 			props,
-			children: (q.options ?? []).map((o) => ({ type: "Radio", props: { value: o }, children: o })),
+			children: (q.options ?? [])
+				.filter((o) => o.trim())
+				.map((o) => ({ type: "Radio", props: { value: o.trim(), label: o.trim() } })),
 		}
 	}
 	if (q.type === "CheckboxGroup") {
@@ -139,7 +141,9 @@ function questionToNode(q: Question): unknown {
 		return {
 			type: "CheckboxGroup",
 			props,
-			children: (q.options ?? []).map((o) => ({ type: "Checkbox", props: { value: o }, children: o })),
+			children: (q.options ?? [])
+				.filter((o) => o.trim())
+				.map((o) => ({ type: "Checkbox", props: { value: o.trim(), label: o.trim() } })),
 		}
 	}
 	if (q.type === "Select") {
