@@ -10,6 +10,7 @@ export interface Survey {
 	created_at: string
 	updated_at: string
 	step_count?: number
+	theme?: Record<string, string>
 }
 
 export interface SkipIf {
@@ -58,7 +59,7 @@ export const adminApi = {
 			body: JSON.stringify({ title, description }),
 		}),
 
-	updateSurvey: (id: string, data: { title?: string; description?: string }) =>
+	updateSurvey: (id: string, data: { title?: string; description?: string; theme?: Record<string, string> }) =>
 		apiFetch<Survey>(`/api/admin/surveys/${id}`, {
 			method: "PUT",
 			body: JSON.stringify(data),

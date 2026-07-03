@@ -15,6 +15,7 @@ class SurveyCreate(BaseModel):
 class SurveyUpdate(BaseModel):
     title: str | None = None
     description: str | None = None
+    theme: dict[str, str] | None = None
 
 
 class SkipIf(BaseModel):
@@ -64,7 +65,7 @@ def get_survey(survey_id: str):
 
 @router.put("/surveys/{survey_id}")
 def update_survey(survey_id: str, body: SurveyUpdate):
-    updated = db.update_survey(survey_id, body.title, body.description)
+    updated = db.update_survey(survey_id, body.title, body.description, body.theme)
     if not updated:
         raise HTTPException(404, "Survey not found")
     return updated

@@ -3,7 +3,7 @@
 import { FormStateContext } from "@a2ra/core"
 import Link from "next/link"
 import { useParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { type CSSProperties, useEffect, useState } from "react"
 import A2UIBlock from "@/components/A2UIBlock"
 import { adminApi, type SurveyDetail } from "@/hooks/useAdminData"
 
@@ -135,7 +135,12 @@ export default function PreviewPage() {
 				))}
 			</div>
 
-			<div className="mx-auto max-w-2xl">
+			<div
+				style={
+					Object.fromEntries(Object.entries(survey.theme ?? {}).filter(([k]) => k.startsWith("--"))) as CSSProperties
+				}
+				className="mx-auto max-w-2xl"
+			>
 				{!isDone && !isWelcome && (
 					<div className="mb-4 flex items-center gap-3">
 						<div className="h-2 flex-1 overflow-hidden rounded-full bg-(--color-backgroundMuted)">

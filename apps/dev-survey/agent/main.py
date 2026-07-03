@@ -67,7 +67,7 @@ def health():
 
 @app.get("/api/survey/steps")
 def get_steps():
-    return {"steps": db.get_published_steps()}
+    return db.get_published_steps()
 
 
 class SubmitRequest(BaseModel):
