@@ -322,9 +322,12 @@ export default function SurveyDetailPage() {
 								<label htmlFor={`theme-${token}`} className="w-44 shrink-0 text-(--color-textMuted) text-sm">
 									{label}
 								</label>
-								<div
-									className="h-6 w-6 shrink-0 rounded border border-(--color-border)"
-									style={theme[token] ? { backgroundColor: theme[token] } : undefined}
+								<input
+									type="color"
+									aria-label={`${label} colour picker`}
+									value={/^#[0-9a-fA-F]{6}$/.test(theme[token] ?? "") ? theme[token] : "#000000"}
+									onChange={(e) => setTheme((t) => ({ ...t, [token]: e.target.value }))}
+									className="h-7 w-7 shrink-0 cursor-pointer rounded border border-(--color-border) p-0.5"
 								/>
 								<input
 									id={`theme-${token}`}
