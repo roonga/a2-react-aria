@@ -5,26 +5,11 @@ import { useParams } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import { adminApi, type Step, type SurveyDetail } from "@/hooks/useAdminData"
 
-const THEME_TOKENS = [
-	{ token: "--color-primary", label: "Primary" },
-	{ token: "--color-primaryForeground", label: "Primary Foreground" },
-	{ token: "--color-background", label: "Background" },
-	{ token: "--color-surface", label: "Surface" },
-	{ token: "--color-text", label: "Text" },
-	{ token: "--color-textMuted", label: "Text Muted" },
-	{ token: "--color-border", label: "Border" },
-	{ token: "--color-backgroundMuted", label: "Background Muted" },
-] as const
-
 export default function SurveyDetailPage() {
 	const { id } = useParams<{ id: string }>()
 	const [survey, setSurvey] = useState<SurveyDetail | null>(null)
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
-	const [theme, setTheme] = useState<Record<string, string>>({})
-	const [themeSaving, setThemeSaving] = useState(false)
-	const [themeError, setThemeError] = useState<string | null>(null)
-	const [themeSuccess, setThemeSuccess] = useState(false)
 	const [editingTitle, setEditingTitle] = useState(false)
 	const [titleDraft, setTitleDraft] = useState("")
 	const [addingStep, setAddingStep] = useState(false)
@@ -39,7 +24,6 @@ export default function SurveyDetailPage() {
 			.then((s) => {
 				setSurvey(s)
 				setTitleDraft(s.title)
-				setTheme(s.theme ?? {})
 			})
 			.catch((e: unknown) => setError(e instanceof Error ? e.message : "Failed to load"))
 			.finally(() => setLoading(false))
@@ -83,28 +67,6 @@ export default function SurveyDetailPage() {
 		} catch (e: unknown) {
 			setError(e instanceof Error ? e.message : "Failed to create step")
 		}
-	}
-
-	async function saveTheme() {
-		setThemeSaving(true)
-		setThemeError(null)
-		setThemeSuccess(false)
-		try {
-			const filtered = Object.fromEntries(Object.entries(theme).filter(([, v]) => v.trim()))
-			await adminApi.updateSurvey(id, { theme: filtered })
-			setTheme(filtered)
-			setThemeSuccess(true)
-		} catch (e: unknown) {
-			setThemeError(e instanceof Error ? e.message : "Failed to save theme")
-		} finally {
-			setThemeSaving(false)
-		}
-	}
-
-	function resetTheme() {
-		setTheme({})
-		setThemeSuccess(false)
-		setThemeError(null)
 	}
 
 	async function handleDeleteStep(stepId: string, title: string) {
@@ -183,6 +145,12 @@ export default function SurveyDetailPage() {
 					<p className="mt-1 text-(--color-textMuted) text-sm">{survey.description || "No description"}</p>
 				</div>
 				<div className="flex shrink-0 items-center gap-2">
+					<Link
+						href={`/admin/surveys/${id}/theme`}
+						className="rounded-md border border-(--color-border) px-3 py-1.5 text-(--color-text) text-sm hover:bg-(--color-backgroundMuted)"
+					>
+						Theme
+					</Link>
 					<Link
 						href={`/admin/surveys/${id}/preview`}
 						className="rounded-md border border-(--color-border) px-3 py-1.5 text-(--color-text) text-sm hover:bg-(--color-backgroundMuted)"
@@ -313,60 +281,6 @@ export default function SurveyDetailPage() {
 				</ul>
 			)}
 
-			<div className="mt-8">
-				<h2 className="mb-4 font-semibold text-(--color-text) text-lg">Theme</h2>
-				<div className="rounded-lg border border-(--color-border) bg-(--color-surface) p-4">
-					<div className="space-y-3">
-						{THEME_TOKENS.map(({ token, label }) => (
-							<div key={token} className="flex items-center gap-3">
-								<label htmlFor={`theme-${token}`} className="w-44 shrink-0 text-(--color-textMuted) text-sm">
-									{label}
-								</label>
-								<input
-									type="color"
-									aria-label={`${label} colour picker`}
-									value={/^#[0-9a-fA-F]{6}$/.test(theme[token] ?? "") ? theme[token] : "#000000"}
-									onChange={(e) => {
-										setTheme((t) => ({ ...t, [token]: e.target.value }))
-										setThemeSuccess(false)
-									}}
-									className="h-7 w-7 shrink-0 cursor-pointer rounded border border-(--color-border) p-0.5"
-								/>
-								<input
-									id={`theme-${token}`}
-									type="text"
-									value={theme[token] ?? ""}
-									onChange={(e) => {
-										setTheme((t) => ({ ...t, [token]: e.target.value }))
-										setThemeSuccess(false)
-									}}
-									placeholder="inherit from :root"
-									className="flex-1 rounded-md border border-(--color-border) bg-(--color-background) px-3 py-1.5 text-(--color-text) text-sm focus:outline-none focus:ring-(--color-primary) focus:ring-2"
-								/>
-							</div>
-						))}
-					</div>
-					<div className="mt-4 flex items-center gap-3">
-						<button
-							type="button"
-							onClick={saveTheme}
-							disabled={themeSaving}
-							className="rounded-md bg-(--color-primary) px-4 py-2 font-medium text-(--color-primaryForeground) text-sm hover:bg-(--color-primaryHover) disabled:opacity-50"
-						>
-							{themeSaving ? "Saving…" : "Save Theme"}
-						</button>
-						<button
-							type="button"
-							onClick={resetTheme}
-							className="rounded-md border border-(--color-border) px-4 py-2 text-(--color-text) text-sm hover:bg-(--color-backgroundMuted)"
-						>
-							Reset
-						</button>
-						{themeSuccess && <span className="text-(--color-text) text-sm">Saved.</span>}
-						{themeError && <span className="text-(--color-danger) text-sm">{themeError}</span>}
-					</div>
-				</div>
-			</div>
 		</div>
 	)
 }
