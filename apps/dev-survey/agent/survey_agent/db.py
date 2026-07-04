@@ -46,6 +46,11 @@ def init(db_path: Path) -> None:
             conn.execute("ALTER TABLE surveys ADD COLUMN theme_json TEXT NOT NULL DEFAULT '{}'")
     except sqlite3.OperationalError:
         pass
+    try:
+        with _conn() as conn:
+            conn.execute("ALTER TABLE steps ADD COLUMN skip_if_json TEXT")
+    except sqlite3.OperationalError:
+        pass
     _maybe_seed()
 
 
@@ -173,7 +178,7 @@ def get_published_steps() -> dict[str, Any]:
         if not survey:
             return {"steps": [], "theme": {}}
         rows = conn.execute(
-            "SELECT s.slug, s.title, s.nodes_json, f.condition_field, f.condition_values "
+            "SELECT s.slug, s.title, s.nodes_json, s.skip_if_json, f.condition_field, f.condition_values "
             "FROM steps s LEFT JOIN flow_rules f ON f.step_id = s.id "
             "WHERE s.survey_id = ? ORDER BY s.position",
             (survey["id"],),
@@ -186,7 +191,12 @@ def get_published_steps() -> dict[str, Any]:
     result: list[dict[str, Any]] = []
     for r in rows:
         step: dict[str, Any] = {"id": r["slug"], "title": r["title"], "nodes": json.loads(r["nodes_json"])}
-        if r["condition_field"]:
+        if r["skip_if_json"]:
+            try:
+                step["skipIf"] = json.loads(r["skip_if_json"])
+            except json.JSONDecodeError:
+                pass
+        elif r["condition_field"]:
             step["skipIf"] = {"field": r["condition_field"], "oneOf": json.loads(r["condition_values"])}
         result.append(step)
     return {"steps": result, "theme": theme}
@@ -197,9 +207,15 @@ def get_published_steps() -> dict[str, Any]:
 def _row_to_step(r: sqlite3.Row) -> dict:
     step = dict(r)
     step["nodes"] = json.loads(step.pop("nodes_json"))
+    skip_if_json_raw = step.pop("skip_if_json", None)
     cond_field = step.pop("condition_field", None)
     cond_vals = step.pop("condition_values", None)
-    if cond_field:
+    if skip_if_json_raw:
+        try:
+            step["skip_if"] = json.loads(skip_if_json_raw)
+        except json.JSONDecodeError:
+            step["skip_if"] = None
+    elif cond_field:
         step["skip_if"] = {"field": cond_field, "one_of": json.loads(cond_vals)}
     else:
         step["skip_if"] = None
@@ -268,18 +284,28 @@ def update_step(
         )
         if clear_skip_if:
             conn.execute("DELETE FROM flow_rules WHERE step_id=?", (step_id,))
+            conn.execute("UPDATE steps SET skip_if_json=NULL WHERE id=?", (step_id,))
         elif skip_if:
-            existing = conn.execute("SELECT id FROM flow_rules WHERE step_id=?", (step_id,)).fetchone()
-            if existing:
-                conn.execute(
-                    "UPDATE flow_rules SET condition_field=?, condition_values=? WHERE step_id=?",
-                    (skip_if["field"], json.dumps(skip_if["one_of"]), step_id),
-                )
+            conn.execute(
+                "UPDATE steps SET skip_if_json=? WHERE id=?",
+                (json.dumps(skip_if), step_id),
+            )
+            if "field" in skip_if and "one_of" in skip_if:
+                # Legacy format: also maintain flow_rules for backward compat
+                existing = conn.execute("SELECT id FROM flow_rules WHERE step_id=?", (step_id,)).fetchone()
+                if existing:
+                    conn.execute(
+                        "UPDATE flow_rules SET condition_field=?, condition_values=? WHERE step_id=?",
+                        (skip_if["field"], json.dumps(skip_if["one_of"]), step_id),
+                    )
+                else:
+                    conn.execute(
+                        "INSERT INTO flow_rules (id, step_id, condition_field, condition_values) VALUES (?,?,?,?)",
+                        (str(uuid.uuid4()), step_id, skip_if["field"], json.dumps(skip_if["one_of"])),
+                    )
             else:
-                conn.execute(
-                    "INSERT INTO flow_rules (id, step_id, condition_field, condition_values) VALUES (?,?,?,?)",
-                    (str(uuid.uuid4()), step_id, skip_if["field"], json.dumps(skip_if["one_of"])),
-                )
+                # New multi-group format: remove legacy single-condition rule
+                conn.execute("DELETE FROM flow_rules WHERE step_id=?", (step_id,))
     return get_step(step_id)
 
 

@@ -18,11 +18,6 @@ class SurveyUpdate(BaseModel):
     theme: dict[str, str] | None = None
 
 
-class SkipIf(BaseModel):
-    field: str
-    one_of: list[str]
-
-
 class StepCreate(BaseModel):
     slug: str
     title: str
@@ -34,7 +29,7 @@ class StepUpdate(BaseModel):
     slug: str | None = None
     title: str | None = None
     nodes: list | None = None
-    skip_if: SkipIf | None = None
+    skip_if: dict | None = None
     clear_skip_if: bool = False
 
 
@@ -108,7 +103,7 @@ def update_step(survey_id: str, step_id: str, body: StepUpdate):
         slug=body.slug,
         title=body.title,
         nodes=body.nodes,
-        skip_if=body.skip_if.model_dump() if body.skip_if else None,
+        skip_if=body.skip_if,
         clear_skip_if=body.clear_skip_if,
     )
     if not updated:

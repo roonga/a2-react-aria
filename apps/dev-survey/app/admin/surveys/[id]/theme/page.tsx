@@ -154,11 +154,12 @@ function deriveTokens(cfg: ThemeConfig): Record<string, string> {
 }
 
 function configFromTheme(theme: Record<string, string>): ThemeConfig {
+	const validBases: Base[] = ["light", "dark"]
 	return {
 		accent: theme._accent || theme["--color-primary"] || DEFAULT_CONFIG.accent,
-		base: (theme._base as Base | undefined) ?? DEFAULT_CONFIG.base,
-		font: (theme._font as Font | undefined) ?? DEFAULT_CONFIG.font,
-		radius: (theme._radius as Radius | undefined) ?? DEFAULT_CONFIG.radius,
+		base: validBases.includes(theme._base as Base) ? (theme._base as Base) : DEFAULT_CONFIG.base,
+		font: theme._font in FONT_FAMILIES ? (theme._font as Font) : DEFAULT_CONFIG.font,
+		radius: theme._radius in RADII ? (theme._radius as Radius) : DEFAULT_CONFIG.radius,
 	}
 }
 
@@ -206,7 +207,7 @@ export default function ThemePage() {
 	}
 
 	const activePreset = PRESETS.find(
-		(p) => p.accent === config.accent && p.font === config.font && p.radius === config.radius,
+		(p) => p.accent === config.accent && p.base === config.base && p.font === config.font && p.radius === config.radius,
 	)?.name
 
 	if (loading) return <p className="text-(--color-textMuted) text-sm">Loading…</p>

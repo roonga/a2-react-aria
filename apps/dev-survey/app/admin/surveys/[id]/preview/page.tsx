@@ -44,11 +44,14 @@ function evaluateSkip(step: PreviewStep, answers: Record<string, string>): boole
 	if (Array.isArray(si.groups)) {
 		const skipIf = si as unknown as SkipIf
 		const evalCond = (c: SkipCondition): boolean => {
+			if (!c || typeof c.field !== "string" || !Array.isArray(c.values)) return false
 			const val = answers[c.field]
 			return typeof val === "string" && c.values.includes(val)
 		}
-		const evalGroup = (g: SkipGroup): boolean =>
-			g.op === "and" ? g.conditions.every(evalCond) : g.conditions.some(evalCond)
+		const evalGroup = (g: SkipGroup): boolean => {
+			if (!g || !Array.isArray(g.conditions)) return false
+			return g.op === "and" ? g.conditions.every(evalCond) : g.conditions.some(evalCond)
+		}
 		return skipIf.groups_op === "and" ? skipIf.groups.every(evalGroup) : skipIf.groups.some(evalGroup)
 	}
 	return false
