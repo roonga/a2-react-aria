@@ -1,39 +1,136 @@
 "use client"
 
+import { FormStateContext } from "@a2ra/core"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import A2UIBlock from "@/components/A2UIBlock"
 import { adminApi, type SkipIf, type Step } from "@/hooks/useAdminData"
 
-// ── Question data model (editor state, not DB) ────────────────────────────────
+// ── Skip-rule editor types (extend API types with stable _id for React keys) ──
+
+interface EditorCondition {
+	_id: string
+	field: string
+	values: string[]
+}
+
+interface EditorGroup {
+	_id: string
+	op: "and" | "or"
+	conditions: EditorCondition[]
+}
+
+interface EditorSkipIf {
+	groups_op: "and" | "or"
+	groups: EditorGroup[]
+}
+
+function toApiSkipIf(e: EditorSkipIf | null): SkipIf | null {
+	if (!e) return null
+	return {
+		groups_op: e.groups_op,
+		groups: e.groups.map((g) => ({
+			op: g.op,
+			conditions: g.conditions.map((c) => ({ field: c.field, values: c.values })),
+		})),
+	}
+}
+
+// ── Skip-rule backward compat ─────────────────────────────────────────────────
+
+function normalizeSkipIf(raw: unknown): EditorSkipIf | null {
+	if (!raw || typeof raw !== "object") return null
+	const r = raw as Record<string, unknown>
+	// Old format: { field: string, one_of: string[] }
+	if (typeof r.field === "string" && Array.isArray(r.one_of)) {
+		return {
+			groups_op: "or",
+			groups: [
+				{
+					_id: uid(),
+					op: "or",
+					conditions: [{ _id: uid(), field: r.field, values: r.one_of as string[] }],
+				},
+			],
+		}
+	}
+	if (typeof r.groups_op === "string" && Array.isArray(r.groups)) {
+		const si = raw as SkipIf
+		return {
+			groups_op: si.groups_op,
+			groups: si.groups.map((g) => ({
+				_id: uid(),
+				op: g.op,
+				conditions: g.conditions.map((c) => ({ _id: uid(), field: c.field, values: c.values })),
+			})),
+		}
+	}
+	return null
+}
+
+// ── Question data model ───────────────────────────────────────────────────────
 
 type QuestionType = "Text" | "RadioGroup" | "CheckboxGroup" | "Select" | "TextField"
 
 interface Question {
 	_id: string
 	type: QuestionType
-	// Text
 	content?: string
 	as?: string
 	size?: string
 	weight?: string
 	align?: string
 	color?: string
-	// RadioGroup / CheckboxGroup / Select / TextField
 	label?: string
 	name?: string
 	isRequired?: boolean
-	// RadioGroup / CheckboxGroup — one option label per line
 	options?: string[]
-	// Select — {value, label} pairs
 	items?: Array<{ value: string; label: string }>
-	// TextField
 	inputType?: string
 }
 
 let _idCounter = 0
 function uid() {
 	return `q${++_idCounter}`
+}
+
+// ── Validation ────────────────────────────────────────────────────────────────
+
+function validateQuestion(q: Question): Record<string, string> {
+	const e: Record<string, string> = {}
+	if (q.type === "Text") {
+		if (!q.content?.trim()) e.content = "Content is required"
+	} else if (q.type === "TextField") {
+		if (!q.label?.trim()) e.label = "Label is required"
+		if (!q.name?.trim()) e.name = "Field name is required"
+	} else if (q.type === "RadioGroup" || q.type === "CheckboxGroup") {
+		if (!q.label?.trim()) e.label = "Label is required"
+		if (!q.name?.trim()) e.name = "Field name is required"
+		if ((q.options ?? []).filter((o) => o.trim()).length < 2) e.options = "At least 2 options required"
+	} else if (q.type === "Select") {
+		if (!q.label?.trim()) e.label = "Label is required"
+		if (!q.name?.trim()) e.name = "Field name is required"
+		if (!q.items?.length) e.items = "At least 1 item required"
+	}
+	return e
+}
+
+// ── Label→name map (for preview FormStateContext) ─────────────────────────────
+
+function buildLabelToNameMap(nodes: unknown[]): Record<string, string> {
+	const map: Record<string, string> = {}
+	function walk(n: unknown): void {
+		if (!n || typeof n !== "object") return
+		const node = n as { props?: Record<string, unknown>; children?: unknown }
+		const { label, name } = node.props ?? {}
+		if (typeof label === "string" && typeof name === "string") map[label] = name
+		const c = node.children
+		if (Array.isArray(c)) c.forEach(walk)
+		else if (c) walk(c)
+	}
+	nodes.forEach(walk)
+	return map
 }
 
 // ── A2UI ↔ Question converters ────────────────────────────────────────────────
@@ -165,14 +262,12 @@ function questionToNode(q: Question): unknown {
 	return null
 }
 
-// Extract questions from a step's nodes_json (skip Card wrapper and nav Flex).
 function extractQuestions(nodes: unknown[]): Question[] {
 	const root = nodes[0] as Record<string, unknown> | undefined
 	const children = root?.type === "Card" && Array.isArray(root.children) ? (root.children as unknown[]) : nodes
 	return children
 		.filter((c) => {
 			const n = c as Record<string, unknown>
-			// Skip the nav Flex (contains only Buttons)
 			if (n.type === "Flex") {
 				const kids = Array.isArray(n.children) ? (n.children as unknown[]) : []
 				return !kids.every((k) => (k as Record<string, unknown>).type === "Button")
@@ -183,7 +278,6 @@ function extractQuestions(nodes: unknown[]): Question[] {
 		.filter((q): q is Question => q !== null)
 }
 
-// Rebuild full nodes_json from question list (Card wrapper + questions + nav buttons).
 function buildNodes(questions: Question[], stepSlug: string, allSteps: Step[], currentStep: Step): unknown[] {
 	const isFirst = allSteps[0]?.id === currentStep.id
 	const isWelcome = stepSlug === "welcome"
@@ -211,13 +305,22 @@ function buildNodes(questions: Question[], stepSlug: string, allSteps: Step[], c
 
 // ── Question form ─────────────────────────────────────────────────────────────
 
-function QuestionForm({ q, onChange }: { q: Question; onChange: (updated: Question) => void }) {
+function QuestionForm({
+	q,
+	onChange,
+	errors,
+}: {
+	q: Question
+	onChange: (updated: Question) => void
+	errors: Record<string, string>
+}) {
 	const update = (patch: Partial<Question>) => onChange({ ...q, ...patch })
 	const p = q._id
 
-	const inputCls =
-		"w-full rounded-md border border-(--color-border) bg-(--color-background) px-3 py-1.5 text-(--color-text) text-sm focus:outline-none focus:ring-2 focus:ring-(--color-primary)"
+	const inputCls = (field?: string) =>
+		`w-full rounded-md border ${field && errors[field] ? "border-(--color-danger)" : "border-(--color-border)"} bg-(--color-background) px-3 py-1.5 text-(--color-text) text-sm focus:outline-none focus:ring-2 focus:ring-(--color-primary)`
 	const labelCls = "block text-(--color-textMuted) text-xs font-medium mb-1"
+	const errCls = "mt-1 text-(--color-danger) text-xs"
 
 	if (q.type === "Text") {
 		return (
@@ -231,8 +334,9 @@ function QuestionForm({ q, onChange }: { q: Question; onChange: (updated: Questi
 						value={q.content ?? ""}
 						onChange={(e) => update({ content: e.target.value })}
 						rows={3}
-						className={inputCls}
+						className={inputCls("content")}
 					/>
+					{errors.content && <p className={errCls}>{errors.content}</p>}
 				</div>
 				<div className="grid grid-cols-2 gap-3">
 					<div>
@@ -243,7 +347,7 @@ function QuestionForm({ q, onChange }: { q: Question; onChange: (updated: Questi
 							id={`${p}-as`}
 							value={q.as ?? ""}
 							onChange={(e) => update({ as: e.target.value || undefined })}
-							className={inputCls}
+							className={inputCls()}
 						>
 							<option value="">p (default)</option>
 							<option value="h1">h1</option>
@@ -260,7 +364,7 @@ function QuestionForm({ q, onChange }: { q: Question; onChange: (updated: Questi
 							id={`${p}-size`}
 							value={q.size ?? ""}
 							onChange={(e) => update({ size: e.target.value || undefined })}
-							className={inputCls}
+							className={inputCls()}
 						>
 							<option value="">default</option>
 							<option value="xs">xs</option>
@@ -278,7 +382,7 @@ function QuestionForm({ q, onChange }: { q: Question; onChange: (updated: Questi
 							id={`${p}-weight`}
 							value={q.weight ?? ""}
 							onChange={(e) => update({ weight: e.target.value || undefined })}
-							className={inputCls}
+							className={inputCls()}
 						>
 							<option value="">default</option>
 							<option value="normal">normal</option>
@@ -294,7 +398,7 @@ function QuestionForm({ q, onChange }: { q: Question; onChange: (updated: Questi
 							id={`${p}-align`}
 							value={q.align ?? ""}
 							onChange={(e) => update({ align: e.target.value || undefined })}
-							className={inputCls}
+							className={inputCls()}
 						>
 							<option value="">default</option>
 							<option value="left">left</option>
@@ -310,7 +414,7 @@ function QuestionForm({ q, onChange }: { q: Question; onChange: (updated: Questi
 							id={`${p}-color`}
 							value={q.color ?? ""}
 							onChange={(e) => update({ color: e.target.value || undefined })}
-							className={inputCls}
+							className={inputCls()}
 						>
 							<option value="">default</option>
 							<option value="muted">muted</option>
@@ -328,15 +432,16 @@ function QuestionForm({ q, onChange }: { q: Question; onChange: (updated: Questi
 			<div className="space-y-3">
 				<div>
 					<label htmlFor={`${p}-label`} className={labelCls}>
-						Label
+						Question
 					</label>
 					<input
 						id={`${p}-label`}
 						type="text"
 						value={q.label ?? ""}
 						onChange={(e) => update({ label: e.target.value })}
-						className={inputCls}
+						className={inputCls("label")}
 					/>
+					{errors.label && <p className={errCls}>{errors.label}</p>}
 				</div>
 				<div>
 					<label htmlFor={`${p}-name`} className={labelCls}>
@@ -347,8 +452,9 @@ function QuestionForm({ q, onChange }: { q: Question; onChange: (updated: Questi
 						type="text"
 						value={q.name ?? ""}
 						onChange={(e) => update({ name: e.target.value })}
-						className={inputCls}
+						className={inputCls("name")}
 					/>
+					{errors.name && <p className={errCls}>{errors.name}</p>}
 				</div>
 				{q.type === "RadioGroup" && (
 					<label htmlFor={`${p}-required`} className="flex items-center gap-2 text-(--color-text) text-sm">
@@ -370,9 +476,10 @@ function QuestionForm({ q, onChange }: { q: Question; onChange: (updated: Questi
 						value={(q.options ?? []).join("\n")}
 						onChange={(e) => update({ options: e.target.value.split("\n") })}
 						rows={6}
-						className={inputCls}
+						className={inputCls("options")}
 						placeholder="Option A&#10;Option B&#10;Option C"
 					/>
+					{errors.options && <p className={errCls}>{errors.options}</p>}
 				</div>
 			</div>
 		)
@@ -383,15 +490,16 @@ function QuestionForm({ q, onChange }: { q: Question; onChange: (updated: Questi
 			<div className="space-y-3">
 				<div>
 					<label htmlFor={`${p}-label`} className={labelCls}>
-						Label
+						Question
 					</label>
 					<input
 						id={`${p}-label`}
 						type="text"
 						value={q.label ?? ""}
 						onChange={(e) => update({ label: e.target.value })}
-						className={inputCls}
+						className={inputCls("label")}
 					/>
+					{errors.label && <p className={errCls}>{errors.label}</p>}
 				</div>
 				<div>
 					<label htmlFor={`${p}-name`} className={labelCls}>
@@ -402,8 +510,9 @@ function QuestionForm({ q, onChange }: { q: Question; onChange: (updated: Questi
 						type="text"
 						value={q.name ?? ""}
 						onChange={(e) => update({ name: e.target.value })}
-						className={inputCls}
+						className={inputCls("name")}
 					/>
+					{errors.name && <p className={errCls}>{errors.name}</p>}
 				</div>
 				<label htmlFor={`${p}-required`} className="flex items-center gap-2 text-(--color-text) text-sm">
 					<input
@@ -432,9 +541,10 @@ function QuestionForm({ q, onChange }: { q: Question; onChange: (updated: Questi
 							update({ items })
 						}}
 						rows={6}
-						className={inputCls}
+						className={inputCls("items")}
 						placeholder="Australia&#10;Canada&#10;US | United States"
 					/>
+					{errors.items && <p className={errCls}>{errors.items}</p>}
 				</div>
 			</div>
 		)
@@ -445,15 +555,16 @@ function QuestionForm({ q, onChange }: { q: Question; onChange: (updated: Questi
 			<div className="space-y-3">
 				<div>
 					<label htmlFor={`${p}-label`} className={labelCls}>
-						Label
+						Question
 					</label>
 					<input
 						id={`${p}-label`}
 						type="text"
 						value={q.label ?? ""}
 						onChange={(e) => update({ label: e.target.value })}
-						className={inputCls}
+						className={inputCls("label")}
 					/>
+					{errors.label && <p className={errCls}>{errors.label}</p>}
 				</div>
 				<div>
 					<label htmlFor={`${p}-name`} className={labelCls}>
@@ -464,8 +575,9 @@ function QuestionForm({ q, onChange }: { q: Question; onChange: (updated: Questi
 						type="text"
 						value={q.name ?? ""}
 						onChange={(e) => update({ name: e.target.value })}
-						className={inputCls}
+						className={inputCls("name")}
 					/>
+					{errors.name && <p className={errCls}>{errors.name}</p>}
 				</div>
 				<div>
 					<label htmlFor={`${p}-inputType`} className={labelCls}>
@@ -475,12 +587,12 @@ function QuestionForm({ q, onChange }: { q: Question; onChange: (updated: Questi
 						id={`${p}-inputType`}
 						value={q.inputType ?? ""}
 						onChange={(e) => update({ inputType: e.target.value || undefined })}
-						className={inputCls}
+						className={inputCls()}
 					>
-						<option value="">text (default)</option>
-						<option value="email">email</option>
-						<option value="number">number</option>
-						<option value="url">url</option>
+						<option value="">Text</option>
+						<option value="email">Email</option>
+						<option value="number">Number</option>
+						<option value="url">URL</option>
 					</select>
 				</div>
 				<label htmlFor={`${p}-required`} className="flex items-center gap-2 text-(--color-text) text-sm">
@@ -499,146 +611,309 @@ function QuestionForm({ q, onChange }: { q: Question; onChange: (updated: Questi
 	return null
 }
 
-// ── Flow rule editor ──────────────────────────────────────────────────────────
+// ── ConditionRow ──────────────────────────────────────────────────────────────
+
+function ConditionRow({
+	cond,
+	prevStepNames,
+	inputCls,
+	onUpdate,
+	onRemove,
+	onAddValue,
+	onRemoveValue,
+	showOpBadge,
+	groupOp,
+	onToggleGroupOp,
+}: {
+	cond: EditorCondition
+	prevStepNames: Array<{ name: string; options: string[] }>
+	inputCls: string
+	onUpdate: (patch: Partial<EditorCondition>) => void
+	onRemove: () => void
+	onAddValue: (v: string) => void
+	onRemoveValue: (v: string) => void
+	showOpBadge: boolean
+	groupOp: "and" | "or"
+	onToggleGroupOp: () => void
+}) {
+	const [newValue, setNewValue] = useState("")
+	const selectedField = prevStepNames.find((f) => f.name === cond.field)
+
+	return (
+		<div className="space-y-1.5">
+			{showOpBadge && (
+				<div className="flex items-center">
+					<button
+						type="button"
+						onClick={onToggleGroupOp}
+						className="rounded border border-(--color-border) bg-(--color-surface) px-2 py-0.5 font-semibold text-(--color-primary) text-xs uppercase hover:bg-(--color-backgroundMuted)"
+					>
+						{groupOp}
+					</button>
+				</div>
+			)}
+			<div className="flex items-center gap-2">
+				<select
+					value={cond.field}
+					onChange={(e) => onUpdate({ field: e.target.value, values: [] })}
+					className={`${inputCls} flex-1`}
+				>
+					<option value="">Select field…</option>
+					{prevStepNames.map((f) => (
+						<option key={f.name} value={f.name}>
+							{f.name}
+						</option>
+					))}
+				</select>
+				<span className="shrink-0 whitespace-nowrap text-(--color-textMuted) text-xs">is one of</span>
+				<button
+					type="button"
+					onClick={onRemove}
+					title="Remove condition"
+					className="shrink-0 text-(--color-danger) hover:text-(--color-dangerHover)"
+				>
+					×
+				</button>
+			</div>
+			{cond.values.length > 0 && (
+				<div className="flex flex-wrap gap-1">
+					{cond.values.map((v) => (
+						<span
+							key={v}
+							className="flex items-center gap-1 rounded-full bg-(--color-backgroundMuted) px-2 py-0.5 text-(--color-text) text-xs"
+						>
+							{v}
+							<button
+								type="button"
+								onClick={() => onRemoveValue(v)}
+								className="text-(--color-textMuted) hover:text-(--color-danger)"
+							>
+								×
+							</button>
+						</span>
+					))}
+				</div>
+			)}
+			<div className="flex gap-2">
+				{selectedField && selectedField.options.length > 0 ? (
+					<select
+						value=""
+						onChange={(e) => e.target.value && onAddValue(e.target.value)}
+						className={`${inputCls} flex-1`}
+					>
+						<option value="">Add a value…</option>
+						{selectedField.options
+							.filter((o) => !cond.values.includes(o))
+							.map((o) => (
+								<option key={o} value={o}>
+									{o}
+								</option>
+							))}
+					</select>
+				) : (
+					<>
+						<input
+							type="text"
+							placeholder="Add value…"
+							value={newValue}
+							onChange={(e) => setNewValue(e.target.value)}
+							onKeyDown={(e) => {
+								if (e.key === "Enter") {
+									onAddValue(newValue)
+									setNewValue("")
+								}
+							}}
+							className={`${inputCls} flex-1`}
+						/>
+						<button
+							type="button"
+							onClick={() => {
+								onAddValue(newValue)
+								setNewValue("")
+							}}
+							className="rounded-md border border-(--color-border) px-3 py-1.5 text-(--color-text) text-sm hover:bg-(--color-backgroundMuted)"
+						>
+							Add
+						</button>
+					</>
+				)}
+			</div>
+		</div>
+	)
+}
+
+// ── FlowRuleEditor ────────────────────────────────────────────────────────────
 
 function FlowRuleEditor({
 	skipIf,
 	onChange,
 	prevStepNames,
 }: {
-	skipIf: SkipIf | null
-	onChange: (rule: SkipIf | null) => void
+	skipIf: EditorSkipIf | null
+	onChange: (rule: EditorSkipIf | null) => void
 	prevStepNames: Array<{ name: string; options: string[] }>
 }) {
 	const inputCls =
 		"rounded-md border border-(--color-border) bg-(--color-background) px-3 py-1.5 text-(--color-text) text-sm focus:outline-none focus:ring-2 focus:ring-(--color-primary)"
 
-	const selectedField = prevStepNames.find((f) => f.name === skipIf?.field)
-	const [newValue, setNewValue] = useState("")
+	function addGroup() {
+		const newGroup: EditorGroup = { _id: uid(), op: "and", conditions: [{ _id: uid(), field: "", values: [] }] }
+		onChange(skipIf ? { ...skipIf, groups: [...skipIf.groups, newGroup] } : { groups_op: "or", groups: [newGroup] })
+	}
 
-	function addValue(v: string) {
-		const trimmed = v.trim()
-		if (!trimmed || !skipIf) return
-		if (!skipIf.one_of.includes(trimmed)) {
-			onChange({ ...skipIf, one_of: [...skipIf.one_of, trimmed] })
+	function removeGroup(gIdx: number) {
+		if (!skipIf) return
+		const groups = skipIf.groups.filter((_, i) => i !== gIdx)
+		onChange(groups.length > 0 ? { ...skipIf, groups } : null)
+	}
+
+	function updateGroup(gIdx: number, patch: Partial<EditorGroup>) {
+		if (!skipIf) return
+		onChange({ ...skipIf, groups: skipIf.groups.map((g, i) => (i === gIdx ? { ...g, ...patch } : g)) })
+	}
+
+	function addCondition(gIdx: number) {
+		if (!skipIf) return
+		const group = skipIf.groups[gIdx]
+		updateGroup(gIdx, { conditions: [...group.conditions, { _id: uid(), field: "", values: [] }] })
+	}
+
+	function removeCondition(gIdx: number, cIdx: number) {
+		if (!skipIf) return
+		const conditions = skipIf.groups[gIdx].conditions.filter((_, i) => i !== cIdx)
+		if (conditions.length === 0) removeGroup(gIdx)
+		else updateGroup(gIdx, { conditions })
+	}
+
+	function updateCondition(gIdx: number, cIdx: number, patch: Partial<EditorCondition>) {
+		if (!skipIf) return
+		const conditions = skipIf.groups[gIdx].conditions.map((c, i) => (i === cIdx ? { ...c, ...patch } : c))
+		updateGroup(gIdx, { conditions })
+	}
+
+	function addValue(gIdx: number, cIdx: number, val: string) {
+		if (!skipIf || !val.trim()) return
+		const cond = skipIf.groups[gIdx].conditions[cIdx]
+		if (!cond.values.includes(val.trim())) {
+			updateCondition(gIdx, cIdx, { values: [...cond.values, val.trim()] })
 		}
-		setNewValue("")
+	}
+
+	function removeValue(gIdx: number, cIdx: number, val: string) {
+		if (!skipIf) return
+		const cond = skipIf.groups[gIdx].conditions[cIdx]
+		updateCondition(gIdx, cIdx, { values: cond.values.filter((v) => v !== val) })
 	}
 
 	return (
 		<div className="rounded-lg border border-(--color-border) bg-(--color-surface) p-4">
 			<div className="mb-3 flex items-center justify-between">
 				<h3 className="font-semibold text-(--color-text) text-sm">Conditional Skip</h3>
-				{skipIf ? (
-					<button
-						type="button"
-						onClick={() => onChange(null)}
-						className="text-(--color-danger) text-xs hover:underline"
-					>
-						Remove rule
+				<div className="flex gap-3">
+					{skipIf && (
+						<button
+							type="button"
+							onClick={() => onChange(null)}
+							className="text-(--color-danger) text-xs hover:underline"
+						>
+							Remove all
+						</button>
+					)}
+					<button type="button" onClick={addGroup} className="text-(--color-primary) text-xs hover:underline">
+						+ Add {skipIf ? "group" : "rule"}
 					</button>
-				) : (
-					<button
-						type="button"
-						onClick={() => onChange({ field: "", one_of: [] })}
-						className="text-(--color-primary) text-xs hover:underline"
-					>
-						Add rule
-					</button>
-				)}
+				</div>
 			</div>
 
-			{skipIf ? (
-				<div className="space-y-3">
-					<p className="text-(--color-textMuted) text-xs">Skip this step if…</p>
-					<div className="flex items-center gap-2">
-						<span className="text-(--color-textMuted) text-sm">Field</span>
-						<select
-							value={skipIf.field}
-							onChange={(e) => onChange({ ...skipIf, field: e.target.value, one_of: [] })}
-							className={inputCls}
-						>
-							<option value="">Select a field…</option>
-							{prevStepNames.map((f) => (
-								<option key={f.name} value={f.name}>
-									{f.name}
-								</option>
-							))}
-						</select>
-						<span className="text-(--color-textMuted) text-sm">is one of</span>
-					</div>
-
-					<div className="flex flex-wrap gap-1">
-						{skipIf.one_of.map((v) => (
-							<span
-								key={v}
-								className="flex items-center gap-1 rounded-full bg-(--color-backgroundMuted) px-2 py-0.5 text-(--color-text) text-xs"
-							>
-								{v}
-								<button
-									type="button"
-									onClick={() => onChange({ ...skipIf, one_of: skipIf.one_of.filter((x) => x !== v) })}
-									className="text-(--color-textMuted) hover:text-(--color-danger)"
-								>
-									×
-								</button>
-							</span>
+			{!skipIf ? (
+				<p className="text-(--color-textMuted) text-sm">No rule — this step always shows.</p>
+			) : (
+				<>
+					<p className="mb-3 text-(--color-textMuted) text-xs">Skip this step when…</p>
+					<div className="space-y-1">
+						{skipIf.groups.map((group, gIdx) => (
+							<div key={group._id}>
+								<div className="space-y-2 rounded-md border border-(--color-border) bg-(--color-backgroundMuted) p-3">
+									<div className="flex items-center justify-between">
+										{skipIf.groups.length > 1 && (
+											<span className="font-medium text-(--color-textMuted) text-xs">Group {gIdx + 1}</span>
+										)}
+										<button
+											type="button"
+											onClick={() => removeGroup(gIdx)}
+											className="ml-auto text-(--color-danger) text-xs hover:underline"
+										>
+											Remove
+										</button>
+									</div>
+									{group.conditions.map((cond, cIdx) => (
+										<ConditionRow
+											key={cond._id}
+											cond={cond}
+											prevStepNames={prevStepNames}
+											inputCls={inputCls}
+											onUpdate={(patch) => updateCondition(gIdx, cIdx, patch)}
+											onRemove={() => removeCondition(gIdx, cIdx)}
+											onAddValue={(v) => addValue(gIdx, cIdx, v)}
+											onRemoveValue={(v) => removeValue(gIdx, cIdx, v)}
+											showOpBadge={cIdx > 0}
+											groupOp={group.op}
+											onToggleGroupOp={() => updateGroup(gIdx, { op: group.op === "and" ? "or" : "and" })}
+										/>
+									))}
+									<button
+										type="button"
+										onClick={() => addCondition(gIdx)}
+										className="text-(--color-primary) text-xs hover:underline"
+									>
+										+ Add condition
+									</button>
+								</div>
+								{gIdx < skipIf.groups.length - 1 && (
+									<div className="flex justify-center py-1">
+										<button
+											type="button"
+											onClick={() => onChange({ ...skipIf, groups_op: skipIf.groups_op === "and" ? "or" : "and" })}
+											className="rounded-full border border-(--color-border) bg-(--color-surface) px-3 py-0.5 font-semibold text-(--color-primary) text-xs uppercase hover:bg-(--color-backgroundMuted)"
+										>
+											{skipIf.groups_op}
+										</button>
+									</div>
+								)}
+							</div>
 						))}
 					</div>
-
-					<div className="flex gap-2">
-						{selectedField && selectedField.options.length > 0 ? (
-							<select
-								value=""
-								onChange={(e) => e.target.value && addValue(e.target.value)}
-								className={`${inputCls} flex-1`}
-							>
-								<option value="">Add a value…</option>
-								{selectedField.options
-									.filter((o) => !skipIf.one_of.includes(o))
-									.map((o) => (
-										<option key={o} value={o}>
-											{o}
-										</option>
-									))}
-							</select>
-						) : (
-							<>
-								<input
-									type="text"
-									placeholder="Add value…"
-									value={newValue}
-									onChange={(e) => setNewValue(e.target.value)}
-									onKeyDown={(e) => e.key === "Enter" && addValue(newValue)}
-									className={`${inputCls} flex-1`}
-								/>
-								<button
-									type="button"
-									onClick={() => addValue(newValue)}
-									className="rounded-md border border-(--color-border) px-3 py-1.5 text-(--color-text) text-sm hover:bg-(--color-backgroundMuted)"
-								>
-									Add
-								</button>
-							</>
-						)}
-					</div>
-				</div>
-			) : (
-				<p className="text-(--color-textMuted) text-sm">No conditional skip rule. This step always shows.</p>
+					{skipIf.groups.length > 1 && (
+						<p className="mt-2 text-(--color-textMuted) text-xs">
+							Groups are combined with <strong>{skipIf.groups_op.toUpperCase()}</strong>. Click the badge between groups
+							to toggle.
+						</p>
+					)}
+				</>
 			)}
 		</div>
 	)
 }
 
-// ── Main page ─────────────────────────────────────────────────────────────────
+// ── Constants ─────────────────────────────────────────────────────────────────
 
 const TYPE_LABELS: Record<QuestionType, string> = {
-	Text: "Text",
-	RadioGroup: "Radio Group",
-	CheckboxGroup: "Checkbox Group",
-	Select: "Select",
-	TextField: "Text Field",
+	Text: "Content block",
+	RadioGroup: "Single choice",
+	CheckboxGroup: "Multiple choice",
+	Select: "Dropdown",
+	TextField: "Short answer",
 }
+
+const QUESTION_INTENTS: Array<{ type: QuestionType; label: string; description: string }> = [
+	{ type: "TextField", label: "Short answer", description: "A single line — name, email, or a brief response" },
+	{ type: "RadioGroup", label: "Single choice", description: "Respondent picks exactly one option from a list" },
+	{ type: "CheckboxGroup", label: "Multiple choice", description: "Respondent selects all options that apply" },
+	{ type: "Select", label: "Dropdown", description: "Pick from a long list using a dropdown menu" },
+	{ type: "Text", label: "Content block", description: "A heading, paragraph, or instruction" },
+]
+
+// ── Main page ─────────────────────────────────────────────────────────────────
 
 export default function StepEditorPage() {
 	const { id: surveyId, stepId } = useParams<{ id: string; stepId: string }>()
@@ -648,31 +923,54 @@ export default function StepEditorPage() {
 	const [allSteps, setAllSteps] = useState<Step[]>([])
 	const [questions, setQuestions] = useState<Question[]>([])
 	const [selectedIdx, setSelectedIdx] = useState<number | null>(null)
-	const [skipIf, setSkipIf] = useState<SkipIf | null>(null)
+	const [skipIf, setSkipIf] = useState<EditorSkipIf | null>(null)
 	const [slug, setSlug] = useState("")
 	const [title, setTitle] = useState("")
+	const [surveyTheme, setSurveyTheme] = useState<Record<string, string>>({})
 	const [loading, setLoading] = useState(true)
 	const [saving, setSaving] = useState(false)
 	const [error, setError] = useState<string | null>(null)
 	const [showJson, setShowJson] = useState(false)
+	const [showPicker, setShowPicker] = useState(false)
+	const [, setPreviewValues] = useState<Record<string, string>>({})
+
+	const pickerRef = useRef<HTMLDivElement>(null)
 
 	useEffect(() => {
 		adminApi
 			.getSurvey(surveyId)
 			.then((survey) => {
 				setAllSteps(survey.steps)
+				setSurveyTheme(survey.theme ?? {})
 				const s = survey.steps.find((st) => st.id === stepId)
 				if (!s) return
 				setStep(s)
 				setSlug(s.slug)
 				setTitle(s.title)
-				setSkipIf(s.skip_if)
+				setSkipIf(normalizeSkipIf(s.skip_if))
 				setQuestions(extractQuestions(s.nodes))
 				if (survey.steps.length > 0) setSelectedIdx(0)
 			})
 			.catch((e: unknown) => setError(e instanceof Error ? e.message : "Failed to load"))
 			.finally(() => setLoading(false))
 	}, [surveyId, stepId])
+
+	// Close picker on outside click or Escape
+	useEffect(() => {
+		if (!showPicker) return
+		function onDown(e: MouseEvent) {
+			if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) setShowPicker(false)
+		}
+		function onKey(e: KeyboardEvent) {
+			if (e.key === "Escape") setShowPicker(false)
+		}
+		document.addEventListener("mousedown", onDown)
+		document.addEventListener("keydown", onKey)
+		return () => {
+			document.removeEventListener("mousedown", onDown)
+			document.removeEventListener("keydown", onKey)
+		}
+	}, [showPicker])
 
 	function addQuestion(type: QuestionType) {
 		const q: Question = {
@@ -709,6 +1007,12 @@ export default function StepEditorPage() {
 
 	async function handleSave() {
 		if (!step) return
+		// Block save if any question has errors
+		const anyInvalid = questions.some((q) => Object.keys(validateQuestion(q)).length > 0)
+		if (anyInvalid) {
+			setError("Fix validation errors before saving.")
+			return
+		}
 		setSaving(true)
 		setError(null)
 		try {
@@ -717,7 +1021,7 @@ export default function StepEditorPage() {
 				slug,
 				title,
 				nodes,
-				skip_if: skipIf ?? undefined,
+				skip_if: toApiSkipIf(skipIf) ?? undefined,
 				clear_skip_if: skipIf === null,
 			})
 			router.push(`/admin/surveys/${surveyId}`)
@@ -727,7 +1031,6 @@ export default function StepEditorPage() {
 		}
 	}
 
-	// Build field options for the flow rule editor from previous steps' questions
 	const currentIdx = allSteps.findIndex((s) => s.id === stepId)
 	const prevStepNames = allSteps
 		.slice(0, currentIdx)
@@ -736,6 +1039,18 @@ export default function StepEditorPage() {
 		.map((q) => ({ name: q.name, options: q.options ?? q.items?.map((i) => i.value) ?? [] }))
 
 	const builtNodes = step ? buildNodes(questions, slug, allSteps, step) : []
+
+	// Preview interactivity
+	const labelToName = useMemo(() => buildLabelToNameMap(builtNodes), [builtNodes])
+	const setValue = useCallback(
+		(label: string, value: string) => {
+			const key = labelToName[label] ?? label
+			setPreviewValues((prev) => ({ ...prev, [key]: value }))
+		},
+		[labelToName],
+	)
+
+	const themeVars = Object.fromEntries(Object.entries(surveyTheme).filter(([k]) => k.startsWith("--"))) as CSSProperties
 
 	if (loading) return <p className="text-(--color-textMuted) text-sm">Loading…</p>
 	if (!step) return <p className="text-(--color-danger) text-sm">Step not found.</p>
@@ -749,7 +1064,7 @@ export default function StepEditorPage() {
 				</Link>
 				<span>/</span>
 				<Link href={`/admin/surveys/${surveyId}`} className="hover:text-(--color-text)">
-					{allSteps[0]?.survey_id ? "Survey" : "Survey"}
+					Survey
 				</Link>
 				<span>/</span>
 				<span className="text-(--color-text)">{step.title}</span>
@@ -766,7 +1081,7 @@ export default function StepEditorPage() {
 						type="text"
 						value={title}
 						onChange={(e) => setTitle(e.target.value)}
-						className="w-full rounded-md border border-(--color-border) bg-(--color-background) px-3 py-2 text-(--color-text) text-sm focus:outline-none focus:ring-(--color-primary) focus:ring-2"
+						className="w-full rounded-md border border-(--color-border) bg-(--color-background) px-3 py-2 text-(--color-text) text-sm focus:outline-none focus:ring-2 focus:ring-(--color-primary)"
 					/>
 				</div>
 				<div>
@@ -778,7 +1093,7 @@ export default function StepEditorPage() {
 						type="text"
 						value={slug}
 						onChange={(e) => setSlug(e.target.value)}
-						className="w-full rounded-md border border-(--color-border) bg-(--color-background) px-3 py-2 text-(--color-text) text-sm focus:outline-none focus:ring-(--color-primary) focus:ring-2"
+						className="w-full rounded-md border border-(--color-border) bg-(--color-background) px-3 py-2 text-(--color-text) text-sm focus:outline-none focus:ring-2 focus:ring-(--color-primary)"
 					/>
 				</div>
 			</div>
@@ -789,139 +1104,204 @@ export default function StepEditorPage() {
 				</div>
 			)}
 
-			{/* Question builder */}
-			<div className="mb-6 grid grid-cols-5 gap-4">
-				{/* Left: question list */}
-				<div className="col-span-2 space-y-2">
-					<div className="flex items-center justify-between">
-						<h2 className="font-semibold text-(--color-text) text-sm">Questions</h2>
-						<div className="flex gap-1">
-							{(["Text", "RadioGroup", "CheckboxGroup", "Select", "TextField"] as QuestionType[]).map((t) => (
-								<button
-									key={t}
-									type="button"
-									title={`Add ${TYPE_LABELS[t]}`}
-									onClick={() => addQuestion(t)}
-									className="rounded border border-(--color-border) px-2 py-1 text-(--color-textMuted) text-xs hover:bg-(--color-backgroundMuted) hover:text-(--color-text)"
-								>
-									+{t.replace("Group", "").slice(0, 3)}
-								</button>
-							))}
+			{/* Main editor + preview */}
+			<div className="mb-6 grid grid-cols-[minmax(0,1fr)_320px] gap-6">
+				{/* Left: question builder */}
+				<div className="space-y-4">
+					{/* Question list + form */}
+					<div className="grid grid-cols-[200px_1fr] gap-4">
+						{/* Question list */}
+						<div className="space-y-2">
+							<div className="flex items-center justify-between">
+								<h2 className="font-semibold text-(--color-text) text-sm">Questions</h2>
+								{/* Floating picker anchor */}
+								<div className="relative" ref={pickerRef}>
+									<button
+										type="button"
+										onClick={() => setShowPicker((v) => !v)}
+										className={`rounded-md border px-2.5 py-1 text-xs transition-colors ${
+											showPicker
+												? "border-(--color-primary) bg-(--color-backgroundMuted) text-(--color-primary)"
+												: "border-(--color-border) text-(--color-textMuted) hover:bg-(--color-backgroundMuted) hover:text-(--color-text)"
+										}`}
+									>
+										+ Add
+									</button>
+									{showPicker && (
+										<div className="absolute right-0 top-full z-50 mt-1 w-64 rounded-lg border border-(--color-border) bg-(--color-surface) p-2 shadow-lg">
+											<p className="mb-1.5 px-1 font-medium text-(--color-textMuted) text-xs">What kind of question?</p>
+											<div className="flex flex-col gap-1">
+												{QUESTION_INTENTS.map((intent) => (
+													<button
+														key={intent.type}
+														type="button"
+														onClick={() => {
+															addQuestion(intent.type)
+															setShowPicker(false)
+														}}
+														className="flex flex-col items-start rounded-md px-2.5 py-2 text-left transition-colors hover:bg-(--color-backgroundMuted)"
+													>
+														<span className="font-medium text-(--color-text) text-sm">{intent.label}</span>
+														<span className="text-(--color-textMuted) text-xs leading-snug">{intent.description}</span>
+													</button>
+												))}
+											</div>
+										</div>
+									)}
+								</div>
+							</div>
+
+							{questions.length === 0 ? (
+								<p className="rounded-lg border border-(--color-border) border-dashed p-3 text-center text-(--color-textMuted) text-xs">
+									No questions yet.
+								</p>
+							) : (
+								questions.map((q, idx) => {
+									const qErrors = validateQuestion(q)
+									const hasError = Object.keys(qErrors).length > 0
+									return (
+										<div
+											key={q._id}
+											className={`rounded-lg border p-2.5 ${
+												selectedIdx === idx
+													? "border-(--color-primary) bg-(--color-backgroundMuted)"
+													: hasError
+														? "border-(--color-danger) bg-(--color-surface)"
+														: "border-(--color-border) bg-(--color-surface)"
+											}`}
+										>
+											<div className="flex items-center gap-1.5">
+												<button
+													type="button"
+													onClick={() => setSelectedIdx(idx)}
+													className="min-w-0 flex-1 truncate text-left"
+												>
+													<span
+														className={`text-xs ${hasError ? "text-(--color-danger)" : "text-(--color-textMuted)"}`}
+													>
+														{TYPE_LABELS[q.type]}
+													</span>
+													{(q.label ?? q.content) && (
+														<>
+															{" "}
+															<span className="font-medium text-(--color-text) text-xs">{q.label ?? q.content}</span>
+														</>
+													)}
+												</button>
+												<div className="flex shrink-0 gap-0.5">
+													<button
+														type="button"
+														onClick={(e) => {
+															e.stopPropagation()
+															moveQuestion(idx, -1)
+														}}
+														disabled={idx === 0}
+														className="text-(--color-textMuted) hover:text-(--color-text) disabled:opacity-30"
+														title="Move up"
+													>
+														↑
+													</button>
+													<button
+														type="button"
+														onClick={(e) => {
+															e.stopPropagation()
+															moveQuestion(idx, 1)
+														}}
+														disabled={idx === questions.length - 1}
+														className="text-(--color-textMuted) hover:text-(--color-text) disabled:opacity-30"
+														title="Move down"
+													>
+														↓
+													</button>
+													<button
+														type="button"
+														onClick={(e) => {
+															e.stopPropagation()
+															removeQuestion(idx)
+														}}
+														className="text-(--color-danger) hover:text-(--color-dangerHover)"
+														title="Remove"
+													>
+														×
+													</button>
+												</div>
+											</div>
+										</div>
+									)
+								})
+							)}
+						</div>
+
+						{/* Question form */}
+						<div>
+							{selectedIdx !== null && questions[selectedIdx] ? (
+								<div className="rounded-lg border border-(--color-border) bg-(--color-surface) p-4">
+									<h3 className="mb-4 font-semibold text-(--color-text) text-sm">
+										{TYPE_LABELS[questions[selectedIdx].type]}
+									</h3>
+									<QuestionForm
+										q={questions[selectedIdx]}
+										errors={validateQuestion(questions[selectedIdx])}
+										onChange={(updated) => {
+											setQuestions((qs) => qs.map((q, i) => (i === selectedIdx ? updated : q)))
+										}}
+									/>
+								</div>
+							) : (
+								<div className="flex h-full items-center justify-center rounded-lg border border-(--color-border) border-dashed p-8 text-(--color-textMuted) text-sm">
+									Select a question to edit it.
+								</div>
+							)}
 						</div>
 					</div>
 
-					{questions.length === 0 ? (
-						<p className="rounded-lg border border-(--color-border) border-dashed p-4 text-center text-(--color-textMuted) text-sm">
-							No questions. Use + buttons above to add.
-						</p>
-					) : (
-						questions.map((q, idx) => (
-							<div
-								key={q._id}
-								className={`rounded-lg border p-3 ${
-									selectedIdx === idx
-										? "border-(--color-primary) bg-(--color-backgroundMuted)"
-										: "border-(--color-border) bg-(--color-surface)"
-								}`}
+					{/* Skip rule editor */}
+					<FlowRuleEditor skipIf={skipIf} onChange={setSkipIf} prevStepNames={prevStepNames} />
+
+					{/* JSON debug */}
+					<div>
+						<button
+							type="button"
+							onClick={() => setShowJson((v) => !v)}
+							className="text-(--color-primary) text-sm hover:underline"
+						>
+							{showJson ? "Hide" : "Show"} A2UI JSON
+						</button>
+						{showJson && (
+							<pre className="mt-2 overflow-auto rounded-lg border border-(--color-border) bg-(--color-backgroundMuted) p-4 text-(--color-text) text-xs">
+								{JSON.stringify(builtNodes, null, 2)}
+							</pre>
+						)}
+					</div>
+				</div>
+
+				{/* Right: live preview */}
+				<div className="sticky top-4 self-start">
+					<div className="rounded-lg border border-(--color-border) overflow-hidden">
+						<div className="flex items-center justify-between border-b border-(--color-border) px-3 py-2">
+							<span className="font-medium text-(--color-textMuted) text-xs">Preview</span>
+							<button
+								type="button"
+								onClick={() => setPreviewValues({})}
+								className="text-(--color-textMuted) text-xs hover:text-(--color-text)"
 							>
-								<div className="flex items-center gap-2">
-									<button
-										type="button"
-										onClick={() => setSelectedIdx(idx)}
-										className="flex-1 truncate text-left text-(--color-text) text-sm hover:text-(--color-primary)"
-									>
-										<span className="text-(--color-textMuted) text-xs">{TYPE_LABELS[q.type]}</span>
-										{(q.label ?? q.content) && (
-											<>
-												{" "}
-												<span className="font-medium">{q.label ?? q.content}</span>
-											</>
-										)}
-									</button>
-									<div className="flex shrink-0 gap-1">
-										<button
-											type="button"
-											onClick={(e) => {
-												e.stopPropagation()
-												moveQuestion(idx, -1)
-											}}
-											disabled={idx === 0}
-											className="text-(--color-textMuted) hover:text-(--color-text) disabled:opacity-30"
-											title="Move up"
-										>
-											↑
-										</button>
-										<button
-											type="button"
-											onClick={(e) => {
-												e.stopPropagation()
-												moveQuestion(idx, 1)
-											}}
-											disabled={idx === questions.length - 1}
-											className="text-(--color-textMuted) hover:text-(--color-text) disabled:opacity-30"
-											title="Move down"
-										>
-											↓
-										</button>
-										<button
-											type="button"
-											onClick={(e) => {
-												e.stopPropagation()
-												removeQuestion(idx)
-											}}
-											className="text-(--color-danger) hover:text-(--color-dangerHover)"
-											title="Remove"
-										>
-											×
-										</button>
-									</div>
-								</div>
-							</div>
-						))
-					)}
-				</div>
-
-				{/* Right: question form */}
-				<div className="col-span-3">
-					{selectedIdx !== null && questions[selectedIdx] ? (
-						<div className="rounded-lg border border-(--color-border) bg-(--color-surface) p-4">
-							<h3 className="mb-4 font-semibold text-(--color-text) text-sm">
-								Edit {TYPE_LABELS[questions[selectedIdx].type]}
-							</h3>
-							<QuestionForm
-								q={questions[selectedIdx]}
-								onChange={(updated) => {
-									setQuestions((qs) => qs.map((q, i) => (i === selectedIdx ? updated : q)))
-								}}
-							/>
+								Reset
+							</button>
 						</div>
-					) : (
-						<div className="flex h-full items-center justify-center rounded-lg border border-(--color-border) border-dashed p-8 text-(--color-textMuted) text-sm">
-							Select a question to edit it.
+						<div
+							style={{ ...themeVars, fontFamily: "var(--font-family, inherit)" } as CSSProperties}
+							className="bg-(--color-background) p-3"
+						>
+							{builtNodes.length > 0 ? (
+								<FormStateContext.Provider value={{ setValue }}>
+									<A2UIBlock nodes={builtNodes} onAction={() => setPreviewValues({})} />
+								</FormStateContext.Provider>
+							) : (
+								<p className="py-8 text-center text-(--color-textMuted) text-xs">Add questions to see a preview.</p>
+							)}
 						</div>
-					)}
+					</div>
 				</div>
-			</div>
-
-			{/* Flow rule editor */}
-			<div className="mb-6">
-				<FlowRuleEditor skipIf={skipIf} onChange={setSkipIf} prevStepNames={prevStepNames} />
-			</div>
-
-			{/* JSON preview */}
-			<div className="mb-6">
-				<button
-					type="button"
-					onClick={() => setShowJson((v) => !v)}
-					className="text-(--color-primary) text-sm hover:underline"
-				>
-					{showJson ? "Hide" : "Show"} A2UI JSON preview
-				</button>
-				{showJson && (
-					<pre className="mt-2 overflow-auto rounded-lg border border-(--color-border) bg-(--color-backgroundMuted) p-4 text-(--color-text) text-xs">
-						{JSON.stringify(builtNodes, null, 2)}
-					</pre>
-				)}
 			</div>
 
 			{/* Actions */}

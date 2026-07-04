@@ -104,7 +104,10 @@ export default function Survey() {
 
 	return (
 		<div
-			style={Object.fromEntries(Object.entries(theme).filter(([k]) => k.startsWith("--"))) as CSSProperties}
+			style={{
+				...(Object.fromEntries(Object.entries(theme).filter(([k]) => k.startsWith("--"))) as CSSProperties),
+				fontFamily: "var(--font-family, inherit)",
+			}}
 			className="flex flex-col gap-4"
 		>
 			{!isDone && !isWelcome && (

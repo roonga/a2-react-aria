@@ -52,7 +52,12 @@ app = FastAPI(title="survey-agent", version="0.2.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3001", "http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3001",   # Docker web container
+        "http://localhost:3002",   # local pnpm dev:local (hot-reload dev server)
+        "http://127.0.0.1:3001",
+        "http://127.0.0.1:3002",
+    ],
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
