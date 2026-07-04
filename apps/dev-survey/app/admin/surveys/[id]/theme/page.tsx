@@ -8,8 +8,17 @@ import { adminApi } from "@/hooks/useAdminData"
 type Base = "light" | "dark"
 type Font =
 	| "system"
-	| "inter" | "roboto" | "poppins" | "montserrat" | "dm-sans" | "nunito"
-	| "atkinson" | "lexend" | "open-sans" | "source-sans" | "lato"
+	| "inter"
+	| "roboto"
+	| "poppins"
+	| "montserrat"
+	| "dm-sans"
+	| "nunito"
+	| "atkinson"
+	| "lexend"
+	| "open-sans"
+	| "source-sans"
+	| "lato"
 	| "lora"
 	| "jetbrains-mono"
 type Radius = "none" | "sm" | "md" | "lg" | "full"
@@ -22,19 +31,19 @@ interface ThemeConfig {
 }
 
 const FONT_FAMILIES: Record<Font, string> = {
-	"system":         "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-	"inter":          "var(--font-inter)",
-	"roboto":         "var(--font-roboto)",
-	"poppins":        "var(--font-poppins)",
-	"montserrat":     "var(--font-montserrat)",
-	"dm-sans":        "var(--font-dm-sans)",
-	"nunito":         "var(--font-nunito)",
-	"atkinson":       "var(--font-atkinson)",
-	"lexend":         "var(--font-lexend)",
-	"open-sans":      "var(--font-open-sans)",
-	"source-sans":    "var(--font-source-sans)",
-	"lato":           "var(--font-lato)",
-	"lora":           "var(--font-lora)",
+	system: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+	inter: "var(--font-inter)",
+	roboto: "var(--font-roboto)",
+	poppins: "var(--font-poppins)",
+	montserrat: "var(--font-montserrat)",
+	"dm-sans": "var(--font-dm-sans)",
+	nunito: "var(--font-nunito)",
+	atkinson: "var(--font-atkinson)",
+	lexend: "var(--font-lexend)",
+	"open-sans": "var(--font-open-sans)",
+	"source-sans": "var(--font-source-sans)",
+	lato: "var(--font-lato)",
+	lora: "var(--font-lora)",
 	"jetbrains-mono": "var(--font-jetbrains-mono)",
 }
 
@@ -47,36 +56,39 @@ const FONT_GROUPS: Array<{ group: string; fonts: Font[] }> = [
 ]
 
 const FONT_LABELS: Record<Font, string> = {
-	"system":         "System (OS default)",
-	"inter":          "Inter",
-	"roboto":         "Roboto",
-	"poppins":        "Poppins",
-	"montserrat":     "Montserrat",
-	"dm-sans":        "DM Sans",
-	"nunito":         "Nunito",
-	"atkinson":       "Atkinson Hyperlegible",
-	"lexend":         "Lexend",
-	"open-sans":      "Open Sans",
-	"source-sans":    "Source Sans 3",
-	"lato":           "Lato",
-	"lora":           "Lora",
+	system: "System (OS default)",
+	inter: "Inter",
+	roboto: "Roboto",
+	poppins: "Poppins",
+	montserrat: "Montserrat",
+	"dm-sans": "DM Sans",
+	nunito: "Nunito",
+	atkinson: "Atkinson Hyperlegible",
+	lexend: "Lexend",
+	"open-sans": "Open Sans",
+	"source-sans": "Source Sans 3",
+	lato: "Lato",
+	lora: "Lora",
 	"jetbrains-mono": "JetBrains Mono",
 }
 
 const FONT_DESCRIPTIONS: Record<Font, string> = {
-	"system":         "Uses the operating system's native font: SF Pro on Apple devices, Roboto on Android, Segoe UI on Windows. Feels native on every platform.",
-	"inter":          "Optimised for screens. High x-height and wide spacing make it highly legible at small sizes.",
-	"roboto":         "Google's flagship font. Geometric with open curves — the most widely deployed font on the web.",
-	"poppins":        "Circular geometric sans. Modern and clean, popular for contemporary product and form UI.",
-	"montserrat":     "Urban geometry inspired by old Buenos Aires signage. Strong presence, suits structured surveys.",
-	"dm-sans":        "Low-contrast geometric sans designed for small sizes. Neutral and clean with good legibility.",
-	"nunito":         "Balanced rounded terminals give it a friendly, approachable character. Welcoming for survey respondents.",
-	"atkinson":       "Designed by the Braille Institute for low-vision readers. Each character is distinctly shaped to minimise confusion.",
-	"lexend":         "Research-backed to reduce visual stress and improve reading speed for a wide range of readers.",
-	"open-sans":      "Humanist letterforms with generous spacing. One of the most widely tested fonts for on-screen readability.",
-	"source-sans":    "Adobe's open-source workhorse. Clean and neutral with excellent legibility across weights.",
-	"lato":           "Warm humanist sans-serif. Semi-rounded details give it a friendly, approachable feel.",
-	"lora":           "Contemporary serif with calligraphic roots. Designed for comfortable on-screen body reading — not a display font.",
+	system:
+		"Uses the operating system's native font: SF Pro on Apple devices, Roboto on Android, Segoe UI on Windows. Feels native on every platform.",
+	inter: "Optimised for screens. High x-height and wide spacing make it highly legible at small sizes.",
+	roboto: "Google's flagship font. Geometric with open curves — the most widely deployed font on the web.",
+	poppins: "Circular geometric sans. Modern and clean, popular for contemporary product and form UI.",
+	montserrat: "Urban geometry inspired by old Buenos Aires signage. Strong presence, suits structured surveys.",
+	"dm-sans": "Low-contrast geometric sans designed for small sizes. Neutral and clean with good legibility.",
+	nunito: "Balanced rounded terminals give it a friendly, approachable character. Welcoming for survey respondents.",
+	atkinson:
+		"Designed by the Braille Institute for low-vision readers. Each character is distinctly shaped to minimise confusion.",
+	lexend: "Research-backed to reduce visual stress and improve reading speed for a wide range of readers.",
+	"open-sans":
+		"Humanist letterforms with generous spacing. One of the most widely tested fonts for on-screen readability.",
+	"source-sans": "Adobe's open-source workhorse. Clean and neutral with excellent legibility across weights.",
+	lato: "Warm humanist sans-serif. Semi-rounded details give it a friendly, approachable feel.",
+	lora: "Contemporary serif with calligraphic roots. Designed for comfortable on-screen body reading — not a display font.",
 	"jetbrains-mono": "Equal-width characters with ligatures. Ideal for technical or developer-focused surveys.",
 }
 
@@ -97,14 +109,14 @@ const RADIUS_LABELS: Record<Radius, string> = {
 }
 
 const PRESETS: Array<{ name: string } & ThemeConfig> = [
-	{ name: "Default",    accent: "#2563eb", base: "light", font: "inter",          radius: "md" },
-	{ name: "Accessible", accent: "#0369a1", base: "light", font: "atkinson",       radius: "md" },
-	{ name: "Ocean",      accent: "#0891b2", base: "light", font: "lexend",         radius: "lg" },
-	{ name: "Forest",     accent: "#16a34a", base: "light", font: "open-sans",      radius: "md" },
-	{ name: "Sunset",     accent: "#ea580c", base: "light", font: "lato",           radius: "sm" },
-	{ name: "Rose",       accent: "#e11d48", base: "light", font: "lora",           radius: "full" },
-	{ name: "Midnight",   accent: "#818cf8", base: "dark",  font: "source-sans",    radius: "md" },
-	{ name: "Terminal",   accent: "#22c55e", base: "dark",  font: "jetbrains-mono", radius: "none" },
+	{ name: "Default", accent: "#2563eb", base: "light", font: "inter", radius: "md" },
+	{ name: "Accessible", accent: "#0369a1", base: "light", font: "atkinson", radius: "md" },
+	{ name: "Ocean", accent: "#0891b2", base: "light", font: "lexend", radius: "lg" },
+	{ name: "Forest", accent: "#16a34a", base: "light", font: "open-sans", radius: "md" },
+	{ name: "Sunset", accent: "#ea580c", base: "light", font: "lato", radius: "sm" },
+	{ name: "Rose", accent: "#e11d48", base: "light", font: "lora", radius: "full" },
+	{ name: "Midnight", accent: "#818cf8", base: "dark", font: "source-sans", radius: "md" },
+	{ name: "Terminal", accent: "#22c55e", base: "dark", font: "jetbrains-mono", radius: "none" },
 ]
 
 const DEFAULT_CONFIG: ThemeConfig = { accent: "#2563eb", base: "light", font: "inter", radius: "md" }
@@ -286,7 +298,7 @@ export default function ThemePage() {
 				<div className="space-y-6 rounded-lg border border-(--color-border) bg-(--color-surface) p-5">
 					{/* Brand color */}
 					<div>
-						<label className="mb-2 block font-medium text-(--color-text) text-sm">Brand color</label>
+						<p className="mb-2 block font-medium text-(--color-text) text-sm">Brand color</p>
 						<div className="flex items-center gap-3">
 							<input
 								type="color"
@@ -312,7 +324,7 @@ export default function ThemePage() {
 
 					{/* Appearance toggle */}
 					<div>
-						<label className="mb-2 block font-medium text-(--color-text) text-sm">Appearance</label>
+						<p className="mb-2 block font-medium text-(--color-text) text-sm">Appearance</p>
 						<button
 							type="button"
 							role="switch"
@@ -365,7 +377,8 @@ export default function ThemePage() {
 						</select>
 						{config.font === "system" ? (
 							<p className="mt-1.5 rounded-md border border-(--color-border) bg-(--color-backgroundMuted) px-3 py-2 text-(--color-textMuted) text-xs leading-relaxed">
-								Uses the OS native font: SF Pro on Apple, Roboto on Android, Segoe UI on Windows. The preview reflects your browser — respondents will see their platform default.
+								Uses the OS native font: SF Pro on Apple, Roboto on Android, Segoe UI on Windows. The preview reflects
+								your browser — respondents will see their platform default.
 							</p>
 						) : (
 							<p className="mt-1.5 text-(--color-textMuted) text-xs leading-relaxed">
@@ -376,7 +389,7 @@ export default function ThemePage() {
 
 					{/* Corners */}
 					<div>
-						<label className="mb-2 block font-medium text-(--color-text) text-sm">Corners</label>
+						<p className="mb-2 block font-medium text-(--color-text) text-sm">Corners</p>
 						<div className="flex flex-col divide-y divide-(--color-border) overflow-hidden rounded-md border border-(--color-border)">
 							{(Object.entries(RADIUS_LABELS) as [Radius, string][]).map(([key, label]) => {
 								const svgRadius: Record<Radius, string> = {
@@ -403,7 +416,10 @@ export default function ThemePage() {
 									>
 										<svg width="18" height="18" viewBox="0 0 36 36" aria-hidden="true" className="shrink-0">
 											<rect
-												x="2" y="2" width="32" height="32"
+												x="2"
+												y="2"
+												width="32"
+												height="32"
 												rx={svgRadius[key]}
 												fill="currentColor"
 												opacity={active ? 0.25 : 0.12}
@@ -413,8 +429,21 @@ export default function ThemePage() {
 										</svg>
 										<span className="flex-1 text-left">{label}</span>
 										{active && (
-											<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" className="shrink-0 text-(--color-primary)">
-												<path d="M2 7l3.5 3.5L12 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+											<svg
+												width="14"
+												height="14"
+												viewBox="0 0 14 14"
+												aria-hidden="true"
+												className="shrink-0 text-(--color-primary)"
+											>
+												<path
+													d="M2 7l3.5 3.5L12 3"
+													stroke="currentColor"
+													strokeWidth="2"
+													strokeLinecap="round"
+													strokeLinejoin="round"
+													fill="none"
+												/>
 											</svg>
 										)}
 									</button>
@@ -526,7 +555,14 @@ export default function ThemePage() {
 												>
 													{checked && (
 														<svg width="9" height="9" viewBox="0 0 9 9" aria-hidden="true">
-															<path d="M1.5 4.5l2 2 4-4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+															<path
+																d="M1.5 4.5l2 2 4-4"
+																stroke="white"
+																strokeWidth="1.5"
+																strokeLinecap="round"
+																strokeLinejoin="round"
+																fill="none"
+															/>
 														</svg>
 													)}
 												</div>

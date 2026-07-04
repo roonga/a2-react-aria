@@ -49,9 +49,7 @@ function evaluateSkip(step: PreviewStep, answers: Record<string, string>): boole
 		}
 		const evalGroup = (g: SkipGroup): boolean =>
 			g.op === "and" ? g.conditions.every(evalCond) : g.conditions.some(evalCond)
-		return skipIf.groups_op === "and"
-			? skipIf.groups.every(evalGroup)
-			: skipIf.groups.some(evalGroup)
+		return skipIf.groups_op === "and" ? skipIf.groups.every(evalGroup) : skipIf.groups.some(evalGroup)
 	}
 	return false
 }
@@ -155,7 +153,9 @@ export default function PreviewPage() {
 
 			<div
 				style={{
-					...(Object.fromEntries(Object.entries(survey.theme ?? {}).filter(([k]) => k.startsWith("--"))) as CSSProperties),
+					...(Object.fromEntries(
+						Object.entries(survey.theme ?? {}).filter(([k]) => k.startsWith("--")),
+					) as CSSProperties),
 					fontFamily: "var(--font-family, inherit)",
 				}}
 				className="mx-auto max-w-2xl"

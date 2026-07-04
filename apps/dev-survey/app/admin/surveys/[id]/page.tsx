@@ -280,7 +280,6 @@ export default function SurveyDetailPage() {
 					))}
 				</ul>
 			)}
-
 		</div>
 	)
 }

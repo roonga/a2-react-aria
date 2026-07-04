@@ -5,21 +5,67 @@ import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import A2UIBlock from "@/components/A2UIBlock"
-import { adminApi, type SkipCondition, type SkipGroup, type SkipIf, type Step } from "@/hooks/useAdminData"
+import { adminApi, type SkipIf, type Step } from "@/hooks/useAdminData"
+
+// ── Skip-rule editor types (extend API types with stable _id for React keys) ──
+
+interface EditorCondition {
+	_id: string
+	field: string
+	values: string[]
+}
+
+interface EditorGroup {
+	_id: string
+	op: "and" | "or"
+	conditions: EditorCondition[]
+}
+
+interface EditorSkipIf {
+	groups_op: "and" | "or"
+	groups: EditorGroup[]
+}
+
+function toApiSkipIf(e: EditorSkipIf | null): SkipIf | null {
+	if (!e) return null
+	return {
+		groups_op: e.groups_op,
+		groups: e.groups.map((g) => ({
+			op: g.op,
+			conditions: g.conditions.map((c) => ({ field: c.field, values: c.values })),
+		})),
+	}
+}
 
 // ── Skip-rule backward compat ─────────────────────────────────────────────────
 
-function normalizeSkipIf(raw: unknown): SkipIf | null {
+function normalizeSkipIf(raw: unknown): EditorSkipIf | null {
 	if (!raw || typeof raw !== "object") return null
 	const r = raw as Record<string, unknown>
 	// Old format: { field: string, one_of: string[] }
 	if (typeof r.field === "string" && Array.isArray(r.one_of)) {
 		return {
 			groups_op: "or",
-			groups: [{ op: "or", conditions: [{ field: r.field, values: r.one_of as string[] }] }],
+			groups: [
+				{
+					_id: uid(),
+					op: "or",
+					conditions: [{ _id: uid(), field: r.field, values: r.one_of as string[] }],
+				},
+			],
 		}
 	}
-	if (typeof r.groups_op === "string" && Array.isArray(r.groups)) return raw as SkipIf
+	if (typeof r.groups_op === "string" && Array.isArray(r.groups)) {
+		const si = raw as SkipIf
+		return {
+			groups_op: si.groups_op,
+			groups: si.groups.map((g) => ({
+				_id: uid(),
+				op: g.op,
+				conditions: g.conditions.map((c) => ({ _id: uid(), field: c.field, values: c.values })),
+			})),
+		}
+	}
 	return null
 }
 
@@ -579,10 +625,10 @@ function ConditionRow({
 	groupOp,
 	onToggleGroupOp,
 }: {
-	cond: SkipCondition
+	cond: EditorCondition
 	prevStepNames: Array<{ name: string; options: string[] }>
 	inputCls: string
-	onUpdate: (patch: Partial<SkipCondition>) => void
+	onUpdate: (patch: Partial<EditorCondition>) => void
 	onRemove: () => void
 	onAddValue: (v: string) => void
 	onRemoveValue: (v: string) => void
@@ -703,15 +749,15 @@ function FlowRuleEditor({
 	onChange,
 	prevStepNames,
 }: {
-	skipIf: SkipIf | null
-	onChange: (rule: SkipIf | null) => void
+	skipIf: EditorSkipIf | null
+	onChange: (rule: EditorSkipIf | null) => void
 	prevStepNames: Array<{ name: string; options: string[] }>
 }) {
 	const inputCls =
 		"rounded-md border border-(--color-border) bg-(--color-background) px-3 py-1.5 text-(--color-text) text-sm focus:outline-none focus:ring-2 focus:ring-(--color-primary)"
 
 	function addGroup() {
-		const newGroup: SkipGroup = { op: "and", conditions: [{ field: "", values: [] }] }
+		const newGroup: EditorGroup = { _id: uid(), op: "and", conditions: [{ _id: uid(), field: "", values: [] }] }
 		onChange(skipIf ? { ...skipIf, groups: [...skipIf.groups, newGroup] } : { groups_op: "or", groups: [newGroup] })
 	}
 
@@ -721,7 +767,7 @@ function FlowRuleEditor({
 		onChange(groups.length > 0 ? { ...skipIf, groups } : null)
 	}
 
-	function updateGroup(gIdx: number, patch: Partial<SkipGroup>) {
+	function updateGroup(gIdx: number, patch: Partial<EditorGroup>) {
 		if (!skipIf) return
 		onChange({ ...skipIf, groups: skipIf.groups.map((g, i) => (i === gIdx ? { ...g, ...patch } : g)) })
 	}
@@ -729,7 +775,7 @@ function FlowRuleEditor({
 	function addCondition(gIdx: number) {
 		if (!skipIf) return
 		const group = skipIf.groups[gIdx]
-		updateGroup(gIdx, { conditions: [...group.conditions, { field: "", values: [] }] })
+		updateGroup(gIdx, { conditions: [...group.conditions, { _id: uid(), field: "", values: [] }] })
 	}
 
 	function removeCondition(gIdx: number, cIdx: number) {
@@ -739,7 +785,7 @@ function FlowRuleEditor({
 		else updateGroup(gIdx, { conditions })
 	}
 
-	function updateCondition(gIdx: number, cIdx: number, patch: Partial<SkipCondition>) {
+	function updateCondition(gIdx: number, cIdx: number, patch: Partial<EditorCondition>) {
 		if (!skipIf) return
 		const conditions = skipIf.groups[gIdx].conditions.map((c, i) => (i === cIdx ? { ...c, ...patch } : c))
 		updateGroup(gIdx, { conditions })
@@ -765,7 +811,11 @@ function FlowRuleEditor({
 				<h3 className="font-semibold text-(--color-text) text-sm">Conditional Skip</h3>
 				<div className="flex gap-3">
 					{skipIf && (
-						<button type="button" onClick={() => onChange(null)} className="text-(--color-danger) text-xs hover:underline">
+						<button
+							type="button"
+							onClick={() => onChange(null)}
+							className="text-(--color-danger) text-xs hover:underline"
+						>
 							Remove all
 						</button>
 					)}
@@ -782,7 +832,7 @@ function FlowRuleEditor({
 					<p className="mb-3 text-(--color-textMuted) text-xs">Skip this step when…</p>
 					<div className="space-y-1">
 						{skipIf.groups.map((group, gIdx) => (
-							<div key={gIdx}>
+							<div key={group._id}>
 								<div className="space-y-2 rounded-md border border-(--color-border) bg-(--color-backgroundMuted) p-3">
 									<div className="flex items-center justify-between">
 										{skipIf.groups.length > 1 && (
@@ -798,7 +848,7 @@ function FlowRuleEditor({
 									</div>
 									{group.conditions.map((cond, cIdx) => (
 										<ConditionRow
-											key={cIdx}
+											key={cond._id}
 											cond={cond}
 											prevStepNames={prevStepNames}
 											inputCls={inputCls}
@@ -823,9 +873,7 @@ function FlowRuleEditor({
 									<div className="flex justify-center py-1">
 										<button
 											type="button"
-											onClick={() =>
-												onChange({ ...skipIf, groups_op: skipIf.groups_op === "and" ? "or" : "and" })
-											}
+											onClick={() => onChange({ ...skipIf, groups_op: skipIf.groups_op === "and" ? "or" : "and" })}
 											className="rounded-full border border-(--color-border) bg-(--color-surface) px-3 py-0.5 font-semibold text-(--color-primary) text-xs uppercase hover:bg-(--color-backgroundMuted)"
 										>
 											{skipIf.groups_op}
@@ -837,8 +885,8 @@ function FlowRuleEditor({
 					</div>
 					{skipIf.groups.length > 1 && (
 						<p className="mt-2 text-(--color-textMuted) text-xs">
-							Groups are combined with <strong>{skipIf.groups_op.toUpperCase()}</strong>. Click the badge between
-							groups to toggle.
+							Groups are combined with <strong>{skipIf.groups_op.toUpperCase()}</strong>. Click the badge between groups
+							to toggle.
 						</p>
 					)}
 				</>
@@ -875,7 +923,7 @@ export default function StepEditorPage() {
 	const [allSteps, setAllSteps] = useState<Step[]>([])
 	const [questions, setQuestions] = useState<Question[]>([])
 	const [selectedIdx, setSelectedIdx] = useState<number | null>(null)
-	const [skipIf, setSkipIf] = useState<SkipIf | null>(null)
+	const [skipIf, setSkipIf] = useState<EditorSkipIf | null>(null)
 	const [slug, setSlug] = useState("")
 	const [title, setTitle] = useState("")
 	const [surveyTheme, setSurveyTheme] = useState<Record<string, string>>({})
@@ -884,7 +932,7 @@ export default function StepEditorPage() {
 	const [error, setError] = useState<string | null>(null)
 	const [showJson, setShowJson] = useState(false)
 	const [showPicker, setShowPicker] = useState(false)
-	const [previewValues, setPreviewValues] = useState<Record<string, string>>({})
+	const [, setPreviewValues] = useState<Record<string, string>>({})
 
 	const pickerRef = useRef<HTMLDivElement>(null)
 
@@ -973,7 +1021,7 @@ export default function StepEditorPage() {
 				slug,
 				title,
 				nodes,
-				skip_if: skipIf ?? undefined,
+				skip_if: toApiSkipIf(skipIf) ?? undefined,
 				clear_skip_if: skipIf === null,
 			})
 			router.push(`/admin/surveys/${surveyId}`)
@@ -1002,9 +1050,7 @@ export default function StepEditorPage() {
 		[labelToName],
 	)
 
-	const themeVars = Object.fromEntries(
-		Object.entries(surveyTheme).filter(([k]) => k.startsWith("--")),
-	) as CSSProperties
+	const themeVars = Object.fromEntries(Object.entries(surveyTheme).filter(([k]) => k.startsWith("--"))) as CSSProperties
 
 	if (loading) return <p className="text-(--color-textMuted) text-sm">Loading…</p>
 	if (!step) return <p className="text-(--color-danger) text-sm">Step not found.</p>
@@ -1083,9 +1129,7 @@ export default function StepEditorPage() {
 									</button>
 									{showPicker && (
 										<div className="absolute right-0 top-full z-50 mt-1 w-64 rounded-lg border border-(--color-border) bg-(--color-surface) p-2 shadow-lg">
-											<p className="mb-1.5 px-1 font-medium text-(--color-textMuted) text-xs">
-												What kind of question?
-											</p>
+											<p className="mb-1.5 px-1 font-medium text-(--color-textMuted) text-xs">What kind of question?</p>
 											<div className="flex flex-col gap-1">
 												{QUESTION_INTENTS.map((intent) => (
 													<button
@@ -1098,9 +1142,7 @@ export default function StepEditorPage() {
 														className="flex flex-col items-start rounded-md px-2.5 py-2 text-left transition-colors hover:bg-(--color-backgroundMuted)"
 													>
 														<span className="font-medium text-(--color-text) text-sm">{intent.label}</span>
-														<span className="text-(--color-textMuted) text-xs leading-snug">
-															{intent.description}
-														</span>
+														<span className="text-(--color-textMuted) text-xs leading-snug">{intent.description}</span>
 													</button>
 												))}
 											</div>
@@ -1255,9 +1297,7 @@ export default function StepEditorPage() {
 									<A2UIBlock nodes={builtNodes} onAction={() => setPreviewValues({})} />
 								</FormStateContext.Provider>
 							) : (
-								<p className="py-8 text-center text-(--color-textMuted) text-xs">
-									Add questions to see a preview.
-								</p>
+								<p className="py-8 text-center text-(--color-textMuted) text-xs">Add questions to see a preview.</p>
 							)}
 						</div>
 					</div>

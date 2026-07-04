@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import {
 	Atkinson_Hyperlegible,
 	DM_Sans,
@@ -13,7 +14,6 @@ import {
 	Roboto,
 	Source_Sans_3,
 } from "next/font/google"
-import type { Metadata } from "next"
 import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
