@@ -13,9 +13,19 @@ export interface Survey {
 	theme?: Record<string, string>
 }
 
-export interface SkipIf {
+export interface SkipCondition {
 	field: string
-	one_of: string[]
+	values: string[]
+}
+
+export interface SkipGroup {
+	op: "and" | "or"
+	conditions: SkipCondition[]
+}
+
+export interface SkipIf {
+	groups_op: "and" | "or"
+	groups: SkipGroup[]
 }
 
 export interface Step {

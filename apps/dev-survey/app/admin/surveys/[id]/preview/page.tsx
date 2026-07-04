@@ -5,14 +5,14 @@ import Link from "next/link"
 import { useParams } from "next/navigation"
 import { type CSSProperties, useEffect, useState } from "react"
 import A2UIBlock from "@/components/A2UIBlock"
-import { adminApi, type SurveyDetail } from "@/hooks/useAdminData"
+import { adminApi, type SkipCondition, type SkipGroup, type SkipIf, type SurveyDetail } from "@/hooks/useAdminData"
 
 interface PreviewStep {
 	id: string
 	slug: string
 	title: string
 	nodes: unknown[]
-	skip_if: { field: string; one_of: string[] } | null
+	skip_if: unknown
 }
 
 type A2Node = { props?: Record<string, unknown>; children?: unknown }
@@ -33,9 +33,27 @@ function buildLabelToNameMap(nodes: unknown[]): Record<string, string> {
 }
 
 function evaluateSkip(step: PreviewStep, answers: Record<string, string>): boolean {
-	if (!step.skip_if) return false
-	const value = answers[step.skip_if.field]
-	return typeof value === "string" && step.skip_if.one_of.includes(value)
+	const si = step.skip_if as Record<string, unknown> | null
+	if (!si) return false
+	// Old format: { field, one_of }
+	if (typeof si.field === "string" && Array.isArray(si.one_of)) {
+		const val = answers[si.field]
+		return typeof val === "string" && (si.one_of as string[]).includes(val)
+	}
+	// New format: { groups_op, groups }
+	if (Array.isArray(si.groups)) {
+		const skipIf = si as unknown as SkipIf
+		const evalCond = (c: SkipCondition): boolean => {
+			const val = answers[c.field]
+			return typeof val === "string" && c.values.includes(val)
+		}
+		const evalGroup = (g: SkipGroup): boolean =>
+			g.op === "and" ? g.conditions.every(evalCond) : g.conditions.some(evalCond)
+		return skipIf.groups_op === "and"
+			? skipIf.groups.every(evalGroup)
+			: skipIf.groups.some(evalGroup)
+	}
+	return false
 }
 
 export default function PreviewPage() {
@@ -136,9 +154,10 @@ export default function PreviewPage() {
 			</div>
 
 			<div
-				style={
-					Object.fromEntries(Object.entries(survey.theme ?? {}).filter(([k]) => k.startsWith("--"))) as CSSProperties
-				}
+				style={{
+					...(Object.fromEntries(Object.entries(survey.theme ?? {}).filter(([k]) => k.startsWith("--"))) as CSSProperties),
+					fontFamily: "var(--font-family, inherit)",
+				}}
 				className="mx-auto max-w-2xl"
 			>
 				{!isDone && !isWelcome && (
