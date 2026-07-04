@@ -9,8 +9,8 @@
 	--card-foreground: oklch(0.145 0 0);
 	--popover: oklch(1 0 0);
 	--popover-foreground: oklch(0.145 0 0);
-	--primary: oklch(0.546 0.245 262.881);
-	--primary-foreground: oklch(0.985 0 0);
+	--primary: #e11d48;
+	--primary-foreground: #ffffff;
 	--secondary: oklch(0.967 0.001 286.375);
 	--secondary-foreground: oklch(0.21 0.006 285.885);
 	--muted: oklch(0.97 0 0);
@@ -20,14 +20,15 @@
 	--destructive: oklch(0.577 0.245 27.325);
 	--border: oklch(0.922 0 0);
 	--input: oklch(0.922 0 0);
-	--ring: oklch(0.546 0.245 262.881);
-	--radius: 0.625rem;
+	--ring: #e11d48;
+	--radius: 4px;
 
 	/* ── a2UI component tokens ──────────────────────────────── */
 	--color-primary: var(--primary);
 	--color-primaryForeground: var(--primary-foreground);
-	--color-primaryHover: oklch(0.49 0.245 262.881);
-	--color-primaryActive: oklch(0.43 0.245 262.881);
+	--color-primaryHover: #be123c;
+	--color-primaryActive: #9f1239;
+	--font-family: var(--font-lato);
 	--color-secondary: var(--secondary-foreground);
 	--color-secondaryHover: oklch(0.31 0.006 285.885);
 	--color-secondaryActive: oklch(0.39 0.006 285.885);
@@ -53,8 +54,8 @@
 	--card-foreground: oklch(0.985 0 0);
 	--popover: oklch(0.205 0 0);
 	--popover-foreground: oklch(0.985 0 0);
-	--primary: oklch(0.488 0.243 264.376);
-	--primary-foreground: oklch(0.985 0 0);
+	--primary: #f43f5e;
+	--primary-foreground: #ffffff;
 	--secondary: oklch(0.269 0 0);
 	--secondary-foreground: oklch(0.985 0 0);
 	--muted: oklch(0.269 0 0);
@@ -64,12 +65,12 @@
 	--destructive: oklch(0.704 0.191 22.216);
 	--border: oklch(1 0 0 / 10%);
 	--input: oklch(1 0 0 / 15%);
-	--ring: oklch(0.488 0.243 264.376);
+	--ring: #f43f5e;
 
 	--color-primary: var(--primary);
 	--color-primaryForeground: var(--primary-foreground);
-	--color-primaryHover: oklch(0.43 0.243 264.376);
-	--color-primaryActive: oklch(0.37 0.243 264.376);
+	--color-primaryHover: #e11d48;
+	--color-primaryActive: #be123c;
 	--color-secondary: var(--secondary);
 	--color-secondaryHover: oklch(0.34 0 0);
 	--color-secondaryActive: oklch(0.4 0 0);
@@ -86,4 +87,8 @@
 	--color-backgroundMuted: var(--muted);
 	--color-surface: var(--card);
 	--color-star: oklch(0.87 0.18 84);
+}
+
+body {
+	font-family: var(--font-family, inherit);
 }

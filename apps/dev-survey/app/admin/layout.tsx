@@ -1,5 +1,6 @@
 import Link from "next/link"
 import type { ReactNode } from "react"
+import AppearanceToggle from "./AppearanceToggle"
 
 export default function AdminLayout({ children }: { readonly children: ReactNode }) {
 	return (
@@ -13,6 +14,9 @@ export default function AdminLayout({ children }: { readonly children: ReactNode
 					<Link href="/" className="text-(--color-textMuted) text-sm hover:text-(--color-text)">
 						View Survey
 					</Link>
+					<div className="ml-auto">
+						<AppearanceToggle />
+					</div>
 				</div>
 			</header>
 			<main className="mx-auto max-w-6xl px-6 py-8">{children}</main>
