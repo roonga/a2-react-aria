@@ -51,6 +51,7 @@ def init(db_path: Path) -> None:
             conn.execute("ALTER TABLE steps ADD COLUMN skip_if_json TEXT")
     except sqlite3.OperationalError:
         pass
+    _migrate_nodes_to_survey_page()
     _maybe_seed()
 
 
@@ -63,6 +64,62 @@ def _conn() -> sqlite3.Connection:
 
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+def _card_to_survey_page(nodes: list) -> list:
+    """Convert a legacy Card-rooted step to SurveyPage format. Returns the input unchanged if already migrated."""
+    if not nodes or not isinstance(nodes[0], dict):
+        return nodes
+    root = nodes[0]
+    if root.get("type") != "Card":
+        return nodes
+    children = root.get("children") or []
+    question_nodes = []
+    for c in children:
+        if not isinstance(c, dict):
+            continue
+        t = c.get("type")
+        if t == "Text" and isinstance(c.get("props"), dict) and c["props"].get("as") == "h2":
+            continue
+        if t == "Flex":
+            kids = c.get("children") or []
+            if kids and all(isinstance(k, dict) and k.get("type") == "Button" for k in kids):
+                continue
+        question_nodes.append(c)
+    wrapped = []
+    for qn in question_nodes:
+        if not isinstance(qn, dict):
+            continue
+        if qn.get("type") == "Text":
+            wrapped.append(qn)
+        else:
+            props = dict(qn.get("props") or {})
+            sq_props: dict = {}
+            if props.get("label"):
+                sq_props["label"] = props.pop("label")
+            if props.get("isRequired"):
+                sq_props["required"] = True
+                props.pop("isRequired")
+            inner = {**qn, "props": props}
+            wrapped.append({"type": "SurveyQuestion", "props": sq_props, "children": inner})
+    return [{"type": "SurveyPage", "props": {}, "children": wrapped}]
+
+
+def _migrate_nodes_to_survey_page() -> None:
+    """Rewrite all Card-rooted step nodes to SurveyPage format in-place."""
+    with _conn() as conn:
+        rows = conn.execute("SELECT id, nodes_json FROM steps").fetchall()
+        for row in rows:
+            try:
+                nodes = json.loads(row["nodes_json"] or "[]")
+                migrated = _card_to_survey_page(nodes)
+                if migrated is not nodes:
+                    conn.execute(
+                        "UPDATE steps SET nodes_json=? WHERE id=?",
+                        (json.dumps(migrated), row["id"]),
+                    )
+            except (json.JSONDecodeError, TypeError):
+                pass
 
 
 def _maybe_seed() -> None:

@@ -25,12 +25,20 @@ def _checkbox(values: list[str]) -> list[dict]:
     return [{"type": "Checkbox", "props": {"value": v, "label": v}} for v in values]
 
 
-def _nav(back: bool) -> dict:
-    buttons: list[dict] = []
-    if back:
-        buttons.append({"type": "Button", "props": {"variant": "secondary", "value": "__back__"}, "children": "Back"})
-    buttons.append({"type": "Button", "props": {"variant": "primary", "value": "__next__"}, "children": "Next"})
-    return {"type": "Flex", "props": {"gap": "sm", "justify": "end"}, "children": buttons}
+def _q(label: str, input_node: dict, *, required: bool = False, description: str = "") -> dict:
+    props: dict = {"label": label}
+    if required:
+        props["required"] = True
+    if description:
+        props["description"] = description
+    return {"type": "SurveyQuestion", "props": props, "children": input_node}
+
+
+def _page(title: str, children: list[dict], description: str = "") -> dict:
+    props: dict = {"title": title}
+    if description:
+        props["description"] = description
+    return {"type": "SurveyPage", "props": props, "children": children}
 
 
 SURVEY_STEPS: list[dict] = [
@@ -38,206 +46,159 @@ SURVEY_STEPS: list[dict] = [
         "id": "welcome",
         "title": "Welcome",
         "nodes": [
-            {
-                "type": "Card",
-                "props": {"padding": "lg"},
-                "children": [
-                    {"type": "Text", "props": {"as": "h2", "size": "xl", "weight": "bold", "align": "center"}, "children": "Developer Survey 2026"},
-                    {"type": "Text", "props": {"color": "muted", "align": "center", "size": "sm"}, "children": "10 minutes · anonymous · helps us understand the developer community"},
-                    {"type": "Flex", "props": {"gap": "sm", "justify": "center"}, "children": [
-                        {"type": "Button", "props": {"variant": "primary", "size": "lg", "value": "__next__"}, "children": "Start Survey"},
-                    ]},
-                ],
-            }
+            _page(
+                "Developer Survey 2026",
+                [],
+                description="10 minutes · anonymous · helps us understand the developer community",
+            )
         ],
     },
     {
         "id": "about",
         "title": "About You",
         "nodes": [
-            {
-                "type": "Card",
-                "props": {"padding": "lg"},
-                "children": [
-                    {"type": "Text", "props": {"as": "h2", "size": "lg", "weight": "semibold"}, "children": "About You"},
-                    {
-                        "type": "Select",
-                        "props": {
-                            "label": "Which country are you based in?",
-                            "name": "country",
-                            "isRequired": True,
-                            "items": [{"value": c, "label": c} for c in COUNTRIES],
-                        },
+            _page("About You", [
+                _q("Which country are you based in?", {
+                    "type": "Select",
+                    "props": {
+                        "name": "country",
+                        "items": [{"value": c, "label": c} for c in COUNTRIES],
                     },
-                    {
-                        "type": "RadioGroup",
-                        "props": {"label": "What is your age range?", "name": "age", "isRequired": True},
-                        "children": _radio(["Under 18", "18–24", "25–34", "35–44", "45–54", "55+"]),
-                    },
-                    {
-                        "type": "RadioGroup",
-                        "props": {"label": "What is your highest level of education?", "name": "education", "isRequired": True},
-                        "children": _radio([
-                            "Secondary school", "Some college / university", "Associate degree",
-                            "Bachelor's degree", "Master's degree", "Doctoral degree", "Professional degree",
-                        ]),
-                    },
-                    _nav(False),
-                ],
-            }
+                }, required=True),
+                _q("What is your age range?", {
+                    "type": "RadioGroup",
+                    "props": {"name": "age"},
+                    "children": _radio(["Under 18", "18–24", "25–34", "35–44", "45–54", "55+"]),
+                }, required=True),
+                _q("What is your highest level of education?", {
+                    "type": "RadioGroup",
+                    "props": {"name": "education"},
+                    "children": _radio([
+                        "Secondary school", "Some college / university", "Associate degree",
+                        "Bachelor's degree", "Master's degree", "Doctoral degree", "Professional degree",
+                    ]),
+                }, required=True),
+            ])
         ],
     },
     {
         "id": "employment",
         "title": "Employment",
         "nodes": [
-            {
-                "type": "Card",
-                "props": {"padding": "lg"},
-                "children": [
-                    {"type": "Text", "props": {"as": "h2", "size": "lg", "weight": "semibold"}, "children": "Employment"},
-                    {
-                        "type": "RadioGroup",
-                        "props": {"label": "Which best describes your current employment status?", "name": "employment", "isRequired": True},
-                        "children": _radio([
-                            "Employed full-time", "Employed part-time", "Self-employed / freelancer",
-                            "Student", "Not employed but looking", "Not employed and not looking",
-                        ]),
-                    },
-                    {
-                        "type": "RadioGroup",
-                        "props": {"label": "How do you work?", "name": "workStyle", "isRequired": True},
-                        "children": _radio(["Fully remote", "Hybrid", "In-person / on-site", "Not applicable"]),
-                    },
-                    _nav(True),
-                ],
-            }
+            _page("Employment", [
+                _q("Which best describes your current employment status?", {
+                    "type": "RadioGroup",
+                    "props": {"name": "employment"},
+                    "children": _radio([
+                        "Employed full-time", "Employed part-time", "Self-employed / freelancer",
+                        "Student", "Not employed but looking", "Not employed and not looking",
+                    ]),
+                }, required=True),
+                _q("How do you work?", {
+                    "type": "RadioGroup",
+                    "props": {"name": "workStyle"},
+                    "children": _radio(["Fully remote", "Hybrid", "In-person / on-site", "Not applicable"]),
+                }, required=True),
+            ])
         ],
     },
     {
         "id": "experience",
         "title": "Experience",
         "nodes": [
-            {
-                "type": "Card",
-                "props": {"padding": "lg"},
-                "children": [
-                    {"type": "Text", "props": {"as": "h2", "size": "lg", "weight": "semibold"}, "children": "Experience"},
-                    {
-                        "type": "RadioGroup",
-                        "props": {"label": "How many years have you been coding?", "name": "yearsTotal", "isRequired": True},
-                        "children": _radio(["Less than 1 year", "1–4 years", "5–9 years", "10–19 years", "20+ years"]),
-                    },
-                    {
-                        "type": "RadioGroup",
-                        "props": {"label": "How many years have you coded professionally?", "name": "yearsPro", "isRequired": True},
-                        "children": _radio([
-                            "Less than 1 year", "1–4 years", "5–9 years", "10–19 years", "20+ years",
-                            "I have not coded professionally",
-                        ]),
-                    },
-                    _nav(True),
-                ],
-            }
+            _page("Experience", [
+                _q("How many years have you been coding?", {
+                    "type": "RadioGroup",
+                    "props": {"name": "yearsTotal"},
+                    "children": _radio(["Less than 1 year", "1–4 years", "5–9 years", "10–19 years", "20+ years"]),
+                }, required=True),
+                _q("How many years have you coded professionally?", {
+                    "type": "RadioGroup",
+                    "props": {"name": "yearsPro"},
+                    "children": _radio([
+                        "Less than 1 year", "1–4 years", "5–9 years", "10–19 years", "20+ years",
+                        "I have not coded professionally",
+                    ]),
+                }, required=True),
+            ])
         ],
     },
     {
         "id": "languages",
         "title": "Languages",
         "nodes": [
-            {
-                "type": "Card",
-                "props": {"padding": "lg"},
-                "children": [
-                    {"type": "Text", "props": {"as": "h2", "size": "lg", "weight": "semibold"}, "children": "Programming Languages"},
-                    {"type": "Text", "props": {"color": "muted", "size": "sm"}, "children": "Select all that you have used in the past year."},
-                    {
+            _page(
+                "Programming Languages",
+                [
+                    _q("Languages used in the past year", {
                         "type": "CheckboxGroup",
-                        "props": {"label": "Languages used", "name": "languages"},
+                        "props": {"name": "languages"},
                         "children": _checkbox(LANGUAGES),
-                    },
-                    {
+                    }),
+                    _q("Languages you want to learn next year", {
                         "type": "CheckboxGroup",
-                        "props": {"label": "Languages you want to learn next year", "name": "languagesWant"},
+                        "props": {"name": "languagesWant"},
                         "children": _checkbox(LANGUAGES),
-                    },
-                    _nav(True),
+                    }),
                 ],
-            }
+                description="Select all that apply.",
+            )
         ],
     },
     {
         "id": "frameworks",
         "title": "Frameworks",
         "nodes": [
-            {
-                "type": "Card",
-                "props": {"padding": "lg"},
-                "children": [
-                    {"type": "Text", "props": {"as": "h2", "size": "lg", "weight": "semibold"}, "children": "Frameworks & Libraries"},
-                    {
-                        "type": "CheckboxGroup",
-                        "props": {"label": "Which frameworks do you use regularly?", "name": "frameworks"},
-                        "children": _checkbox(FRAMEWORKS),
-                    },
-                    _nav(True),
-                ],
-            }
+            _page("Frameworks & Libraries", [
+                _q("Which frameworks do you use regularly?", {
+                    "type": "CheckboxGroup",
+                    "props": {"name": "frameworks"},
+                    "children": _checkbox(FRAMEWORKS),
+                }),
+            ])
         ],
     },
     {
         "id": "tools",
         "title": "Tools",
         "nodes": [
-            {
-                "type": "Card",
-                "props": {"padding": "lg"},
-                "children": [
-                    {"type": "Text", "props": {"as": "h2", "size": "lg", "weight": "semibold"}, "children": "Tools & Technology"},
-                    {
-                        "type": "CheckboxGroup",
-                        "props": {"label": "Which editors or IDEs do you use?", "name": "ides"},
-                        "children": _checkbox(IDES),
-                    },
-                    {
-                        "type": "RadioGroup",
-                        "props": {"label": "What is your primary OS for development?", "name": "os", "isRequired": True},
-                        "children": _radio(["Windows", "macOS", "Linux"]),
-                    },
-                    _nav(True),
-                ],
-            }
+            _page("Tools & Technology", [
+                _q("Which editors or IDEs do you use?", {
+                    "type": "CheckboxGroup",
+                    "props": {"name": "ides"},
+                    "children": _checkbox(IDES),
+                }),
+                _q("What is your primary OS for development?", {
+                    "type": "RadioGroup",
+                    "props": {"name": "os"},
+                    "children": _radio(["Windows", "macOS", "Linux"]),
+                }, required=True),
+            ])
         ],
     },
     {
         "id": "ai",
         "title": "AI Tools",
         "nodes": [
-            {
-                "type": "Card",
-                "props": {"padding": "lg"},
-                "children": [
-                    {"type": "Text", "props": {"as": "h2", "size": "lg", "weight": "semibold"}, "children": "AI-Assisted Development"},
-                    {
-                        "type": "CheckboxGroup",
-                        "props": {"label": "Which AI coding tools do you use regularly?", "name": "aiTools"},
-                        "children": _checkbox(AI_TOOLS),
-                    },
-                    {
-                        "type": "RadioGroup",
-                        "props": {"label": "How has AI tooling affected your productivity?", "name": "aiImpact", "isRequired": True},
-                        "children": _radio([
-                            "Large positive impact", "Moderate positive impact", "No noticeable impact",
-                            "Moderate negative impact", "I don't use AI tools",
-                        ]),
-                    },
-                    {
-                        "type": "TextField",
-                        "props": {"label": "Any thoughts on AI in your workflow? (optional)", "name": "aiComment"},
-                    },
-                    _nav(True),
-                ],
-            }
+            _page("AI-Assisted Development", [
+                _q("Which AI coding tools do you use regularly?", {
+                    "type": "CheckboxGroup",
+                    "props": {"name": "aiTools"},
+                    "children": _checkbox(AI_TOOLS),
+                }),
+                _q("How has AI tooling affected your productivity?", {
+                    "type": "RadioGroup",
+                    "props": {"name": "aiImpact"},
+                    "children": _radio([
+                        "Large positive impact", "Moderate positive impact", "No noticeable impact",
+                        "Moderate negative impact", "I don't use AI tools",
+                    ]),
+                }, required=True),
+                _q("Any thoughts on AI in your workflow? (optional)", {
+                    "type": "TextField",
+                    "props": {"name": "aiComment"},
+                }),
+            ])
         ],
     },
     {
@@ -245,43 +206,35 @@ SURVEY_STEPS: list[dict] = [
         "title": "Compensation",
         "skipIf": {"field": "employment", "oneOf": ["Student", "Not employed and not looking"]},
         "nodes": [
-            {
-                "type": "Card",
-                "props": {"padding": "lg"},
-                "children": [
-                    {"type": "Text", "props": {"as": "h2", "size": "lg", "weight": "semibold"}, "children": "Compensation"},
-                    {
-                        "type": "RadioGroup",
-                        "props": {"label": "What is your approximate annual salary (USD)?", "name": "salary", "isRequired": True},
-                        "children": _radio([
-                            "Under $30,000", "$30,000–$59,999", "$60,000–$99,999",
-                            "$100,000–$149,999", "$150,000–$199,999", "$200,000+", "Prefer not to say",
-                        ]),
-                    },
-                    {
-                        "type": "RadioGroup",
-                        "props": {"label": "How satisfied are you with your compensation?", "name": "salaryHappy", "isRequired": True},
-                        "children": _radio([
-                            "Very satisfied", "Somewhat satisfied", "Neutral", "Somewhat unsatisfied", "Very unsatisfied",
-                        ]),
-                    },
-                    _nav(True),
-                ],
-            }
+            _page("Compensation", [
+                _q("What is your approximate annual salary (USD)?", {
+                    "type": "RadioGroup",
+                    "props": {"name": "salary"},
+                    "children": _radio([
+                        "Under $30,000", "$30,000–$59,999", "$60,000–$99,999",
+                        "$100,000–$149,999", "$150,000–$199,999", "$200,000+", "Prefer not to say",
+                    ]),
+                }, required=True),
+                _q("How satisfied are you with your compensation?", {
+                    "type": "RadioGroup",
+                    "props": {"name": "salaryHappy"},
+                    "children": _radio([
+                        "Very satisfied", "Somewhat satisfied", "Neutral",
+                        "Somewhat unsatisfied", "Very unsatisfied",
+                    ]),
+                }, required=True),
+            ])
         ],
     },
     {
         "id": "done",
         "title": "Done",
         "nodes": [
-            {
-                "type": "Card",
-                "props": {"padding": "lg"},
-                "children": [
-                    {"type": "Text", "props": {"as": "h2", "size": "xl", "weight": "bold", "color": "primary", "align": "center"}, "children": "Thank you!"},
-                    {"type": "Text", "props": {"color": "muted", "align": "center"}, "children": "Your responses have been recorded. Results will be published later this year."},
-                ],
-            }
+            _page(
+                "Thank you!",
+                [],
+                description="Your responses have been recorded. Results will be published later this year.",
+            )
         ],
     },
 ]

@@ -15,6 +15,7 @@ import {
 	Text,
 	TextField,
 } from "@a2ra/core"
+import { SurveyPage, SurveyQuestion } from "./survey-composites"
 
 const REGISTRY = createRegistry({
 	Button: { component: Button },
@@ -26,6 +27,8 @@ const REGISTRY = createRegistry({
 	Radio: { component: Radio },
 	RadioGroup: { component: RadioGroup },
 	Select: { component: Select },
+	SurveyPage: { component: SurveyPage },
+	SurveyQuestion: { component: SurveyQuestion },
 	Text: { component: Text },
 	TextField: { component: TextField },
 })

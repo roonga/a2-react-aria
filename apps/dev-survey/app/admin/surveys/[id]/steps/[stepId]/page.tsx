@@ -262,45 +262,59 @@ function questionToNode(q: Question): unknown {
 	return null
 }
 
-function extractQuestions(nodes: unknown[]): Question[] {
+function extractQuestions(nodes: unknown[]): { questions: Question[]; description: string } {
 	const root = nodes[0] as Record<string, unknown> | undefined
-	const children = root?.type === "Card" && Array.isArray(root.children) ? (root.children as unknown[]) : nodes
-	return children
-		.filter((c) => {
-			const n = c as Record<string, unknown>
-			if (n.type === "Flex") {
-				const kids = Array.isArray(n.children) ? (n.children as unknown[]) : []
-				return !kids.every((k) => (k as Record<string, unknown>).type === "Button")
+	if (!root || root.type !== "SurveyPage" || !Array.isArray(root.children)) {
+		return { questions: [], description: "" }
+	}
+	const description =
+		typeof (root.props as Record<string, unknown>)?.description === "string"
+			? ((root.props as Record<string, unknown>).description as string)
+			: ""
+	const children = (root.children as unknown[]).map((c) => {
+		const node = c as Record<string, unknown>
+		if (node.type === "SurveyQuestion") {
+			const sqProps = (node.props ?? {}) as Record<string, unknown>
+			const inner = node.children as Record<string, unknown>
+			// Restore label/isRequired from SurveyQuestion wrapper into the inner node props
+			if (inner && typeof inner === "object") {
+				const innerProps = (inner.props ?? {}) as Record<string, unknown>
+				if (sqProps.label && !innerProps.label) innerProps.label = sqProps.label
+				if (sqProps.required && !innerProps.isRequired) innerProps.isRequired = true
+				return { ...inner, props: innerProps }
 			}
-			return true
-		})
-		.map(nodeToQuestion)
-		.filter((q): q is Question => q !== null)
+			return node.children as unknown
+		}
+		return c
+	})
+	return {
+		questions: children.map(nodeToQuestion).filter((q): q is Question => q !== null),
+		description,
+	}
 }
 
-function buildNodes(questions: Question[], stepSlug: string, allSteps: Step[], currentStep: Step): unknown[] {
-	const isFirst = allSteps[0]?.id === currentStep.id
-	const isWelcome = stepSlug === "welcome"
-	const isDone = stepSlug === "done"
-
-	const navButtons: unknown[] = []
-	if (!isWelcome && !isDone && !isFirst) {
-		navButtons.push({ type: "Button", props: { variant: "secondary", value: "__back__" }, children: "Back" })
+function questionToSurveyQuestionNode(q: Question): unknown {
+	const inner = questionToNode(q)
+	if (!inner) return null
+	if (q.type === "Text") return inner
+	return {
+		type: "SurveyQuestion",
+		props: {
+			label: q.label ?? "",
+			...(q.isRequired ? { required: true } : {}),
+		},
+		children: inner,
 	}
-	if (!isDone) {
-		navButtons.push({
-			type: "Button",
-			props: { variant: "primary", value: "__next__", size: isWelcome ? "lg" : undefined },
-			children: isWelcome ? "Start Survey" : "Next",
-		})
-	}
+}
 
-	const nav =
-		navButtons.length > 0
-			? [{ type: "Flex", props: { gap: "sm", justify: isWelcome ? "center" : "end" }, children: navButtons }]
-			: []
-
-	return [{ type: "Card", props: { padding: "lg" }, children: [...questions.map(questionToNode), ...nav] }]
+function buildNodes(questions: Question[], title: string, description: string): unknown[] {
+	return [
+		{
+			type: "SurveyPage",
+			props: { title, ...(description.trim() ? { description: description.trim() } : {}) },
+			children: questions.map(questionToSurveyQuestionNode).filter(Boolean),
+		},
+	]
 }
 
 // ── Question form ─────────────────────────────────────────────────────────────
@@ -926,6 +940,7 @@ export default function StepEditorPage() {
 	const [skipIf, setSkipIf] = useState<EditorSkipIf | null>(null)
 	const [slug, setSlug] = useState("")
 	const [title, setTitle] = useState("")
+	const [description, setDescription] = useState("")
 	const [surveyTheme, setSurveyTheme] = useState<Record<string, string>>({})
 	const [loading, setLoading] = useState(true)
 	const [saving, setSaving] = useState(false)
@@ -948,7 +963,9 @@ export default function StepEditorPage() {
 				setSlug(s.slug)
 				setTitle(s.title)
 				setSkipIf(normalizeSkipIf(s.skip_if))
-				setQuestions(extractQuestions(s.nodes))
+				const extracted = extractQuestions(s.nodes)
+				setQuestions(extracted.questions)
+				setDescription(extracted.description)
 				if (survey.steps.length > 0) setSelectedIdx(0)
 			})
 			.catch((e: unknown) => setError(e instanceof Error ? e.message : "Failed to load"))
@@ -1016,7 +1033,7 @@ export default function StepEditorPage() {
 		setSaving(true)
 		setError(null)
 		try {
-			const nodes = buildNodes(questions, slug, allSteps, step)
+			const nodes = buildNodes(questions, title, description)
 			await adminApi.updateStep(surveyId, stepId, {
 				slug,
 				title,
@@ -1034,11 +1051,11 @@ export default function StepEditorPage() {
 	const currentIdx = allSteps.findIndex((s) => s.id === stepId)
 	const prevStepNames = allSteps
 		.slice(0, currentIdx)
-		.flatMap((s) => extractQuestions(s.nodes))
+		.flatMap((s) => extractQuestions(s.nodes).questions)
 		.filter((q): q is Question & { name: string } => !!q.name)
 		.map((q) => ({ name: q.name, options: q.options ?? q.items?.map((i) => i.value) ?? [] }))
 
-	const builtNodes = step ? buildNodes(questions, slug, allSteps, step) : []
+	const builtNodes = step ? buildNodes(questions, title, description) : []
 
 	// Preview interactivity
 	const labelToName = useMemo(() => buildLabelToNameMap(builtNodes), [builtNodes])
@@ -1071,10 +1088,10 @@ export default function StepEditorPage() {
 			</div>
 
 			{/* Step meta */}
-			<div className="mb-6 grid grid-cols-2 gap-4">
+			<div className="mb-4 grid grid-cols-2 gap-4">
 				<div>
 					<label htmlFor="step-title" className="mb-1 block font-medium text-(--color-text-muted) text-xs">
-						Step title
+						Page title
 					</label>
 					<input
 						id="step-title"
@@ -1096,6 +1113,19 @@ export default function StepEditorPage() {
 						className="w-full rounded-md border border-(--color-border) bg-(--color-background) px-3 py-2 text-(--color-text) text-sm focus:outline-none focus:ring-2 focus:ring-(--color-primary)"
 					/>
 				</div>
+			</div>
+			<div className="mb-6">
+				<label htmlFor="step-description" className="mb-1 block font-medium text-(--color-text-muted) text-xs">
+					Page description (optional)
+				</label>
+				<textarea
+					id="step-description"
+					rows={2}
+					value={description}
+					onChange={(e) => setDescription(e.target.value)}
+					placeholder="Short intro shown below the title…"
+					className="w-full rounded-md border border-(--color-border) bg-(--color-background) px-3 py-2 text-(--color-text) text-sm focus:outline-none focus:ring-2 focus:ring-(--color-primary)"
+				/>
 			</div>
 
 			{error && (
@@ -1129,9 +1159,7 @@ export default function StepEditorPage() {
 									</button>
 									{showPicker && (
 										<div className="absolute right-0 top-full z-50 mt-1 w-64 rounded-lg border border-(--color-border) bg-(--color-surface) p-2 shadow-lg">
-											<p className="mb-1.5 px-1 font-medium text-(--color-text-muted) text-xs">
-												What kind of question?
-											</p>
+											<p className="mb-1.5 px-1 font-medium text-(--color-text-muted) text-xs">What kind of question?</p>
 											<div className="flex flex-col gap-1">
 												{QUESTION_INTENTS.map((intent) => (
 													<button
