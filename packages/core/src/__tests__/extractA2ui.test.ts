@@ -52,6 +52,13 @@ describe("extractA2ui", () => {
 		expect(result.plainText).toBe(text.trim())
 	})
 
+	it("returns null a2uiJson when the tag contains well-formed but non-array JSON", () => {
+		const object = extractA2ui(`<a2ui-json>{"type":"Card"}</a2ui-json>`)
+		expect(object.a2uiJson).toBeNull()
+		const primitive = extractA2ui(`<a2ui-json>42</a2ui-json>`)
+		expect(primitive.a2uiJson).toBeNull()
+	})
+
 	it("handles an empty JSON array in the tag", () => {
 		const text = `<a2ui-json>[]</a2ui-json>`
 		const result = extractA2ui(text)

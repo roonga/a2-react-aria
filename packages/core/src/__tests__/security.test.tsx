@@ -368,6 +368,20 @@ describe("A08 Prototype pollution — __proto__ and constructor props are harmle
 		expect((Object.prototype as Record<string, unknown>)[sentinel]).toBeUndefined()
 	})
 
+	it("drops a __proto__ key in nested props without mutating the prototype chain", () => {
+		const sentinel = "__xss_nested_proto__"
+		expect((Object.prototype as Record<string, unknown>)[sentinel]).toBeUndefined()
+		// Build via JSON.parse so `__proto__` is an own-enumerable key (as it is in agent
+		// input), not a prototype assignment as it would be in an object literal.
+		const node = JSON.parse(
+			`{"type":"AnchorList","props":{"items":[{"__proto__":{"${sentinel}":true},"href":"https://ok.example"}]}}`,
+		)
+		const { container } = render(<A2Renderer node={node} registry={registry} />)
+		expect(container.querySelector("a")?.getAttribute("href")).toBe("https://ok.example")
+		expect((Object.prototype as Record<string, unknown>)[sentinel]).toBeUndefined()
+		expect(({} as Record<string, unknown>)[sentinel]).toBeUndefined()
+	})
+
 	it("does not pollute Object.prototype via constructor.prototype nesting", () => {
 		const sentinel = "__xss_ctor_test__"
 		expect((Object.prototype as Record<string, unknown>)[sentinel]).toBeUndefined()

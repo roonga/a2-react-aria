@@ -29,9 +29,16 @@ function sanitizeValue(key: string, value: unknown): unknown {
 	return value
 }
 
+// Keys that mutate the prototype chain when assigned. Agent JSON is untrusted, so
+// they are dropped rather than copied into the props object handed to React.
+const PROTO_KEYS = new Set(["__proto__", "constructor", "prototype"])
+
 function sanitizeProps(props: Record<string, unknown>): Record<string, unknown> {
-	const out: Record<string, unknown> = {}
+	// Null-prototype object so a "__proto__" key (own-enumerable after JSON.parse)
+	// becomes a plain own property instead of triggering the prototype setter.
+	const out: Record<string, unknown> = Object.create(null)
 	for (const [k, v] of Object.entries(props)) {
+		if (PROTO_KEYS.has(k)) continue
 		out[k] = sanitizeValue(k, v)
 	}
 	return out
