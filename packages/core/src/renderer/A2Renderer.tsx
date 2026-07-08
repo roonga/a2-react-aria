@@ -13,10 +13,33 @@ const MAX_DEPTH = 50
 const BLOCKED_URL_SCHEMES = /^(javascript|data|vbscript):/i
 const URL_PROP_KEYS = /^(href|src|action|formaction|.*[Uu]rl|.*[Hh]ref|.*[Ss]rc)$/
 
+// Sanitize a single value against a leaf key. Recurses through arrays and plain
+// objects so URL props nested inside structured data (e.g. Breadcrumb items[].href)
+// cannot bypass the scheme filter.
+function sanitizeValue(key: string, value: unknown): unknown {
+	if (typeof value === "string") {
+		return URL_PROP_KEYS.test(key) && BLOCKED_URL_SCHEMES.test(value.trim()) ? "about:blank" : value
+	}
+	if (Array.isArray(value)) {
+		return value.map((item) => sanitizeValue(key, item))
+	}
+	if (value !== null && typeof value === "object") {
+		return sanitizeProps(value as Record<string, unknown>)
+	}
+	return value
+}
+
+// Keys that mutate the prototype chain when assigned. Agent JSON is untrusted, so
+// they are dropped rather than copied into the props object handed to React.
+const PROTO_KEYS = new Set(["__proto__", "constructor", "prototype"])
+
 function sanitizeProps(props: Record<string, unknown>): Record<string, unknown> {
-	const out: Record<string, unknown> = {}
+	// Null-prototype object so a "__proto__" key (own-enumerable after JSON.parse)
+	// becomes a plain own property instead of triggering the prototype setter.
+	const out: Record<string, unknown> = Object.create(null)
 	for (const [k, v] of Object.entries(props)) {
-		out[k] = URL_PROP_KEYS.test(k) && typeof v === "string" && BLOCKED_URL_SCHEMES.test(v.trim()) ? "about:blank" : v
+		if (PROTO_KEYS.has(k)) continue
+		out[k] = sanitizeValue(k, v)
 	}
 	return out
 }

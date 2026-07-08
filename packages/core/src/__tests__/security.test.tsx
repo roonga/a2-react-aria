@@ -33,6 +33,17 @@ const AnchorWithFormaction = ({ formaction }: { formaction?: string }) => (
 const AnchorWithImageUrl = ({ imageUrl }: { imageUrl?: string }) => <img src={imageUrl} alt="" />
 const AnchorWithProfileHref = ({ profileHref }: { profileHref?: string }) => <a href={profileHref}>profile</a>
 const AnchorWithThumbnailSrc = ({ thumbnailSrc }: { thumbnailSrc?: string }) => <img src={thumbnailSrc} alt="" />
+// Mirrors Breadcrumb's shape: URL props nested inside an array of objects.
+const AnchorList = ({ items = [] }: { items?: { href?: string }[] }) => (
+	<ul>
+		{items.map((it, i) => (
+			// biome-ignore lint/suspicious/noArrayIndexKey: test-only fixture
+			<li key={i}>
+				<a href={it.href}>link</a>
+			</li>
+		))}
+	</ul>
+)
 
 const registry = createRegistry({
 	Anchor: { component: Anchor as Parameters<typeof createRegistry>[0][string]["component"] },
@@ -48,6 +59,7 @@ const registry = createRegistry({
 	AnchorWithThumbnailSrc: {
 		component: AnchorWithThumbnailSrc as Parameters<typeof createRegistry>[0][string]["component"],
 	},
+	AnchorList: { component: AnchorList as Parameters<typeof createRegistry>[0][string]["component"] },
 	Text: { component: Text },
 	TextField: { component: TextField },
 })
@@ -299,6 +311,36 @@ describe("A03 URL injection — safe URLs are allowed through unchanged", () => 
 	})
 })
 
+describe("A03 URL injection — nested URL props inside arrays/objects are sanitized", () => {
+	it("blocks javascript: in an array-nested href (Breadcrumb items[].href shape)", () => {
+		const { container } = render(
+			<A2Renderer
+				node={{
+					type: "AnchorList",
+					props: { items: [{ href: "https://ok.example" }, { href: "javascript:alert(1)" }] },
+				}}
+				registry={registry}
+			/>,
+		)
+		const hrefs = [...container.querySelectorAll("a")].map((a) => a.getAttribute("href"))
+		expect(hrefs).toEqual(["https://ok.example", "about:blank"])
+	})
+
+	it("blocks data: nested one object deep", () => {
+		const Wrapper = ({ meta }: { meta?: { src?: string } }) => <img src={meta?.src} alt="" />
+		const reg = createRegistry({
+			Wrapper: { component: Wrapper as Parameters<typeof createRegistry>[0][string]["component"] },
+		})
+		const { container } = render(
+			<A2Renderer
+				node={{ type: "Wrapper", props: { meta: { src: "data:text/html,<script>alert(1)</script>" } } }}
+				registry={reg}
+			/>,
+		)
+		expect(container.querySelector("img")?.getAttribute("src")).toBe("about:blank")
+	})
+})
+
 // ── OWASP A08:2021 — Software and Data Integrity: prototype pollution ───────
 
 describe("A08 Prototype pollution — __proto__ and constructor props are harmless", () => {
@@ -324,6 +366,20 @@ describe("A08 Prototype pollution — __proto__ and constructor props are harmle
 		expect(container.textContent).toContain("safe")
 		// The prototype was not mutated
 		expect((Object.prototype as Record<string, unknown>)[sentinel]).toBeUndefined()
+	})
+
+	it("drops a __proto__ key in nested props without mutating the prototype chain", () => {
+		const sentinel = "__xss_nested_proto__"
+		expect((Object.prototype as Record<string, unknown>)[sentinel]).toBeUndefined()
+		// Build via JSON.parse so `__proto__` is an own-enumerable key (as it is in agent
+		// input), not a prototype assignment as it would be in an object literal.
+		const node = JSON.parse(
+			`{"type":"AnchorList","props":{"items":[{"__proto__":{"${sentinel}":true},"href":"https://ok.example"}]}}`,
+		)
+		const { container } = render(<A2Renderer node={node} registry={registry} />)
+		expect(container.querySelector("a")?.getAttribute("href")).toBe("https://ok.example")
+		expect((Object.prototype as Record<string, unknown>)[sentinel]).toBeUndefined()
+		expect(({} as Record<string, unknown>)[sentinel]).toBeUndefined()
 	})
 
 	it("does not pollute Object.prototype via constructor.prototype nesting", () => {

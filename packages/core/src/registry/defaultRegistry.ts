@@ -1,4 +1,6 @@
 import type { ComponentType } from "react"
+import { Accordion, AccordionItem, AccordionItemSchema, AccordionSchema } from "../components/accordion"
+import { Alert, AlertSchema } from "../components/alert"
 import { Breadcrumb, BreadcrumbSchema } from "../components/breadcrumb"
 import { Button, ButtonSchema } from "../components/button"
 import { Card, CardSchema } from "../components/card"
@@ -15,12 +17,16 @@ import { Select, SelectSchema } from "../components/select"
 import { Switch, SwitchSchema } from "../components/switch"
 import { Table, TableSchema } from "../components/table"
 import { Tabs, TabsSchema } from "../components/tabs"
+import { Tag, TagGroup, TagGroupSchema, TagSchema } from "../components/tag"
 import { Text, TextSchema } from "../components/text"
 import { TextField, TextFieldSchema } from "../components/text-field"
 import { Tooltip, TooltipSchema } from "../components/tooltip"
 import { createRegistry, registerComponent } from "./registry"
 
 export const defaultRegistry = createRegistry({
+	Accordion: { component: Accordion, schema: AccordionSchema },
+	AccordionItem: { component: AccordionItem, schema: AccordionItemSchema },
+	Alert: { component: Alert, schema: AlertSchema },
 	Breadcrumb: { component: Breadcrumb, schema: BreadcrumbSchema },
 	Button: { component: Button, schema: ButtonSchema },
 	Card: { component: Card, schema: CardSchema },
@@ -41,6 +47,8 @@ export const defaultRegistry = createRegistry({
 	Switch: { component: Switch, schema: SwitchSchema },
 	Table: { component: Table, schema: TableSchema },
 	Tabs: { component: Tabs, schema: TabsSchema },
+	Tag: { component: Tag, schema: TagSchema },
+	TagGroup: { component: TagGroup, schema: TagGroupSchema },
 	Text: { component: Text, schema: TextSchema },
 	TextField: { component: TextField, schema: TextFieldSchema },
 	Tooltip: { component: Tooltip, schema: TooltipSchema },
