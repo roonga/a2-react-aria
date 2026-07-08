@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { Button, DialogTrigger, Heading, Modal, ModalOverlay, Dialog as RACDialog } from "react-aria-components"
+import { Button, DialogTrigger, Heading, Modal, ModalOverlay, Dialog as RACDialog, Text } from "react-aria-components"
 import { getDialogStyles } from "./dialog.styles"
 
 interface DialogProps {
@@ -44,7 +44,11 @@ export function Dialog({
 					</svg>
 				</Button>
 			</div>
-			{description && <p className={styles.description}>{description}</p>}
+			{description && (
+				<Text slot="description" className={styles.description}>
+					{description}
+				</Text>
+			)}
 			{children && <div className={styles.body}>{children}</div>}
 		</>
 	)

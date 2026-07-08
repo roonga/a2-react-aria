@@ -11,7 +11,8 @@ export function extractA2ui(text: string): { plainText: string; a2uiJson: unknow
 	const match = A2UI_RE.exec(text)
 	if (!match) return { plainText: text.trim(), a2uiJson: null }
 	try {
-		const json = JSON.parse(match[1]) as unknown[]
+		const json = JSON.parse(match[1]) as unknown
+		if (!Array.isArray(json)) return { plainText: text.trim(), a2uiJson: null }
 		const before = text.slice(0, match.index).trim()
 		const after = text.slice(match.index + match[0].length).trim()
 		return { plainText: [before, after].filter(Boolean).join("\n").trim(), a2uiJson: json }

@@ -35,6 +35,10 @@ export function Button({
 					actionCtx.fire(value)
 				} else if (typeof children === "string") {
 					actionCtx.fire(actionCtx.buildAction(children))
+				} else {
+					console.warn(
+						"[A2Renderer] Button in action mode has neither a `value` nor string children; press will do nothing. Provide a `value` or string children.",
+					)
 				}
 			}
 		: onPress

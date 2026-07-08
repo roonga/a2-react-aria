@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync, writeFileSync } from "node:fs"
-import { dirname, resolve } from "node:path"
+import { dirname, isAbsolute, relative, resolve, sep } from "node:path"
 import { loadConfig, resolveRegistry } from "../config.js"
 import { resolveItems } from "../registry.js"
 import type { RegistryItem } from "../types.js"
@@ -17,14 +17,25 @@ export interface WriteResult {
 	skipped: string[]
 }
 
+// Reject registry-supplied paths that escape the target directory (zip-slip).
+// Registry content is fetched from a remote host, so `file.path` is untrusted.
+function assertWithinTarget(targetDir: string, dest: string): void {
+	const rel = relative(targetDir, dest)
+	if (rel === "" || rel === ".." || rel.split(sep)[0] === ".." || isAbsolute(rel)) {
+		throw new Error(`Refusing to write outside the components directory: "${dest}"`)
+	}
+}
+
 // Write resolved registry items to targetDir. Pure I/O — used by `add` and tested directly.
 export function writeItems(items: RegistryItem[], targetDir: string, overwrite: boolean): WriteResult {
 	const written: string[] = []
 	const skipped: string[] = []
+	const resolvedTarget = resolve(targetDir)
 
 	for (const item of items) {
 		for (const file of item.files) {
-			const dest = resolve(targetDir, file.path)
+			const dest = resolve(resolvedTarget, file.path)
+			assertWithinTarget(resolvedTarget, dest)
 			if (existsSync(dest) && !overwrite) {
 				skipped.push(file.path)
 				continue

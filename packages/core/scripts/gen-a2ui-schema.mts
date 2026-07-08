@@ -7,6 +7,8 @@ import { writeFileSync } from "node:fs"
 import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { z } from "zod"
+import { AccordionItemSchema, AccordionSchema } from "../src/components/accordion/accordion.schema.ts"
+import { AlertSchema } from "../src/components/alert/alert.schema.ts"
 import { BreadcrumbSchema } from "../src/components/breadcrumb/breadcrumb.schema.ts"
 import { ButtonSchema } from "../src/components/button/button.schema.ts"
 import { CardSchema } from "../src/components/card/card.schema.ts"
@@ -23,6 +25,7 @@ import { SelectSchema } from "../src/components/select/select.schema.ts"
 import { SwitchSchema } from "../src/components/switch/switch.schema.ts"
 import { TableSchema } from "../src/components/table/table.schema.ts"
 import { TabsSchema } from "../src/components/tabs/tabs.schema.ts"
+import { TagGroupSchema, TagSchema } from "../src/components/tag/tag.schema.ts"
 import { TextSchema } from "../src/components/text/text.schema.ts"
 import { TextFieldSchema } from "../src/components/text-field/text-field.schema.ts"
 import { TooltipSchema } from "../src/components/tooltip/tooltip.schema.ts"
@@ -32,6 +35,9 @@ const ROOT = resolve(__dirname, "../../..")
 const OUT = resolve(ROOT, "registry/a2ui-schema.json")
 
 const allSchemas: [z.ZodTypeAny, z.ZodTypeAny, ...z.ZodTypeAny[]] = [
+	AccordionSchema,
+	AccordionItemSchema,
+	AlertSchema,
 	BreadcrumbSchema,
 	ButtonSchema,
 	CardSchema,
@@ -52,6 +58,8 @@ const allSchemas: [z.ZodTypeAny, z.ZodTypeAny, ...z.ZodTypeAny[]] = [
 	SwitchSchema,
 	TableSchema,
 	TabsSchema,
+	TagSchema,
+	TagGroupSchema,
 	TextSchema,
 	TextFieldSchema,
 	TooltipSchema,

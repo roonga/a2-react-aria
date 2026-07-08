@@ -37,6 +37,23 @@ describe("writeItems", () => {
 		expect(readFileSync(join(dir, "demo/Demo.tsx"), "utf8")).toBe("export const Demo = 1\n")
 	})
 
+	it("refuses to write files whose path escapes the target directory", () => {
+		const evil: RegistryItem = {
+			...ITEM,
+			files: [{ path: "../escape.txt", content: "pwned", type: "registry:component" }],
+		}
+		expect(() => writeItems([evil], dir, true)).toThrow(/outside the components directory/)
+	})
+
+	it("refuses an absolute registry path", () => {
+		const abs = process.platform === "win32" ? "C:\\Windows\\evil.txt" : "/tmp/evil.txt"
+		const evil: RegistryItem = {
+			...ITEM,
+			files: [{ path: abs, content: "pwned", type: "registry:component" }],
+		}
+		expect(() => writeItems([evil], dir, true)).toThrow(/outside the components directory/)
+	})
+
 	it("skips existing files unless overwrite is set", () => {
 		writeItems([ITEM], dir, false)
 		writeFileSync(join(dir, "demo/Demo.tsx"), "LOCAL")
@@ -186,10 +203,10 @@ describe("loadA2uiSchema (local)", () => {
 		expect(schema).not.toBeNull()
 	})
 
-	it("has oneOf with 23 entries (all built-in component types)", async () => {
+	it("has oneOf with 28 entries (all built-in component types)", async () => {
 		const schema = (await loadA2uiSchema(REGISTRY)) as Record<string, unknown>
 		const entries = (schema.oneOf ?? schema.anyOf) as unknown[]
-		expect(entries).toHaveLength(23)
+		expect(entries).toHaveLength(28)
 	})
 
 	it("includes Button and TextField in the schema", async () => {
