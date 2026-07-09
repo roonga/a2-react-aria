@@ -10,9 +10,9 @@ export function ThinkingBlock({ text }: ThinkingBlockProps) {
 		<details
 			open={open}
 			onToggle={(e) => setOpen(e.currentTarget.open)}
-			className="mb-2 rounded-md border border-(--color-border) bg-(--color-backgroundMuted) text-xs"
+			className="mb-2 rounded-md border border-(--color-border) bg-(--color-background-muted) text-xs"
 		>
-			<summary className="flex cursor-pointer select-none list-none items-center gap-1.5 px-3 py-1.5 font-medium text-(--color-textMuted)">
+			<summary className="flex cursor-pointer select-none list-none items-center gap-1.5 px-3 py-1.5 font-medium text-(--color-text-muted)">
 				<span>{open ? "▾" : "▸"}</span>
 				<span>Thinking</span>
 			</summary>

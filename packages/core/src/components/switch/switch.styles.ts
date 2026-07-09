@@ -5,7 +5,7 @@ interface TrackState {
 }
 
 const trackBase = "relative flex h-5 w-9 shrink-0 items-center rounded-full px-0.5 transition-colors duration-200"
-const handleBase = "h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200"
+const handleBase = "h-4 w-4 rounded-full bg-(--color-primary-foreground) shadow-sm transition-transform duration-200"
 
 export const getSwitchStyles = () => ({
 	field: "flex flex-col gap-1",
@@ -18,6 +18,6 @@ export const getSwitchStyles = () => ({
 		return `${trackBase} bg-(--color-border)`
 	},
 	handle: (isSelected: boolean) => `${handleBase} ${isSelected ? "translate-x-4" : "translate-x-0"}`,
-	description: "text-xs text-(--color-textMuted)",
+	description: "text-xs text-(--color-text-muted)",
 	errorMessage: "text-xs text-(--color-danger)",
 })

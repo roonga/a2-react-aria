@@ -84,7 +84,7 @@ export default function Survey() {
 	if (isLoading) {
 		return (
 			<div className="flex items-center justify-center py-16">
-				<p className="text-(--color-textMuted) text-sm">Loading survey…</p>
+				<p className="text-(--color-text-muted) text-sm">Loading survey…</p>
 			</div>
 		)
 	}
@@ -112,13 +112,13 @@ export default function Survey() {
 		>
 			{!isDone && !isWelcome && (
 				<div className="flex items-center gap-3">
-					<div className="h-2 flex-1 overflow-hidden rounded-full bg-(--color-backgroundMuted)">
+					<div className="h-2 flex-1 overflow-hidden rounded-full bg-(--color-background-muted)">
 						<div
 							className="h-full rounded-full bg-(--color-primary) transition-all duration-300"
 							style={{ width: `${progress}%` }}
 						/>
 					</div>
-					<span className="shrink-0 text-(--color-textMuted) text-sm">
+					<span className="shrink-0 text-(--color-text-muted) text-sm">
 						{stepIndex} / {totalSteps - 2}
 					</span>
 				</div>

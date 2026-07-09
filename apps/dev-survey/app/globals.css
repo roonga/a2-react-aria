@@ -25,25 +25,28 @@
 
 	/* ── a2UI component tokens ──────────────────────────────── */
 	--color-primary: var(--primary);
-	--color-primaryForeground: var(--primary-foreground);
-	--color-primaryHover: #be123c;
-	--color-primaryActive: #9f1239;
+	--color-primary-foreground: var(--primary-foreground);
+	--color-primary-hover: #be123c;
+	--color-primary-active: #9f1239;
 	--font-family: var(--font-lato);
 	--color-secondary: var(--secondary-foreground);
-	--color-secondaryHover: oklch(0.31 0.006 285.885);
-	--color-secondaryActive: oklch(0.39 0.006 285.885);
+	--color-secondary-hover: oklch(0.31 0.006 285.885);
+	--color-secondary-active: oklch(0.39 0.006 285.885);
+	--color-secondary-foreground: var(--primary-foreground);
 	--color-danger: var(--destructive);
-	--color-dangerHover: oklch(0.52 0.245 27.325);
-	--color-dangerActive: oklch(0.46 0.245 27.325);
+	--color-danger-hover: oklch(0.52 0.245 27.325);
+	--color-danger-active: oklch(0.46 0.245 27.325);
+	--color-danger-foreground: var(--primary-foreground);
 	--color-ghost: transparent;
-	--color-ghostHover: var(--accent);
-	--color-ghostActive: var(--border);
+	--color-ghost-hover: var(--accent);
+	--color-ghost-active: var(--border);
 	--color-text: var(--foreground);
-	--color-textMuted: var(--muted-foreground);
+	--color-text-muted: var(--muted-foreground);
 	--color-border: var(--border);
 	--color-background: var(--background);
-	--color-backgroundMuted: var(--muted);
+	--color-background-muted: var(--muted);
 	--color-surface: var(--card);
+	--color-overlay: rgb(0 0 0 / 0.5);
 	--color-star: oklch(0.75 0.18 84);
 }
 
@@ -68,24 +71,27 @@
 	--ring: #f43f5e;
 
 	--color-primary: var(--primary);
-	--color-primaryForeground: var(--primary-foreground);
-	--color-primaryHover: #e11d48;
-	--color-primaryActive: #be123c;
+	--color-primary-foreground: var(--primary-foreground);
+	--color-primary-hover: #e11d48;
+	--color-primary-active: #be123c;
 	--color-secondary: var(--secondary);
-	--color-secondaryHover: oklch(0.34 0 0);
-	--color-secondaryActive: oklch(0.4 0 0);
+	--color-secondary-hover: oklch(0.34 0 0);
+	--color-secondary-active: oklch(0.4 0 0);
+	--color-secondary-foreground: var(--primary-foreground);
 	--color-danger: var(--destructive);
-	--color-dangerHover: oklch(0.64 0.191 22.216);
-	--color-dangerActive: oklch(0.58 0.191 22.216);
+	--color-danger-hover: oklch(0.64 0.191 22.216);
+	--color-danger-active: oklch(0.58 0.191 22.216);
+	--color-danger-foreground: var(--primary-foreground);
 	--color-ghost: transparent;
-	--color-ghostHover: var(--accent);
-	--color-ghostActive: oklch(1 0 0 / 15%);
+	--color-ghost-hover: var(--accent);
+	--color-ghost-active: oklch(1 0 0 / 15%);
 	--color-text: var(--foreground);
-	--color-textMuted: var(--muted-foreground);
+	--color-text-muted: var(--muted-foreground);
 	--color-border: var(--border);
 	--color-background: var(--background);
-	--color-backgroundMuted: var(--muted);
+	--color-background-muted: var(--muted);
 	--color-surface: var(--card);
+	--color-overlay: rgb(0 0 0 / 0.5);
 	--color-star: oklch(0.87 0.18 84);
 }
 

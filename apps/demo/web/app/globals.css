@@ -25,25 +25,28 @@
 
 	/* ── a2UI component tokens (mapped from shadcn) ─────────── */
 	--color-primary: var(--primary);
-	--color-primaryForeground: var(--primary-foreground);
-	--color-primaryHover: oklch(0.47 0.223 3.958);
-	--color-primaryActive: oklch(0.41 0.223 3.958);
-	/* secondary-foreground (dark slate) so text-white stays legible */
+	--color-primary-foreground: var(--primary-foreground);
+	--color-primary-hover: oklch(0.47 0.223 3.958);
+	--color-primary-active: oklch(0.41 0.223 3.958);
+	/* secondary bg is dark slate here, so its foreground is light */
 	--color-secondary: var(--secondary-foreground);
-	--color-secondaryHover: oklch(0.31 0.006 285.885);
-	--color-secondaryActive: oklch(0.39 0.006 285.885);
+	--color-secondary-hover: oklch(0.31 0.006 285.885);
+	--color-secondary-active: oklch(0.39 0.006 285.885);
+	--color-secondary-foreground: var(--primary-foreground);
 	--color-danger: var(--destructive);
-	--color-dangerHover: oklch(0.52 0.245 27.325);
-	--color-dangerActive: oklch(0.46 0.245 27.325);
+	--color-danger-hover: oklch(0.52 0.245 27.325);
+	--color-danger-active: oklch(0.46 0.245 27.325);
+	--color-danger-foreground: var(--primary-foreground);
 	--color-ghost: transparent;
-	--color-ghostHover: var(--accent);
-	--color-ghostActive: var(--border);
+	--color-ghost-hover: var(--accent);
+	--color-ghost-active: var(--border);
 	--color-text: var(--foreground);
-	--color-textMuted: var(--muted-foreground);
+	--color-text-muted: var(--muted-foreground);
 	--color-border: var(--border);
 	--color-background: var(--background);
-	--color-backgroundMuted: var(--muted);
+	--color-background-muted: var(--muted);
 	--color-surface: var(--card);
+	--color-overlay: rgb(0 0 0 / 0.5);
 	--color-star: oklch(0.75 0.18 84);
 }
 
@@ -70,24 +73,27 @@
 
 	/* ── a2UI component tokens (dark, mapped from shadcn) ───── */
 	--color-primary: var(--primary);
-	--color-primaryForeground: var(--primary-foreground);
-	--color-primaryHover: oklch(0.4 0.187 3.815);
-	--color-primaryActive: oklch(0.34 0.187 3.815);
-	/* secondary in dark mode is already dark enough for text-white */
+	--color-primary-foreground: var(--primary-foreground);
+	--color-primary-hover: oklch(0.4 0.187 3.815);
+	--color-primary-active: oklch(0.34 0.187 3.815);
+	/* secondary in dark mode is already dark enough for a light foreground */
 	--color-secondary: var(--secondary);
-	--color-secondaryHover: oklch(0.34 0 0);
-	--color-secondaryActive: oklch(0.4 0 0);
+	--color-secondary-hover: oklch(0.34 0 0);
+	--color-secondary-active: oklch(0.4 0 0);
+	--color-secondary-foreground: var(--secondary-foreground);
 	--color-danger: var(--destructive);
-	--color-dangerHover: oklch(0.64 0.191 22.216);
-	--color-dangerActive: oklch(0.58 0.191 22.216);
+	--color-danger-hover: oklch(0.64 0.191 22.216);
+	--color-danger-active: oklch(0.58 0.191 22.216);
+	--color-danger-foreground: var(--primary-foreground);
 	--color-ghost: transparent;
-	--color-ghostHover: var(--accent);
-	--color-ghostActive: oklch(1 0 0 / 15%);
+	--color-ghost-hover: var(--accent);
+	--color-ghost-active: oklch(1 0 0 / 15%);
 	--color-text: var(--foreground);
-	--color-textMuted: var(--muted-foreground);
+	--color-text-muted: var(--muted-foreground);
 	--color-border: var(--border);
 	--color-background: var(--background);
-	--color-backgroundMuted: var(--muted);
+	--color-background-muted: var(--muted);
 	--color-surface: var(--card);
+	--color-overlay: rgb(0 0 0 / 0.5);
 	--color-star: oklch(0.87 0.18 84);
 }

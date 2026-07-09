@@ -16,14 +16,14 @@ const A2UIBlock = dynamic(
 		}),
 	{
 		ssr: false,
-		loading: () => <p className="mt-1 text-(--color-textMuted) text-xs">Loading components…</p>,
+		loading: () => <p className="mt-1 text-(--color-text-muted) text-xs">Loading components…</p>,
 	},
 )
 
 function bubbleClass(role: string, content: string): string {
 	if (role === "user") return "bg-(--color-primary) text-white"
 	if (content.startsWith("Error:"))
-		return "border border-(--color-danger) bg-(--color-backgroundMuted) text-(--color-danger) shadow-sm"
+		return "border border-(--color-danger) bg-(--color-background-muted) text-(--color-danger) shadow-sm"
 	return "bg-(--color-surface) text-(--color-text) shadow-md"
 }
 
@@ -46,7 +46,7 @@ export default function Chat() {
 
 	return (
 		<div className="overflow-hidden rounded-lg bg-(--color-surface) shadow-2xl">
-			<div ref={messagesContainerRef} className="h-150 space-y-4 overflow-y-auto bg-(--color-backgroundMuted) p-6">
+			<div ref={messagesContainerRef} className="h-150 space-y-4 overflow-y-auto bg-(--color-background-muted) p-6">
 				{messages.map((msg) => (
 					<div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
 						<div className={`max-w-[85%] rounded-lg px-4 py-3 ${bubbleClass(msg.role, msg.content)}`}>
@@ -61,11 +61,11 @@ export default function Chat() {
 					<div className="flex justify-start">
 						<div className="max-w-[85%] space-y-1">
 							{streamingThought && (
-								<div className="flex items-center gap-2 rounded-md border border-(--color-border) bg-(--color-backgroundMuted) px-3 py-2 text-(--color-textMuted) text-xs">
+								<div className="flex items-center gap-2 rounded-md border border-(--color-border) bg-(--color-background-muted) px-3 py-2 text-(--color-text-muted) text-xs">
 									<span className="flex gap-0.5">
-										<span className="h-1.5 w-1.5 animate-bounce rounded-full bg-(--color-textMuted) [animation-delay:0ms]" />
-										<span className="h-1.5 w-1.5 animate-bounce rounded-full bg-(--color-textMuted) [animation-delay:150ms]" />
-										<span className="h-1.5 w-1.5 animate-bounce rounded-full bg-(--color-textMuted) [animation-delay:300ms]" />
+										<span className="h-1.5 w-1.5 animate-bounce rounded-full bg-(--color-text-muted) [animation-delay:0ms]" />
+										<span className="h-1.5 w-1.5 animate-bounce rounded-full bg-(--color-text-muted) [animation-delay:150ms]" />
+										<span className="h-1.5 w-1.5 animate-bounce rounded-full bg-(--color-text-muted) [animation-delay:300ms]" />
 									</span>
 									<span className="font-medium">Thinking…</span>
 								</div>
@@ -90,7 +90,7 @@ export default function Chat() {
 						type="button"
 						onClick={() => void sendMessage("Book a table for 2 in Sydney tonight, Indian cuisine")}
 						disabled={isLoading}
-						className="rounded-full border border-(--color-border) px-3 py-1.5 text-(--color-textMuted) text-xs transition-colors hover:border-(--color-primary) hover:text-(--color-primary) disabled:cursor-not-allowed disabled:opacity-40"
+						className="rounded-full border border-(--color-border) px-3 py-1.5 text-(--color-text-muted) text-xs transition-colors hover:border-(--color-primary) hover:text-(--color-primary) disabled:cursor-not-allowed disabled:opacity-40"
 					>
 						🍽 Indian in Sydney tonight
 					</button>
@@ -104,13 +104,13 @@ export default function Chat() {
 						onKeyDown={handleKeyDown}
 						placeholder="Or type a message…"
 						disabled={isLoading}
-						className="flex-1 rounded-lg border border-(--color-border) px-4 py-3 text-(--color-text) placeholder:text-(--color-textMuted) focus:border-transparent focus:outline-none focus:ring-(--color-primary) focus:ring-2 disabled:cursor-not-allowed disabled:bg-(--color-backgroundMuted)"
+						className="flex-1 rounded-lg border border-(--color-border) px-4 py-3 text-(--color-text) placeholder:text-(--color-text-muted) focus:border-transparent focus:outline-none focus:ring-(--color-primary) focus:ring-2 disabled:cursor-not-allowed disabled:bg-(--color-background-muted)"
 					/>
 					<button
 						type="button"
 						onClick={() => void sendMessage()}
 						disabled={isLoading || !input.trim()}
-						className="rounded-lg bg-(--color-primary) px-6 py-3 font-medium text-white transition-colors hover:bg-(--color-primaryHover) focus:outline-none focus:ring-(--color-primary) focus:ring-2 disabled:cursor-not-allowed disabled:bg-(--color-backgroundMuted) disabled:text-(--color-textMuted)"
+						className="rounded-lg bg-(--color-primary) px-6 py-3 font-medium text-white transition-colors hover:bg-(--color-primary-hover) focus:outline-none focus:ring-(--color-primary) focus:ring-2 disabled:cursor-not-allowed disabled:bg-(--color-background-muted) disabled:text-(--color-text-muted)"
 					>
 						{isLoading ? "Sending…" : "Send"}
 					</button>

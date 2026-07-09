@@ -11,7 +11,7 @@ export default function AdminLayout({ children }: { readonly children: ReactNode
 						Survey Manager
 					</Link>
 					<span className="text-(--color-border)">|</span>
-					<Link href="/" className="text-(--color-textMuted) text-sm hover:text-(--color-text)">
+					<Link href="/" className="text-(--color-text-muted) text-sm hover:text-(--color-text)">
 						View Survey
 					</Link>
 					<div className="ml-auto">

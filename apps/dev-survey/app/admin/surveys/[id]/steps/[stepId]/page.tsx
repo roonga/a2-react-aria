@@ -319,7 +319,7 @@ function QuestionForm({
 
 	const inputCls = (field?: string) =>
 		`w-full rounded-md border ${field && errors[field] ? "border-(--color-danger)" : "border-(--color-border)"} bg-(--color-background) px-3 py-1.5 text-(--color-text) text-sm focus:outline-none focus:ring-2 focus:ring-(--color-primary)`
-	const labelCls = "block text-(--color-textMuted) text-xs font-medium mb-1"
+	const labelCls = "block text-(--color-text-muted) text-xs font-medium mb-1"
 	const errCls = "mt-1 text-(--color-danger) text-xs"
 
 	if (q.type === "Text") {
@@ -646,7 +646,7 @@ function ConditionRow({
 					<button
 						type="button"
 						onClick={onToggleGroupOp}
-						className="rounded border border-(--color-border) bg-(--color-surface) px-2 py-0.5 font-semibold text-(--color-primary) text-xs uppercase hover:bg-(--color-backgroundMuted)"
+						className="rounded border border-(--color-border) bg-(--color-surface) px-2 py-0.5 font-semibold text-(--color-primary) text-xs uppercase hover:bg-(--color-background-muted)"
 					>
 						{groupOp}
 					</button>
@@ -665,12 +665,12 @@ function ConditionRow({
 						</option>
 					))}
 				</select>
-				<span className="shrink-0 whitespace-nowrap text-(--color-textMuted) text-xs">is one of</span>
+				<span className="shrink-0 whitespace-nowrap text-(--color-text-muted) text-xs">is one of</span>
 				<button
 					type="button"
 					onClick={onRemove}
 					title="Remove condition"
-					className="shrink-0 text-(--color-danger) hover:text-(--color-dangerHover)"
+					className="shrink-0 text-(--color-danger) hover:text-(--color-danger-hover)"
 				>
 					×
 				</button>
@@ -680,13 +680,13 @@ function ConditionRow({
 					{cond.values.map((v) => (
 						<span
 							key={v}
-							className="flex items-center gap-1 rounded-full bg-(--color-backgroundMuted) px-2 py-0.5 text-(--color-text) text-xs"
+							className="flex items-center gap-1 rounded-full bg-(--color-background-muted) px-2 py-0.5 text-(--color-text) text-xs"
 						>
 							{v}
 							<button
 								type="button"
 								onClick={() => onRemoveValue(v)}
-								className="text-(--color-textMuted) hover:text-(--color-danger)"
+								className="text-(--color-text-muted) hover:text-(--color-danger)"
 							>
 								×
 							</button>
@@ -731,7 +731,7 @@ function ConditionRow({
 								onAddValue(newValue)
 								setNewValue("")
 							}}
-							className="rounded-md border border-(--color-border) px-3 py-1.5 text-(--color-text) text-sm hover:bg-(--color-backgroundMuted)"
+							className="rounded-md border border-(--color-border) px-3 py-1.5 text-(--color-text) text-sm hover:bg-(--color-background-muted)"
 						>
 							Add
 						</button>
@@ -826,17 +826,17 @@ function FlowRuleEditor({
 			</div>
 
 			{!skipIf ? (
-				<p className="text-(--color-textMuted) text-sm">No rule — this step always shows.</p>
+				<p className="text-(--color-text-muted) text-sm">No rule — this step always shows.</p>
 			) : (
 				<>
-					<p className="mb-3 text-(--color-textMuted) text-xs">Skip this step when…</p>
+					<p className="mb-3 text-(--color-text-muted) text-xs">Skip this step when…</p>
 					<div className="space-y-1">
 						{skipIf.groups.map((group, gIdx) => (
 							<div key={group._id}>
-								<div className="space-y-2 rounded-md border border-(--color-border) bg-(--color-backgroundMuted) p-3">
+								<div className="space-y-2 rounded-md border border-(--color-border) bg-(--color-background-muted) p-3">
 									<div className="flex items-center justify-between">
 										{skipIf.groups.length > 1 && (
-											<span className="font-medium text-(--color-textMuted) text-xs">Group {gIdx + 1}</span>
+											<span className="font-medium text-(--color-text-muted) text-xs">Group {gIdx + 1}</span>
 										)}
 										<button
 											type="button"
@@ -874,7 +874,7 @@ function FlowRuleEditor({
 										<button
 											type="button"
 											onClick={() => onChange({ ...skipIf, groups_op: skipIf.groups_op === "and" ? "or" : "and" })}
-											className="rounded-full border border-(--color-border) bg-(--color-surface) px-3 py-0.5 font-semibold text-(--color-primary) text-xs uppercase hover:bg-(--color-backgroundMuted)"
+											className="rounded-full border border-(--color-border) bg-(--color-surface) px-3 py-0.5 font-semibold text-(--color-primary) text-xs uppercase hover:bg-(--color-background-muted)"
 										>
 											{skipIf.groups_op}
 										</button>
@@ -884,7 +884,7 @@ function FlowRuleEditor({
 						))}
 					</div>
 					{skipIf.groups.length > 1 && (
-						<p className="mt-2 text-(--color-textMuted) text-xs">
+						<p className="mt-2 text-(--color-text-muted) text-xs">
 							Groups are combined with <strong>{skipIf.groups_op.toUpperCase()}</strong>. Click the badge between groups
 							to toggle.
 						</p>
@@ -1052,13 +1052,13 @@ export default function StepEditorPage() {
 
 	const themeVars = Object.fromEntries(Object.entries(surveyTheme).filter(([k]) => k.startsWith("--"))) as CSSProperties
 
-	if (loading) return <p className="text-(--color-textMuted) text-sm">Loading…</p>
+	if (loading) return <p className="text-(--color-text-muted) text-sm">Loading…</p>
 	if (!step) return <p className="text-(--color-danger) text-sm">Step not found.</p>
 
 	return (
 		<div>
 			{/* Breadcrumb */}
-			<div className="mb-4 flex items-center gap-2 text-(--color-textMuted) text-sm">
+			<div className="mb-4 flex items-center gap-2 text-(--color-text-muted) text-sm">
 				<Link href="/admin" className="hover:text-(--color-text)">
 					Surveys
 				</Link>
@@ -1073,7 +1073,7 @@ export default function StepEditorPage() {
 			{/* Step meta */}
 			<div className="mb-6 grid grid-cols-2 gap-4">
 				<div>
-					<label htmlFor="step-title" className="mb-1 block font-medium text-(--color-textMuted) text-xs">
+					<label htmlFor="step-title" className="mb-1 block font-medium text-(--color-text-muted) text-xs">
 						Step title
 					</label>
 					<input
@@ -1085,7 +1085,7 @@ export default function StepEditorPage() {
 					/>
 				</div>
 				<div>
-					<label htmlFor="step-slug" className="mb-1 block font-medium text-(--color-textMuted) text-xs">
+					<label htmlFor="step-slug" className="mb-1 block font-medium text-(--color-text-muted) text-xs">
 						Slug (URL id)
 					</label>
 					<input
@@ -1099,7 +1099,7 @@ export default function StepEditorPage() {
 			</div>
 
 			{error && (
-				<div className="mb-4 rounded-md border border-(--color-danger) bg-(--color-backgroundMuted) p-3 text-(--color-danger) text-sm">
+				<div className="mb-4 rounded-md border border-(--color-danger) bg-(--color-background-muted) p-3 text-(--color-danger) text-sm">
 					{error}
 				</div>
 			)}
@@ -1121,15 +1121,17 @@ export default function StepEditorPage() {
 										onClick={() => setShowPicker((v) => !v)}
 										className={`rounded-md border px-2.5 py-1 text-xs transition-colors ${
 											showPicker
-												? "border-(--color-primary) bg-(--color-backgroundMuted) text-(--color-primary)"
-												: "border-(--color-border) text-(--color-textMuted) hover:bg-(--color-backgroundMuted) hover:text-(--color-text)"
+												? "border-(--color-primary) bg-(--color-background-muted) text-(--color-primary)"
+												: "border-(--color-border) text-(--color-text-muted) hover:bg-(--color-background-muted) hover:text-(--color-text)"
 										}`}
 									>
 										+ Add
 									</button>
 									{showPicker && (
 										<div className="absolute right-0 top-full z-50 mt-1 w-64 rounded-lg border border-(--color-border) bg-(--color-surface) p-2 shadow-lg">
-											<p className="mb-1.5 px-1 font-medium text-(--color-textMuted) text-xs">What kind of question?</p>
+											<p className="mb-1.5 px-1 font-medium text-(--color-text-muted) text-xs">
+												What kind of question?
+											</p>
 											<div className="flex flex-col gap-1">
 												{QUESTION_INTENTS.map((intent) => (
 													<button
@@ -1139,10 +1141,10 @@ export default function StepEditorPage() {
 															addQuestion(intent.type)
 															setShowPicker(false)
 														}}
-														className="flex flex-col items-start rounded-md px-2.5 py-2 text-left transition-colors hover:bg-(--color-backgroundMuted)"
+														className="flex flex-col items-start rounded-md px-2.5 py-2 text-left transition-colors hover:bg-(--color-background-muted)"
 													>
 														<span className="font-medium text-(--color-text) text-sm">{intent.label}</span>
-														<span className="text-(--color-textMuted) text-xs leading-snug">{intent.description}</span>
+														<span className="text-(--color-text-muted) text-xs leading-snug">{intent.description}</span>
 													</button>
 												))}
 											</div>
@@ -1152,7 +1154,7 @@ export default function StepEditorPage() {
 							</div>
 
 							{questions.length === 0 ? (
-								<p className="rounded-lg border border-(--color-border) border-dashed p-3 text-center text-(--color-textMuted) text-xs">
+								<p className="rounded-lg border border-(--color-border) border-dashed p-3 text-center text-(--color-text-muted) text-xs">
 									No questions yet.
 								</p>
 							) : (
@@ -1164,7 +1166,7 @@ export default function StepEditorPage() {
 											key={q._id}
 											className={`rounded-lg border p-2.5 ${
 												selectedIdx === idx
-													? "border-(--color-primary) bg-(--color-backgroundMuted)"
+													? "border-(--color-primary) bg-(--color-background-muted)"
 													: hasError
 														? "border-(--color-danger) bg-(--color-surface)"
 														: "border-(--color-border) bg-(--color-surface)"
@@ -1177,7 +1179,7 @@ export default function StepEditorPage() {
 													className="min-w-0 flex-1 truncate text-left"
 												>
 													<span
-														className={`text-xs ${hasError ? "text-(--color-danger)" : "text-(--color-textMuted)"}`}
+														className={`text-xs ${hasError ? "text-(--color-danger)" : "text-(--color-text-muted)"}`}
 													>
 														{TYPE_LABELS[q.type]}
 													</span>
@@ -1196,7 +1198,7 @@ export default function StepEditorPage() {
 															moveQuestion(idx, -1)
 														}}
 														disabled={idx === 0}
-														className="text-(--color-textMuted) hover:text-(--color-text) disabled:opacity-30"
+														className="text-(--color-text-muted) hover:text-(--color-text) disabled:opacity-30"
 														title="Move up"
 													>
 														↑
@@ -1208,7 +1210,7 @@ export default function StepEditorPage() {
 															moveQuestion(idx, 1)
 														}}
 														disabled={idx === questions.length - 1}
-														className="text-(--color-textMuted) hover:text-(--color-text) disabled:opacity-30"
+														className="text-(--color-text-muted) hover:text-(--color-text) disabled:opacity-30"
 														title="Move down"
 													>
 														↓
@@ -1219,7 +1221,7 @@ export default function StepEditorPage() {
 															e.stopPropagation()
 															removeQuestion(idx)
 														}}
-														className="text-(--color-danger) hover:text-(--color-dangerHover)"
+														className="text-(--color-danger) hover:text-(--color-danger-hover)"
 														title="Remove"
 													>
 														×
@@ -1248,7 +1250,7 @@ export default function StepEditorPage() {
 									/>
 								</div>
 							) : (
-								<div className="flex h-full items-center justify-center rounded-lg border border-(--color-border) border-dashed p-8 text-(--color-textMuted) text-sm">
+								<div className="flex h-full items-center justify-center rounded-lg border border-(--color-border) border-dashed p-8 text-(--color-text-muted) text-sm">
 									Select a question to edit it.
 								</div>
 							)}
@@ -1268,7 +1270,7 @@ export default function StepEditorPage() {
 							{showJson ? "Hide" : "Show"} A2UI JSON
 						</button>
 						{showJson && (
-							<pre className="mt-2 overflow-auto rounded-lg border border-(--color-border) bg-(--color-backgroundMuted) p-4 text-(--color-text) text-xs">
+							<pre className="mt-2 overflow-auto rounded-lg border border-(--color-border) bg-(--color-background-muted) p-4 text-(--color-text) text-xs">
 								{JSON.stringify(builtNodes, null, 2)}
 							</pre>
 						)}
@@ -1279,11 +1281,11 @@ export default function StepEditorPage() {
 				<div className="sticky top-4 self-start">
 					<div className="rounded-lg border border-(--color-border) overflow-hidden">
 						<div className="flex items-center justify-between border-b border-(--color-border) px-3 py-2">
-							<span className="font-medium text-(--color-textMuted) text-xs">Preview</span>
+							<span className="font-medium text-(--color-text-muted) text-xs">Preview</span>
 							<button
 								type="button"
 								onClick={() => setPreviewValues({})}
-								className="text-(--color-textMuted) text-xs hover:text-(--color-text)"
+								className="text-(--color-text-muted) text-xs hover:text-(--color-text)"
 							>
 								Reset
 							</button>
@@ -1297,7 +1299,7 @@ export default function StepEditorPage() {
 									<A2UIBlock nodes={builtNodes} onAction={() => setPreviewValues({})} />
 								</FormStateContext.Provider>
 							) : (
-								<p className="py-8 text-center text-(--color-textMuted) text-xs">Add questions to see a preview.</p>
+								<p className="py-8 text-center text-(--color-text-muted) text-xs">Add questions to see a preview.</p>
 							)}
 						</div>
 					</div>
@@ -1310,13 +1312,13 @@ export default function StepEditorPage() {
 					type="button"
 					onClick={handleSave}
 					disabled={saving}
-					className="rounded-md bg-(--color-primary) px-6 py-2 font-medium text-(--color-primaryForeground) text-sm hover:bg-(--color-primaryHover) disabled:opacity-50"
+					className="rounded-md bg-(--color-primary) px-6 py-2 font-medium text-(--color-primary-foreground) text-sm hover:bg-(--color-primary-hover) disabled:opacity-50"
 				>
 					{saving ? "Saving…" : "Save Step"}
 				</button>
 				<Link
 					href={`/admin/surveys/${surveyId}`}
-					className="rounded-md border border-(--color-border) px-6 py-2 text-(--color-text) text-sm hover:bg-(--color-backgroundMuted)"
+					className="rounded-md border border-(--color-border) px-6 py-2 text-(--color-text) text-sm hover:bg-(--color-background-muted)"
 				>
 					Cancel
 				</Link>

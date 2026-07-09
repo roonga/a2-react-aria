@@ -1,7 +1,7 @@
 export const getTableStyles = () => ({
 	root: "w-full border-collapse text-sm",
 	column: [
-		"px-3 py-2 text-left font-medium text-(--color-textMuted)",
+		"px-3 py-2 text-left font-medium text-(--color-text-muted)",
 		"border-b border-(--color-border)",
 		"outline-none",
 		"focus-visible:outline-2 focus-visible:outline-(--color-primary)",

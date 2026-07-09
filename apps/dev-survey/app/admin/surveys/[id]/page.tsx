@@ -107,12 +107,12 @@ export default function SurveyDetailPage() {
 		}
 	}
 
-	if (loading) return <p className="text-(--color-textMuted) text-sm">Loading…</p>
+	if (loading) return <p className="text-(--color-text-muted) text-sm">Loading…</p>
 	if (!survey) return <p className="text-(--color-danger) text-sm">Survey not found.</p>
 
 	return (
 		<div>
-			<div className="mb-1 flex items-center gap-2 text-(--color-textMuted) text-sm">
+			<div className="mb-1 flex items-center gap-2 text-(--color-text-muted) text-sm">
 				<Link href="/admin" className="hover:text-(--color-text)">
 					Surveys
 				</Link>
@@ -142,18 +142,18 @@ export default function SurveyDetailPage() {
 							{survey.title}
 						</button>
 					)}
-					<p className="mt-1 text-(--color-textMuted) text-sm">{survey.description || "No description"}</p>
+					<p className="mt-1 text-(--color-text-muted) text-sm">{survey.description || "No description"}</p>
 				</div>
 				<div className="flex shrink-0 items-center gap-2">
 					<Link
 						href={`/admin/surveys/${id}/theme`}
-						className="rounded-md border border-(--color-border) px-3 py-1.5 text-(--color-text) text-sm hover:bg-(--color-backgroundMuted)"
+						className="rounded-md border border-(--color-border) px-3 py-1.5 text-(--color-text) text-sm hover:bg-(--color-background-muted)"
 					>
 						Theme
 					</Link>
 					<Link
 						href={`/admin/surveys/${id}/preview`}
-						className="rounded-md border border-(--color-border) px-3 py-1.5 text-(--color-text) text-sm hover:bg-(--color-backgroundMuted)"
+						className="rounded-md border border-(--color-border) px-3 py-1.5 text-(--color-text) text-sm hover:bg-(--color-background-muted)"
 					>
 						Preview
 					</Link>
@@ -162,8 +162,8 @@ export default function SurveyDetailPage() {
 						onClick={handlePublish}
 						className={`rounded-md px-3 py-1.5 font-medium text-sm ${
 							survey.status === "published"
-								? "border border-(--color-border) text-(--color-text) hover:bg-(--color-backgroundMuted)"
-								: "bg-(--color-primary) text-(--color-primaryForeground) hover:bg-(--color-primaryHover)"
+								? "border border-(--color-border) text-(--color-text) hover:bg-(--color-background-muted)"
+								: "bg-(--color-primary) text-(--color-primary-foreground) hover:bg-(--color-primary-hover)"
 						}`}
 					>
 						{survey.status === "published" ? "Unpublish" : "Publish"}
@@ -171,8 +171,8 @@ export default function SurveyDetailPage() {
 					<span
 						className={`rounded-full px-2 py-0.5 font-medium text-xs ${
 							survey.status === "published"
-								? "bg-(--color-primary) text-(--color-primaryForeground)"
-								: "bg-(--color-backgroundMuted) text-(--color-textMuted)"
+								? "bg-(--color-primary) text-(--color-primary-foreground)"
+								: "bg-(--color-background-muted) text-(--color-text-muted)"
 						}`}
 					>
 						{survey.status}
@@ -181,7 +181,7 @@ export default function SurveyDetailPage() {
 			</div>
 
 			{error && (
-				<div className="mb-4 rounded-md border border-(--color-danger) bg-(--color-backgroundMuted) p-3 text-(--color-danger) text-sm">
+				<div className="mb-4 rounded-md border border-(--color-danger) bg-(--color-background-muted) p-3 text-(--color-danger) text-sm">
 					{error}
 				</div>
 			)}
@@ -191,7 +191,7 @@ export default function SurveyDetailPage() {
 				<button
 					type="button"
 					onClick={() => setAddingStep(true)}
-					className="rounded-md border border-(--color-border) px-3 py-1.5 text-(--color-text) text-sm hover:bg-(--color-backgroundMuted)"
+					className="rounded-md border border-(--color-border) px-3 py-1.5 text-(--color-text) text-sm hover:bg-(--color-background-muted)"
 				>
 					Add Step
 				</button>
@@ -219,14 +219,14 @@ export default function SurveyDetailPage() {
 					<div className="col-span-2 flex gap-2">
 						<button
 							type="submit"
-							className="rounded-md bg-(--color-primary) px-4 py-2 font-medium text-(--color-primaryForeground) text-sm hover:bg-(--color-primaryHover)"
+							className="rounded-md bg-(--color-primary) px-4 py-2 font-medium text-(--color-primary-foreground) text-sm hover:bg-(--color-primary-hover)"
 						>
 							Add
 						</button>
 						<button
 							type="button"
 							onClick={() => setAddingStep(false)}
-							className="rounded-md border border-(--color-border) px-4 py-2 text-(--color-text) text-sm hover:bg-(--color-backgroundMuted)"
+							className="rounded-md border border-(--color-border) px-4 py-2 text-(--color-text) text-sm hover:bg-(--color-background-muted)"
 						>
 							Cancel
 						</button>
@@ -235,7 +235,7 @@ export default function SurveyDetailPage() {
 			)}
 
 			{survey.steps.length === 0 ? (
-				<p className="text-(--color-textMuted) text-sm">No steps yet. Add one above.</p>
+				<p className="text-(--color-text-muted) text-sm">No steps yet. Add one above.</p>
 			) : (
 				<ul className="space-y-2">
 					{survey.steps.map((step: Step, index: number) => (
@@ -247,31 +247,31 @@ export default function SurveyDetailPage() {
 							onDrop={handleDrop}
 							className="flex cursor-grab items-center gap-3 rounded-lg border border-(--color-border) bg-(--color-surface) p-3 active:cursor-grabbing"
 						>
-							<span className="select-none text-(--color-textMuted)">⠿</span>
-							<span className="w-5 shrink-0 text-center text-(--color-textMuted) text-sm">{index + 1}</span>
+							<span className="select-none text-(--color-text-muted)">⠿</span>
+							<span className="w-5 shrink-0 text-center text-(--color-text-muted) text-sm">{index + 1}</span>
 							<div className="min-w-0 flex-1">
 								<span className="font-medium text-(--color-text) text-sm">{step.title}</span>
-								<span className="ml-2 text-(--color-textMuted) text-xs">/{step.slug}</span>
+								<span className="ml-2 text-(--color-text-muted) text-xs">/{step.slug}</span>
 								{step.skip_if && (
-									<span className="ml-2 rounded-full bg-(--color-backgroundMuted) px-2 py-0.5 text-(--color-textMuted) text-xs">
+									<span className="ml-2 rounded-full bg-(--color-background-muted) px-2 py-0.5 text-(--color-text-muted) text-xs">
 										conditional
 									</span>
 								)}
 							</div>
-							<span className="shrink-0 text-(--color-textMuted) text-xs">
+							<span className="shrink-0 text-(--color-text-muted) text-xs">
 								{(step.nodes as unknown[]).length} node(s)
 							</span>
 							<div className="flex shrink-0 items-center gap-1">
 								<Link
 									href={`/admin/surveys/${id}/steps/${step.id}`}
-									className="rounded-md border border-(--color-border) px-3 py-1 text-(--color-text) text-sm hover:bg-(--color-backgroundMuted)"
+									className="rounded-md border border-(--color-border) px-3 py-1 text-(--color-text) text-sm hover:bg-(--color-background-muted)"
 								>
 									Edit
 								</Link>
 								<button
 									type="button"
 									onClick={() => handleDeleteStep(step.id, step.title)}
-									className="rounded-md border border-(--color-danger) px-3 py-1 text-(--color-danger) text-sm hover:bg-(--color-backgroundMuted)"
+									className="rounded-md border border-(--color-danger) px-3 py-1 text-(--color-danger) text-sm hover:bg-(--color-background-muted)"
 								>
 									Delete
 								</button>
