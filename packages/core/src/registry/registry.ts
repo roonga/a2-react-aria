@@ -2,6 +2,12 @@ import type { NodeValidatorResult } from "../registry-schema"
 import { createNodeValidator } from "../registry-schema"
 import type { A2ComponentType, ComponentEntry, ComponentRegistry, SchemaLike } from "../types"
 
+// Module-level singleton for the common single-app case, populated via
+// registerComponent / registerAllComponents and read by A2Renderer when no
+// `registry` prop is given. Because it is shared module state, avoid it where
+// isolation matters (SSR request scope, tests, or two renderers with different
+// component sets): build a dedicated registry with createRegistry() and pass it
+// to <A2Renderer registry={...}> instead.
 const globalRegistry: ComponentRegistry = new Map()
 
 export type A2Registry = ComponentRegistry & {
