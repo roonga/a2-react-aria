@@ -8,7 +8,7 @@ export const getPopoverStyles = () => ({
 	].join(" "),
 	trigger: [
 		"rounded px-3 py-1.5 text-sm font-medium",
-		"bg-(--color-backgroundMuted) text-(--color-text)",
+		"bg-(--color-background-muted) text-(--color-text)",
 		"border border-(--color-border)",
 		"hover:bg-(--color-border) transition-colors",
 		"focus-visible:outline-2 focus-visible:outline-(--color-primary)",

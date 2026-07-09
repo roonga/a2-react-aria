@@ -25,7 +25,7 @@ export default function AppearanceToggle() {
 			type="button"
 			onClick={toggle}
 			aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
-			className="rounded-md p-1.5 text-(--color-textMuted) hover:bg-(--color-backgroundMuted) hover:text-(--color-text)"
+			className="rounded-md p-1.5 text-(--color-text-muted) hover:bg-(--color-background-muted) hover:text-(--color-text)"
 		>
 			{dark ? (
 				<svg

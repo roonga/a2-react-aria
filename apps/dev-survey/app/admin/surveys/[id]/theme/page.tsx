@@ -136,13 +136,13 @@ function deriveTokens(cfg: ThemeConfig): Record<string, string> {
 	const radiusPx = Math.min(parseFloat(RADII[cfg.radius]), 16)
 	return {
 		"--color-primary": cfg.accent,
-		"--color-primaryForeground": accentFg,
+		"--color-primary-foreground": accentFg,
 		"--color-background": light ? "#ffffff" : "#0f172a",
 		"--color-surface": light ? "#f8fafc" : "#1e293b",
 		"--color-text": light ? "#0f172a" : "#f8fafc",
-		"--color-textMuted": light ? "#64748b" : "#94a3b8",
+		"--color-text-muted": light ? "#64748b" : "#94a3b8",
 		"--color-border": light ? "#e2e8f0" : "#334155",
-		"--color-backgroundMuted": light ? "#f1f5f9" : "#1e293b",
+		"--color-background-muted": light ? "#f1f5f9" : "#1e293b",
 		"--font-family": FONT_FAMILIES[cfg.font],
 		"--radius": RADII[cfg.radius],
 		"--radius-card": `${radiusPx}px`,
@@ -210,7 +210,7 @@ export default function ThemePage() {
 		(p) => p.accent === config.accent && p.base === config.base && p.font === config.font && p.radius === config.radius,
 	)?.name
 
-	if (loading) return <p className="text-(--color-textMuted) text-sm">Loading…</p>
+	if (loading) return <p className="text-(--color-text-muted) text-sm">Loading…</p>
 
 	const previewVars = Object.fromEntries(
 		Object.entries(deriveTokens(config)).filter(([k]) => k.startsWith("--")),
@@ -218,7 +218,7 @@ export default function ThemePage() {
 
 	return (
 		<div>
-			<div className="mb-1 flex items-center gap-2 text-(--color-textMuted) text-sm">
+			<div className="mb-1 flex items-center gap-2 text-(--color-text-muted) text-sm">
 				<Link href="/admin" className="hover:text-(--color-text)">
 					Surveys
 				</Link>
@@ -236,7 +236,7 @@ export default function ThemePage() {
 					<button
 						type="button"
 						onClick={reset}
-						className="rounded-md border border-(--color-border) px-3 py-1.5 text-(--color-text) text-sm hover:bg-(--color-backgroundMuted)"
+						className="rounded-md border border-(--color-border) px-3 py-1.5 text-(--color-text) text-sm hover:bg-(--color-background-muted)"
 					>
 						Reset
 					</button>
@@ -244,13 +244,13 @@ export default function ThemePage() {
 						type="button"
 						onClick={save}
 						disabled={saving}
-						className="rounded-md bg-(--color-primary) px-3 py-1.5 font-medium text-(--color-primaryForeground) text-sm disabled:opacity-50"
+						className="rounded-md bg-(--color-primary) px-3 py-1.5 font-medium text-(--color-primary-foreground) text-sm disabled:opacity-50"
 					>
 						{saving ? "Saving…" : "Save Theme"}
 					</button>
 					<Link
 						href={`/admin/surveys/${id}`}
-						className="rounded-md border border-(--color-border) px-3 py-1.5 text-(--color-text) text-sm hover:bg-(--color-backgroundMuted)"
+						className="rounded-md border border-(--color-border) px-3 py-1.5 text-(--color-text) text-sm hover:bg-(--color-background-muted)"
 					>
 						Back to editor
 					</Link>
@@ -258,19 +258,19 @@ export default function ThemePage() {
 			</div>
 
 			{saveSuccess && (
-				<div className="mb-4 rounded-md border border-(--color-border) bg-(--color-backgroundMuted) px-4 py-2 text-(--color-text) text-sm">
+				<div className="mb-4 rounded-md border border-(--color-border) bg-(--color-background-muted) px-4 py-2 text-(--color-text) text-sm">
 					Theme saved.
 				</div>
 			)}
 			{saveError && (
-				<div className="mb-4 rounded-md border border-(--color-danger) bg-(--color-backgroundMuted) px-4 py-2 text-(--color-danger) text-sm">
+				<div className="mb-4 rounded-md border border-(--color-danger) bg-(--color-background-muted) px-4 py-2 text-(--color-danger) text-sm">
 					{saveError}
 				</div>
 			)}
 
 			{/* Presets */}
 			<div className="mb-6">
-				<p className="mb-3 text-(--color-textMuted) text-sm">Presets</p>
+				<p className="mb-3 text-(--color-text-muted) text-sm">Presets</p>
 				<div className="flex flex-wrap gap-2">
 					{PRESETS.map((preset) => (
 						<button
@@ -282,8 +282,8 @@ export default function ThemePage() {
 							}}
 							className={`flex items-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors ${
 								activePreset === preset.name
-									? "border-(--color-primary) bg-(--color-backgroundMuted) font-medium text-(--color-text)"
-									: "border-(--color-border) text-(--color-text) hover:bg-(--color-backgroundMuted)"
+									? "border-(--color-primary) bg-(--color-background-muted) font-medium text-(--color-text)"
+									: "border-(--color-border) text-(--color-text) hover:bg-(--color-background-muted)"
 							}`}
 						>
 							<span className="h-4 w-4 shrink-0 rounded-full" style={{ backgroundColor: preset.accent }} />
@@ -334,7 +334,7 @@ export default function ThemePage() {
 								setConfig((c) => ({ ...c, base: c.base === "light" ? "dark" : "light" }))
 								setSaveSuccess(false)
 							}}
-							className="flex w-full items-center justify-between rounded-md border border-(--color-border) px-3 py-2 text-sm hover:bg-(--color-backgroundMuted)"
+							className="flex w-full items-center justify-between rounded-md border border-(--color-border) px-3 py-2 text-sm hover:bg-(--color-background-muted)"
 						>
 							<span className="text-(--color-text)">{config.base === "light" ? "Light" : "Dark"}</span>
 							<span
@@ -377,12 +377,12 @@ export default function ThemePage() {
 							))}
 						</select>
 						{config.font === "system" ? (
-							<p className="mt-1.5 rounded-md border border-(--color-border) bg-(--color-backgroundMuted) px-3 py-2 text-(--color-textMuted) text-xs leading-relaxed">
+							<p className="mt-1.5 rounded-md border border-(--color-border) bg-(--color-background-muted) px-3 py-2 text-(--color-text-muted) text-xs leading-relaxed">
 								Uses the OS native font: SF Pro on Apple, Roboto on Android, Segoe UI on Windows. The preview reflects
 								your browser — respondents will see their platform default.
 							</p>
 						) : (
-							<p className="mt-1.5 text-(--color-textMuted) text-xs leading-relaxed">
+							<p className="mt-1.5 text-(--color-text-muted) text-xs leading-relaxed">
 								{FONT_DESCRIPTIONS[config.font]}
 							</p>
 						)}
@@ -411,8 +411,8 @@ export default function ThemePage() {
 										}}
 										className={`flex items-center gap-3 px-3 py-2 text-sm transition-colors ${
 											active
-												? "bg-(--color-backgroundMuted) font-medium text-(--color-text)"
-												: "text-(--color-text) hover:bg-(--color-backgroundMuted)"
+												? "bg-(--color-background-muted) font-medium text-(--color-text)"
+												: "text-(--color-text) hover:bg-(--color-background-muted)"
 										}`}
 									>
 										<svg width="18" height="18" viewBox="0 0 36 36" aria-hidden="true" className="shrink-0">
@@ -460,18 +460,18 @@ export default function ThemePage() {
 					className="overflow-hidden rounded-lg border border-(--color-border) bg-(--color-background)"
 				>
 					<div className="border-b border-(--color-border) px-4 py-2">
-						<span className="text-(--color-textMuted) text-xs">Preview</span>
+						<span className="text-(--color-text-muted) text-xs">Preview</span>
 					</div>
 					<div className="flex flex-col gap-4 p-4">
 						{/* Progress bar */}
 						<div className="flex items-center gap-3">
-							<div className="h-2 flex-1 overflow-hidden rounded-full bg-(--color-backgroundMuted)">
+							<div className="h-2 flex-1 overflow-hidden rounded-full bg-(--color-background-muted)">
 								<div
 									className="h-full rounded-full bg-(--color-primary) transition-all duration-300"
 									style={{ width: `${((previewStep + 1) / PREVIEW_STEPS) * 100}%` }}
 								/>
 							</div>
-							<span className="shrink-0 text-(--color-textMuted) text-xs">
+							<span className="shrink-0 text-(--color-text-muted) text-xs">
 								{previewStep + 1} / {PREVIEW_STEPS}
 							</span>
 						</div>
@@ -483,7 +483,7 @@ export default function ThemePage() {
 								className="border border-(--color-border) bg-(--color-surface) p-4"
 							>
 								<p className="mb-1 font-semibold text-(--color-text)">What is your primary role?</p>
-								<p className="mb-4 text-(--color-textMuted) text-sm">Select the option that best describes you.</p>
+								<p className="mb-4 text-(--color-text-muted) text-sm">Select the option that best describes you.</p>
 								<div className="flex flex-col gap-2">
 									{["Frontend developer", "Backend developer", "Full-stack developer"].map((opt, i) => (
 										<div
@@ -491,7 +491,7 @@ export default function ThemePage() {
 											style={{ borderRadius: "var(--radius)" }}
 											className={`flex items-center gap-3 border px-3 py-2 text-sm ${
 												i === 0
-													? "border-(--color-primary) bg-(--color-backgroundMuted) font-medium text-(--color-text)"
+													? "border-(--color-primary) bg-(--color-background-muted) font-medium text-(--color-text)"
 													: "border-(--color-border) text-(--color-text)"
 											}`}
 										>
@@ -516,13 +516,13 @@ export default function ThemePage() {
 								className="border border-(--color-border) bg-(--color-surface) p-4"
 							>
 								<p className="mb-1 font-semibold text-(--color-text)">How would you describe your experience?</p>
-								<p className="mb-4 text-(--color-textMuted) text-sm">Tell us in your own words.</p>
+								<p className="mb-4 text-(--color-text-muted) text-sm">Tell us in your own words.</p>
 								<textarea
 									readOnly
 									placeholder="Your answer…"
 									rows={4}
 									style={{ borderRadius: "var(--radius)" }}
-									className="w-full resize-none border border-(--color-border) bg-(--color-background) px-3 py-2 text-(--color-text) text-sm placeholder:text-(--color-textMuted) focus:outline-none"
+									className="w-full resize-none border border-(--color-border) bg-(--color-background) px-3 py-2 text-(--color-text) text-sm placeholder:text-(--color-text-muted) focus:outline-none"
 								/>
 							</div>
 						)}
@@ -534,7 +534,7 @@ export default function ThemePage() {
 								className="border border-(--color-border) bg-(--color-surface) p-4"
 							>
 								<p className="mb-1 font-semibold text-(--color-text)">Which tools do you use regularly?</p>
-								<p className="mb-4 text-(--color-textMuted) text-sm">Select all that apply.</p>
+								<p className="mb-4 text-(--color-text-muted) text-sm">Select all that apply.</p>
 								<div className="flex flex-col gap-2">
 									{["TypeScript", "React", "Node.js", "Docker"].map((opt, i) => {
 										const checked = i < 2
@@ -544,7 +544,7 @@ export default function ThemePage() {
 												style={{ borderRadius: "var(--radius)" }}
 												className={`flex items-center gap-3 border px-3 py-2 text-sm ${
 													checked
-														? "border-(--color-primary) bg-(--color-backgroundMuted) font-medium text-(--color-text)"
+														? "border-(--color-primary) bg-(--color-background-muted) font-medium text-(--color-text)"
 														: "border-(--color-border) text-(--color-text)"
 												}`}
 											>
@@ -591,7 +591,7 @@ export default function ThemePage() {
 								onClick={() => setPreviewStep((s) => Math.min(s + 1, PREVIEW_STEPS - 1))}
 								disabled={previewStep === PREVIEW_STEPS - 1}
 								style={{ borderRadius: "var(--radius)" }}
-								className="flex-1 bg-(--color-primary) px-4 py-2 font-medium text-(--color-primaryForeground) text-sm disabled:opacity-40"
+								className="flex-1 bg-(--color-primary) px-4 py-2 font-medium text-(--color-primary-foreground) text-sm disabled:opacity-40"
 							>
 								{previewStep === PREVIEW_STEPS - 1 ? "Submit" : "Next →"}
 							</button>

@@ -7,8 +7,8 @@
 
 Adds a per-survey custom theme to the Survey Manager. Survey editors can override the
 eight core design tokens (`--color-primary`, `--color-background`, `--color-surface`,
-`--color-text`, `--color-textMuted`, `--color-border`, `--color-backgroundMuted`,
-`--color-primaryForeground`) from a Theme panel on the survey detail admin page. The
+`--color-text`, `--color-text-muted`, `--color-border`, `--color-background-muted`,
+`--color-primary-foreground`) from a Theme panel on the survey detail admin page. The
 chosen values are stored as a JSON blob in a new `theme_json` column on the `surveys`
 table and served to consumers via `GET /api/survey/steps`. The public survey page and the
 admin preview page both apply the theme as inline CSS custom property overrides on the
@@ -45,17 +45,17 @@ producing a React `style` prop — no new CSS files, no new components, no runti
 | Token | Controls |
 |---|---|
 | `--color-primary` | buttons, focus rings, progress bar, active radio/checkbox |
-| `--color-primaryForeground` | text on primary buttons |
+| `--color-primary-foreground` | text on primary buttons |
 | `--color-background` | page/input background |
 | `--color-surface` | card background |
 | `--color-text` | body text |
-| `--color-textMuted` | secondary/placeholder text |
+| `--color-text-muted` | secondary/placeholder text |
 | `--color-border` | input/card borders |
-| `--color-backgroundMuted` | subtle highlight backgrounds |
+| `--color-background-muted` | subtle highlight backgrounds |
 
 The theme editor uses `<input type="text">` for each token so any valid CSS color value
 (hex, oklch, hsl, named colour) can be entered. A live colour swatch next to each input
-shows the parsed colour. Hover/active token variants (`--color-primaryHover`, etc.) are
+shows the parsed colour. Hover/active token variants (`--color-primary-hover`, etc.) are
 intentionally not exposed — they are derived colours and rarely need independent overrides.
 
 ### Files to create

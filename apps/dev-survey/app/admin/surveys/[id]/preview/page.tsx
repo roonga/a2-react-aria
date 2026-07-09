@@ -74,7 +74,7 @@ export default function PreviewPage() {
 			.finally(() => setLoading(false))
 	}, [id])
 
-	if (loading) return <p className="text-(--color-textMuted) text-sm">Loading…</p>
+	if (loading) return <p className="text-(--color-text-muted) text-sm">Loading…</p>
 	if (error) return <p className="text-(--color-danger) text-sm">{error}</p>
 	if (!survey) return null
 
@@ -107,7 +107,7 @@ export default function PreviewPage() {
 	return (
 		<div>
 			<div className="mb-6 flex items-center justify-between">
-				<div className="flex items-center gap-2 text-(--color-textMuted) text-sm">
+				<div className="flex items-center gap-2 text-(--color-text-muted) text-sm">
 					<Link href="/admin" className="hover:text-(--color-text)">
 						Surveys
 					</Link>
@@ -126,13 +126,13 @@ export default function PreviewPage() {
 							setAnswers({})
 							setStepValues({})
 						}}
-						className="rounded-md border border-(--color-border) px-3 py-1.5 text-(--color-text) text-sm hover:bg-(--color-backgroundMuted)"
+						className="rounded-md border border-(--color-border) px-3 py-1.5 text-(--color-text) text-sm hover:bg-(--color-background-muted)"
 					>
 						Restart
 					</button>
 					<Link
 						href={`/admin/surveys/${id}`}
-						className="rounded-md border border-(--color-border) px-3 py-1.5 text-(--color-text) text-sm hover:bg-(--color-backgroundMuted)"
+						className="rounded-md border border-(--color-border) px-3 py-1.5 text-(--color-text) text-sm hover:bg-(--color-background-muted)"
 					>
 						Back to editor
 					</Link>
@@ -165,13 +165,13 @@ export default function PreviewPage() {
 			>
 				{!isDone && !isWelcome && (
 					<div className="mb-4 flex items-center gap-3">
-						<div className="h-2 flex-1 overflow-hidden rounded-full bg-(--color-backgroundMuted)">
+						<div className="h-2 flex-1 overflow-hidden rounded-full bg-(--color-background-muted)">
 							<div
 								className="h-full rounded-full bg-(--color-primary) transition-all duration-300"
 								style={{ width: `${progress}%` }}
 							/>
 						</div>
-						<span className="shrink-0 text-(--color-textMuted) text-sm">
+						<span className="shrink-0 text-(--color-text-muted) text-sm">
 							{stepIndex} / {totalSteps - 2}
 						</span>
 					</div>
@@ -182,11 +182,11 @@ export default function PreviewPage() {
 						<A2UIBlock nodes={currentStep.nodes as never} onAction={handleAction} />
 					</FormStateContext.Provider>
 				) : (
-					<p className="text-(--color-textMuted) text-sm">No steps to preview.</p>
+					<p className="text-(--color-text-muted) text-sm">No steps to preview.</p>
 				)}
 
-				<div className="mt-4 rounded-lg border border-(--color-border) bg-(--color-backgroundMuted) p-3">
-					<p className="mb-1 font-medium text-(--color-textMuted) text-xs">Current answers (debug)</p>
+				<div className="mt-4 rounded-lg border border-(--color-border) bg-(--color-background-muted) p-3">
+					<p className="mb-1 font-medium text-(--color-text-muted) text-xs">Current answers (debug)</p>
 					<pre className="text-(--color-text) text-xs">{JSON.stringify({ ...answers, ...stepValues }, null, 2)}</pre>
 				</div>
 			</div>
