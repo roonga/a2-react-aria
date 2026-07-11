@@ -170,6 +170,48 @@ describe("A03 URL injection — javascript: scheme is blocked regardless of casi
 		)
 		expect(container.querySelector("a")?.getAttribute("href")).toBe("about:blank")
 	})
+
+	it("blocks javascript: href with a tab embedded inside the scheme name", () => {
+		// Browsers strip ASCII tab/newline/CR from anywhere in a URL before parsing
+		// the scheme, so "java\tscript:" is executed as "javascript:" at render time.
+		const { container } = render(
+			<A2Renderer
+				node={{ type: "Anchor", props: { href: "java\tscript:alert(1)" }, children: "x" }}
+				registry={registry}
+			/>,
+		)
+		expect(container.querySelector("a")?.getAttribute("href")).toBe("about:blank")
+	})
+
+	it("blocks javascript: href with a newline embedded inside the scheme name", () => {
+		const { container } = render(
+			<A2Renderer
+				node={{ type: "Anchor", props: { href: "java\nscript:alert(1)" }, children: "x" }}
+				registry={registry}
+			/>,
+		)
+		expect(container.querySelector("a")?.getAttribute("href")).toBe("about:blank")
+	})
+
+	it("blocks javascript: href with a carriage return embedded inside the scheme name", () => {
+		const { container } = render(
+			<A2Renderer
+				node={{ type: "Anchor", props: { href: "java\rscript:alert(1)" }, children: "x" }}
+				registry={registry}
+			/>,
+		)
+		expect(container.querySelector("a")?.getAttribute("href")).toBe("about:blank")
+	})
+
+	it("blocks javascript: href with control characters scattered throughout", () => {
+		const { container } = render(
+			<A2Renderer
+				node={{ type: "Anchor", props: { href: "\tj\na\rv\ta\ns\rc\tr\ni\np\tt:alert(1)" }, children: "x" }}
+				registry={registry}
+			/>,
+		)
+		expect(container.querySelector("a")?.getAttribute("href")).toBe("about:blank")
+	})
 })
 
 describe("A03 URL injection — vbscript: scheme is blocked", () => {

@@ -12,13 +12,19 @@ const MAX_DEPTH = 50
 // Blocks stored-XSS via javascript:, data:, and vbscript: URLs in agent-supplied props.
 const BLOCKED_URL_SCHEMES = /^(javascript|data|vbscript):/i
 const URL_PROP_KEYS = /^(href|src|action|formaction|.*[Uu]rl|.*[Hh]ref|.*[Ss]rc)$/
+// Per the WHATWG URL spec, browsers strip every ASCII tab/newline/CR from a URL
+// (not just leading/trailing) before parsing its scheme. Without stripping them
+// here first, "java\tscript:alert(1)" fails this regex but still runs as
+// javascript: once the browser removes the tab.
+const EMBEDDED_CONTROL_CHARS = /[\t\n\r]/g
 
 // Sanitize a single value against a leaf key. Recurses through arrays and plain
 // objects so URL props nested inside structured data (e.g. Breadcrumb items[].href)
 // cannot bypass the scheme filter.
 function sanitizeValue(key: string, value: unknown): unknown {
 	if (typeof value === "string") {
-		return URL_PROP_KEYS.test(key) && BLOCKED_URL_SCHEMES.test(value.trim()) ? "about:blank" : value
+		const normalized = value.replace(EMBEDDED_CONTROL_CHARS, "").trim()
+		return URL_PROP_KEYS.test(key) && BLOCKED_URL_SCHEMES.test(normalized) ? "about:blank" : value
 	}
 	if (Array.isArray(value)) {
 		return value.map((item) => sanitizeValue(key, item))
