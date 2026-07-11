@@ -23,8 +23,9 @@ const EMBEDDED_CONTROL_CHARS = /[\t\n\r]/g
 // cannot bypass the scheme filter.
 function sanitizeValue(key: string, value: unknown): unknown {
 	if (typeof value === "string") {
+		if (!URL_PROP_KEYS.test(key)) return value
 		const normalized = value.replace(EMBEDDED_CONTROL_CHARS, "").trim()
-		return URL_PROP_KEYS.test(key) && BLOCKED_URL_SCHEMES.test(normalized) ? "about:blank" : value
+		return BLOCKED_URL_SCHEMES.test(normalized) ? "about:blank" : value
 	}
 	if (Array.isArray(value)) {
 		return value.map((item) => sanitizeValue(key, item))
