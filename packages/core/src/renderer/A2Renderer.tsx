@@ -13,12 +13,32 @@ const MAX_DEPTH = 50
 const BLOCKED_URL_SCHEMES = /^(javascript|data|vbscript):/i
 const URL_PROP_KEYS = /^(href|src|action|formaction|.*[Uu]rl|.*[Hh]ref|.*[Ss]rc)$/
 
+// Mirrors the WHATWG URL parser's input normalization: strip leading/trailing
+// C0 controls and spaces, then remove ASCII tab/newline/CR from anywhere in the
+// string. Without this, "jav\tascript:" evades a plain .trim() check but is
+// parsed by the browser as "javascript:", making it a stored-XSS bypass.
+const ASCII_TAB_OR_NEWLINE = /[\t\n\r]/g
+
+function isC0ControlOrSpace(code: number): boolean {
+	return code <= 0x20
+}
+
+function normalizeUrlForSchemeCheck(value: string): string {
+	let start = 0
+	let end = value.length
+	while (start < end && isC0ControlOrSpace(value.charCodeAt(start))) start++
+	while (end > start && isC0ControlOrSpace(value.charCodeAt(end - 1))) end--
+	return value.slice(start, end).replace(ASCII_TAB_OR_NEWLINE, "")
+}
+
 // Sanitize a single value against a leaf key. Recurses through arrays and plain
 // objects so URL props nested inside structured data (e.g. Breadcrumb items[].href)
 // cannot bypass the scheme filter.
 function sanitizeValue(key: string, value: unknown): unknown {
 	if (typeof value === "string") {
-		return URL_PROP_KEYS.test(key) && BLOCKED_URL_SCHEMES.test(value.trim()) ? "about:blank" : value
+		return URL_PROP_KEYS.test(key) && BLOCKED_URL_SCHEMES.test(normalizeUrlForSchemeCheck(value))
+			? "about:blank"
+			: value
 	}
 	if (Array.isArray(value)) {
 		return value.map((item) => sanitizeValue(key, item))
