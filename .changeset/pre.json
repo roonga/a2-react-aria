@@ -12,6 +12,9 @@
     "add-default-registry",
     "registry-schema-export",
     "remove-hoc-wiring",
-    "sync-cli-to-v1"
+    "review-findings-fixes",
+    "shadcn-foreground-tokens",
+    "sync-cli-to-v1",
+    "url-sanitizer-control-chars"
   ]
 }
