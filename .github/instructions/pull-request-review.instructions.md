@@ -25,7 +25,8 @@ or code generation). See `.github/copilot-instructions.md` for the full backgrou
   prop as agent-supplied and untrusted.
 - An interactive element (button, field, link acting as control) with no visible `<Label>` and no
   `aria-label`.
-- A validation error rendered as a raw `<span>` instead of `<Text slot="errorMessage">`.
+- A validation error rendered as a raw `<span>` instead of React Aria's `<FieldError>` (or
+  `<Text slot="errorMessage">`).
 - `:focus-visible` being suppressed or overridden, or `tabIndex={-1}`/a `role` override added
   without a comment explaining why.
 - A PR that adds, changes, or removes a public export, CLI command, or consumer-visible behavior

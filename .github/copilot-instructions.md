@@ -26,7 +26,8 @@ Structural utilities (`flex`, `gap-2`, `px-3`, `rounded`) are fine as-is.
 ## Accessibility
 
 - Every interactive component needs a visible `<Label>` or explicit `aria-label`.
-- Validation errors must use `<Text slot="errorMessage">`, not a raw `<span>`.
+- Validation errors must use React Aria's `<FieldError>` (or `<Text slot="errorMessage">`), not a
+  raw `<span>`, so the message is programmatically associated with the field.
 - Never suppress `:focus-visible`, add `tabIndex={-1}`, or override `role` without a documented
   reason.
 
