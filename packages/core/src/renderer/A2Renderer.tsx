@@ -117,21 +117,21 @@ function InteractiveWrapper({
 	readonly onAction: (text: string) => void
 	readonly children: ReactNode
 }) {
-	const fieldsRef = useRef<Record<string, string>>({})
+	const fieldsRef = useRef<Record<string, string | string[]>>({})
 
 	const formState = useMemo<FormStateCtx>(
 		() => ({
-			setValue: (label, value) => {
-				fieldsRef.current[label] = value
+			setValue: (key, value) => {
+				fieldsRef.current[key] = value
 			},
 		}),
 		[],
 	)
 
 	const buildAction = useCallback((buttonLabel: string): string => {
-		const entries = Object.entries(fieldsRef.current).filter(([, v]) => v !== "")
+		const entries = Object.entries(fieldsRef.current).filter(([, v]) => (Array.isArray(v) ? v.length > 0 : v !== ""))
 		if (entries.length === 0) return buttonLabel
-		const parts = entries.map(([k, v]) => `${k}: ${v}`)
+		const parts = entries.map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(", ") : v}`)
 		return `${buttonLabel} | ${parts.join(" | ")}`
 	}, [])
 

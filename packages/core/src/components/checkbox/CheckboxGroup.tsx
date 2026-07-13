@@ -1,5 +1,6 @@
-import type { ReactNode } from "react"
+import { type ReactNode, useContext, useEffect } from "react"
 import { FieldError, Label, CheckboxGroup as RACCheckboxGroup, Text } from "react-aria-components"
+import { FormStateContext } from "../../form-state"
 import { getCheckboxGroupStyles } from "./checkbox.styles"
 
 interface CheckboxGroupProps {
@@ -38,6 +39,19 @@ export function CheckboxGroup({
 	children,
 }: CheckboxGroupProps) {
 	const styles = getCheckboxGroupStyles()
+	const formCtx = useContext(FormStateContext)
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional mount-only seed
+	useEffect(() => {
+		const key = name ?? label
+		if (defaultValue !== undefined && key) formCtx?.setValue(key, defaultValue)
+	}, [])
+
+	const handleChange = (v: string[]) => {
+		const key = name ?? label
+		if (key) formCtx?.setValue(key, v)
+		onChange?.(v)
+	}
 
 	return (
 		<RACCheckboxGroup
@@ -50,16 +64,26 @@ export function CheckboxGroup({
 			validationBehavior={validationBehavior}
 			validate={validate}
 			name={name}
-			onChange={onChange}
+			onChange={handleChange}
 			className={styles.group}
 		>
-			{label && <Label className={styles.label}>{label}</Label>}
-			<div className={styles.items(orientation)}>{children}</div>
+			{label && (
+				<Label className={styles.label}>
+					{label}
+					{isRequired && (
+						<span aria-hidden="true" className={styles.requiredIndicator}>
+							{" "}
+							*
+						</span>
+					)}
+				</Label>
+			)}
 			{description && (
 				<Text slot="description" className={styles.description}>
 					{description}
 				</Text>
 			)}
+			<div className={styles.items(orientation)}>{children}</div>
 			<FieldError className={styles.errorMessage}>{errorMessage}</FieldError>
 		</RACCheckboxGroup>
 	)

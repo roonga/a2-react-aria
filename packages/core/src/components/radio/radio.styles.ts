@@ -27,6 +27,7 @@ export const getRadioStyles = () => ({
 export const getRadioGroupStyles = () => ({
 	group: "flex flex-col gap-2",
 	label: "text-sm font-medium text-(--color-text)",
+	requiredIndicator: "text-(--color-danger)",
 	items: (orientation: "horizontal" | "vertical" = "vertical") =>
 		orientation === "horizontal" ? "flex flex-row flex-wrap gap-4" : "flex flex-col gap-2",
 	description: "text-xs text-(--color-text-muted)",

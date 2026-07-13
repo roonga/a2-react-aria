@@ -44,11 +44,13 @@ export function RadioGroup({
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional mount-only seed
 	useEffect(() => {
-		if (defaultValue !== undefined && label) formCtx?.setValue(label, defaultValue)
+		const key = name ?? label
+		if (defaultValue !== undefined && key) formCtx?.setValue(key, defaultValue)
 	}, [])
 
 	const handleChange = (v: string) => {
-		if (label) formCtx?.setValue(label, v)
+		const key = name ?? label
+		if (key) formCtx?.setValue(key, v)
 		onChange?.(v)
 	}
 
@@ -67,13 +69,23 @@ export function RadioGroup({
 			onChange={handleChange}
 			className={styles.group}
 		>
-			{label && <Label className={styles.label}>{label}</Label>}
-			<div className={styles.items(orientation)}>{children}</div>
+			{label && (
+				<Label className={styles.label}>
+					{label}
+					{isRequired && (
+						<span aria-hidden="true" className={styles.requiredIndicator}>
+							{" "}
+							*
+						</span>
+					)}
+				</Label>
+			)}
 			{description && (
 				<Text slot="description" className={styles.description}>
 					{description}
 				</Text>
 			)}
+			<div className={styles.items(orientation)}>{children}</div>
 			<FieldError className={styles.errorMessage}>{errorMessage}</FieldError>
 		</RACRadioGroup>
 	)
