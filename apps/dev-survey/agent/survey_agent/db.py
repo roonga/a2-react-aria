@@ -52,7 +52,9 @@ def init(db_path: Path) -> None:
     except sqlite3.OperationalError:
         pass
     _migrate_nodes_to_survey_page()
+    _migrate_sq_label_to_inner()
     _maybe_seed()
+    _reseed_descriptions()
 
 
 def _conn() -> sqlite3.Connection:
@@ -93,16 +95,51 @@ def _card_to_survey_page(nodes: list) -> list:
         if qn.get("type") == "Text":
             wrapped.append(qn)
         else:
-            props = dict(qn.get("props") or {})
-            sq_props: dict = {}
-            if props.get("label"):
-                sq_props["label"] = props.pop("label")
-            if props.get("isRequired"):
-                sq_props["required"] = True
-                props.pop("isRequired")
-            inner = {**qn, "props": props}
-            wrapped.append({"type": "SurveyQuestion", "props": sq_props, "children": inner})
+            # label/isRequired stay on the inner node; SurveyQuestion is a layout wrapper only
+            wrapped.append({"type": "SurveyQuestion", "props": {}, "children": qn})
     return [{"type": "SurveyPage", "props": {}, "children": wrapped}]
+
+
+def _sq_node_label_to_inner(node: dict) -> dict:
+    """Move label/required from SurveyQuestion.props to inner node props (one-time migration)."""
+    if node.get("type") != "SurveyQuestion":
+        return node
+    sq_props = dict(node.get("props") or {})
+    inner = node.get("children")
+    if not isinstance(inner, dict):
+        return node
+    inner_props = dict(inner.get("props") or {})
+    label = sq_props.pop("label", None)
+    required = sq_props.pop("required", None)
+    if label and not inner_props.get("label"):
+        inner_props["label"] = label
+    if required and not inner_props.get("isRequired"):
+        inner_props["isRequired"] = True
+    return {**node, "props": sq_props, "children": {**inner, "props": inner_props}}
+
+
+def _migrate_sq_label_to_inner() -> None:
+    """Move label/required from SurveyQuestion.props to inner node for all steps in the DB."""
+    with _conn() as conn:
+        rows = conn.execute("SELECT id, nodes_json FROM steps").fetchall()
+        for row in rows:
+            try:
+                nodes = json.loads(row["nodes_json"] or "[]")
+                if not nodes or not isinstance(nodes[0], dict):
+                    continue
+                root = nodes[0]
+                if root.get("type") != "SurveyPage":
+                    continue
+                children = root.get("children") or []
+                new_children = [_sq_node_label_to_inner(c) if isinstance(c, dict) else c for c in children]
+                migrated = [{**root, "children": new_children}]
+                if json.dumps(migrated) != json.dumps(nodes):
+                    conn.execute(
+                        "UPDATE steps SET nodes_json=? WHERE id=?",
+                        (json.dumps(migrated), row["id"]),
+                    )
+            except (json.JSONDecodeError, TypeError):
+                pass
 
 
 def _migrate_nodes_to_survey_page() -> None:
@@ -117,6 +154,74 @@ def _migrate_nodes_to_survey_page() -> None:
                     conn.execute(
                         "UPDATE steps SET nodes_json=? WHERE id=?",
                         (json.dumps(migrated), row["id"]),
+                    )
+            except (json.JSONDecodeError, TypeError):
+                pass
+
+
+def _reseed_descriptions() -> None:
+    """Apply description/hint from SURVEY_STEPS seed data to existing DB steps, keyed by slug + field name."""
+    from survey_agent.survey_data import SURVEY_STEPS
+
+    # Build lookup: {slug: {field_name: {description?, hint?}}}
+    lookup: dict[str, dict[str, dict]] = {}
+    for step in SURVEY_STEPS:
+        slug = step["id"]
+        lookup[slug] = {}
+        nodes = step.get("nodes") or []
+        if not nodes or not isinstance(nodes[0], dict):
+            continue
+        page = nodes[0]
+        if page.get("type") != "SurveyPage":
+            continue
+        for child in (page.get("children") or []):
+            if not isinstance(child, dict) or child.get("type") != "SurveyQuestion":
+                continue
+            sq_props = child.get("props") or {}
+            inner = child.get("children")
+            if not isinstance(inner, dict):
+                continue
+            name = (inner.get("props") or {}).get("name")
+            if not name:
+                continue
+            desc_data = {k: sq_props[k] for k in ("description", "hint") if k in sq_props}
+            if desc_data:
+                lookup[slug][name] = desc_data
+
+    with _conn() as conn:
+        rows = conn.execute("SELECT id, slug, nodes_json FROM steps").fetchall()
+        for row in rows:
+            slug = row["slug"]
+            name_to_desc = lookup.get(slug)
+            if not name_to_desc:
+                continue
+            try:
+                nodes = json.loads(row["nodes_json"] or "[]")
+                if not nodes or not isinstance(nodes[0], dict):
+                    continue
+                page = nodes[0]
+                if page.get("type") != "SurveyPage":
+                    continue
+                children = page.get("children") or []
+                changed = False
+                new_children = []
+                for child in children:
+                    if isinstance(child, dict) and child.get("type") == "SurveyQuestion":
+                        inner = child.get("children")
+                        if isinstance(inner, dict):
+                            name = (inner.get("props") or {}).get("name")
+                            if name and name in name_to_desc:
+                                old_props = dict(child.get("props") or {})
+                                new_props = {**old_props, **name_to_desc[name]}
+                                if new_props != old_props:
+                                    child = {**child, "props": new_props}
+                                    changed = True
+                    new_children.append(child)
+                if changed:
+                    new_nodes = [{**page, "children": new_children}]
+                    conn.execute(
+                        "UPDATE steps SET nodes_json=? WHERE id=?",
+                        (json.dumps(new_nodes), row["id"]),
                     )
             except (json.JSONDecodeError, TypeError):
                 pass
@@ -250,11 +355,11 @@ def get_published_steps() -> dict[str, Any]:
         step: dict[str, Any] = {"id": r["slug"], "title": r["title"], "nodes": json.loads(r["nodes_json"])}
         if r["skip_if_json"]:
             try:
-                step["skipIf"] = json.loads(r["skip_if_json"])
+                step["skip_if"] = json.loads(r["skip_if_json"])
             except json.JSONDecodeError:
                 pass
         elif r["condition_field"]:
-            step["skipIf"] = {"field": r["condition_field"], "oneOf": json.loads(r["condition_values"])}
+            step["skip_if"] = {"field": r["condition_field"], "one_of": json.loads(r["condition_values"])}
         result.append(step)
     return {"steps": result, "theme": theme}
 
