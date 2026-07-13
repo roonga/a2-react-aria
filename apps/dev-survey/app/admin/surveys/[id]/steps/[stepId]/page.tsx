@@ -75,6 +75,7 @@ type QuestionType = "Text" | "RadioGroup" | "CheckboxGroup" | "Select" | "TextFi
 
 interface Question {
 	_id: string
+	_nameDirty?: boolean
 	type: QuestionType
 	content?: string
 	as?: string
@@ -88,6 +89,8 @@ interface Question {
 	options?: string[]
 	items?: Array<{ value: string; label: string }>
 	inputType?: string
+	description?: string
+	hint?: string
 }
 
 let _idCounter = 0
@@ -95,42 +98,37 @@ function uid() {
 	return `q${++_idCounter}`
 }
 
+function slugify(text: string): string {
+	return text
+		.toLowerCase()
+		.trim()
+		.replace(/[^a-z0-9]+/g, "_")
+		.replace(/^_+|_+$/g, "")
+		.slice(0, 40)
+}
+
 // ── Validation ────────────────────────────────────────────────────────────────
 
-function validateQuestion(q: Question): Record<string, string> {
+function validateQuestion(q: Question, duplicateNames: Set<string> = new Set()): Record<string, string> {
 	const e: Record<string, string> = {}
 	if (q.type === "Text") {
 		if (!q.content?.trim()) e.content = "Content is required"
 	} else if (q.type === "TextField") {
 		if (!q.label?.trim()) e.label = "Label is required"
 		if (!q.name?.trim()) e.name = "Field name is required"
+		else if (duplicateNames.has(q.name)) e.name = "Field name must be unique"
 	} else if (q.type === "RadioGroup" || q.type === "CheckboxGroup") {
 		if (!q.label?.trim()) e.label = "Label is required"
 		if (!q.name?.trim()) e.name = "Field name is required"
+		else if (duplicateNames.has(q.name)) e.name = "Field name must be unique"
 		if ((q.options ?? []).filter((o) => o.trim()).length < 2) e.options = "At least 2 options required"
 	} else if (q.type === "Select") {
 		if (!q.label?.trim()) e.label = "Label is required"
 		if (!q.name?.trim()) e.name = "Field name is required"
+		else if (duplicateNames.has(q.name)) e.name = "Field name must be unique"
 		if (!q.items?.length) e.items = "At least 1 item required"
 	}
 	return e
-}
-
-// ── Label→name map (for preview FormStateContext) ─────────────────────────────
-
-function buildLabelToNameMap(nodes: unknown[]): Record<string, string> {
-	const map: Record<string, string> = {}
-	function walk(n: unknown): void {
-		if (!n || typeof n !== "object") return
-		const node = n as { props?: Record<string, unknown>; children?: unknown }
-		const { label, name } = node.props ?? {}
-		if (typeof label === "string" && typeof name === "string") map[label] = name
-		const c = node.children
-		if (Array.isArray(c)) c.forEach(walk)
-		else if (c) walk(c)
-	}
-	nodes.forEach(walk)
-	return map
 }
 
 // ── A2UI ↔ Question converters ────────────────────────────────────────────────
@@ -157,6 +155,7 @@ function nodeToQuestion(node: unknown): Question | null {
 		const children = Array.isArray(n.children) ? (n.children as unknown[]) : []
 		return {
 			_id: uid(),
+			_nameDirty: true,
 			type: "RadioGroup",
 			label: props.label as string | undefined,
 			name: props.name as string | undefined,
@@ -173,6 +172,7 @@ function nodeToQuestion(node: unknown): Question | null {
 		const children = Array.isArray(n.children) ? (n.children as unknown[]) : []
 		return {
 			_id: uid(),
+			_nameDirty: true,
 			type: "CheckboxGroup",
 			label: props.label as string | undefined,
 			name: props.name as string | undefined,
@@ -188,6 +188,7 @@ function nodeToQuestion(node: unknown): Question | null {
 		const items = (props.items ?? props.options) as Array<{ value: string; label: string }> | undefined
 		return {
 			_id: uid(),
+			_nameDirty: true,
 			type: "Select",
 			label: props.label as string | undefined,
 			name: props.name as string | undefined,
@@ -198,6 +199,7 @@ function nodeToQuestion(node: unknown): Question | null {
 	if (type === "TextField") {
 		return {
 			_id: uid(),
+			_nameDirty: true,
 			type: "TextField",
 			label: props.label as string | undefined,
 			name: props.name as string | undefined,
@@ -264,47 +266,40 @@ function questionToNode(q: Question): unknown {
 
 function extractQuestions(nodes: unknown[]): { questions: Question[]; description: string } {
 	const root = nodes[0] as Record<string, unknown> | undefined
-	if (!root || root.type !== "SurveyPage" || !Array.isArray(root.children)) {
+	if (root?.type !== "SurveyPage" || !Array.isArray(root.children)) {
 		return { questions: [], description: "" }
 	}
 	const description =
 		typeof (root.props as Record<string, unknown>)?.description === "string"
 			? ((root.props as Record<string, unknown>).description as string)
 			: ""
-	const children = (root.children as unknown[]).map((c) => {
+	const questions: Question[] = []
+	for (const c of root.children as unknown[]) {
 		const node = c as Record<string, unknown>
 		if (node.type === "SurveyQuestion") {
 			const sqProps = (node.props ?? {}) as Record<string, unknown>
-			const inner = node.children as Record<string, unknown>
-			// Restore label/isRequired from SurveyQuestion wrapper into the inner node props
-			if (inner && typeof inner === "object") {
-				const innerProps = (inner.props ?? {}) as Record<string, unknown>
-				if (sqProps.label && !innerProps.label) innerProps.label = sqProps.label
-				if (sqProps.required && !innerProps.isRequired) innerProps.isRequired = true
-				return { ...inner, props: innerProps }
+			const q = nodeToQuestion(node.children)
+			if (q) {
+				if (typeof sqProps.description === "string") q.description = sqProps.description
+				if (typeof sqProps.hint === "string") q.hint = sqProps.hint
+				questions.push(q)
 			}
-			return node.children as unknown
+		} else {
+			const q = nodeToQuestion(c)
+			if (q) questions.push(q)
 		}
-		return c
-	})
-	return {
-		questions: children.map(nodeToQuestion).filter((q): q is Question => q !== null),
-		description,
 	}
+	return { questions, description }
 }
 
 function questionToSurveyQuestionNode(q: Question): unknown {
 	const inner = questionToNode(q)
 	if (!inner) return null
 	if (q.type === "Text") return inner
-	return {
-		type: "SurveyQuestion",
-		props: {
-			label: q.label ?? "",
-			...(q.isRequired ? { required: true } : {}),
-		},
-		children: inner,
-	}
+	const sqProps: Record<string, unknown> = {}
+	if (q.description) sqProps.description = q.description
+	if (q.hint) sqProps.hint = q.hint
+	return { type: "SurveyQuestion", props: sqProps, children: inner }
 }
 
 function buildNodes(questions: Question[], title: string, description: string): unknown[] {
@@ -452,7 +447,10 @@ function QuestionForm({
 						id={`${p}-label`}
 						type="text"
 						value={q.label ?? ""}
-						onChange={(e) => update({ label: e.target.value })}
+						onChange={(e) => {
+							const newLabel = e.target.value
+							update({ label: newLabel, ...(!q._nameDirty ? { name: slugify(newLabel) } : {}) })
+						}}
 						className={inputCls("label")}
 					/>
 					{errors.label && <p className={errCls}>{errors.label}</p>}
@@ -465,7 +463,7 @@ function QuestionForm({
 						id={`${p}-name`}
 						type="text"
 						value={q.name ?? ""}
-						onChange={(e) => update({ name: e.target.value })}
+						onChange={(e) => update({ name: e.target.value, _nameDirty: true })}
 						className={inputCls("name")}
 					/>
 					{errors.name && <p className={errCls}>{errors.name}</p>}
@@ -495,6 +493,34 @@ function QuestionForm({
 					/>
 					{errors.options && <p className={errCls}>{errors.options}</p>}
 				</div>
+				<div className="space-y-3 border-(--color-border) border-t pt-3">
+					<div>
+						<label htmlFor={`${p}-description`} className={labelCls}>
+							Description (shown below the question label)
+						</label>
+						<textarea
+							id={`${p}-description`}
+							value={q.description ?? ""}
+							onChange={(e) => update({ description: e.target.value || undefined })}
+							rows={2}
+							className={inputCls()}
+							placeholder="Context or instructions…"
+						/>
+					</div>
+					<div>
+						<label htmlFor={`${p}-hint`} className={labelCls}>
+							Hint (shown below input)
+						</label>
+						<input
+							id={`${p}-hint`}
+							type="text"
+							value={q.hint ?? ""}
+							onChange={(e) => update({ hint: e.target.value || undefined })}
+							className={inputCls()}
+							placeholder="Helpful hint…"
+						/>
+					</div>
+				</div>
 			</div>
 		)
 	}
@@ -510,7 +536,10 @@ function QuestionForm({
 						id={`${p}-label`}
 						type="text"
 						value={q.label ?? ""}
-						onChange={(e) => update({ label: e.target.value })}
+						onChange={(e) => {
+							const newLabel = e.target.value
+							update({ label: newLabel, ...(!q._nameDirty ? { name: slugify(newLabel) } : {}) })
+						}}
 						className={inputCls("label")}
 					/>
 					{errors.label && <p className={errCls}>{errors.label}</p>}
@@ -523,7 +552,7 @@ function QuestionForm({
 						id={`${p}-name`}
 						type="text"
 						value={q.name ?? ""}
-						onChange={(e) => update({ name: e.target.value })}
+						onChange={(e) => update({ name: e.target.value, _nameDirty: true })}
 						className={inputCls("name")}
 					/>
 					{errors.name && <p className={errCls}>{errors.name}</p>}
@@ -560,6 +589,34 @@ function QuestionForm({
 					/>
 					{errors.items && <p className={errCls}>{errors.items}</p>}
 				</div>
+				<div className="space-y-3 border-(--color-border) border-t pt-3">
+					<div>
+						<label htmlFor={`${p}-description`} className={labelCls}>
+							Description (shown below the question label)
+						</label>
+						<textarea
+							id={`${p}-description`}
+							value={q.description ?? ""}
+							onChange={(e) => update({ description: e.target.value || undefined })}
+							rows={2}
+							className={inputCls()}
+							placeholder="Context or instructions…"
+						/>
+					</div>
+					<div>
+						<label htmlFor={`${p}-hint`} className={labelCls}>
+							Hint (shown below input)
+						</label>
+						<input
+							id={`${p}-hint`}
+							type="text"
+							value={q.hint ?? ""}
+							onChange={(e) => update({ hint: e.target.value || undefined })}
+							className={inputCls()}
+							placeholder="Helpful hint…"
+						/>
+					</div>
+				</div>
 			</div>
 		)
 	}
@@ -575,7 +632,10 @@ function QuestionForm({
 						id={`${p}-label`}
 						type="text"
 						value={q.label ?? ""}
-						onChange={(e) => update({ label: e.target.value })}
+						onChange={(e) => {
+							const newLabel = e.target.value
+							update({ label: newLabel, ...(!q._nameDirty ? { name: slugify(newLabel) } : {}) })
+						}}
 						className={inputCls("label")}
 					/>
 					{errors.label && <p className={errCls}>{errors.label}</p>}
@@ -588,7 +648,7 @@ function QuestionForm({
 						id={`${p}-name`}
 						type="text"
 						value={q.name ?? ""}
-						onChange={(e) => update({ name: e.target.value })}
+						onChange={(e) => update({ name: e.target.value, _nameDirty: true })}
 						className={inputCls("name")}
 					/>
 					{errors.name && <p className={errCls}>{errors.name}</p>}
@@ -618,6 +678,34 @@ function QuestionForm({
 					/>
 					Required
 				</label>
+				<div className="space-y-3 border-(--color-border) border-t pt-3">
+					<div>
+						<label htmlFor={`${p}-description`} className={labelCls}>
+							Description (shown below the question label)
+						</label>
+						<textarea
+							id={`${p}-description`}
+							value={q.description ?? ""}
+							onChange={(e) => update({ description: e.target.value || undefined })}
+							rows={2}
+							className={inputCls()}
+							placeholder="Context or instructions…"
+						/>
+					</div>
+					<div>
+						<label htmlFor={`${p}-hint`} className={labelCls}>
+							Hint (shown below input)
+						</label>
+						<input
+							id={`${p}-hint`}
+							type="text"
+							value={q.hint ?? ""}
+							onChange={(e) => update({ hint: e.target.value || undefined })}
+							className={inputCls()}
+							placeholder="Helpful hint…"
+						/>
+					</div>
+				</div>
 			</div>
 		)
 	}
@@ -947,7 +1035,7 @@ export default function StepEditorPage() {
 	const [error, setError] = useState<string | null>(null)
 	const [showJson, setShowJson] = useState(false)
 	const [showPicker, setShowPicker] = useState(false)
-	const [, setPreviewValues] = useState<Record<string, string>>({})
+	const [, setPreviewValues] = useState<Record<string, string | string[]>>({})
 
 	const pickerRef = useRef<HTMLDivElement>(null)
 
@@ -992,6 +1080,7 @@ export default function StepEditorPage() {
 	function addQuestion(type: QuestionType) {
 		const q: Question = {
 			_id: uid(),
+			_nameDirty: false,
 			type,
 			...(type === "RadioGroup" || type === "CheckboxGroup" ? { options: [] } : {}),
 			...(type === "Select" ? { items: [] } : {}),
@@ -1022,10 +1111,21 @@ export default function StepEditorPage() {
 		setSelectedIdx(target)
 	}
 
+	const duplicateNames = useMemo(() => {
+		const names = questions.map((q) => q.name).filter((n): n is string => !!n?.trim())
+		const seen = new Set<string>()
+		const dupes = new Set<string>()
+		for (const n of names) {
+			if (seen.has(n)) dupes.add(n)
+			else seen.add(n)
+		}
+		return dupes
+	}, [questions])
+
 	async function handleSave() {
 		if (!step) return
 		// Block save if any question has errors
-		const anyInvalid = questions.some((q) => Object.keys(validateQuestion(q)).length > 0)
+		const anyInvalid = questions.some((q) => Object.keys(validateQuestion(q, duplicateNames)).length > 0)
 		if (anyInvalid) {
 			setError("Fix validation errors before saving.")
 			return
@@ -1058,14 +1158,9 @@ export default function StepEditorPage() {
 	const builtNodes = step ? buildNodes(questions, title, description) : []
 
 	// Preview interactivity
-	const labelToName = useMemo(() => buildLabelToNameMap(builtNodes), [builtNodes])
-	const setValue = useCallback(
-		(label: string, value: string) => {
-			const key = labelToName[label] ?? label
-			setPreviewValues((prev) => ({ ...prev, [key]: value }))
-		},
-		[labelToName],
-	)
+	const setValue = useCallback((key: string, value: string | string[]) => {
+		setPreviewValues((prev) => ({ ...prev, [key]: value }))
+	}, [])
 
 	const themeVars = Object.fromEntries(Object.entries(surveyTheme).filter(([k]) => k.startsWith("--"))) as CSSProperties
 
@@ -1098,7 +1193,7 @@ export default function StepEditorPage() {
 						type="text"
 						value={title}
 						onChange={(e) => setTitle(e.target.value)}
-						className="w-full rounded-md border border-(--color-border) bg-(--color-background) px-3 py-2 text-(--color-text) text-sm focus:outline-none focus:ring-2 focus:ring-(--color-primary)"
+						className="w-full rounded-md border border-(--color-border) bg-(--color-background) px-3 py-2 text-(--color-text) text-sm focus:outline-none focus:ring-(--color-primary) focus:ring-2"
 					/>
 				</div>
 				<div>
@@ -1110,7 +1205,7 @@ export default function StepEditorPage() {
 						type="text"
 						value={slug}
 						onChange={(e) => setSlug(e.target.value)}
-						className="w-full rounded-md border border-(--color-border) bg-(--color-background) px-3 py-2 text-(--color-text) text-sm focus:outline-none focus:ring-2 focus:ring-(--color-primary)"
+						className="w-full rounded-md border border-(--color-border) bg-(--color-background) px-3 py-2 text-(--color-text) text-sm focus:outline-none focus:ring-(--color-primary) focus:ring-2"
 					/>
 				</div>
 			</div>
@@ -1124,7 +1219,7 @@ export default function StepEditorPage() {
 					value={description}
 					onChange={(e) => setDescription(e.target.value)}
 					placeholder="Short intro shown below the title…"
-					className="w-full rounded-md border border-(--color-border) bg-(--color-background) px-3 py-2 text-(--color-text) text-sm focus:outline-none focus:ring-2 focus:ring-(--color-primary)"
+					className="w-full rounded-md border border-(--color-border) bg-(--color-background) px-3 py-2 text-(--color-text) text-sm focus:outline-none focus:ring-(--color-primary) focus:ring-2"
 				/>
 			</div>
 
@@ -1158,8 +1253,10 @@ export default function StepEditorPage() {
 										+ Add
 									</button>
 									{showPicker && (
-										<div className="absolute right-0 top-full z-50 mt-1 w-64 rounded-lg border border-(--color-border) bg-(--color-surface) p-2 shadow-lg">
-											<p className="mb-1.5 px-1 font-medium text-(--color-text-muted) text-xs">What kind of question?</p>
+										<div className="absolute top-full right-0 z-50 mt-1 w-64 rounded-lg border border-(--color-border) bg-(--color-surface) p-2 shadow-lg">
+											<p className="mb-1.5 px-1 font-medium text-(--color-text-muted) text-xs">
+												What kind of question?
+											</p>
 											<div className="flex flex-col gap-1">
 												{QUESTION_INTENTS.map((intent) => (
 													<button
@@ -1187,7 +1284,7 @@ export default function StepEditorPage() {
 								</p>
 							) : (
 								questions.map((q, idx) => {
-									const qErrors = validateQuestion(q)
+									const qErrors = validateQuestion(q, duplicateNames)
 									const hasError = Object.keys(qErrors).length > 0
 									return (
 										<div
@@ -1271,7 +1368,7 @@ export default function StepEditorPage() {
 									</h3>
 									<QuestionForm
 										q={questions[selectedIdx]}
-										errors={validateQuestion(questions[selectedIdx])}
+										errors={validateQuestion(questions[selectedIdx], duplicateNames)}
 										onChange={(updated) => {
 											setQuestions((qs) => qs.map((q, i) => (i === selectedIdx ? updated : q)))
 										}}
@@ -1307,8 +1404,8 @@ export default function StepEditorPage() {
 
 				{/* Right: live preview */}
 				<div className="sticky top-4 self-start">
-					<div className="rounded-lg border border-(--color-border) overflow-hidden">
-						<div className="flex items-center justify-between border-b border-(--color-border) px-3 py-2">
+					<div className="overflow-hidden rounded-lg border border-(--color-border)">
+						<div className="flex items-center justify-between border-(--color-border) border-b px-3 py-2">
 							<span className="font-medium text-(--color-text-muted) text-xs">Preview</span>
 							<button
 								type="button"

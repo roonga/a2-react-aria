@@ -15,32 +15,15 @@ interface PreviewStep {
 	skip_if: unknown
 }
 
-type A2Node = { props?: Record<string, unknown>; children?: unknown }
-
 function withPageTitle(nodes: unknown[], title: string): unknown[] {
 	const root = nodes[0] as Record<string, unknown> | undefined
-	if (!root || root.type !== "SurveyPage") return nodes
+	if (root?.type !== "SurveyPage") return nodes
 	const props = (root.props ?? {}) as Record<string, unknown>
 	if (props.title) return nodes
 	return [{ ...root, props: { ...props, title } }]
 }
 
-function buildLabelToNameMap(nodes: unknown[]): Record<string, string> {
-	const map: Record<string, string> = {}
-	function walk(n: unknown): void {
-		if (!n || typeof n !== "object") return
-		const node = n as A2Node
-		const { label, name } = node.props ?? {}
-		if (typeof label === "string" && typeof name === "string") map[label] = name
-		const c = node.children
-		if (Array.isArray(c)) c.forEach(walk)
-		else if (c) walk(c)
-	}
-	nodes.forEach(walk)
-	return map
-}
-
-function evaluateSkip(step: PreviewStep, answers: Record<string, string>): boolean {
+function evaluateSkip(step: PreviewStep, answers: Record<string, string | string[]>): boolean {
 	const si = step.skip_if as Record<string, unknown> | null
 	if (!si) return false
 	// Old format: { field, one_of }
@@ -71,8 +54,8 @@ export default function PreviewPage() {
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
 	const [stepIndex, setStepIndex] = useState(0)
-	const [answers, setAnswers] = useState<Record<string, string>>({})
-	const [stepValues, setStepValues] = useState<Record<string, string>>({})
+	const [answers, setAnswers] = useState<Record<string, string | string[]>>({})
+	const [stepValues, setStepValues] = useState<Record<string, string | string[]>>({})
 
 	useEffect(() => {
 		adminApi
@@ -89,13 +72,10 @@ export default function PreviewPage() {
 	const visibleSteps = survey.steps.filter((s) => !evaluateSkip(s as PreviewStep, answers))
 	const currentStep = visibleSteps[stepIndex] as PreviewStep | undefined
 	const totalSteps = visibleSteps.length
-	const progress = Math.round((stepIndex / Math.max(totalSteps - 1, 1)) * 100)
 
 	const titledNodes = currentStep ? withPageTitle(currentStep.nodes as never[], currentStep.title) : []
-	const labelToName = buildLabelToNameMap(titledNodes)
 
-	function setValue(label: string, value: string) {
-		const key = labelToName[label] ?? label
+	function setValue(key: string, value: string | string[]) {
 		setStepValues((prev) => ({ ...prev, [key]: value }))
 	}
 
@@ -163,7 +143,7 @@ export default function PreviewPage() {
 				))}
 			</div>
 
-			<div className="mx-auto max-w-2xl flex flex-col gap-4">
+			<div className="mx-auto flex max-w-2xl flex-col gap-4">
 				<div
 					style={{
 						...(Object.fromEntries(
@@ -172,20 +152,6 @@ export default function PreviewPage() {
 						fontFamily: "var(--font-family, inherit)",
 					}}
 				>
-					{!isDone && !isWelcome && (
-						<div className="mb-4 flex items-center gap-3">
-							<div className="h-2 flex-1 overflow-hidden rounded-full bg-(--color-background-muted)">
-								<div
-									className="h-full rounded-full bg-(--color-primary) transition-all duration-300"
-									style={{ width: `${progress}%` }}
-								/>
-							</div>
-							<span className="shrink-0 text-(--color-text-muted) text-sm">
-								{stepIndex} / {totalSteps - 2}
-							</span>
-						</div>
-					)}
-
 					{currentStep ? (
 						<FormStateContext.Provider value={{ setValue }}>
 							<A2UIBlock nodes={titledNodes as never} />
