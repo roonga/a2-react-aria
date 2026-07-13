@@ -35,6 +35,10 @@ export interface A2RendererProps {
 	node?: A2Node
 	/** Multiple nodes to render as a flat list. Use `node` for a single root node. */
 	nodes?: unknown[]
+	/**
+	 * Component registry to render from. Use createStrictRegistry for agent or
+	 * other untrusted input so every registered component has a schema.
+	 */
 	registry?: ComponentRegistry
 	fallback?: ReactNode
 	/**

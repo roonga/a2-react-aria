@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { z } from "zod"
 import { defaultRegistry } from "../registry/defaultRegistry"
-import { createRegistry } from "../registry/registry"
+import { createRegistry, createStrictRegistry } from "../registry/registry"
 import { buildRegistrySchema, toJsonSchema } from "../registry-schema"
 
 describe("buildRegistrySchema", () => {
@@ -104,5 +104,17 @@ describe("createRegistry with jsonSchema — registry.validate", () => {
 
 	it("accepts an empty array", () => {
 		expect(registry.validate([]).success).toBe(true)
+	})
+})
+
+describe("createStrictRegistry", () => {
+	it("accepts a registry when every entry has a schema", () => {
+		expect(() => createStrictRegistry(Object.fromEntries(defaultRegistry))).not.toThrow()
+	})
+
+	it("rejects an entry without a schema", () => {
+		expect(() => createStrictRegistry({ Unsafe: { component: (() => null) as never } })).toThrow(
+			'Strict registry entry "Unsafe" must define a schema.',
+		)
 	})
 })
