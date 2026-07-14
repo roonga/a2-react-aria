@@ -13,6 +13,7 @@
     "registry-schema-export",
     "remove-hoc-wiring",
     "review-findings-fixes",
+    "safe-rivers-talk",
     "shadcn-foreground-tokens",
     "sync-cli-to-v1",
     "url-sanitizer-control-chars"

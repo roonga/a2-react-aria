@@ -1,5 +1,11 @@
 # @a2ra/cli
 
+## 1.0.0-preview.4
+
+### Patch Changes
+
+- 2519b78: Pin the default component registry to an immutable commit and add strict schema-backed registries for untrusted A2UI.
+
 ## 1.0.0-preview.3
 
 ### Patch Changes
