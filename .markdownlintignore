@@ -1,1 +1,2 @@
 apps/dev-survey/agent/.venv/
+**/CHANGELOG.md
