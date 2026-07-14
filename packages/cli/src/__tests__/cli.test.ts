@@ -177,6 +177,9 @@ describe("resolveRegistry", () => {
 	it("falls back to DEFAULT_REGISTRY when no flag, env, or config registry", () => {
 		expect(resolveRegistry(undefined, { componentsDir: "x" })).toBe(DEFAULT_REGISTRY)
 	})
+	it("pins the built-in registry to an immutable commit instead of a branch", () => {
+		expect(DEFAULT_REGISTRY).toMatch(/raw\.githubusercontent\.com\/roonga\/a2-react-aria\/[0-9a-f]{40}\/registry$/)
+	})
 	it("uses A2RA_REGISTRY env var when flag is not set", () => {
 		process.env.A2RA_REGISTRY = "https://env.example.com/registry"
 		expect(resolveRegistry(undefined, { componentsDir: "x" })).toBe("https://env.example.com/registry")

@@ -4,14 +4,11 @@ import type { Config } from "./types.js"
 
 export const CONFIG_FILE = "a2ra.json"
 
-// Default registry base. Points at the mutable `main` branch: content is fetched
-// over HTTPS but not integrity-checked, so a force-push or a compromised host can
-// change what `add` installs. The write side is already guarded against path
-// traversal (see assertWithinTarget in commands/add.ts). Once releases are cut,
-// pin this to a tagged ref (or add content-hash verification) for supply-chain
-// integrity; until then, callers can override via --registry, A2RA_REGISTRY, or
-// the `registry` field in a2ra.json.
-export const DEFAULT_REGISTRY = "https://raw.githubusercontent.com/roonga/a2-react-aria/main/registry"
+// Default registry base. This immutable Git commit prevents a branch update or
+// force-push from changing what `a2ra add` installs. Callers can override it via
+// --registry, A2RA_REGISTRY, or the `registry` field in a2ra.json.
+export const DEFAULT_REGISTRY =
+	"https://raw.githubusercontent.com/roonga/a2-react-aria/b35af865c7e13eb0f523ffda34c4d703b23860a7/registry"
 
 export const DEFAULT_CONFIG: Config = {
 	componentsDir: "components/a2ui",
