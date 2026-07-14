@@ -51,7 +51,7 @@ export function createRegistry(entries: Record<string, RegistryEntryInput>, json
 export function createStrictRegistry(entries: Record<string, StrictRegistryEntryInput>): ComponentRegistry {
 	for (const [type, entry] of Object.entries(entries)) {
 		if (typeof entry.schema?.safeParse !== "function") {
-			throw new Error(`Strict registry entry "${type}" must define a schema with a safeParse method.`)
+			throw new TypeError(`Strict registry entry "${type}" must define a schema with a safeParse method.`)
 		}
 	}
 	return createRegistry(entries)
