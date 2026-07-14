@@ -113,8 +113,10 @@ describe("createStrictRegistry", () => {
 	})
 
 	it("rejects an entry without a schema", () => {
-		expect(() => createStrictRegistry({ Unsafe: { component: (() => null) as never } })).toThrow(
-			'Strict registry entry "Unsafe" must define a schema.',
-		)
+		// Cast bypasses the compile-time requirement to verify the runtime guard for JS (non-TS) consumers.
+		const entries = { Unsafe: { component: (() => null) as never } } as unknown as Parameters<
+			typeof createStrictRegistry
+		>[0]
+		expect(() => createStrictRegistry(entries)).toThrow('Strict registry entry "Unsafe" must define a schema.')
 	})
 })

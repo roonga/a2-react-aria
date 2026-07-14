@@ -21,6 +21,11 @@ export interface RegistryEntryInput {
 	schema?: SchemaLike
 }
 
+/** Input shape for createStrictRegistry — schema is mandatory, catching missing schemas at compile time. */
+export interface StrictRegistryEntryInput extends RegistryEntryInput {
+	schema: SchemaLike
+}
+
 export function createRegistry(entries: Record<string, RegistryEntryInput>, jsonSchema: object): A2Registry
 export function createRegistry(entries: Record<string, RegistryEntryInput>): ComponentRegistry
 export function createRegistry(entries: Record<string, RegistryEntryInput>, jsonSchema?: object): ComponentRegistry {
@@ -43,7 +48,7 @@ export function createRegistry(entries: Record<string, RegistryEntryInput>, json
  * Every entry must provide a schema, so A2Renderer validates each untrusted
  * node before its props reach the registered React component.
  */
-export function createStrictRegistry(entries: Record<string, RegistryEntryInput>): ComponentRegistry {
+export function createStrictRegistry(entries: Record<string, StrictRegistryEntryInput>): ComponentRegistry {
 	for (const [type, entry] of Object.entries(entries)) {
 		if (!entry.schema) {
 			throw new Error(`Strict registry entry "${type}" must define a schema.`)
