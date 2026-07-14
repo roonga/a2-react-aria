@@ -1,5 +1,11 @@
 # @a2ra/core
 
+## 1.0.0-preview.5
+
+### Minor Changes
+
+- 2519b78: Pin the default component registry to an immutable commit and add strict schema-backed registries for untrusted A2UI.
+
 ## 1.0.0-preview.4
 
 ### Major Changes
