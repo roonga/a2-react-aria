@@ -14,6 +14,17 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Run gitleaks
+        run: |
+          docker run --rm -v "$PWD:/repo" -w /repo zricethezav/gitleaks:latest \
+            dir --config .gitleaks.toml --no-banner --redact --exit-code 1 .
+
   build:
     name: Lint, Typecheck, Test & Build
     runs-on: ubuntu-latest

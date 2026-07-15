@@ -1,0 +1,13 @@
+# Gitleaks configuration: default rules plus project-specific secret formats.
+# CI runs `gitleaks dir` on the checkout (see .github/workflows/ci.yml).
+
+[extend]
+useDefault = true
+
+# SonarQube tokens (analysis sqa_, project sqp_, user squ_) — the local
+# SonarQube instance issues these and they must never be committed.
+[[rules]]
+id = "sonarqube-token"
+description = "SonarQube token"
+regex = '''\b(?:sqa_|sqp_|squ_)[0-9a-f]{40}\b'''
+keywords = ["sqa_", "sqp_", "squ_"]
