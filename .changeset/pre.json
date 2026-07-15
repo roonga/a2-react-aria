@@ -10,7 +10,10 @@
   },
   "changesets": [
     "add-default-registry",
+    "breadcrumb-empty-href",
+    "checkbox-form-state-descriptions",
     "registry-schema-export",
+    "registry-strict-by-default",
     "remove-hoc-wiring",
     "review-findings-fixes",
     "safe-rivers-talk",
