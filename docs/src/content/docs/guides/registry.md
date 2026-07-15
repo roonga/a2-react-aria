@@ -47,10 +47,16 @@ Pass a prebuilt JSON Schema via the `jsonSchema` option to get a
 `.validate()` method that checks both node shape and allowed types in one call:
 
 ```tsx
-import { createRegistry } from "@a2ra/core"
+import { Button, ButtonSchema, createRegistry, TextField, TextFieldSchema } from "@a2ra/core"
 import schema from "./a2ui-schema.json"
 
-const registry = createRegistry({ Button, TextField }, { jsonSchema: schema })
+const registry = createRegistry(
+  {
+    Button: { component: Button, schema: ButtonSchema },
+    TextField: { component: TextField, schema: TextFieldSchema },
+  },
+  { jsonSchema: schema },
+)
 
 const result = registry.validate(nodes)
 if (!result.success) throw new Error(`Invalid nodes: ${result.error}`)

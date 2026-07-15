@@ -53,7 +53,7 @@ Chat UI  →  POST /run_sse  →  ADK agent  →  tool call  →  Python builds 
 This is the consumer pattern — importing and using `@a2ra/core` just like any other npm package:
 
 ```tsx
-import { A2Renderer, Button, Card, createRegistry, Flex, Grid, Text } from "@a2ra/core"
+import { A2Renderer, Button, ButtonSchema, Card, createRegistry, Flex, Grid, Text } from "@a2ra/core"
 
 const registry = createRegistry({ Button: { component: Button, schema: ButtonSchema }, ... })
 
