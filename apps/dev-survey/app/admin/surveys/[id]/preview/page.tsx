@@ -20,7 +20,7 @@ function withPageTitle(nodes: unknown[], title: string): unknown[] {
 	if (root?.type !== "SurveyPage") return nodes
 	const props = (root.props ?? {}) as Record<string, unknown>
 	if (props.title) return nodes
-	return [{ ...root, props: { ...props, title } }]
+	return [{ ...root, props: { ...props, title } }, ...nodes.slice(1)]
 }
 
 function evaluateSkip(step: PreviewStep, answers: Record<string, string | string[]>): boolean {

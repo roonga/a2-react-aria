@@ -139,7 +139,8 @@ def _migrate_sq_label_to_inner() -> None:
                         (json.dumps(migrated), row["id"]),
                     )
             except (json.JSONDecodeError, TypeError):
-                pass
+                # Malformed nodes_json: leave the row unmigrated and keep processing the rest.
+                continue
 
 
 def _migrate_nodes_to_survey_page() -> None:
@@ -156,7 +157,8 @@ def _migrate_nodes_to_survey_page() -> None:
                         (json.dumps(migrated), row["id"]),
                     )
             except (json.JSONDecodeError, TypeError):
-                pass
+                # Malformed nodes_json: leave the row unmigrated and keep processing the rest.
+                continue
 
 
 def _reseed_descriptions() -> None:
@@ -224,7 +226,8 @@ def _reseed_descriptions() -> None:
                         (json.dumps(new_nodes), row["id"]),
                     )
             except (json.JSONDecodeError, TypeError):
-                pass
+                # Malformed nodes_json: skip reseeding this row and keep processing the rest.
+                continue
 
 
 def _maybe_seed() -> None:
