@@ -1,5 +1,14 @@
 # @a2ra/docs
 
+## 0.1.1-preview.2
+
+### Patch Changes
+
+- Updated dependencies [2f9d443]
+- Updated dependencies [2f9d443]
+- Updated dependencies [2f9d443]
+  - @a2ra/core@1.0.0-preview.6
+
 ## 0.1.1-preview.1
 
 ### Patch Changes

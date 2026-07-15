@@ -1,5 +1,53 @@
 # @a2ra/core
 
+## 1.0.0-preview.6
+
+### Major Changes
+
+- 2f9d443: `createRegistry` is now strict by default and takes an options object.
+
+  - Every registry entry must provide a Zod-style schema (`safeParse`) unless you
+    opt out with `{ strict: false }` for trusted, hand-written node trees.
+  - The positional `jsonSchema` second argument is replaced by the `jsonSchema`
+    option: `createRegistry(entries, { jsonSchema })`.
+  - `createStrictRegistry` and `StrictRegistryEntryInput` are removed; use
+    `createRegistry` (strict is the default). `CreateRegistryOptions` and
+    `RegistryEntryInput` are now exported.
+
+  Migration:
+
+  ```ts
+  // before
+  createRegistry(entries, jsonSchema);
+  createStrictRegistry(entries);
+
+  // after
+  createRegistry(entries, { jsonSchema });
+  createRegistry(entries); // strict by default
+  createRegistry(entries, { strict: false }); // trusted content only
+  ```
+
+### Minor Changes
+
+- 2f9d443: Form-state support for multi-value fields and field descriptions below labels.
+
+  - `FormStateContext.setValue` now accepts `string | string[]` so multi-select
+    components can report array values.
+  - `CheckboxGroup` now reports its selected values to `FormStateContext`
+    (keyed by `name`, falling back to `label`) and seeds `defaultValue` on mount,
+    matching the existing behaviour of `TextField`, `Select`, and `RadioGroup`.
+  - `A2Renderer` action payloads join array values with `", "` and omit empty arrays.
+  - Field descriptions (`<Text slot="description">`) in `TextField`, `Select`,
+    `RadioGroup`, and `CheckboxGroup` now render between the label and the control
+    instead of after it.
+  - Required indicators (`*`) are now `aria-hidden` in all field components.
+
+### Patch Changes
+
+- 2f9d443: Breadcrumb no longer passes an empty `href` to links for items without an `href`
+  (such as the current page). react-aria treats a present-but-undefined `href` as `""`,
+  which triggered a React warning and rendered an anchor with an empty href.
+
 ## 1.0.0-preview.5
 
 ### Minor Changes
