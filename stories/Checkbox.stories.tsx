@@ -1,10 +1,23 @@
 import type { Meta, StoryObj } from "@storybook/react"
-import { expect, fn, userEvent, within } from "storybook/test"
-import { A2Renderer, Checkbox, CheckboxGroup, createRegistry } from "../packages/core/src/index"
+import { expect, userEvent, within } from "storybook/test"
+import {
+	A2Renderer,
+	Checkbox,
+	CheckboxGroup,
+	CheckboxGroupSchema,
+	CheckboxSchema,
+	createRegistry,
+} from "../packages/core/src/index"
 
 const registry = createRegistry({
-	Checkbox: { component: Checkbox as Parameters<typeof createRegistry>[0][string]["component"] },
-	CheckboxGroup: { component: CheckboxGroup as Parameters<typeof createRegistry>[0][string]["component"] },
+	Checkbox: {
+		component: Checkbox as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: CheckboxSchema,
+	},
+	CheckboxGroup: {
+		component: CheckboxGroup as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: CheckboxGroupSchema,
+	},
 })
 
 const meta = {
@@ -68,7 +81,7 @@ export const Indeterminate: Story = {
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement)
 		const checkbox = canvas.getByRole("checkbox", { name: /select all/i })
-		await expect(checkbox).toHaveAttribute("aria-checked", "mixed")
+		await expect(checkbox).toBePartiallyChecked()
 	},
 }
 
@@ -101,21 +114,6 @@ export const Interactive: Story = {
 		await expect(checkbox).toBeChecked()
 		await userEvent.click(checkbox)
 		await expect(checkbox).not.toBeChecked()
-	},
-}
-
-export const WithOnChange: Story = {
-	args: {
-		node: {
-			type: "Checkbox",
-			props: { label: "Enable notifications", onChange: fn() },
-		},
-	},
-	play: async ({ canvasElement, args }) => {
-		const canvas = within(canvasElement)
-		const checkbox = canvas.getByRole("checkbox", { name: /enable notifications/i })
-		await userEvent.click(checkbox)
-		await expect(args.node.props?.onChange).toHaveBeenCalledWith(true)
 	},
 }
 

@@ -21,9 +21,9 @@ import { Tag, TagGroup, TagGroupSchema, TagSchema } from "../components/tag"
 import { Text, TextSchema } from "../components/text"
 import { TextField, TextFieldSchema } from "../components/text-field"
 import { Tooltip, TooltipSchema } from "../components/tooltip"
-import { createStrictRegistry, registerComponent } from "./registry"
+import { createRegistry, registerComponent } from "./registry"
 
-export const defaultRegistry = createStrictRegistry({
+export const defaultRegistry = createRegistry({
 	Accordion: { component: Accordion, schema: AccordionSchema },
 	AccordionItem: { component: AccordionItem, schema: AccordionItemSchema },
 	Alert: { component: Alert, schema: AlertSchema },

@@ -47,11 +47,14 @@ function MockCard({ children }: { children?: ReactNode }) {
 
 type RegComp = Parameters<typeof createRegistry>[0][string]["component"]
 
-const registry = createRegistry({
-	Button: { component: MockButton as RegComp },
-	TextField: { component: MockInput as RegComp },
-	Card: { component: MockCard as RegComp },
-})
+const registry = createRegistry(
+	{
+		Button: { component: MockButton as RegComp },
+		TextField: { component: MockInput as RegComp },
+		Card: { component: MockCard as RegComp },
+	},
+	{ strict: false },
+)
 
 // ── tests ────────────────────────────────────────────────────────────────────
 

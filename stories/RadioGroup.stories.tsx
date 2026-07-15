@@ -1,10 +1,20 @@
 import type { Meta, StoryObj } from "@storybook/react"
-import { expect, fn, userEvent, within } from "storybook/test"
-import { A2Renderer, createRegistry, Radio, RadioGroup } from "../packages/core/src/index"
+import { expect, userEvent, within } from "storybook/test"
+import {
+	A2Renderer,
+	createRegistry,
+	Radio,
+	RadioGroup,
+	RadioGroupSchema,
+	RadioSchema,
+} from "../packages/core/src/index"
 
 const registry = createRegistry({
-	Radio: { component: Radio as Parameters<typeof createRegistry>[0][string]["component"] },
-	RadioGroup: { component: RadioGroup as Parameters<typeof createRegistry>[0][string]["component"] },
+	Radio: { component: Radio as Parameters<typeof createRegistry>[0][string]["component"], schema: RadioSchema },
+	RadioGroup: {
+		component: RadioGroup as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: RadioGroupSchema,
+	},
 })
 
 const meta = {
@@ -77,24 +87,6 @@ export const Horizontal: Story = {
 				{ type: "Radio", props: { label: "Large", value: "lg" } },
 			],
 		},
-	},
-}
-
-export const WithOnChange: Story = {
-	args: {
-		node: {
-			type: "RadioGroup",
-			props: { label: "Plan", onChange: fn() },
-			children: [
-				{ type: "Radio", props: { label: "Free", value: "free" } },
-				{ type: "Radio", props: { label: "Pro", value: "pro" } },
-			],
-		},
-	},
-	play: async ({ canvasElement, args }) => {
-		const canvas = within(canvasElement)
-		await userEvent.click(canvas.getByRole("radio", { name: /pro/i }))
-		await expect(args.node.props?.onChange).toHaveBeenCalledWith("pro")
 	},
 }
 

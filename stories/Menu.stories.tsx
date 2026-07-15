@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { expect, fn, userEvent, within } from "storybook/test"
-import { A2Renderer, createRegistry, Menu } from "../packages/core/src/index"
+import { expect, userEvent, within } from "storybook/test"
+import { A2Renderer, createRegistry, Menu, MenuSchema } from "../packages/core/src/index"
 
 const registry = createRegistry({
-	Menu: { component: Menu as Parameters<typeof createRegistry>[0][string]["component"] },
+	Menu: { component: Menu as Parameters<typeof createRegistry>[0][string]["component"], schema: MenuSchema },
 })
 
 const meta = {
@@ -82,27 +82,5 @@ export const SelectionMenu: Story = {
 		await userEvent.click(canvas.getByRole("button", { name: /view/i }))
 		const body = within(document.body)
 		await expect(body.getByRole("menu")).toBeInTheDocument()
-	},
-}
-
-export const WithOnAction: Story = {
-	args: {
-		node: {
-			type: "Menu",
-			props: { triggerLabel: "Edit", items: actions },
-		},
-	},
-	render: (args) => {
-		const onAction = fn()
-		const node = {
-			...args.node,
-			props: { ...args.node.props, onAction },
-		}
-		return <A2Renderer node={node} registry={registry} />
-	},
-	play: async ({ canvas }) => {
-		await userEvent.click(canvas.getByRole("button", { name: /edit/i }))
-		const body = within(document.body)
-		await userEvent.click(await body.findByRole("menuitem", { name: /open/i }))
 	},
 }

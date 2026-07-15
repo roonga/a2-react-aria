@@ -1,12 +1,26 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent } from "storybook/test"
-import { A2Renderer, Button, createRegistry, Switch, Tabs, TextField } from "../packages/core/src/index"
+import {
+	A2Renderer,
+	Button,
+	ButtonSchema,
+	createRegistry,
+	Switch,
+	SwitchSchema,
+	Tabs,
+	TabsSchema,
+	TextField,
+	TextFieldSchema,
+} from "../packages/core/src/index"
 
 const registry = createRegistry({
-	Button: { component: Button as Parameters<typeof createRegistry>[0][string]["component"] },
-	Switch: { component: Switch as Parameters<typeof createRegistry>[0][string]["component"] },
-	Tabs: { component: Tabs as Parameters<typeof createRegistry>[0][string]["component"] },
-	TextField: { component: TextField as Parameters<typeof createRegistry>[0][string]["component"] },
+	Button: { component: Button as Parameters<typeof createRegistry>[0][string]["component"], schema: ButtonSchema },
+	Switch: { component: Switch as Parameters<typeof createRegistry>[0][string]["component"], schema: SwitchSchema },
+	Tabs: { component: Tabs as Parameters<typeof createRegistry>[0][string]["component"], schema: TabsSchema },
+	TextField: {
+		component: TextField as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: TextFieldSchema,
+	},
 })
 
 const meta = {

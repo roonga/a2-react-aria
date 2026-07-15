@@ -80,14 +80,14 @@ via the CLI and want a leaner bundle, pass a custom registry instead:
 
 ```tsx
 import { A2Renderer, createRegistry } from "@a2ra/core"
-import { Form } from "./components/a2ui/form"
-import { TextField } from "./components/a2ui/text-field"
-import { Button } from "./components/a2ui/button"
+import { Form, FormSchema } from "./components/a2ui/form"
+import { TextField, TextFieldSchema } from "./components/a2ui/text-field"
+import { Button, ButtonSchema } from "./components/a2ui/button"
 
 const registry = createRegistry({
-  Form: { component: Form },
-  TextField: { component: TextField },
-  Button: { component: Button },
+  Form: { component: Form, schema: FormSchema },
+  TextField: { component: TextField, schema: TextFieldSchema },
+  Button: { component: Button, schema: ButtonSchema },
 })
 
 export default function App() {

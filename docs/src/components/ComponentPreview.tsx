@@ -1,36 +1,5 @@
 import type { A2Node } from "@a2ra/core"
-import {
-	A2Renderer,
-	Accordion,
-	AccordionItem,
-	Alert,
-	Breadcrumb,
-	Button,
-	Card,
-	Checkbox,
-	CheckboxGroup,
-	createRegistry,
-	DatePicker,
-	DateRangePicker,
-	Dialog,
-	Flex,
-	Form,
-	Grid,
-	Menu,
-	NumberField,
-	Popover,
-	Radio,
-	RadioGroup,
-	Select,
-	Switch,
-	Table,
-	Tabs,
-	Tag,
-	TagGroup,
-	Text,
-	TextField,
-	Tooltip,
-} from "@a2ra/core"
+import { A2Renderer, defaultRegistry } from "@a2ra/core"
 import { useState } from "react"
 
 function CopyButton({ text }: { text: string }) {
@@ -69,36 +38,7 @@ function CopyButton({ text }: { text: string }) {
 	)
 }
 
-const registry = createRegistry({
-	Accordion: { component: Accordion },
-	AccordionItem: { component: AccordionItem },
-	Alert: { component: Alert },
-	Breadcrumb: { component: Breadcrumb },
-	Button: { component: Button },
-	Card: { component: Card },
-	Checkbox: { component: Checkbox },
-	CheckboxGroup: { component: CheckboxGroup },
-	DatePicker: { component: DatePicker },
-	DateRangePicker: { component: DateRangePicker },
-	Dialog: { component: Dialog },
-	Flex: { component: Flex },
-	Form: { component: Form },
-	Grid: { component: Grid },
-	Menu: { component: Menu },
-	NumberField: { component: NumberField },
-	Popover: { component: Popover },
-	Radio: { component: Radio },
-	RadioGroup: { component: RadioGroup },
-	Select: { component: Select },
-	Switch: { component: Switch },
-	Table: { component: Table },
-	Tabs: { component: Tabs },
-	Tag: { component: Tag },
-	TagGroup: { component: TagGroup },
-	Text: { component: Text },
-	TextField: { component: TextField },
-	Tooltip: { component: Tooltip },
-})
+const registry = defaultRegistry
 
 interface Props {
 	node: A2Node

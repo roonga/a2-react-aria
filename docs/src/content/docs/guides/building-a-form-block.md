@@ -60,14 +60,14 @@ wire themselves to form-state collection and action firing:
 
 ```tsx
 import { A2Renderer, createRegistry } from "@a2ra/core"
-import { Button } from "./components/a2ui/button"
-import { Select } from "./components/a2ui/select"
-import { TextField } from "./components/a2ui/text-field"
+import { Button, ButtonSchema } from "./components/a2ui/button"
+import { Select, SelectSchema } from "./components/a2ui/select"
+import { TextField, TextFieldSchema } from "./components/a2ui/text-field"
 
 const registry = createRegistry({
-  Button:    { component: Button },
-  TextField: { component: TextField },
-  Select:    { component: Select },
+  Button:    { component: Button, schema: ButtonSchema },
+  TextField: { component: TextField, schema: TextFieldSchema },
+  Select:    { component: Select, schema: SelectSchema },
 })
 
 function AgentFormBlock({ nodes, onAction }) {
@@ -120,14 +120,14 @@ The `value` prop is not passed to the DOM, so it does not trigger React warnings
 ```tsx
 import { useState } from "react"
 import { A2Renderer, createRegistry, extractA2ui, stripStreamingA2ui } from "@a2ra/core"
-import { Button } from "./components/a2ui/button"
-import { Select } from "./components/a2ui/select"
-import { TextField } from "./components/a2ui/text-field"
+import { Button, ButtonSchema } from "./components/a2ui/button"
+import { Select, SelectSchema } from "./components/a2ui/select"
+import { TextField, TextFieldSchema } from "./components/a2ui/text-field"
 
 const registry = createRegistry({
-  Button:    { component: Button },
-  TextField: { component: TextField },
-  Select:    { component: Select },
+  Button:    { component: Button, schema: ButtonSchema },
+  TextField: { component: TextField, schema: TextFieldSchema },
+  Select:    { component: Select, schema: SelectSchema },
 })
 
 export function AgentChat() {

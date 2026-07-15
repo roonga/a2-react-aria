@@ -21,16 +21,37 @@ export interface RegistryEntryInput {
 	schema?: SchemaLike
 }
 
-/** Input shape for createStrictRegistry — schema is mandatory, catching missing schemas at compile time. */
-export interface StrictRegistryEntryInput extends RegistryEntryInput {
-	schema: SchemaLike
+export interface CreateRegistryOptions {
+	/** Whole-tree JSON schema; when provided, the returned registry exposes validate(). */
+	jsonSchema?: object
+	/**
+	 * When true (the default), every entry must provide a Zod-style schema so
+	 * A2Renderer validates each untrusted node before its props reach the
+	 * registered React component. Set false only for trusted, hand-written trees.
+	 */
+	strict?: boolean
 }
 
-export function createRegistry(entries: Record<string, RegistryEntryInput>, jsonSchema: object): A2Registry
-export function createRegistry(entries: Record<string, RegistryEntryInput>): ComponentRegistry
-export function createRegistry(entries: Record<string, RegistryEntryInput>, jsonSchema?: object): ComponentRegistry {
+export function createRegistry(
+	entries: Record<string, RegistryEntryInput>,
+	options: CreateRegistryOptions & { jsonSchema: object },
+): A2Registry
+export function createRegistry(
+	entries: Record<string, RegistryEntryInput>,
+	options?: CreateRegistryOptions,
+): ComponentRegistry
+export function createRegistry(
+	entries: Record<string, RegistryEntryInput>,
+	options?: CreateRegistryOptions,
+): ComponentRegistry {
+	const { jsonSchema, strict = true } = options ?? {}
 	const registry: ComponentRegistry = new Map()
 	for (const [type, entry] of Object.entries(entries)) {
+		if (strict && typeof entry.schema?.safeParse !== "function") {
+			throw new TypeError(
+				`Registry entry "${type}" must define a schema with a safeParse method. Pass { strict: false } to allow schema-less entries for trusted content.`,
+			)
+		}
 		const component = entry.component as A2ComponentType
 		component.displayName ??= type
 		registry.set(type, { component, schema: entry.schema })
@@ -40,21 +61,6 @@ export function createRegistry(entries: Record<string, RegistryEntryInput>, json
 		Object.assign(registry, { validate })
 	}
 	return registry
-}
-
-/**
- * Creates a registry that rejects incomplete component definitions up front.
- *
- * Every entry must provide a schema, so A2Renderer validates each untrusted
- * node before its props reach the registered React component.
- */
-export function createStrictRegistry(entries: Record<string, StrictRegistryEntryInput>): ComponentRegistry {
-	for (const [type, entry] of Object.entries(entries)) {
-		if (typeof entry.schema?.safeParse !== "function") {
-			throw new TypeError(`Strict registry entry "${type}" must define a schema with a safeParse method.`)
-		}
-	}
-	return createRegistry(entries)
 }
 
 export function registerComponent(type: string, entry: ComponentEntry): void {

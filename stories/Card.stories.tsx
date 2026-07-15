@@ -1,11 +1,20 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect } from "storybook/test"
-import { A2Renderer, Button, Card, createRegistry, Text } from "../packages/core/src/index"
+import {
+	A2Renderer,
+	Button,
+	ButtonSchema,
+	Card,
+	CardSchema,
+	createRegistry,
+	Text,
+	TextSchema,
+} from "../packages/core/src/index"
 
 const registry = createRegistry({
-	Button: { component: Button as Parameters<typeof createRegistry>[0][string]["component"] },
-	Card: { component: Card as Parameters<typeof createRegistry>[0][string]["component"] },
-	Text: { component: Text as Parameters<typeof createRegistry>[0][string]["component"] },
+	Button: { component: Button as Parameters<typeof createRegistry>[0][string]["component"], schema: ButtonSchema },
+	Card: { component: Card as Parameters<typeof createRegistry>[0][string]["component"], schema: CardSchema },
+	Text: { component: Text as Parameters<typeof createRegistry>[0][string]["component"], schema: TextSchema },
 })
 
 const meta = {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { z } from "zod"
 import { defaultRegistry } from "../registry/defaultRegistry"
-import { createRegistry, createStrictRegistry } from "../registry/registry"
+import { createRegistry } from "../registry/registry"
 import { buildRegistrySchema, toJsonSchema } from "../registry-schema"
 
 describe("buildRegistrySchema", () => {
@@ -77,7 +77,7 @@ describe("toJsonSchema", () => {
 
 describe("createRegistry with jsonSchema — registry.validate", () => {
 	const jsonSchema = toJsonSchema(defaultRegistry)
-	const registry = createRegistry(Object.fromEntries(defaultRegistry), jsonSchema)
+	const registry = createRegistry(Object.fromEntries(defaultRegistry), { jsonSchema })
 
 	it("accepts an array of valid nodes", () => {
 		const nodes = [
@@ -98,7 +98,9 @@ describe("createRegistry with jsonSchema — registry.validate", () => {
 	})
 
 	it("rejects a valid node whose type is not in this registry", () => {
-		const partial = createRegistry(Object.fromEntries([...defaultRegistry].filter(([k]) => k !== "Button")), jsonSchema)
+		const partial = createRegistry(Object.fromEntries([...defaultRegistry].filter(([k]) => k !== "Button")), {
+			jsonSchema,
+		})
 		expect(partial.validate([{ type: "Button", children: "Go" }]).success).toBe(false)
 	})
 
@@ -107,30 +109,27 @@ describe("createRegistry with jsonSchema — registry.validate", () => {
 	})
 })
 
-describe("createStrictRegistry", () => {
+describe("createRegistry strict mode", () => {
 	it("accepts a registry when every entry has a schema", () => {
-		// defaultRegistry is known at runtime to have a schema on every entry; ComponentEntry's
-		// schema field is optional so this cast is required to satisfy StrictRegistryEntryInput.
-		const entries = Object.fromEntries(defaultRegistry) as unknown as Parameters<typeof createStrictRegistry>[0]
-		expect(() => createStrictRegistry(entries)).not.toThrow()
+		expect(() => createRegistry(Object.fromEntries(defaultRegistry))).not.toThrow()
 	})
 
-	it("rejects an entry without a schema", () => {
-		// Cast bypasses the compile-time requirement to verify the runtime guard for JS (non-TS) consumers.
-		const entries = { Unsafe: { component: (() => null) as never } } as unknown as Parameters<
-			typeof createStrictRegistry
-		>[0]
-		expect(() => createStrictRegistry(entries)).toThrow(
-			'Strict registry entry "Unsafe" must define a schema with a safeParse method.',
+	it("rejects an entry without a schema by default", () => {
+		const entries = { Unsafe: { component: () => null } }
+		expect(() => createRegistry(entries)).toThrow(
+			'Registry entry "Unsafe" must define a schema with a safeParse method.',
 		)
 	})
 
 	it("rejects an entry whose schema does not implement safeParse", () => {
-		const entries = { Malformed: { component: (() => null) as never, schema: {} } } as unknown as Parameters<
-			typeof createStrictRegistry
-		>[0]
-		expect(() => createStrictRegistry(entries)).toThrow(
-			'Strict registry entry "Malformed" must define a schema with a safeParse method.',
+		const entries = { Malformed: { component: () => null, schema: {} as never } }
+		expect(() => createRegistry(entries)).toThrow(
+			'Registry entry "Malformed" must define a schema with a safeParse method.',
 		)
+	})
+
+	it("allows schema-less entries when strict is false", () => {
+		const entries = { Trusted: { component: () => null } }
+		expect(() => createRegistry(entries, { strict: false })).not.toThrow()
 	})
 })

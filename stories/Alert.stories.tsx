@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect } from "storybook/test"
-import { A2Renderer, Alert, createRegistry } from "../packages/core/src/index"
+import { A2Renderer, Alert, AlertSchema, createRegistry } from "../packages/core/src/index"
 
 const registry = createRegistry({
-	Alert: { component: Alert as Parameters<typeof createRegistry>[0][string]["component"] },
+	Alert: { component: Alert as Parameters<typeof createRegistry>[0][string]["component"], schema: AlertSchema },
 })
 
 const meta = {

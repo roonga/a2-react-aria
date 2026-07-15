@@ -3,34 +3,47 @@
 import {
 	A2Renderer,
 	Button,
+	ButtonSchema,
 	Card,
+	CardSchema,
 	Checkbox,
 	CheckboxGroup,
+	CheckboxGroupSchema,
+	CheckboxSchema,
 	createRegistry,
 	Flex,
+	FlexSchema,
 	Grid,
+	GridSchema,
 	Radio,
 	RadioGroup,
+	RadioGroupSchema,
+	RadioSchema,
 	Select,
+	SelectSchema,
 	Text,
 	TextField,
+	TextFieldSchema,
+	TextSchema,
 } from "@a2ra/core"
-import { SurveyPage, SurveyQuestion } from "./survey-composites"
+import { SurveyPage, SurveyPageSchema, SurveyQuestion, SurveyQuestionSchema } from "./survey-composites"
 
+// Strict registry: every node from the agent is validated against its schema
+// before rendering.
 const REGISTRY = createRegistry({
-	Button: { component: Button },
-	Card: { component: Card },
-	Checkbox: { component: Checkbox },
-	CheckboxGroup: { component: CheckboxGroup },
-	Flex: { component: Flex },
-	Grid: { component: Grid },
-	Radio: { component: Radio },
-	RadioGroup: { component: RadioGroup },
-	Select: { component: Select },
-	SurveyPage: { component: SurveyPage },
-	SurveyQuestion: { component: SurveyQuestion },
-	Text: { component: Text },
-	TextField: { component: TextField },
+	Button: { component: Button, schema: ButtonSchema },
+	Card: { component: Card, schema: CardSchema },
+	Checkbox: { component: Checkbox, schema: CheckboxSchema },
+	CheckboxGroup: { component: CheckboxGroup, schema: CheckboxGroupSchema },
+	Flex: { component: Flex, schema: FlexSchema },
+	Grid: { component: Grid, schema: GridSchema },
+	Radio: { component: Radio, schema: RadioSchema },
+	RadioGroup: { component: RadioGroup, schema: RadioGroupSchema },
+	Select: { component: Select, schema: SelectSchema },
+	SurveyPage: { component: SurveyPage, schema: SurveyPageSchema },
+	SurveyQuestion: { component: SurveyQuestion, schema: SurveyQuestionSchema },
+	Text: { component: Text, schema: TextSchema },
+	TextField: { component: TextField, schema: TextFieldSchema },
 })
 
 interface Props {

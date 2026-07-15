@@ -1,10 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect } from "storybook/test"
-import { A2Renderer, createRegistry, Tag, TagGroup } from "../packages/core/src/index"
+import { A2Renderer, createRegistry, Tag, TagGroup, TagGroupSchema, TagSchema } from "../packages/core/src/index"
 
 const registry = createRegistry({
-	Tag: { component: Tag as Parameters<typeof createRegistry>[0][string]["component"] },
-	TagGroup: { component: TagGroup as Parameters<typeof createRegistry>[0][string]["component"] },
+	Tag: { component: Tag as Parameters<typeof createRegistry>[0][string]["component"], schema: TagSchema },
+	TagGroup: {
+		component: TagGroup as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: TagGroupSchema,
+	},
 })
 
 const meta = {

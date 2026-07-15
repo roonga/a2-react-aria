@@ -25,14 +25,14 @@ local copies for full tree-shaking:
 
 ```tsx
 import { createRegistry } from "@a2ra/core"
-import { Button } from "./components/a2ui/button"
-import { Form } from "./components/a2ui/form"
-import { TextField } from "./components/a2ui/text-field"
+import { Button, ButtonSchema } from "./components/a2ui/button"
+import { Form, FormSchema } from "./components/a2ui/form"
+import { TextField, TextFieldSchema } from "./components/a2ui/text-field"
 
 const registry = createRegistry({
-  Button: { component: Button },
-  Form: { component: Form },
-  TextField: { component: TextField },
+  Button: { component: Button, schema: ButtonSchema },
+  Form: { component: Form, schema: FormSchema },
+  TextField: { component: TextField, schema: TextFieldSchema },
 })
 
 <A2Renderer node={node} registry={registry} />
@@ -43,14 +43,14 @@ hit the error boundary instead of crashing the page.
 
 ## Registry-aware validation
 
-Pass a prebuilt JSON Schema as the second argument to `createRegistry` to get a
+Pass a prebuilt JSON Schema via the `jsonSchema` option to get a
 `.validate()` method that checks both node shape and allowed types in one call:
 
 ```tsx
 import { createRegistry } from "@a2ra/core"
 import schema from "./a2ui-schema.json"
 
-const registry = createRegistry({ Button, TextField }, schema)
+const registry = createRegistry({ Button, TextField }, { jsonSchema: schema })
 
 const result = registry.validate(nodes)
 if (!result.success) throw new Error(`Invalid nodes: ${result.error}`)
@@ -94,12 +94,14 @@ Register your own component types alongside the built-ins:
 
 ```tsx
 import { createRegistry } from "@a2ra/core"
-import { MyBanner } from "./components/my-banner"
+import { MyBanner, MyBannerSchema } from "./components/my-banner"
 
-// Spread defaultRegistry entries and add your own
+// Spread defaultRegistry entries and add your own. createRegistry is strict by
+// default: every entry needs a Zod schema so untrusted nodes are validated
+// before rendering (pass { strict: false } only for trusted, hand-written trees).
 const registry = createRegistry({
   ...Object.fromEntries(defaultRegistry),
-  MyBanner: { component: MyBanner },
+  MyBanner: { component: MyBanner, schema: MyBannerSchema },
 })
 ```
 

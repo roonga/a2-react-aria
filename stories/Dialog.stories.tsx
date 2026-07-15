@@ -1,11 +1,23 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
-import { A2Renderer, Button, createRegistry, Dialog, TextField } from "../packages/core/src/index"
+import {
+	A2Renderer,
+	Button,
+	ButtonSchema,
+	createRegistry,
+	Dialog,
+	DialogSchema,
+	TextField,
+	TextFieldSchema,
+} from "../packages/core/src/index"
 
 const registry = createRegistry({
-	Button: { component: Button as Parameters<typeof createRegistry>[0][string]["component"] },
-	Dialog: { component: Dialog as Parameters<typeof createRegistry>[0][string]["component"] },
-	TextField: { component: TextField as Parameters<typeof createRegistry>[0][string]["component"] },
+	Button: { component: Button as Parameters<typeof createRegistry>[0][string]["component"], schema: ButtonSchema },
+	Dialog: { component: Dialog as Parameters<typeof createRegistry>[0][string]["component"], schema: DialogSchema },
+	TextField: {
+		component: TextField as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: TextFieldSchema,
+	},
 })
 
 const meta = {
@@ -65,7 +77,7 @@ export const AlertDialog: Story = {
 		await userEvent.click(canvas.getByRole("button", { name: /delete item/i }))
 		const body = within(document.body)
 		await expect(body.getByRole("alertdialog")).toBeInTheDocument()
-		await expect(body.getByText(/confirm delete/i)).toBeInTheDocument()
+		await expect(body.getByRole("heading", { name: /confirm delete/i })).toBeInTheDocument()
 	},
 }
 

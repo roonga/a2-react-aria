@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react"
 import { expect, userEvent, within } from "storybook/test"
-import { A2Renderer, Button, createRegistry } from "../packages/core/src/index"
+import { A2Renderer, Button, ButtonSchema, createRegistry } from "../packages/core/src/index"
 
 const registry = createRegistry({
-	Button: { component: Button as Parameters<typeof createRegistry>[0][string]["component"] },
+	Button: { component: Button as Parameters<typeof createRegistry>[0][string]["component"], schema: ButtonSchema },
 })
 
 const meta = {

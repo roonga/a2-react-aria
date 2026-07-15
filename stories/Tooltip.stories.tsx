@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
-import { A2Renderer, createRegistry, Tooltip } from "../packages/core/src/index"
+import { A2Renderer, createRegistry, Tooltip, TooltipSchema } from "../packages/core/src/index"
 
 const registry = createRegistry({
-	Tooltip: { component: Tooltip as Parameters<typeof createRegistry>[0][string]["component"] },
+	Tooltip: { component: Tooltip as Parameters<typeof createRegistry>[0][string]["component"], schema: TooltipSchema },
 })
 
 const meta = {
