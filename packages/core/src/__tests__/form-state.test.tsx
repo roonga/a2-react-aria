@@ -1,6 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { useContext, useEffect } from "react"
 import { describe, expect, it, vi } from "vitest"
+import { Checkbox, CheckboxGroup } from "../components/checkbox"
+import { Radio, RadioGroup } from "../components/radio"
 import { FormStateContext } from "../form-state/form-state"
 
 // Mock components that use FormStateContext the same way built-in components do.
@@ -163,5 +165,62 @@ describe("FormStateContext — component integration", () => {
 		expect(() => {
 			fireEvent.change(screen.getByRole("textbox"), { target: { value: "Charlie" } })
 		}).not.toThrow()
+	})
+})
+
+describe("FormStateContext — CheckboxGroup and name-keyed components", () => {
+	it("CheckboxGroup reports its selected values as an array keyed by name", () => {
+		const setValue = vi.fn()
+		render(
+			<FormStateContext.Provider value={{ setValue }}>
+				<CheckboxGroup label="Languages used" name="languages">
+					<Checkbox value="TypeScript" label="TypeScript" />
+					<Checkbox value="Python" label="Python" />
+				</CheckboxGroup>
+			</FormStateContext.Provider>,
+		)
+		fireEvent.click(screen.getByRole("checkbox", { name: "TypeScript" }))
+		expect(setValue).toHaveBeenLastCalledWith("languages", ["TypeScript"])
+		fireEvent.click(screen.getByRole("checkbox", { name: "Python" }))
+		expect(setValue).toHaveBeenLastCalledWith("languages", ["TypeScript", "Python"])
+	})
+
+	it("CheckboxGroup seeds defaultValue array into context on mount", () => {
+		const setValue = vi.fn()
+		render(
+			<FormStateContext.Provider value={{ setValue }}>
+				<CheckboxGroup label="Languages used" name="languages" defaultValue={["Python"]}>
+					<Checkbox value="TypeScript" label="TypeScript" />
+					<Checkbox value="Python" label="Python" />
+				</CheckboxGroup>
+			</FormStateContext.Provider>,
+		)
+		expect(setValue).toHaveBeenCalledWith("languages", ["Python"])
+	})
+
+	it("CheckboxGroup falls back to label as the key when name is absent", () => {
+		const setValue = vi.fn()
+		render(
+			<FormStateContext.Provider value={{ setValue }}>
+				<CheckboxGroup label="Languages used">
+					<Checkbox value="TypeScript" label="TypeScript" />
+				</CheckboxGroup>
+			</FormStateContext.Provider>,
+		)
+		fireEvent.click(screen.getByRole("checkbox", { name: "TypeScript" }))
+		expect(setValue).toHaveBeenLastCalledWith("Languages used", ["TypeScript"])
+	})
+
+	it("RadioGroup keys context values by name when both name and label are given", () => {
+		const setValue = vi.fn()
+		render(
+			<FormStateContext.Provider value={{ setValue }}>
+				<RadioGroup label="Which best describes you?" name="employment">
+					<Radio value="Student" label="Student" />
+				</RadioGroup>
+			</FormStateContext.Provider>,
+		)
+		fireEvent.click(screen.getByRole("radio", { name: "Student" }))
+		expect(setValue).toHaveBeenLastCalledWith("employment", "Student")
 	})
 })

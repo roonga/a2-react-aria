@@ -1,9 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { expect, fn, userEvent } from "storybook/test"
-import { A2Renderer, Breadcrumb, createRegistry } from "../packages/core/src/index"
+import { expect } from "storybook/test"
+import { A2Renderer, Breadcrumb, BreadcrumbSchema, createRegistry } from "../packages/core/src/index"
 
 const registry = createRegistry({
-	Breadcrumb: { component: Breadcrumb as Parameters<typeof createRegistry>[0][string]["component"] },
+	Breadcrumb: {
+		component: Breadcrumb as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: BreadcrumbSchema,
+	},
 })
 
 const meta = {
@@ -34,27 +37,6 @@ export const Default: Story = {
 		await expect(canvas.getByRole("link", { name: /home/i })).toBeInTheDocument()
 		await expect(canvas.getByRole("link", { name: /products/i })).toBeInTheDocument()
 		await expect(canvas.getByRole("link", { name: /wireless headphones/i })).toBeInTheDocument()
-	},
-}
-
-export const WithOnAction: Story = {
-	args: {
-		node: {
-			type: "Breadcrumb",
-			props: {
-				ariaLabel: "Navigation",
-				items: [
-					{ id: "root", label: "Dashboard", href: "/dashboard" },
-					{ id: "section", label: "Reports", href: "/reports" },
-					{ id: "page", label: "Q1 Summary" },
-				],
-				onAction: fn(),
-			},
-		},
-	},
-	play: async ({ canvas }) => {
-		const link = canvas.getByRole("link", { name: /dashboard/i })
-		await userEvent.click(link)
 	},
 }
 

@@ -22,20 +22,20 @@ Generate the schema file for your app:
 npx @a2ra/cli schema
 ```
 
-Then pass it as the second argument to `createRegistry`:
+Then pass it via the `jsonSchema` option of `createRegistry`:
 
 ```tsx
 import { createRegistry } from "@a2ra/core"
-import { Button } from "./components/a2ui/button"
-import { TextField } from "./components/a2ui/text-field"
+import { Button, ButtonSchema } from "./components/a2ui/button"
+import { TextField, TextFieldSchema } from "./components/a2ui/text-field"
 import schema from "./a2ui-schema.json"
 
 export const registry = createRegistry(
   {
-    Button: { component: Button },
-    TextField: { component: TextField },
+    Button: { component: Button, schema: ButtonSchema },
+    TextField: { component: TextField, schema: TextFieldSchema },
   },
-  schema,
+  { jsonSchema: schema },
 )
 ```
 

@@ -60,7 +60,8 @@ export function Select({
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional mount-only seed
 	useEffect(() => {
-		if (defaultValue !== undefined && label) formCtx?.setValue(label, defaultValue)
+		const key = name ?? label
+		if (defaultValue !== undefined && key) formCtx?.setValue(key, defaultValue)
 	}, [])
 
 	return (
@@ -78,13 +79,29 @@ export function Select({
 			placeholder={placeholder}
 			onSelectionChange={(key) => {
 				const v = key as string
-				if (label) formCtx?.setValue(label, v)
+				const fKey = name ?? label
+				if (fKey) formCtx?.setValue(fKey, v)
 				onChange?.(v)
 			}}
 			onOpenChange={onOpenChange}
 			className={styles.field}
 		>
-			{label && <Label className={styles.label}>{label}</Label>}
+			{label && (
+				<Label className={styles.label}>
+					{label}
+					{isRequired && (
+						<span aria-hidden="true" className={styles.requiredIndicator}>
+							{" "}
+							*
+						</span>
+					)}
+				</Label>
+			)}
+			{description && (
+				<Text slot="description" className={styles.description}>
+					{description}
+				</Text>
+			)}
 			<Button className={({ isDisabled: dis }) => styles.trigger({ isDisabled: dis, isInvalid })}>
 				<SelectValue>
 					{({ selectedText, isPlaceholder }) => (
@@ -104,11 +121,6 @@ export function Select({
 					<path d="M4 6l4 4 4-4" strokeLinecap="round" strokeLinejoin="round" />
 				</svg>
 			</Button>
-			{description && (
-				<Text slot="description" className={styles.description}>
-					{description}
-				</Text>
-			)}
 			<FieldError className={styles.errorMessage}>{errorMessage}</FieldError>
 			<Popover className={styles.popover}>
 				<ListBox disabledKeys={disabledKeys} className={styles.listbox}>

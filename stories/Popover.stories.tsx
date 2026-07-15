@@ -1,11 +1,20 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect, userEvent, within } from "storybook/test"
-import { A2Renderer, Button, createRegistry, Popover, Switch } from "../packages/core/src/index"
+import {
+	A2Renderer,
+	Button,
+	ButtonSchema,
+	createRegistry,
+	Popover,
+	PopoverSchema,
+	Switch,
+	SwitchSchema,
+} from "../packages/core/src/index"
 
 const registry = createRegistry({
-	Button: { component: Button as Parameters<typeof createRegistry>[0][string]["component"] },
-	Popover: { component: Popover as Parameters<typeof createRegistry>[0][string]["component"] },
-	Switch: { component: Switch as Parameters<typeof createRegistry>[0][string]["component"] },
+	Button: { component: Button as Parameters<typeof createRegistry>[0][string]["component"], schema: ButtonSchema },
+	Popover: { component: Popover as Parameters<typeof createRegistry>[0][string]["component"], schema: PopoverSchema },
+	Switch: { component: Switch as Parameters<typeof createRegistry>[0][string]["component"], schema: SwitchSchema },
 })
 
 const meta = {

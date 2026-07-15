@@ -28,6 +28,7 @@ interface ThemeConfig {
 	base: Base
 	font: Font
 	radius: Radius
+	background?: string
 }
 
 const FONT_FAMILIES: Record<Font, string> = {
@@ -119,7 +120,7 @@ const PRESETS: Array<{ name: string } & ThemeConfig> = [
 	{ name: "Terminal", accent: "#22c55e", base: "dark", font: "jetbrains-mono", radius: "none" },
 ]
 
-const DEFAULT_CONFIG: ThemeConfig = { accent: "#2563eb", base: "light", font: "inter", radius: "md" }
+const DEFAULT_CONFIG: ThemeConfig = { accent: "#2563eb", base: "light", font: "inter", radius: "md", background: "" }
 
 function hexLuminance(hex: string): number {
 	if (!/^#[0-9a-fA-F]{6}$/.test(hex)) return 0
@@ -134,10 +135,11 @@ function deriveTokens(cfg: ThemeConfig): Record<string, string> {
 	const light = cfg.base === "light"
 	const accentFg = hexLuminance(cfg.accent) > 0.179 ? "#000000" : "#ffffff"
 	const radiusPx = Math.min(parseFloat(RADII[cfg.radius]), 16)
-	return {
+	const bg = /^#[0-9a-fA-F]{6}$/.test(cfg.background ?? "") ? (cfg.background as string) : light ? "#ffffff" : "#0f172a"
+	const tokens: Record<string, string> = {
 		"--color-primary": cfg.accent,
 		"--color-primary-foreground": accentFg,
-		"--color-background": light ? "#ffffff" : "#0f172a",
+		"--color-background": bg,
 		"--color-surface": light ? "#f8fafc" : "#1e293b",
 		"--color-text": light ? "#0f172a" : "#f8fafc",
 		"--color-text-muted": light ? "#64748b" : "#94a3b8",
@@ -151,6 +153,8 @@ function deriveTokens(cfg: ThemeConfig): Record<string, string> {
 		_font: cfg.font,
 		_radius: cfg.radius,
 	}
+	if (cfg.background) tokens._background = cfg.background
+	return tokens
 }
 
 function configFromTheme(theme: Record<string, string>): ThemeConfig {
@@ -160,6 +164,7 @@ function configFromTheme(theme: Record<string, string>): ThemeConfig {
 		base: validBases.includes(theme._base as Base) ? (theme._base as Base) : DEFAULT_CONFIG.base,
 		font: theme._font in FONT_FAMILIES ? (theme._font as Font) : DEFAULT_CONFIG.font,
 		radius: theme._radius in RADII ? (theme._radius as Radius) : DEFAULT_CONFIG.radius,
+		background: /^#[0-9a-fA-F]{6}$/.test(theme._background ?? "") ? theme._background : "",
 	}
 }
 
@@ -206,9 +211,12 @@ export default function ThemePage() {
 		setSaveError(null)
 	}
 
-	const activePreset = PRESETS.find(
-		(p) => p.accent === config.accent && p.base === config.base && p.font === config.font && p.radius === config.radius,
-	)?.name
+	const activePreset = !config.background
+		? PRESETS.find(
+				(p) =>
+					p.accent === config.accent && p.base === config.base && p.font === config.font && p.radius === config.radius,
+			)?.name
+		: undefined
 
 	if (loading) return <p className="text-(--color-text-muted) text-sm">Loading…</p>
 
@@ -277,7 +285,14 @@ export default function ThemePage() {
 							key={preset.name}
 							type="button"
 							onClick={() => {
-								setConfig((c) => ({ ...c, accent: preset.accent, font: preset.font, radius: preset.radius }))
+								setConfig((c) => ({
+									...c,
+									accent: preset.accent,
+									base: preset.base,
+									font: preset.font,
+									radius: preset.radius,
+									background: "",
+								}))
 								setSaveSuccess(false)
 							}}
 							className={`flex items-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors ${
@@ -318,7 +333,7 @@ export default function ThemePage() {
 									setConfig((c) => ({ ...c, accent: e.target.value }))
 									setSaveSuccess(false)
 								}}
-								className="w-28 rounded-md border border-(--color-border) bg-(--color-background) px-3 py-1.5 font-mono text-(--color-text) text-sm focus:outline-none focus:ring-2 focus:ring-(--color-primary)"
+								className="w-28 rounded-md border border-(--color-border) bg-(--color-background) px-3 py-1.5 font-mono text-(--color-text) text-sm focus:outline-none focus:ring-(--color-primary) focus:ring-2"
 							/>
 						</div>
 					</div>
@@ -351,6 +366,55 @@ export default function ThemePage() {
 						</button>
 					</div>
 
+					{/* Background color */}
+					<div>
+						<p className="mb-2 block font-medium text-(--color-text) text-sm">Background color</p>
+						<div className="flex items-center gap-3">
+							<input
+								type="color"
+								aria-label="Background colour picker"
+								value={
+									config.background && /^#[0-9a-fA-F]{6}$/.test(config.background)
+										? config.background
+										: config.base === "light"
+											? "#ffffff"
+											: "#0f172a"
+								}
+								onChange={(e) => {
+									setConfig((c) => ({ ...c, background: e.target.value }))
+									setSaveSuccess(false)
+								}}
+								className="h-9 w-9 shrink-0 cursor-pointer rounded border border-(--color-border) p-0.5"
+							/>
+							<input
+								type="text"
+								value={config.background || ""}
+								placeholder={config.base === "light" ? "#ffffff" : "#0f172a"}
+								onChange={(e) => {
+									setConfig((c) => ({ ...c, background: e.target.value }))
+									setSaveSuccess(false)
+								}}
+								className="w-28 rounded-md border border-(--color-border) bg-(--color-background) px-3 py-1.5 font-mono text-(--color-text) text-sm focus:outline-none focus:ring-(--color-primary) focus:ring-2"
+							/>
+							{config.background && (
+								<button
+									type="button"
+									aria-label="Reset background to default"
+									onClick={() => {
+										setConfig((c) => ({ ...c, background: "" }))
+										setSaveSuccess(false)
+									}}
+									className="text-(--color-text-muted) text-xs hover:text-(--color-text)"
+								>
+									Reset
+								</button>
+							)}
+						</div>
+						<p className="mt-1.5 text-(--color-text-muted) text-xs">
+							Leave blank to use the default for your chosen appearance mode.
+						</p>
+					</div>
+
 					{/* Font */}
 					<div>
 						<label htmlFor="theme-font" className="mb-2 block font-medium text-(--color-text) text-sm">
@@ -364,7 +428,7 @@ export default function ThemePage() {
 								setSaveSuccess(false)
 							}}
 							style={{ fontFamily: FONT_FAMILIES[config.font] }}
-							className="w-full rounded-md border border-(--color-border) bg-(--color-background) px-3 py-2 text-(--color-text) text-sm focus:outline-none focus:ring-2 focus:ring-(--color-primary)"
+							className="w-full rounded-md border border-(--color-border) bg-(--color-background) px-3 py-2 text-(--color-text) text-sm focus:outline-none focus:ring-(--color-primary) focus:ring-2"
 						>
 							{FONT_GROUPS.map(({ group, fonts }) => (
 								<optgroup key={group} label={group}>
@@ -459,7 +523,7 @@ export default function ThemePage() {
 					style={{ ...previewVars, fontFamily: "var(--font-family, inherit)" }}
 					className="overflow-hidden rounded-lg border border-(--color-border) bg-(--color-background)"
 				>
-					<div className="border-b border-(--color-border) px-4 py-2">
+					<div className="border-(--color-border) border-b px-4 py-2">
 						<span className="text-(--color-text-muted) text-xs">Preview</span>
 					</div>
 					<div className="flex flex-col gap-4 p-4">

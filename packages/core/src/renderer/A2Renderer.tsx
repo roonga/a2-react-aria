@@ -19,15 +19,15 @@ const URL_PROP_KEYS = /^(href|src|action|formaction|.*[Uu]rl|.*[Hh]ref|.*[Ss]rc)
 // parsed by the browser as "javascript:", making it a stored-XSS bypass.
 const ASCII_TAB_OR_NEWLINE = /[\t\n\r]/g
 
-function isC0ControlOrSpace(code: number): boolean {
-	return code <= 0x20
+function isC0ControlOrSpace(code: number | undefined): boolean {
+	return code !== undefined && code <= 0x20
 }
 
 function normalizeUrlForSchemeCheck(value: string): string {
 	let start = 0
 	let end = value.length
-	while (start < end && isC0ControlOrSpace(value.charCodeAt(start))) start++
-	while (end > start && isC0ControlOrSpace(value.charCodeAt(end - 1))) end--
+	while (start < end && isC0ControlOrSpace(value.codePointAt(start))) start++
+	while (end > start && isC0ControlOrSpace(value.codePointAt(end - 1))) end--
 	return value.slice(start, end).replace(ASCII_TAB_OR_NEWLINE, "")
 }
 
@@ -117,21 +117,21 @@ function InteractiveWrapper({
 	readonly onAction: (text: string) => void
 	readonly children: ReactNode
 }) {
-	const fieldsRef = useRef<Record<string, string>>({})
+	const fieldsRef = useRef<Record<string, string | string[]>>({})
 
 	const formState = useMemo<FormStateCtx>(
 		() => ({
-			setValue: (label, value) => {
-				fieldsRef.current[label] = value
+			setValue: (key, value) => {
+				fieldsRef.current[key] = value
 			},
 		}),
 		[],
 	)
 
 	const buildAction = useCallback((buttonLabel: string): string => {
-		const entries = Object.entries(fieldsRef.current).filter(([, v]) => v !== "")
+		const entries = Object.entries(fieldsRef.current).filter(([, v]) => (Array.isArray(v) ? v.length > 0 : v !== ""))
 		if (entries.length === 0) return buttonLabel
-		const parts = entries.map(([k, v]) => `${k}: ${v}`)
+		const parts = entries.map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(", ") : v}`)
 		return `${buttonLabel} | ${parts.join(" | ")}`
 	}, [])
 

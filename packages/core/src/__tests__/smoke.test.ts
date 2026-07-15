@@ -15,7 +15,7 @@ describe("@a2ra/core smoke", () => {
 
 	it("createRegistry stores entries by type", () => {
 		const MockComponent = () => null
-		const registry = createRegistry({ Button: { component: MockComponent } })
+		const registry = createRegistry({ Button: { component: MockComponent } }, { strict: false })
 		expect(registry.get("Button")?.component).toBe(MockComponent)
 	})
 })

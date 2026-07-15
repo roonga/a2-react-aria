@@ -1,11 +1,22 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { expect } from "storybook/test"
-import { A2Renderer, createRegistry, DatePicker, DateRangePicker } from "../packages/core/src/index"
+import {
+	A2Renderer,
+	createRegistry,
+	DatePicker,
+	DatePickerSchema,
+	DateRangePicker,
+	DateRangePickerSchema,
+} from "../packages/core/src/index"
 
 const registry = createRegistry({
-	DatePicker: { component: DatePicker as Parameters<typeof createRegistry>[0][string]["component"] },
+	DatePicker: {
+		component: DatePicker as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: DatePickerSchema,
+	},
 	DateRangePicker: {
 		component: DateRangePicker as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: DateRangePickerSchema,
 	},
 })
 

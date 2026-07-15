@@ -22,7 +22,9 @@ export function Breadcrumb({ items = [], ariaLabel = "Breadcrumb", isDisabled, o
 				<RACBreadcrumb key={item.id} id={item.id} className={styles.item}>
 					{({ isCurrent }) => (
 						<>
-							<Link href={item.href} className={styles.link}>
+							{/* Omit href entirely when absent: react-aria's useLinkProps treats a
+							    present-but-undefined href as "" and React warns on empty href. */}
+							<Link {...(item.href !== undefined && { href: item.href })} className={styles.link}>
 								{item.label}
 							</Link>
 							{!isCurrent && (

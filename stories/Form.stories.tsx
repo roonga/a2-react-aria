@@ -1,12 +1,26 @@
 import type { Meta, StoryObj } from "@storybook/react"
 import { expect, userEvent, within } from "storybook/test"
-import { A2Renderer, Button, createRegistry, Form, Switch, TextField } from "../packages/core/src/index"
+import {
+	A2Renderer,
+	Button,
+	ButtonSchema,
+	createRegistry,
+	Form,
+	FormSchema,
+	Switch,
+	SwitchSchema,
+	TextField,
+	TextFieldSchema,
+} from "../packages/core/src/index"
 
 const registry = createRegistry({
-	Button: { component: Button as Parameters<typeof createRegistry>[0][string]["component"] },
-	Form: { component: Form as Parameters<typeof createRegistry>[0][string]["component"] },
-	Switch: { component: Switch as Parameters<typeof createRegistry>[0][string]["component"] },
-	TextField: { component: TextField as Parameters<typeof createRegistry>[0][string]["component"] },
+	Button: { component: Button as Parameters<typeof createRegistry>[0][string]["component"], schema: ButtonSchema },
+	Form: { component: Form as Parameters<typeof createRegistry>[0][string]["component"], schema: FormSchema },
+	Switch: { component: Switch as Parameters<typeof createRegistry>[0][string]["component"], schema: SwitchSchema },
+	TextField: {
+		component: TextField as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: TextFieldSchema,
+	},
 })
 
 const meta = {
@@ -25,8 +39,8 @@ export const LoginForm: Story = {
 			type: "Form",
 			props: { gap: "md" },
 			children: [
-				{ type: "TextField", props: { label: "Email", type: "email", required: true } },
-				{ type: "TextField", props: { label: "Password", type: "password", required: true } },
+				{ type: "TextField", props: { label: "Email", type: "email", isRequired: true } },
+				{ type: "TextField", props: { label: "Password", type: "password", isRequired: true } },
 				{ type: "Button", props: { variant: "primary", size: "md" }, children: "Sign in" },
 			],
 		},

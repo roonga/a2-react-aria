@@ -2,16 +2,11 @@
 
 import { useEffect, useState } from "react"
 
-export interface SkipCondition {
-	field: string
-	oneOf: string[]
-}
-
 export interface BackendSurveyStep {
 	id: string
 	title: string
 	nodes: unknown[]
-	skipIf?: SkipCondition
+	skip_if?: unknown
 }
 
 interface UseSurveyDataResult {

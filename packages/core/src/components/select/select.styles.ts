@@ -9,6 +9,7 @@ const triggerBase =
 export const getSelectStyles = () => ({
 	field: "flex flex-col gap-1",
 	label: "text-sm font-medium text-(--color-text)",
+	requiredIndicator: "text-(--color-danger)",
 	trigger({ isDisabled, isInvalid }: TriggerState) {
 		if (isDisabled) {
 			return `${triggerBase} cursor-not-allowed border-(--color-border) bg-(--color-background-muted) opacity-50 text-(--color-text-muted)`

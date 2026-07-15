@@ -1,9 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react"
 import { expect, userEvent, within } from "storybook/test"
-import { A2Renderer, createRegistry, NumberField } from "../packages/core/src/index"
+import { A2Renderer, createRegistry, NumberField, NumberFieldSchema } from "../packages/core/src/index"
 
 const registry = createRegistry({
-	NumberField: { component: NumberField as Parameters<typeof createRegistry>[0][string]["component"] },
+	NumberField: {
+		component: NumberField as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: NumberFieldSchema,
+	},
 })
 
 const meta = {

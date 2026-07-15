@@ -2,63 +2,16 @@ import { render, screen } from "@testing-library/react"
 import axe from "axe-core"
 import type React from "react"
 import { describe, expect, it } from "vitest"
-import { Accordion, AccordionItem } from "../components/accordion"
-import { Alert } from "../components/alert"
-import { Breadcrumb } from "../components/breadcrumb"
-import { Button } from "../components/button"
-import { Card } from "../components/card"
-import { Checkbox, CheckboxGroup } from "../components/checkbox"
-import { DatePicker, DateRangePicker } from "../components/date-picker"
-import { Dialog } from "../components/dialog"
-import { Form } from "../components/form"
-import { Flex, Grid } from "../components/layout"
-import { Menu } from "../components/menu"
-import { NumberField } from "../components/number-field"
-import { Popover } from "../components/popover"
-import { Radio, RadioGroup } from "../components/radio"
-import { Select } from "../components/select"
-import { Switch } from "../components/switch"
-import { Table } from "../components/table"
-import { Tabs } from "../components/tabs"
-import { Tag, TagGroup } from "../components/tag"
 import { Text } from "../components/text"
-import { TextField } from "../components/text-field"
-import { Tooltip } from "../components/tooltip"
 import { A2Renderer, createRegistry } from "../index"
+import { defaultRegistry } from "../registry/defaultRegistry"
 
 // Color contrast requires real CSS rendering — jsdom cannot compute it.
 const AXE_CONFIG: axe.RunOptions = { rules: { "color-contrast": { enabled: false } } }
 
-const registry = createRegistry({
-	Accordion: { component: Accordion },
-	AccordionItem: { component: AccordionItem },
-	Alert: { component: Alert },
-	Tag: { component: Tag },
-	TagGroup: { component: TagGroup },
-	Breadcrumb: { component: Breadcrumb },
-	Button: { component: Button },
-	Card: { component: Card },
-	DatePicker: { component: DatePicker },
-	DateRangePicker: { component: DateRangePicker },
-	Checkbox: { component: Checkbox },
-	CheckboxGroup: { component: CheckboxGroup },
-	Dialog: { component: Dialog },
-	Flex: { component: Flex },
-	Form: { component: Form },
-	Grid: { component: Grid },
-	Menu: { component: Menu },
-	NumberField: { component: NumberField },
-	Popover: { component: Popover },
-	Radio: { component: Radio },
-	RadioGroup: { component: RadioGroup },
-	Select: { component: Select },
-	Switch: { component: Switch },
-	Table: { component: Table },
-	Tabs: { component: Tabs },
-	Text: { component: Text },
-	TextField: { component: TextField },
-	Tooltip: { component: Tooltip },
-})
+// The full built-in component set with schemas, so every node in this suite is
+// validated exactly as strict consumer registries validate untrusted input.
+const registry = createRegistry(Object.fromEntries(defaultRegistry))
 
 describe("A2Renderer — a2UI to React Aria integration", () => {
 	describe("Button component", () => {
@@ -1390,8 +1343,16 @@ describe("Accessibility — axe-core", () => {
 					node={{
 						type: "Accordion",
 						children: [
-							{ type: "AccordionItem", props: { id: "a", heading: "Section A" }, children: "Content A" },
-							{ type: "AccordionItem", props: { id: "b", heading: "Section B" }, children: "Content B" },
+							{
+								type: "AccordionItem",
+								props: { id: "a", heading: "Section A" },
+								children: [{ type: "Text", children: "Content A" }],
+							},
+							{
+								type: "AccordionItem",
+								props: { id: "b", heading: "Section B" },
+								children: [{ type: "Text", children: "Content B" }],
+							},
 						],
 					}}
 					registry={registry}
@@ -1410,7 +1371,7 @@ describe("Accessibility — axe-core", () => {
 							{
 								type: "AccordionItem",
 								props: { id: "faq", heading: "What is this?", defaultExpanded: true },
-								children: "This is a collapsible section.",
+								children: [{ type: "Text", children: "This is a collapsible section." }],
 							},
 						],
 					}}
@@ -1425,7 +1386,13 @@ describe("Accessibility — axe-core", () => {
 				<A2Renderer
 					node={{
 						type: "Accordion",
-						children: [{ type: "AccordionItem", props: { id: "x", heading: "Item X" }, children: "Content X" }],
+						children: [
+							{
+								type: "AccordionItem",
+								props: { id: "x", heading: "Item X" },
+								children: [{ type: "Text", children: "Content X" }],
+							},
+						],
 					}}
 					registry={registry}
 				/>,
@@ -1440,11 +1407,14 @@ describe("A2Renderer security", () => {
 	// Simple components that pass props directly to DOM elements for testing sanitization
 	const Anchor = ({ href, children }: { href?: string; children?: React.ReactNode }) => <a href={href}>{children}</a>
 	const Img = ({ src }: { src?: string }) => <img src={src} alt="" />
-	const securityRegistry = createRegistry({
-		Anchor: { component: Anchor as Parameters<typeof createRegistry>[0][string]["component"] },
-		Img: { component: Img as Parameters<typeof createRegistry>[0][string]["component"] },
-		Text: { component: Text },
-	})
+	const securityRegistry = createRegistry(
+		{
+			Anchor: { component: Anchor as Parameters<typeof createRegistry>[0][string]["component"] },
+			Img: { component: Img as Parameters<typeof createRegistry>[0][string]["component"] },
+			Text: { component: Text },
+		},
+		{ strict: false },
+	)
 
 	it("replaces javascript: href with about:blank", () => {
 		const { container } = render(

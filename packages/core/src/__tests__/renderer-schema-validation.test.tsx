@@ -8,9 +8,12 @@ const registryWithSchema = createRegistry({
 	Button: { component: Button, schema: ButtonSchema },
 })
 
-const registryNoSchema = createRegistry({
-	Button: { component: Button },
-})
+const registryNoSchema = createRegistry(
+	{
+		Button: { component: Button },
+	},
+	{ strict: false },
+)
 
 describe("A2Renderer schema validation", () => {
 	it("renders normally when props satisfy the schema", () => {

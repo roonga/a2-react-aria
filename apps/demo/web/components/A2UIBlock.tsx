@@ -15,25 +15,26 @@ import {
 	Text,
 	TextField,
 } from "@a2ra/core"
+import { registrySchemas } from "../lib/registry-schemas"
 import schema from "../public/a2ui-schema.json"
 import { FeedbackSurveyCard } from "./custom/FeedbackSurveyCard"
 
 const REGISTRY = createRegistry(
 	{
-		Button: { component: Button },
-		Card: { component: Card },
-		DatePicker: { component: DatePicker },
-		FeedbackSurvey: { component: FeedbackSurveyCard },
-		Flex: { component: Flex },
-		Grid: { component: Grid },
-		NumberField: { component: NumberField },
-		Radio: { component: Radio },
-		RadioGroup: { component: RadioGroup },
-		Select: { component: Select },
-		Text: { component: Text },
-		TextField: { component: TextField },
+		Button: { component: Button, schema: registrySchemas.Button },
+		Card: { component: Card, schema: registrySchemas.Card },
+		DatePicker: { component: DatePicker, schema: registrySchemas.DatePicker },
+		FeedbackSurvey: { component: FeedbackSurveyCard, schema: registrySchemas.FeedbackSurvey },
+		Flex: { component: Flex, schema: registrySchemas.Flex },
+		Grid: { component: Grid, schema: registrySchemas.Grid },
+		NumberField: { component: NumberField, schema: registrySchemas.NumberField },
+		Radio: { component: Radio, schema: registrySchemas.Radio },
+		RadioGroup: { component: RadioGroup, schema: registrySchemas.RadioGroup },
+		Select: { component: Select, schema: registrySchemas.Select },
+		Text: { component: Text, schema: registrySchemas.Text },
+		TextField: { component: TextField, schema: registrySchemas.TextField },
 	},
-	schema,
+	{ jsonSchema: schema },
 )
 
 interface Props {

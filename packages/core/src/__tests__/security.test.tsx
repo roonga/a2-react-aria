@@ -45,24 +45,27 @@ const AnchorList = ({ items = [] }: { items?: { href?: string }[] }) => (
 	</ul>
 )
 
-const registry = createRegistry({
-	Anchor: { component: Anchor as Parameters<typeof createRegistry>[0][string]["component"] },
-	Img: { component: Img as Parameters<typeof createRegistry>[0][string]["component"] },
-	AnchorWithAction: { component: AnchorWithAction as Parameters<typeof createRegistry>[0][string]["component"] },
-	AnchorWithFormaction: {
-		component: AnchorWithFormaction as Parameters<typeof createRegistry>[0][string]["component"],
+const registry = createRegistry(
+	{
+		Anchor: { component: Anchor as Parameters<typeof createRegistry>[0][string]["component"] },
+		Img: { component: Img as Parameters<typeof createRegistry>[0][string]["component"] },
+		AnchorWithAction: { component: AnchorWithAction as Parameters<typeof createRegistry>[0][string]["component"] },
+		AnchorWithFormaction: {
+			component: AnchorWithFormaction as Parameters<typeof createRegistry>[0][string]["component"],
+		},
+		AnchorWithImageUrl: { component: AnchorWithImageUrl as Parameters<typeof createRegistry>[0][string]["component"] },
+		AnchorWithProfileHref: {
+			component: AnchorWithProfileHref as Parameters<typeof createRegistry>[0][string]["component"],
+		},
+		AnchorWithThumbnailSrc: {
+			component: AnchorWithThumbnailSrc as Parameters<typeof createRegistry>[0][string]["component"],
+		},
+		AnchorList: { component: AnchorList as Parameters<typeof createRegistry>[0][string]["component"] },
+		Text: { component: Text },
+		TextField: { component: TextField },
 	},
-	AnchorWithImageUrl: { component: AnchorWithImageUrl as Parameters<typeof createRegistry>[0][string]["component"] },
-	AnchorWithProfileHref: {
-		component: AnchorWithProfileHref as Parameters<typeof createRegistry>[0][string]["component"],
-	},
-	AnchorWithThumbnailSrc: {
-		component: AnchorWithThumbnailSrc as Parameters<typeof createRegistry>[0][string]["component"],
-	},
-	AnchorList: { component: AnchorList as Parameters<typeof createRegistry>[0][string]["component"] },
-	Text: { component: Text },
-	TextField: { component: TextField },
-})
+	{ strict: false },
+)
 
 // ── OWASP A03:2021 — Injection: XSS via HTML in string content ─────────────
 
@@ -371,9 +374,12 @@ describe("A03 URL injection — nested URL props inside arrays/objects are sanit
 
 	it("blocks data: nested one object deep", () => {
 		const Wrapper = ({ meta }: { meta?: { src?: string } }) => <img src={meta?.src} alt="" />
-		const reg = createRegistry({
-			Wrapper: { component: Wrapper as Parameters<typeof createRegistry>[0][string]["component"] },
-		})
+		const reg = createRegistry(
+			{
+				Wrapper: { component: Wrapper as Parameters<typeof createRegistry>[0][string]["component"] },
+			},
+			{ strict: false },
+		)
 		const { container } = render(
 			<A2Renderer
 				node={{ type: "Wrapper", props: { meta: { src: "data:text/html,<script>alert(1)</script>" } } }}

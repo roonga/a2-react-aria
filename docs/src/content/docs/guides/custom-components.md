@@ -34,11 +34,11 @@ Add the component to your registry alongside the built-ins:
 
 ```tsx
 import { createRegistry, defaultRegistry } from "@a2ra/core"
-import { FeedbackSurvey } from "./components/custom/FeedbackSurvey"
+import { FeedbackSurvey, FeedbackSurveySchema } from "./components/custom/FeedbackSurvey"
 
 const registry = createRegistry({
   ...Object.fromEntries(defaultRegistry),
-  FeedbackSurvey: { component: FeedbackSurvey },
+  FeedbackSurvey: { component: FeedbackSurvey, schema: FeedbackSurveySchema },
 })
 ```
 
@@ -82,7 +82,7 @@ Register the wrapper instead of the bare component:
 ```tsx
 const registry = createRegistry({
   ...Object.fromEntries(defaultRegistry),
-  FeedbackSurvey: { component: FeedbackSurveyCard },
+  FeedbackSurvey: { component: FeedbackSurveyCard, schema: FeedbackSurveySchema },
 })
 ```
 

@@ -15,24 +15,15 @@ interface PreviewStep {
 	skip_if: unknown
 }
 
-type A2Node = { props?: Record<string, unknown>; children?: unknown }
-
-function buildLabelToNameMap(nodes: unknown[]): Record<string, string> {
-	const map: Record<string, string> = {}
-	function walk(n: unknown): void {
-		if (!n || typeof n !== "object") return
-		const node = n as A2Node
-		const { label, name } = node.props ?? {}
-		if (typeof label === "string" && typeof name === "string") map[label] = name
-		const c = node.children
-		if (Array.isArray(c)) c.forEach(walk)
-		else if (c) walk(c)
-	}
-	nodes.forEach(walk)
-	return map
+function withPageTitle(nodes: unknown[], title: string): unknown[] {
+	const root = nodes[0] as Record<string, unknown> | undefined
+	if (root?.type !== "SurveyPage") return nodes
+	const props = (root.props ?? {}) as Record<string, unknown>
+	if (props.title) return nodes
+	return [{ ...root, props: { ...props, title } }, ...nodes.slice(1)]
 }
 
-function evaluateSkip(step: PreviewStep, answers: Record<string, string>): boolean {
+function evaluateSkip(step: PreviewStep, answers: Record<string, string | string[]>): boolean {
 	const si = step.skip_if as Record<string, unknown> | null
 	if (!si) return false
 	// Old format: { field, one_of }
@@ -63,8 +54,8 @@ export default function PreviewPage() {
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
 	const [stepIndex, setStepIndex] = useState(0)
-	const [answers, setAnswers] = useState<Record<string, string>>({})
-	const [stepValues, setStepValues] = useState<Record<string, string>>({})
+	const [answers, setAnswers] = useState<Record<string, string | string[]>>({})
+	const [stepValues, setStepValues] = useState<Record<string, string | string[]>>({})
 
 	useEffect(() => {
 		adminApi
@@ -81,12 +72,10 @@ export default function PreviewPage() {
 	const visibleSteps = survey.steps.filter((s) => !evaluateSkip(s as PreviewStep, answers))
 	const currentStep = visibleSteps[stepIndex] as PreviewStep | undefined
 	const totalSteps = visibleSteps.length
-	const progress = Math.round((stepIndex / Math.max(totalSteps - 1, 1)) * 100)
 
-	const labelToName = buildLabelToNameMap(currentStep?.nodes ?? [])
+	const titledNodes = currentStep ? withPageTitle(currentStep.nodes as never[], currentStep.title) : []
 
-	function setValue(label: string, value: string) {
-		const key = labelToName[label] ?? label
+	function setValue(key: string, value: string | string[]) {
 		setStepValues((prev) => ({ ...prev, [key]: value }))
 	}
 
@@ -154,35 +143,43 @@ export default function PreviewPage() {
 				))}
 			</div>
 
-			<div
-				style={{
-					...(Object.fromEntries(
-						Object.entries(survey.theme ?? {}).filter(([k]) => k.startsWith("--")),
-					) as CSSProperties),
-					fontFamily: "var(--font-family, inherit)",
-				}}
-				className="mx-auto max-w-2xl"
-			>
-				{!isDone && !isWelcome && (
-					<div className="mb-4 flex items-center gap-3">
-						<div className="h-2 flex-1 overflow-hidden rounded-full bg-(--color-background-muted)">
-							<div
-								className="h-full rounded-full bg-(--color-primary) transition-all duration-300"
-								style={{ width: `${progress}%` }}
-							/>
-						</div>
-						<span className="shrink-0 text-(--color-text-muted) text-sm">
-							{stepIndex} / {totalSteps - 2}
-						</span>
-					</div>
-				)}
+			<div className="mx-auto flex max-w-2xl flex-col gap-4">
+				<div
+					style={{
+						...(Object.fromEntries(
+							Object.entries(survey.theme ?? {}).filter(([k]) => k.startsWith("--")),
+						) as CSSProperties),
+						fontFamily: "var(--font-family, inherit)",
+					}}
+				>
+					{currentStep ? (
+						<FormStateContext.Provider value={{ setValue }}>
+							<A2UIBlock nodes={titledNodes as never} />
+						</FormStateContext.Provider>
+					) : (
+						<p className="text-(--color-text-muted) text-sm">No steps to preview.</p>
+					)}
+				</div>
 
-				{currentStep ? (
-					<FormStateContext.Provider value={{ setValue }}>
-						<A2UIBlock nodes={currentStep.nodes as never} onAction={handleAction} />
-					</FormStateContext.Provider>
-				) : (
-					<p className="text-(--color-text-muted) text-sm">No steps to preview.</p>
+				{!isDone && currentStep && (
+					<div className={`flex gap-2 ${isWelcome ? "justify-center" : "justify-end"}`}>
+						{!isWelcome && stepIndex > 0 && (
+							<button
+								type="button"
+								onClick={() => handleAction("__back__")}
+								className="rounded-md border border-(--color-border) px-4 py-2 text-(--color-text) text-sm hover:bg-(--color-background-muted)"
+							>
+								Back
+							</button>
+						)}
+						<button
+							type="button"
+							onClick={() => handleAction("__next__")}
+							className="rounded-md bg-(--color-primary) px-4 py-2 text-(--color-primary-foreground) text-sm hover:opacity-90"
+						>
+							{isWelcome ? "Start Survey" : "Next"}
+						</button>
+					</div>
 				)}
 
 				<div className="mt-4 rounded-lg border border-(--color-border) bg-(--color-background-muted) p-3">

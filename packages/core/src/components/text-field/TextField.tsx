@@ -55,11 +55,13 @@ export function TextField({
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional mount-only seed
 	useEffect(() => {
-		if (defaultValue !== undefined && label) formCtx?.setValue(label, defaultValue)
+		const key = name ?? label
+		if (defaultValue !== undefined && key) formCtx?.setValue(key, defaultValue)
 	}, [])
 
 	const handleChange = (v: string) => {
-		if (label) formCtx?.setValue(label, v)
+		const key = name ?? label
+		if (key) formCtx?.setValue(key, v)
 		onChange?.(v)
 	}
 
@@ -86,15 +88,20 @@ export function TextField({
 			{label && (
 				<Label className={styles.label}>
 					{label}
-					{isRequired && <span className={styles.requiredIndicator}> *</span>}
+					{isRequired && (
+						<span aria-hidden="true" className={styles.requiredIndicator}>
+							{" "}
+							*
+						</span>
+					)}
 				</Label>
 			)}
-			<Input placeholder={placeholder} inputMode={inputMode} className={styles.input} />
 			{description && (
 				<Text slot="description" className={styles.description}>
 					{description}
 				</Text>
 			)}
+			<Input placeholder={placeholder} inputMode={inputMode} className={styles.input} />
 			<FieldError className={styles.errorMessage}>
 				{({ validationErrors }) => errorMessage ?? validationErrors.join(", ")}
 			</FieldError>

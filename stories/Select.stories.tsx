@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react"
 import { expect, userEvent, within } from "storybook/test"
-import { A2Renderer, createRegistry, Select } from "../packages/core/src/index"
+import { A2Renderer, createRegistry, Select, SelectSchema } from "../packages/core/src/index"
 
 const registry = createRegistry({
-	Select: { component: Select as Parameters<typeof createRegistry>[0][string]["component"] },
+	Select: { component: Select as Parameters<typeof createRegistry>[0][string]["component"], schema: SelectSchema },
 })
 
 const FRUITS = [
@@ -122,7 +122,9 @@ export const Interactive: Story = {
 		const canvas = within(canvasElement)
 		const trigger = canvas.getByRole("button")
 		await userEvent.click(trigger)
-		const apple = await canvas.findByRole("option", { name: /apple/i })
+		// Options render in a portal outside the canvas, so query the whole document.
+		const body = within(document.body)
+		const apple = await body.findByRole("option", { name: /apple/i })
 		await expect(apple).toBeInTheDocument()
 		await userEvent.click(apple)
 		await expect(canvas.getByRole("button")).toHaveTextContent(/apple/i)

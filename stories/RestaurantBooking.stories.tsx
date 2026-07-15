@@ -3,68 +3,98 @@ import { expect } from "storybook/test"
 import {
 	A2Renderer,
 	Breadcrumb,
+	BreadcrumbSchema,
 	Button,
+	ButtonSchema,
 	Card,
+	CardSchema,
 	Checkbox,
 	CheckboxGroup,
+	CheckboxGroupSchema,
+	CheckboxSchema,
 	createRegistry,
 	DatePicker,
+	DatePickerSchema,
 	Flex,
+	FlexSchema,
 	Form,
+	FormSchema,
 	Grid,
+	GridSchema,
 	Radio,
 	RadioGroup,
+	RadioGroupSchema,
+	RadioSchema,
 	Select,
+	SelectSchema,
 	Tabs,
+	TabsSchema,
 	Text,
 	TextField,
+	TextFieldSchema,
+	TextSchema,
 } from "../packages/core/src/index"
 
 const registry = createRegistry({
 	Breadcrumb: {
 		component: Breadcrumb as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: BreadcrumbSchema,
 	},
 	Button: {
 		component: Button as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: ButtonSchema,
 	},
 	Card: {
 		component: Card as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: CardSchema,
 	},
 	Checkbox: {
 		component: Checkbox as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: CheckboxSchema,
 	},
 	CheckboxGroup: {
 		component: CheckboxGroup as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: CheckboxGroupSchema,
 	},
 	DatePicker: {
 		component: DatePicker as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: DatePickerSchema,
 	},
 	Flex: {
 		component: Flex as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: FlexSchema,
 	},
 	Form: {
 		component: Form as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: FormSchema,
 	},
 	Grid: {
 		component: Grid as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: GridSchema,
 	},
 	Radio: {
 		component: Radio as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: RadioSchema,
 	},
 	RadioGroup: {
 		component: RadioGroup as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: RadioGroupSchema,
 	},
 	Select: {
 		component: Select as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: SelectSchema,
 	},
 	Tabs: {
 		component: Tabs as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: TabsSchema,
 	},
 	Text: {
 		component: Text as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: TextSchema,
 	},
 	TextField: {
 		component: TextField as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: TextFieldSchema,
 	},
 })
 
@@ -298,15 +328,15 @@ export const BookingForm: Story = {
 							children: [
 								{
 									type: "TextField",
-									props: { label: "First name", required: true },
+									props: { label: "First name", isRequired: true },
 								},
 								{
 									type: "TextField",
-									props: { label: "Last name", required: true },
+									props: { label: "Last name", isRequired: true },
 								},
 								{
 									type: "TextField",
-									props: { label: "Email", type: "email", required: true },
+									props: { label: "Email", type: "email", isRequired: true },
 								},
 								{ type: "TextField", props: { label: "Phone", type: "tel" } },
 							],

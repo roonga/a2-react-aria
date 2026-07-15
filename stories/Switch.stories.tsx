@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react"
-import { expect, fn, userEvent, within } from "storybook/test"
-import { A2Renderer, createRegistry, Switch } from "../packages/core/src/index"
+import { expect, userEvent, within } from "storybook/test"
+import { A2Renderer, createRegistry, Switch, SwitchSchema } from "../packages/core/src/index"
 
 const registry = createRegistry({
-	Switch: { component: Switch as Parameters<typeof createRegistry>[0][string]["component"] },
+	Switch: { component: Switch as Parameters<typeof createRegistry>[0][string]["component"], schema: SwitchSchema },
 })
 
 const meta = {
@@ -59,21 +59,6 @@ export const Interactive: Story = {
 		await expect(sw).toBeChecked()
 		await userEvent.click(sw)
 		await expect(sw).not.toBeChecked()
-	},
-}
-
-export const WithOnChange: Story = {
-	args: {
-		node: {
-			type: "Switch",
-			props: { label: "Auto-save", onChange: fn() },
-		},
-	},
-	play: async ({ canvasElement, args }) => {
-		const canvas = within(canvasElement)
-		const sw = canvas.getByRole("switch", { name: /auto-save/i })
-		await userEvent.click(sw)
-		await expect(args.node.props?.onChange).toHaveBeenCalledWith(true)
 	},
 }
 

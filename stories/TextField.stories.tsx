@@ -1,9 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react"
 import { expect, userEvent, within } from "storybook/test"
-import { A2Renderer, createRegistry, TextField } from "../packages/core/src/index"
+import { A2Renderer, createRegistry, TextField, TextFieldSchema } from "../packages/core/src/index"
 
 const registry = createRegistry({
-	TextField: { component: TextField as Parameters<typeof createRegistry>[0][string]["component"] },
+	TextField: {
+		component: TextField as Parameters<typeof createRegistry>[0][string]["component"],
+		schema: TextFieldSchema,
+	},
 })
 
 const meta = {
@@ -24,7 +27,7 @@ export const Email: Story = {
 				label: "Email",
 				placeholder: "you@example.com",
 				type: "email",
-				required: true,
+				isRequired: true,
 			},
 		},
 	},
@@ -44,7 +47,7 @@ export const Password: Story = {
 			props: {
 				label: "Password",
 				type: "password",
-				required: true,
+				isRequired: true,
 			},
 		},
 	},
@@ -70,7 +73,7 @@ export const Disabled: Story = {
 			props: {
 				label: "Disabled Field",
 				value: "Cannot edit",
-				disabled: true,
+				isDisabled: true,
 			},
 		},
 	},

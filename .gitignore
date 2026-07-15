@@ -44,3 +44,9 @@ packages/core/schema.json
 
 # TypeScript incremental build info (auto-generated)
 *.tsbuildinfo
+
+# Python bytecode cache
+__pycache__/
+
+# Survey agent runtime data (SQLite)
+apps/dev-survey/agent/data/
