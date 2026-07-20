@@ -1,5 +1,13 @@
 # @a2ra/core
 
+## 1.0.0-preview.7
+
+### Minor Changes
+
+- e3be565: Add `TextArea` — a labeled multiline text input (React Aria `TextField` + `TextArea` element)
+  with `rows`, length constraints, description, and error-message support. Registered in
+  `defaultRegistry`, exported from the package index, available via `a2ra add text-area`. Closes #68.
+
 ## 1.0.0-preview.6
 
 ### Major Changes
