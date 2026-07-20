@@ -19,6 +19,7 @@ import { Table, TableSchema } from "../components/table"
 import { Tabs, TabsSchema } from "../components/tabs"
 import { Tag, TagGroup, TagGroupSchema, TagSchema } from "../components/tag"
 import { Text, TextSchema } from "../components/text"
+import { TextArea, TextAreaSchema } from "../components/text-area"
 import { TextField, TextFieldSchema } from "../components/text-field"
 import { Tooltip, TooltipSchema } from "../components/tooltip"
 import { createRegistry, registerComponent } from "./registry"
@@ -50,6 +51,7 @@ export const defaultRegistry = createRegistry({
 	Tag: { component: Tag, schema: TagSchema },
 	TagGroup: { component: TagGroup, schema: TagGroupSchema },
 	Text: { component: Text, schema: TextSchema },
+	TextArea: { component: TextArea, schema: TextAreaSchema },
 	TextField: { component: TextField, schema: TextFieldSchema },
 	Tooltip: { component: Tooltip, schema: TooltipSchema },
 })

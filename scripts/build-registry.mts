@@ -38,6 +38,7 @@ const META: Record<string, { title: string; description: string }> = {
 	table: { title: "Table", description: "Sortable, selectable data table." },
 	tabs: { title: "Tabs", description: "Tabbed navigation panels." },
 	text: { title: "Text", description: "Typographic text primitive." },
+	"text-area": { title: "TextArea", description: "Multiline text input with label, validation, and error messages." },
 	"text-field": { title: "TextField", description: "Single-line text input with label and validation." },
 	tooltip: { title: "Tooltip", description: "Accessible hover/focus tooltip." },
 }

@@ -1460,3 +1460,58 @@ describe("A2Renderer security", () => {
 		expect(container.querySelector("[data-testid='depth-fallback']")).not.toBeNull()
 	})
 })
+
+describe("TextArea component", () => {
+	it("renders a multiline textarea with label from a2UI JSON", () => {
+		const node = {
+			type: "TextArea" as const,
+			props: { label: "Comments", rows: 4 },
+		}
+		render(<A2Renderer node={node} registry={registry} />)
+		const el = screen.getByLabelText(/comments/i) as HTMLTextAreaElement
+		expect(el.tagName).toBe("TEXTAREA")
+		expect(el.rows).toBe(4)
+	})
+
+	it("renders required indicator from a2UI JSON", () => {
+		const node = {
+			type: "TextArea" as const,
+			props: { label: "Feedback", isRequired: true },
+		}
+		render(<A2Renderer node={node} registry={registry} />)
+		const label = screen.getByText(/feedback/i)
+		expect(label.textContent).toContain("*")
+	})
+
+	it("renders disabled textarea from a2UI JSON", () => {
+		const node = {
+			type: "TextArea" as const,
+			props: { label: "Notes", isDisabled: true },
+		}
+		render(<A2Renderer node={node} registry={registry} />)
+		const el = screen.getByLabelText(/notes/i) as HTMLTextAreaElement
+		expect(el.disabled).toBe(true)
+	})
+
+	it("associates the description with the textarea", () => {
+		const node = {
+			type: "TextArea" as const,
+			props: { label: "Bio", description: "Tell us about yourself" },
+		}
+		render(<A2Renderer node={node} registry={registry} />)
+		const el = screen.getByLabelText(/bio/i)
+		expect(el.getAttribute("aria-describedby")).toBeTruthy()
+		expect(screen.getByText(/tell us about yourself/i)).toBeDefined()
+	})
+
+	it("has no axe violations (labelled textarea)", async () => {
+		const { container } = render(
+			<A2Renderer
+				node={{ type: "TextArea", props: { label: "Comments", description: "Optional", rows: 3 } }}
+				registry={registry}
+			/>,
+		)
+		const { violations } = await axe.run(container, AXE_CONFIG)
+		expect(violations).toHaveLength(0)
+	})
+})
