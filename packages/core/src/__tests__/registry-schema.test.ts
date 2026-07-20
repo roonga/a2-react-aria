@@ -29,10 +29,10 @@ describe("buildRegistrySchema", () => {
 		expect(result.success).toBe(false)
 	})
 
-	it("covers all 28 built-in component types", () => {
+	it("covers all 29 built-in component types", () => {
 		const schema = buildRegistrySchema(defaultRegistry)
 		const union = schema as z.ZodUnion<[z.ZodTypeAny, z.ZodTypeAny, ...z.ZodTypeAny[]]>
-		expect(union.options.length).toBe(28)
+		expect(union.options.length).toBe(29)
 	})
 
 	it("throws when registry has no schemas", () => {
@@ -48,10 +48,10 @@ describe("toJsonSchema", () => {
 		expect(json).not.toBeNull()
 	})
 
-	it("produces oneOf with 28 entries", () => {
+	it("produces oneOf with 29 entries", () => {
 		const json = toJsonSchema(defaultRegistry) as Record<string, unknown>
 		const entries = (json.oneOf ?? json.anyOf) as unknown[]
-		expect(entries).toHaveLength(28)
+		expect(entries).toHaveLength(29)
 	})
 
 	it("each oneOf entry has a type constant property", () => {
@@ -71,7 +71,7 @@ describe("toJsonSchema", () => {
 		customRegistry.set("Banner", { component: (() => null) as never, schema: CustomSchema })
 		const json = toJsonSchema(customRegistry) as Record<string, unknown>
 		const entries = (json.oneOf ?? json.anyOf) as unknown[]
-		expect(entries).toHaveLength(29)
+		expect(entries).toHaveLength(30)
 	})
 })
 

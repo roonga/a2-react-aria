@@ -201,6 +201,16 @@
       "files": 4
     },
     {
+      "name": "text-area",
+      "title": "TextArea",
+      "description": "Multiline text input with label, validation, and error messages.",
+      "dependencies": [
+        "react-aria-components",
+        "zod"
+      ],
+      "files": 4
+    },
+    {
       "name": "text-field",
       "title": "TextField",
       "description": "Single-line text input with label and validation.",

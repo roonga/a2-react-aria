@@ -1,0 +1,98 @@
+---
+title: TextArea
+description: A labeled multiline text input with validation, description, and error message support.
+---
+
+import { ComponentPreview } from "../../../components/ComponentPreview"
+
+A multiline text input built on React Aria's `TextField` with a `TextArea` element.
+Manages label association, validation state, and error messages automatically.
+
+## Add via CLI
+
+```bash
+npx @a2ra/cli add text-area
+```
+
+## Basic
+
+<ComponentPreview client:only="react" node={{
+  type: "TextArea",
+  props: {
+    label: "Comments",
+    placeholder: "Tell us what you think…",
+    rows: 4
+  }
+}} />
+
+## Required with description
+
+<ComponentPreview client:only="react" node={{
+  type: "TextArea",
+  props: {
+    label: "Feedback",
+    description: "Required — max 500 characters.",
+    isRequired: true,
+    maxLength: 500,
+    rows: 6
+  }
+}} />
+
+## Disabled state
+
+<ComponentPreview client:only="react" node={{
+  type: "TextArea",
+  props: { label: "Notes", defaultValue: "Read-only history entry.", isDisabled: true, rows: 3 }
+}} />
+
+## With validation error
+
+<ComponentPreview client:only="react" node={{
+  type: "TextArea",
+  props: {
+    label: "Bio",
+    name: "bio",
+    defaultValue: "x",
+    isInvalid: true,
+    errorMessage: "Bio must be at least 20 characters."
+  }
+}} />
+
+## Example JSON
+
+```json
+{
+  "type": "TextArea",
+  "props": {
+    "label": "Comments",
+    "name": "comments",
+    "rows": 4,
+    "isRequired": true,
+    "maxLength": 500,
+    "description": "Max 500 characters."
+  }
+}
+```
+
+## Props
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `label` | `string` | Visible field label (always provide one, or the field is unlabeled) |
+| `placeholder` | `string` | Placeholder text shown when empty |
+| `name` | `string` | Form field name (also the form-state key) |
+| `value` / `defaultValue` | `string` | Controlled / uncontrolled value |
+| `rows` | `number` | Visible text rows (positive integer) |
+| `isDisabled` / `isRequired` / `isReadOnly` / `isInvalid` | `boolean` | React Aria field states |
+| `autoFocus` | `boolean` | Focus on mount |
+| `autoComplete` | `string` | HTML autocomplete hint |
+| `validationBehavior` | `"aria" \| "native"` | Validation display mode |
+| `minLength` / `maxLength` | `number` | Length constraints |
+| `description` | `string` | Help text associated via `aria-describedby` |
+| `errorMessage` | `string` | Error text shown when invalid |
+
+## Notes
+
+- Renders a real `<textarea>`; height is user-resizable vertically (`resize-y`), disabled when `isDisabled`.
+- Single-line-only `TextField` props (`type`, `pattern`, `inputMode`) are intentionally absent from the schema.
+- Validation errors render through React Aria's error slot and are announced to assistive technology.

@@ -19,6 +19,7 @@ import { TableSchema } from "../components/table"
 import { TabsSchema } from "../components/tabs"
 import { TagGroupSchema, TagSchema } from "../components/tag"
 import { TextSchema } from "../components/text"
+import { TextAreaSchema } from "../components/text-area"
 import { TextFieldSchema } from "../components/text-field"
 import { TooltipSchema } from "../components/tooltip"
 import { parseNode, safeParseNode } from "../schema"
@@ -1570,5 +1571,45 @@ describe("AccordionSchema", () => {
 
 	it("rejects wrong type literal", () => {
 		expect(AccordionSchema.safeParse({ type: "accordion" }).success).toBe(false)
+	})
+})
+
+describe("TextAreaSchema", () => {
+	it("parses a minimal text area node", () => {
+		expect(TextAreaSchema.safeParse({ type: "TextArea" }).success).toBe(true)
+	})
+
+	it("parses rows as a positive integer", () => {
+		expect(TextAreaSchema.safeParse({ type: "TextArea", props: { rows: 4 } }).success).toBe(true)
+	})
+
+	it("rejects non-integer and non-positive rows", () => {
+		expect(TextAreaSchema.safeParse({ type: "TextArea", props: { rows: 2.5 } }).success).toBe(false)
+		expect(TextAreaSchema.safeParse({ type: "TextArea", props: { rows: 0 } }).success).toBe(false)
+		expect(TextAreaSchema.safeParse({ type: "TextArea", props: { rows: "4" } }).success).toBe(false)
+	})
+
+	it("parses isRequired, isDisabled, isReadOnly, isInvalid as booleans", () => {
+		expect(
+			TextAreaSchema.safeParse({
+				type: "TextArea",
+				props: { isRequired: true, isDisabled: false, isReadOnly: false, isInvalid: true },
+			}).success,
+		).toBe(true)
+	})
+
+	it("rejects old DOM prop names 'disabled' and 'required'", () => {
+		expect(TextAreaSchema.safeParse({ type: "TextArea", props: { disabled: true } }).success).toBe(false)
+		expect(TextAreaSchema.safeParse({ type: "TextArea", props: { required: true } }).success).toBe(false)
+	})
+
+	it("rejects single-line-only props from TextField", () => {
+		expect(TextAreaSchema.safeParse({ type: "TextArea", props: { type: "text" } }).success).toBe(false)
+		expect(TextAreaSchema.safeParse({ type: "TextArea", props: { pattern: ".*" } }).success).toBe(false)
+	})
+
+	it("rejects wrong type literal", () => {
+		expect(TextAreaSchema.safeParse({ type: "Textarea" }).success).toBe(false)
+		expect(TextAreaSchema.safeParse({ type: "textarea" }).success).toBe(false)
 	})
 })
