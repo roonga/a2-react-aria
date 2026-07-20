@@ -19,6 +19,7 @@
     "safe-rivers-talk",
     "shadcn-foreground-tokens",
     "sync-cli-to-v1",
+    "text-area-component",
     "url-sanitizer-control-chars"
   ]
 }
