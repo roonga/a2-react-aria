@@ -12,6 +12,7 @@
     "add-default-registry",
     "breadcrumb-empty-href",
     "checkbox-form-state-descriptions",
+    "date-picker-required-marker-and-nullable-values",
     "registry-schema-export",
     "registry-strict-by-default",
     "remove-hoc-wiring",
