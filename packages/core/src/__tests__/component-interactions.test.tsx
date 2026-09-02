@@ -4,7 +4,13 @@ import { beforeAll, describe, expect, it, vi } from "vitest"
 import { ActionContext } from "../action-context/action-context"
 import { Breadcrumb } from "../components/breadcrumb"
 import { Button } from "../components/button"
-import { CalendarNavigation, PickerHelpText } from "../components/date-picker/date-picker.shared"
+import { DatePicker, DateRangePicker } from "../components/date-picker"
+import {
+	CalendarNavigation,
+	PickerHelpText,
+	parseDateOrNull,
+	parseDateRangeOrNull,
+} from "../components/date-picker/date-picker.shared"
 import { getDatePickerStyles } from "../components/date-picker/date-picker.styles"
 import { Dialog } from "../components/dialog"
 import { Grid } from "../components/layout"
@@ -429,5 +435,110 @@ describe("Switch — isInvalid and isSelected+isInvalid style branches", () => {
 	it("renders with defaultSelected=true and isInvalid=true (covers the isSelected+isInvalid track)", () => {
 		render(<Switch label="Agree" defaultSelected={true} isInvalid={true} />)
 		expect(screen.getByRole("switch", { name: /agree/i })).toBeDefined()
+	})
+})
+
+// ── DatePicker required marker ────────────────────────────────────────────────
+
+// The picker labels a `role="group"`, so RAC renders its `<Label>` as a `<span>`
+// referenced through `aria-labelledby` rather than as a `<label>` element.
+function labelOf(container: HTMLElement): HTMLElement | null {
+	const id = container.querySelector('[role="group"]')?.getAttribute("aria-labelledby")
+	return id ? container.querySelector<HTMLElement>(`#${CSS.escape(id)}`) : null
+}
+
+describe("DatePicker / DateRangePicker — required marker", () => {
+	it("renders the required marker inside the label, hidden from assistive tech", () => {
+		const { container } = render(<DatePicker label="Date of birth" isRequired={true} />)
+		const marker = labelOf(container)?.querySelector('span[aria-hidden="true"]')
+		expect(marker?.textContent).toBe(" *")
+	})
+
+	it("omits the marker when the picker is optional", () => {
+		const { container } = render(<DatePicker label="Date of birth" />)
+		expect(labelOf(container)?.querySelector('span[aria-hidden="true"]')).toBeNull()
+	})
+
+	it("renders the required marker on the range picker too", () => {
+		const { container } = render(<DateRangePicker label="Stay" isRequired={true} />)
+		const marker = labelOf(container)?.querySelector('span[aria-hidden="true"]')
+		expect(marker?.textContent).toBe(" *")
+	})
+
+	it("keeps the marker out of the computed accessible name", () => {
+		render(<DatePicker label="Date of birth" isRequired={true} />)
+		expect(screen.getByRole("group", { name: "Date of birth" })).toBeDefined()
+	})
+})
+
+// ── DatePicker unparseable values ─────────────────────────────────────────────
+
+describe("parseDateOrNull / parseDateRangeOrNull", () => {
+	it("parses a valid ISO day", () => {
+		expect(parseDateOrNull("2024-06-15")?.toString()).toBe("2024-06-15")
+	})
+
+	it("reports every empty spelling as no selection", () => {
+		expect(parseDateOrNull(undefined)).toBeNull()
+		expect(parseDateOrNull(null)).toBeNull()
+		expect(parseDateOrNull("")).toBeNull()
+	})
+
+	it("reports an unparseable value as no selection rather than throwing", () => {
+		expect(() => parseDateOrNull("nope")).not.toThrow()
+		expect(parseDateOrNull("nope")).toBeNull()
+		expect(parseDateOrNull("2024-13-45")).toBeNull()
+	})
+
+	it("treats a half-parseable range as no selection", () => {
+		expect(parseDateRangeOrNull({ start: "2024-06-15", end: "nope" })).toBeNull()
+		expect(parseDateRangeOrNull({ start: "2024-06-15", end: "2024-06-20" })?.start.toString()).toBe("2024-06-15")
+	})
+})
+
+describe("DatePicker / DateRangePicker — unparseable value", () => {
+	it("renders unselected instead of throwing on an unparseable value", () => {
+		expect(() => render(<DatePicker label="Appointment" value="nope" />)).not.toThrow()
+		expect(screen.getByRole("group", { name: "Appointment" })).toBeDefined()
+	})
+
+	it("renders unselected instead of throwing on an unparseable min or max", () => {
+		expect(() => render(<DatePicker label="Bounded" minValue="nope" maxValue="also nope" />)).not.toThrow()
+	})
+
+	it("renders unselected instead of throwing on an unparseable range", () => {
+		expect(() => render(<DateRangePicker label="Stay" value={{ start: "2024-06-15", end: "nope" }} />)).not.toThrow()
+		expect(screen.getByRole("group", { name: "Stay" })).toBeDefined()
+	})
+})
+
+// ── Controlled empty values ───────────────────────────────────────────────────
+
+describe("null values keep a control controlled", () => {
+	it("keeps the DatePicker controlled through an empty value", () => {
+		const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
+		const onChange = vi.fn()
+		const { rerender } = render(<DatePicker label="Appointment" value={null} onChange={onChange} />)
+		rerender(<DatePicker label="Appointment" value="2024-06-15" onChange={onChange} />)
+		rerender(<DatePicker label="Appointment" value={null} onChange={onChange} />)
+		expect(warn.mock.calls.flat().join(" ")).not.toContain("changed from")
+		warn.mockRestore()
+	})
+
+	it("accepts a null RadioGroup value without dropping the group's tab stop", () => {
+		render(
+			<RadioGroup label="Colour" value={null}>
+				<Radio value="red">Red</Radio>
+				<Radio value="blue">Blue</Radio>
+			</RadioGroup>,
+		)
+		const radios = screen.getAllByRole("radio") as HTMLInputElement[]
+		expect(radios.some((r) => r.checked)).toBe(false)
+		expect(radios[0]?.tabIndex).not.toBe(-1)
+	})
+
+	it("accepts a null Select value and shows the placeholder", () => {
+		render(<Select label="Fruit" placeholder="Choose" items={[{ label: "Apple", value: "apple" }]} value={null} />)
+		expect(screen.getByRole("button", { name: /fruit/i }).textContent).toContain("Choose")
 	})
 })
