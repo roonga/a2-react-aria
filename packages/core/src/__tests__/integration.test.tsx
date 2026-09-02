@@ -909,6 +909,18 @@ describe("Accessibility — axe-core", () => {
 			const { violations } = await axe.run(container, AXE_CONFIG)
 			expect(violations).toHaveLength(0)
 		})
+
+		it("has no axe violations (required datepicker) and keeps the marker out of the name", async () => {
+			const { container } = render(
+				<A2Renderer
+					node={{ type: "DatePicker", props: { label: "Date of birth", isRequired: true } }}
+					registry={registry}
+				/>,
+			)
+			const { violations } = await axe.run(container, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+			expect(screen.getByRole("group", { name: "Date of birth" })).toBeDefined()
+		})
 	})
 
 	describe("DateRangePicker", () => {
