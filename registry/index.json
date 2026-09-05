@@ -59,7 +59,7 @@
         "react-aria-components",
         "zod"
       ],
-      "files": 5
+      "files": 6
     },
     {
       "name": "date-picker",
@@ -139,7 +139,7 @@
         "react-aria-components",
         "zod"
       ],
-      "files": 5
+      "files": 6
     },
     {
       "name": "select",
