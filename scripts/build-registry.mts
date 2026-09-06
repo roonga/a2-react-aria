@@ -6,8 +6,18 @@
 //
 // The CLI (`a2ra add <name>`) consumes these JSON files, copying the embedded
 // source into a consumer project. Run via: pnpm build:registry
-import { mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs"
-import { dirname, join, relative, resolve } from "node:path"
+//
+// An item carries its component's own directory PLUS every file it imports from
+// elsewhere under the components root, followed transitively. Those shared files are
+// what a component needs to compile and they belong to no directory of their own, so a
+// generator that emitted only `<name>/*` shipped an item whose copied source could not
+// build: `group-schema-fields.ts` is imported by the checkbox and radio schemas and was
+// in no item at all, which is a dangling import in every consumer that vendored either.
+// Imports that resolve OUTSIDE the components root stay the consumer's own (`form-state`,
+// `action-context`); those are part of the runtime a consumer installs, not of the
+// copied source.
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs"
+import { dirname, join, relative, resolve, sep } from "node:path"
 import { fileURLToPath } from "node:url"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -77,6 +87,64 @@ function extractNpmDeps(source: string): Set<string> {
 	return deps
 }
 
+// Relative import specifiers used by a source file, in source order.
+function extractRelativeImports(source: string): string[] {
+	const specs: string[] = []
+	const re = /(?:from|import)\s+["'](\.[^"']*)["']/g
+	let m: RegExpExecArray | null
+	// biome-ignore lint/suspicious/noAssignInExpressions: standard regex exec loop
+	while ((m = re.exec(source)) !== null) {
+		const spec = m[1]
+		if (spec) specs.push(spec)
+	}
+	return specs
+}
+
+// Resolve a relative specifier the way TypeScript would, to a file this generator can
+// embed. Returns null when nothing on disk answers it, which is how a specifier that
+// points at a directory of the consumer's own is ignored rather than guessed at.
+function resolveRelativeImport(fromFile: string, spec: string): string | null {
+	const base = resolve(dirname(fromFile), spec)
+	// `base` first: this codebase writes the extension in the specifier
+	// (`../group-schema-fields.ts`), which the extensionless forms below would miss.
+	const candidates = [base, `${base}.ts`, `${base}.tsx`, join(base, "index.ts"), join(base, "index.tsx")]
+	for (const candidate of candidates) {
+		if (existsSync(candidate) && statSync(candidate).isFile()) return candidate
+	}
+	return null
+}
+
+// Whether `file` lives under `dir`.
+function isUnder(dir: string, file: string): boolean {
+	const rel = relative(dir, file)
+	return rel !== "" && !rel.startsWith("..") && !rel.startsWith(sep)
+}
+
+// Every file under the components root that `entryFiles` reach through relative imports
+// and that lives outside `componentDir`, followed transitively and returned sorted by
+// their path relative to the components root.
+function sharedFilesFor(componentDir: string, entryFiles: string[]): string[] {
+	const seen = new Set(entryFiles)
+	const queue = [...entryFiles]
+	const shared = new Set<string>()
+
+	while (queue.length > 0) {
+		const current = queue.pop()
+		if (current === undefined) break
+		const source = readFileSync(current, "utf8")
+		for (const spec of extractRelativeImports(source)) {
+			const resolved = resolveRelativeImport(current, spec)
+			if (resolved === null || seen.has(resolved)) continue
+			if (!isUnder(COMPONENTS_DIR, resolved) || isUnder(componentDir, resolved)) continue
+			seen.add(resolved)
+			shared.add(resolved)
+			queue.push(resolved)
+		}
+	}
+
+	return [...shared].sort()
+}
+
 function readComponentDirs(): string[] {
 	return readdirSync(COMPONENTS_DIR)
 		.filter((name) => statSync(join(COMPONENTS_DIR, name)).isDirectory())
@@ -95,6 +163,22 @@ function buildItem(name: string): RegistryItem {
 		for (const d of extractNpmDeps(content)) deps.add(d)
 		files.push({
 			path: `${name}/${file}`,
+			content,
+			type: "registry:component",
+		})
+	}
+
+	// Shared source this component imports from elsewhere under the components root. Its
+	// path is relative to the components root, so a consumer receives it at the same place
+	// the importing file expects to find it.
+	for (const abs of sharedFilesFor(
+		dir,
+		sourceFiles.map((file) => join(dir, file)),
+	)) {
+		const content = readFileSync(abs, "utf8").replace(/\r\n/g, "\n")
+		for (const d of extractNpmDeps(content)) deps.add(d)
+		files.push({
+			path: relative(COMPONENTS_DIR, abs).split(sep).join("/"),
 			content,
 			type: "registry:component",
 		})
