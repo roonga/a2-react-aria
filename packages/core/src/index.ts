@@ -20,7 +20,14 @@ export type { FormNode } from "./components/form"
 export { Form, FormSchema } from "./components/form"
 export type { FlexNode, GridNode } from "./components/layout"
 export { Flex, FlexSchema, Grid, GridSchema } from "./components/layout"
-export type { MenuItemEntry, MenuNode } from "./components/menu"
+export type {
+	MenuActionEntry,
+	MenuClassNames,
+	MenuItemEntry,
+	MenuItemNode,
+	MenuNode,
+	MenuSeparatorEntry,
+} from "./components/menu"
 export { Menu, MenuSchema } from "./components/menu"
 export type { NumberFieldNode } from "./components/number-field"
 export { NumberField, NumberFieldSchema } from "./components/number-field"

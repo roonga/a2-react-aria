@@ -148,6 +148,122 @@ describe("Menu — interaction callbacks", () => {
 		expect(onAction).toHaveBeenCalledWith("edit")
 	})
 
+	it("renders custom trigger content and names the button with triggerLabel", () => {
+		render(
+			<Menu
+				triggerLabel="Appearance: Dark"
+				trigger={<span data-testid="glyph">{"\u25D1"}</span>}
+				items={[{ id: "dark", label: "Dark" }]}
+			/>,
+		)
+		const button = screen.getByRole("button", { name: "Appearance: Dark" })
+		expect(button.querySelector("[data-testid='glyph']")).not.toBeNull()
+		// The label is the accessible name, not visible text: an icon trigger shows a glyph.
+		expect(button.textContent).toBe("\u25D1")
+	})
+
+	it("forwards menuLabel to the popup as aria-label", () => {
+		render(
+			<Menu
+				triggerLabel="Appearance"
+				trigger={<span aria-hidden="true">{"\u25D1"}</span>}
+				menuLabel="Colour mode"
+				items={[{ id: "dark", label: "Dark" }]}
+				isOpen={true}
+			/>,
+		)
+		// The attribute, not the computed name: MenuTrigger also points the popup at its
+		// trigger with aria-labelledby, which wins the name computation. See the prop docs.
+		expect(screen.getByRole("menu").getAttribute("aria-label")).toBe("Colour mode")
+	})
+
+	it("renders a rich item label with its textValue as the accessible name", () => {
+		render(
+			<Menu
+				triggerLabel="View"
+				items={[
+					{
+						id: "grid",
+						textValue: "Grid view",
+						label: (
+							<>
+								<span aria-hidden="true" data-testid="check">
+									{"\u2713"}
+								</span>
+								Grid view
+							</>
+						),
+					},
+				]}
+				isOpen={true}
+			/>,
+		)
+		const item = screen.getByRole("menuitem", { name: "Grid view" })
+		expect(item.querySelector("[data-testid='check']")).not.toBeNull()
+	})
+
+	it("renders an item with href as a link, so it behaves like one", () => {
+		render(
+			<Menu
+				triggerLabel="Account"
+				items={[{ id: "password", label: "Change password", href: "/settings#change-password" }]}
+				isOpen={true}
+			/>,
+		)
+		const item = screen.getByRole("menuitem", { name: /change password/i })
+		expect(item.tagName).toBe("A")
+		expect(item.getAttribute("href")).toBe("/settings#change-password")
+	})
+
+	it("renders the header outside role=menu, followed by a rule", () => {
+		render(
+			<Menu
+				triggerLabel="Account"
+				header={<span data-testid="who">{"Signed in as operator@example.test"}</span>}
+				items={[{ id: "sign-out", label: "Sign out" }]}
+				isOpen={true}
+			/>,
+		)
+		const header = screen.getByTestId("who")
+		// A label for the menu, not a stop in it: the first arrow-down must reach an action.
+		expect(header.closest("[role='menu']")).toBeNull()
+		expect(screen.getAllByRole("separator").length).toBeGreaterThan(0)
+		expect(screen.getAllByRole("menuitem")).toHaveLength(1)
+	})
+
+	it("renders a separator entry between groups without making it a menu item", () => {
+		render(
+			<Menu
+				triggerLabel="Actions"
+				items={[
+					{ id: "edit", label: "Edit" },
+					{ id: "rule", kind: "separator" },
+					{ id: "delete", label: "Delete" },
+				]}
+				isOpen={true}
+			/>,
+		)
+		expect(screen.getAllByRole("menuitem")).toHaveLength(2)
+		expect(screen.getAllByRole("separator").length).toBeGreaterThan(0)
+	})
+
+	it("puts host class names on the slots in place of the defaults", () => {
+		render(
+			<Menu
+				triggerLabel="Actions"
+				trigger={<span aria-hidden="true">{"\u22EE"}</span>}
+				classNames={{ trigger: "host-trigger", menu: "host-menu", item: "host-item" }}
+				items={[{ id: "edit", label: "Edit" }]}
+				isOpen={true}
+			/>,
+		)
+		// Queried from the DOM rather than by role: an open popover marks the rest of the
+		// document aria-hidden, so the trigger is not in the accessibility tree meanwhile.
+		expect(document.querySelector("button")?.className).toBe("host-trigger")
+		expect(screen.getByRole("menu").className).toBe("host-menu")
+		expect(screen.getByRole("menuitem", { name: /edit/i }).className).toBe("host-item")
+	})
+
 	it("calls onSelectionChange when an item is selected in multi-select mode", () => {
 		const onSelectionChange = vi.fn()
 		render(

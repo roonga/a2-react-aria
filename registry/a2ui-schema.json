@@ -987,26 +987,60 @@
             "triggerLabel": {
               "type": "string"
             },
+            "menuLabel": {
+              "type": "string"
+            },
             "items": {
               "type": "array",
               "items": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "const": "separator"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "kind"
+                    ],
+                    "additionalProperties": false
                   },
-                  "label": {
-                    "type": "string"
-                  },
-                  "isDisabled": {
-                    "type": "boolean"
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "label": {
+                        "type": "string"
+                      },
+                      "textValue": {
+                        "type": "string"
+                      },
+                      "isDisabled": {
+                        "type": "boolean"
+                      },
+                      "href": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "const": "item"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "label"
+                    ],
+                    "additionalProperties": false
                   }
-                },
-                "required": [
-                  "id",
-                  "label"
-                ],
-                "additionalProperties": false
+                ]
               }
             },
             "placement": {
@@ -1046,6 +1080,9 @@
               "items": {
                 "type": "string"
               }
+            },
+            "disallowEmptySelection": {
+              "type": "boolean"
             }
           },
           "additionalProperties": false

@@ -839,6 +839,31 @@ describe("Accessibility — axe-core", () => {
 			const { violations } = await axe.run(container, AXE_CONFIG)
 			expect(violations).toHaveLength(0)
 		})
+
+		it("has no axe violations (open menu with a header and a separator)", async () => {
+			render(
+				<A2Renderer
+					node={{
+						type: "Menu",
+						props: {
+							triggerLabel: "Account",
+							menuLabel: "Account actions",
+							isOpen: true,
+							items: [
+								{ id: "password", label: "Change password", href: "/settings" },
+								{ id: "rule", kind: "separator" },
+								{ id: "sign-out", label: "Sign out" },
+							],
+						},
+					}}
+					registry={registry}
+				/>,
+			)
+			// The popover is portalled to the body, so the container the renderer returned
+			// holds only the trigger: scanning it would miss every row this case is about.
+			const { violations } = await axe.run(document.body, AXE_CONFIG)
+			expect(violations).toHaveLength(0)
+		})
 	})
 
 	describe("Popover", () => {
