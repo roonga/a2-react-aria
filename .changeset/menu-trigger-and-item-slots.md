@@ -15,8 +15,11 @@ component catalog most wants to be the single source of the shape.
 Five additions, all optional:
 
 - `trigger?: ReactNode` is content for the trigger button in place of the plain label. The
-  button stays this component's, so the keyboard contract is unchanged, and `triggerLabel`
-  becomes its `aria-label`: an icon-only control has no other name.
+  button stays this component's, so the keyboard contract is unchanged. `triggerLabel`
+  becomes its `aria-label` when the two are given together, and is never defaulted in that
+  branch: a trigger with its own visible text is named from that content, and an icon-only
+  control needs an explicit `triggerLabel` or it has no accessible name at all, which an
+  accessibility scan catches rather than a mismatched "Options" masking it.
 - `menuLabel?: string` puts an `aria-label` on the popup. `MenuTrigger` also points the popup
   at its trigger with `aria-labelledby`, which wins the name computation, so this is
   forwarded rather than fought: overriding React Aria's own labelling would be an ARIA

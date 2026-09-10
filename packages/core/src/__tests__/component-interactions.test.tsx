@@ -162,6 +162,14 @@ describe("Menu — interaction callbacks", () => {
 		expect(button.textContent).toBe("\u25D1")
 	})
 
+	it("names a visible-text trigger from its own content when triggerLabel is omitted", () => {
+		// No triggerLabel here, on purpose: a trigger that already carries readable text
+		// must not be renamed "Options" underneath it (WCAG 2.5.3, label in name).
+		render(<Menu trigger={<span>Actions</span>} items={[{ id: "edit", label: "Edit" }]} />)
+		const button = screen.getByRole("button", { name: "Actions" })
+		expect(button.getAttribute("aria-label")).toBeNull()
+	})
+
 	it("forwards menuLabel to the popup as aria-label", () => {
 		render(
 			<Menu
