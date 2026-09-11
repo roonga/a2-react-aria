@@ -89,6 +89,17 @@ describe("diffLines", () => {
 		expect(out).toContain("- b")
 		expect(out).toContain("+ c")
 	})
+	it("reports no change when an identical file contains a spaced hyphen", () => {
+		// A context line is prose, and prose carries "- " and "+ ". Deciding "changed" by
+		// scanning the rendered output reported every such file as drifted forever.
+		const source = "// keeps focus - and hands it back\n// a + b\n"
+		expect(diffLines(source, source)).toBe("")
+	})
+	it("still reports a change on a line that also contains a spaced hyphen", () => {
+		const out = diffLines("// keeps focus - here\n", "// keeps focus - there\n")
+		expect(out).toContain("- // keeps focus - here")
+		expect(out).toContain("+ // keeps focus - there")
+	})
 })
 
 describe("installCommand", () => {

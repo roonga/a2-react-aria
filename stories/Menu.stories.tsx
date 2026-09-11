@@ -84,3 +84,69 @@ export const SelectionMenu: Story = {
 		await expect(body.getByRole("menu")).toBeInTheDocument()
 	},
 }
+
+export const WithSeparator: Story = {
+	args: {
+		node: {
+			type: "Menu",
+			props: {
+				triggerLabel: "Account",
+				menuLabel: "Account actions",
+				items: [
+					{ id: "profile", label: "Profile", href: "#profile" },
+					{ id: "rule", kind: "separator" },
+					{ id: "sign-out", label: "Sign out" },
+				],
+			},
+		},
+	},
+	play: async ({ canvas }) => {
+		await userEvent.click(canvas.getByRole("button", { name: /account/i }))
+		const body = within(document.body)
+		await expect(body.getByRole("menuitem", { name: /profile/i })).toHaveAttribute("href", "#profile")
+		await expect(await body.findAllByRole("menuitem")).toHaveLength(2)
+	},
+}
+
+/**
+ * The slots a design system reaches for: a glyph trigger named by `triggerLabel`, a
+ * non-interactive header above the rows, and a row whose label carries a mark beside its
+ * text. None of these are expressible in A2UI JSON, so this story renders the component
+ * directly rather than through `A2Renderer`.
+ */
+export const TriggerAndItemSlots: Story = {
+	args: { node: { type: "Menu" } },
+	render: () => (
+		<Menu
+			triggerLabel="Appearance: Dark"
+			trigger={<span aria-hidden="true">{"\u25D1"}</span>}
+			menuLabel="Colour mode"
+			header={<span>{"Signed in as operator@example.test"}</span>}
+			selectionMode="single"
+			selectedKeys={["dark"]}
+			disallowEmptySelection
+			items={[
+				{ id: "light", textValue: "Light", label: <RowLabel isChosen={false}>{"Light"}</RowLabel> },
+				{ id: "dark", textValue: "Dark", label: <RowLabel isChosen={true}>{"Dark"}</RowLabel> },
+			]}
+		/>
+	),
+	play: async ({ canvas }) => {
+		await userEvent.click(canvas.getByRole("button", { name: /appearance: dark/i }))
+		const body = within(document.body)
+		await expect(body.getByText(/signed in as/i)).toBeInTheDocument()
+		await expect(body.getByRole("menuitemradio", { name: "Dark" })).toHaveAttribute("aria-checked", "true")
+	},
+}
+
+/** A check mark that never moves the text beside it, chosen or not. */
+function RowLabel({ isChosen, children }: { isChosen: boolean; children: string }) {
+	return (
+		<>
+			<span aria-hidden="true" className="inline-block w-4">
+				{isChosen ? "\u2713" : ""}
+			</span>
+			{children}
+		</>
+	)
+}

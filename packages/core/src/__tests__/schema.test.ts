@@ -661,6 +661,57 @@ describe("MenuSchema", () => {
 	it("rejects non-array selectedKeys", () => {
 		expect(MenuSchema.safeParse({ type: "Menu", props: { selectedKeys: "a" } }).success).toBe(false)
 	})
+
+	it("parses an item with href and textValue", () => {
+		expect(
+			MenuSchema.safeParse({
+				type: "Menu",
+				props: { items: [{ id: "a", label: "Settings", href: "/settings", textValue: "Settings" }] },
+			}).success,
+		).toBe(true)
+	})
+
+	it("parses a separator entry, which carries no label", () => {
+		expect(
+			MenuSchema.safeParse({
+				type: "Menu",
+				props: {
+					items: [
+						{ id: "a", label: "Edit" },
+						{ id: "rule", kind: "separator" },
+					],
+				},
+			}).success,
+		).toBe(true)
+	})
+
+	it("rejects a separator carrying a label", () => {
+		expect(
+			MenuSchema.safeParse({
+				type: "Menu",
+				props: { items: [{ id: "rule", kind: "separator", label: "Nope" }] },
+			}).success,
+		).toBe(false)
+	})
+
+	it("rejects an unknown item kind", () => {
+		expect(
+			MenuSchema.safeParse({ type: "Menu", props: { items: [{ id: "a", label: "Edit", kind: "heading" }] } }).success,
+		).toBe(false)
+	})
+
+	it("parses menuLabel and disallowEmptySelection", () => {
+		expect(
+			MenuSchema.safeParse({
+				type: "Menu",
+				props: { menuLabel: "Colour mode", disallowEmptySelection: true },
+			}).success,
+		).toBe(true)
+	})
+
+	it("rejects an unknown prop, so a document cannot smuggle presentation in", () => {
+		expect(MenuSchema.safeParse({ type: "Menu", props: { classNames: { item: "x" } } }).success).toBe(false)
+	})
 })
 
 describe("PopoverSchema", () => {

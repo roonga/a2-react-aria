@@ -44,6 +44,21 @@ npx @a2ra/cli add menu
   }
 }} />
 
+## With a separator and a link row
+
+<ComponentPreview client:only="react" node={{
+  type: "Menu",
+  props: {
+    triggerLabel: "Account",
+    menuLabel: "Account actions",
+    items: [
+      { id: "profile", label: "Profile", href: "#profile" },
+      { id: "rule", kind: "separator" },
+      { id: "sign-out", label: "Sign out" },
+    ]
+  }
+}} />
+
 ## Example JSON
 
 ```json
@@ -65,25 +80,60 @@ npx @a2ra/cli add menu
 
 | Prop | Type | Description |
 |------|------|-------------|
-| `triggerLabel` | `string` | Label for the trigger button |
+| `triggerLabel` | `string` | Label for the trigger button; the trigger's `aria-label` when `trigger` is given |
+| `trigger` | `ReactNode` | Content for the trigger button in place of plain text: a glyph, an icon, an avatar |
+| `menuLabel` | `string` | `aria-label` for the popup itself |
+| `header` | `ReactNode` | A non-interactive block above the rows, rendered outside `role="menu"` and followed by a rule |
 | `items` | `MenuItemEntry[]` | Menu items (see below) |
+| `classNames` | `MenuClassNames` | Per-slot class overrides (see below) |
 | `placement` | `top`<br />`bottom` <span className="prop-default-badge">default</span><br />`left`<br />`right` | Preferred menu position |
 | `isOpen` | `boolean` | Controlled open state |
 | `selectionMode` | `none` <span className="prop-default-badge">default</span><br />`single`<br />`multiple` | Selection behaviour |
 | `selectedKeys` | `string[]` | Controlled selected item IDs |
 | `defaultSelectedKeys` | `string[]` | Uncontrolled default selection |
 | `disabledKeys` | `string[]` | IDs of non-interactive items |
+| `disallowEmptySelection` | `boolean` | Keeps one row chosen in `single` selection mode |
+
+`trigger`, `header` and `classNames` are code-only props. They are absent from `MenuSchema`
+by design: an A2UI document describes what a menu is, and neither a node tree nor a class
+name belongs in that data.
 
 ### MenuItemEntry shape
+
+An entry is either a row that does something, or a rule between groups.
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `id` | `string` | Unique item identifier |
-| `label` | `string` | Visible item text |
+| `label` | `ReactNode` | Item content; a `string` in A2UI JSON |
+| `textValue` | `string` | What type-to-select and screen readers use when `label` is not plain text |
 | `isDisabled` | `boolean` | Disables this item |
+| `href` | `string` | Renders the row as a link, so it middle-clicks and copies like one |
+| `kind` | `item` <span className="prop-default-badge">default</span><br />`separator` | A `separator` carries only `id` and is not a stop for the arrow keys |
+
+### MenuClassNames shape
+
+Each field replaces that slot's default classes rather than adding to them, so a host with
+its own design language never has two sets of opinions on one element.
+
+| Field | Slot |
+|-------|------|
+| `trigger` | The trigger button |
+| `popover` | The floating surface |
+| `menu` | The `role="menu"` list |
+| `item` | Every row |
+| `header` | The header block |
+| `separator` | Every rule, including the one under the header |
 
 ## Notes
 
 - Arrow keys navigate items; `Enter` or `Space` activates the focused item.
 - `selectionMode: "none"` (default) is for action menus. Use `"single"` or `"multiple"`
   for menus that represent a persistent state choice (e.g. view mode).
+- An icon-only trigger needs `triggerLabel`: it becomes the button's `aria-label`, which is
+  the only name the control has.
+- `MenuTrigger` also points the popup at its trigger with `aria-labelledby`, and that wins
+  the accessible-name computation, so `menuLabel` sets the attribute rather than overriding
+  React Aria's own labelling.
+- A rich `label` needs `textValue`. React Aria types-to-select and announces from that
+  string and cannot read a node tree.
