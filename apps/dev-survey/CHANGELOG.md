@@ -1,5 +1,15 @@
 # a2ui-dev-survey
 
+## 0.1.1-preview.4
+
+### Patch Changes
+
+- Updated dependencies [075c3a9]
+- Updated dependencies [7347b3b]
+- Updated dependencies [009d447]
+- Updated dependencies [d1677b6]
+  - @a2ra/core@1.0.0-preview.8
+
 ## 0.1.1-preview.3
 
 ### Patch Changes
