@@ -1,5 +1,153 @@
 # @a2ra/core
 
+## 1.0.0-preview.8
+
+### Minor Changes
+
+- 075c3a9: `DatePicker` and `DateRangePicker` now render the required marker inside their `<Label>`,
+  matching the six controls that already did (`TextField`, `TextArea`, `NumberField`,
+  `CheckboxGroup`, `RadioGroup`, `Select`). The marker is `aria-hidden`, so the computed
+  accessible name is unchanged. `date-picker.styles.ts` gains the `requiredIndicator` token.
+
+  Every `parseDate` call in the date pickers is guarded. `parseDate` throws on anything that
+  is not a valid ISO day, so a `value`, `defaultValue`, `minValue` or `maxValue` the caller
+  had not already validated was a render-time exception rather than an empty control. An
+  unparseable value now renders as no selection. Two helpers, `parseDateOrNull` and
+  `parseDateRangeOrNull`, are exported from `date-picker.shared`.
+
+  `RadioGroup`, `Select`, `DatePicker` and `DateRangePicker` accept `value: string | null`
+  (`{ start, end } | null` for the range picker), matching the React Aria Components contract
+  rather than narrowing it. `null` is React Aria's own spelling of "no selection", so a
+  consumer can keep these controls controlled through an empty value instead of passing
+  `undefined` and taking React Stately's uncontrolled path. The `DatePicker` no longer
+  collapses an empty value to `undefined` internally, so it can be genuinely controlled.
+
+  `react-aria-components` moves to `^1.20.0` and `@internationalized/date` to `^3.12.3`, so a
+  consumer already on those versions resolves a single copy of each instead of two. Two
+  copies of `react-aria-components` mean two SSR id and context providers, which is a known
+  source of React hydration attribute mismatches.
+
+- 009d447: `Menu` opens its trigger and its rows to the host, additively: every existing call renders
+  exactly as before.
+
+  The component rendered its own trigger (`<Button>{triggerLabel}</Button>`, a bordered pill)
+  and its own rows (`{ id, label: string }`), and neither was reachable. A design system that
+  wants an icon-only trigger, a circular avatar, a check glyph beside a chosen row, an account
+  menu's "Signed in as" header, or a rule between two groups of actions had to abandon the
+  component and compose React Aria's `MenuTrigger` primitives itself, which is exactly where a
+  component catalog most wants to be the single source of the shape.
+
+  Five additions, all optional:
+
+  - `trigger?: ReactNode` is content for the trigger button in place of the plain label. The
+    button stays this component's, so the keyboard contract is unchanged. `triggerLabel`
+    becomes its `aria-label` when the two are given together, and is never defaulted in that
+    branch: a trigger with its own visible text is named from that content, and an icon-only
+    control needs an explicit `triggerLabel` or it has no accessible name at all, which an
+    accessibility scan catches rather than a mismatched "Options" masking it.
+  - `menuLabel?: string` puts an `aria-label` on the popup. `MenuTrigger` also points the popup
+    at its trigger with `aria-labelledby`, which wins the name computation, so this is
+    forwarded rather than fought: overriding React Aria's own labelling would be an ARIA
+    override with no good reason behind it.
+  - `header?: ReactNode` renders a non-interactive block above the rows, OUTSIDE `role="menu"`
+    and followed by a rule. It is a label for the menu, not a stop in it: a first arrow-down
+    that lands on an inert row is worse than one that lands on the first real action.
+  - An item's `label` widens from `string` to `ReactNode`, so a row can carry a glyph or an
+    icon beside its text, and gains `textValue` (what type-to-select and screen readers use
+    when the label is not plain text) and `href` (renders the row as a link, so it
+    middle-clicks and copies like one). An item may instead be `{ id, kind: "separator" }`.
+  - `classNames` overrides the classes on any of the six slots (trigger, popover, menu, item,
+    header, separator). A named slot REPLACES its defaults rather than adding to them, so a
+    host with its own design language never leaves two sets of opinions on one element for the
+    cascade to settle.
+
+  `disallowEmptySelection` is forwarded too, for a single-selection menu that must always have
+  a chosen row.
+
+  `MenuSchema` grows the parts an A2UI document can carry: `menuLabel`,
+  `disallowEmptySelection`, and an item's `textValue`, `href` and `kind`. `trigger`, `header`
+  and `classNames` are code-only and stay out of it, and `.strict()` keeps them out: a document
+  describes what a menu IS, and neither a node tree nor a class name belongs in that data.
+
+  The item type the component takes is now declared beside the component rather than inferred
+  from the schema, since a `ReactNode` label has no Zod equivalent. `MenuItemEntry` still names
+  it and is still exported; the JSON shape is exported alongside as `MenuItemNode`.
+
+- d1677b6: `react-aria-components` moves from a hard dependency of `@a2ra/core` to a **peer dependency**, at
+  the same `^1.20.0` range it declared before, with a matching `devDependency` so this workspace
+  still resolves it for the package's own tests, build and stories. No export, prop or behaviour
+  changes.
+
+  The documented install is already the peer-dependency install. `README.md` and the
+  getting-started guide both say `pnpm add @a2ra/core react-aria-components`, and `a2ra add` ends by
+  printing `react-aria-components` under "Install required dependencies" because every component it
+  copies imports it by name. The manifest was the one place that said otherwise, and this is the
+  manifest catching up to the contract the docs and the CLI have always stated.
+
+  The reason it matters is that a hard dependency can fork and a peer dependency cannot.
+
+  Both arms resolve independently today: the consumer's own `react-aria-components` range and this
+  package's. They agree only for as long as they happen to resolve to the same version, and an
+  ordinary bump on the consumer's side is enough to end that, because only their arm moves. From
+  that point the consumer has two copies, one nested under `@a2ra/core`, and every later bump widens
+  the gap rather than closing it.
+
+  Two copies of `react-aria-components` in one React tree is not a disk-space question. The library
+  ships React context objects and SSR id state at module scope, so a second copy is a second set of
+  both, and a subtree rendered against one copy no longer shares provider state with the rest of the
+  tree. A downstream consumer (`roonga/qcms` issue 151) is carrying exactly this split:
+  `pnpm why react-aria-components` reports 1.21.1 on the direct arm and 1.20.0 nested under
+  `@a2ra/core@1.0.0-preview.7`, which is the published preview's `^1.18.0` frozen at an older
+  resolution. Declaring the dependency as a peer is what makes that state unreachable rather than
+  something each consumer has to notice and dedupe.
+
+  This is also how the package already declares `react` and `react-dom`, for the same reason: a
+  library that has to be a singleton in the host's React tree states the constraint instead of
+  satisfying it privately.
+
+  **What a consumer has to do: nothing**, if they followed the documented install. A project that
+  somehow had `@a2ra/core` without a direct `react-aria-components` now needs one, and npm 7+, pnpm
+  and yarn all report an unmet peer plainly.
+
+### Patch Changes
+
+- 7347b3b: `TextField` no longer discards what was typed before React attached. React Aria renders a
+  CONTROLLED input whatever it is handed (`useTextField` always puts `value` into
+  `inputProps`, seeded from `defaultValue || ""`), so on a server-rendered page the commit
+  that hydrates the field wrote that initial state onto the DOM and silently threw away
+  anything typed into the input while the bundle was still downloading. On a `required` field
+  the loss was worse than a lost keystroke: the browser's own constraint validation then
+  refused the submit, with no submit event, no request and nothing on screen to explain it.
+  Measured downstream on an idle machine, React attached 76ms to 404ms after the document
+  commit and wiped the typed value in 12 of 20 trials.
+
+  The field now reads its server-rendered input once, during the hydrating render, and seeds
+  its initial value from it. Only a value that DIFFERS from what the server rendered is
+  adopted, so a page nobody typed into early behaves exactly as before; a controlled field is
+  left alone, since its value is the consumer's to decide. The hydrating render is identified
+  with `useSyncExternalStore`, the mechanism React Aria's own `useIsSSR` is built on, so an
+  ordinary client mount never reaches into the document. `TextField` now passes React Aria an
+  explicit `id` (a `useId`, stable across server and client) so it can find its own input.
+
+  `NumberField`'s required marker is `aria-hidden`, matching the other seven controls. It was
+  the one control whose marker was announced, so its computed accessible name ended in " \*"
+  instead of reading as the question.
+
+  `Checkbox` no longer defaults `isRequired` to `false`. Inside a `CheckboxGroup`, React Aria
+  resolves an item's required state as `props.isRequired ?? state.isRequired`, so a literal
+  `false` won over the group and the required state of a required group reached none of its
+  checkboxes: the group conveyed required visually (`data-required`) and said nothing to
+  assistive technology. ARIA does not allow `aria-required` on `role="group"`, so the state
+  belongs on the items, where each checkbox now carries `aria-required` (aria validation) or
+  `required` (native validation) for exactly as long as nothing in the group is selected,
+  which is React Aria's own encoding of "at least one".
+
+  The registry generator now follows a component's imports out of its own directory and ships
+  what it finds under the components root as part of that item. `group-schema-fields.ts` is
+  imported by the checkbox and radio schemas and was in no registry item at all, so
+  `a2ra add checkbox` (or `radio`) copied source with a dangling import. Both items now carry
+  it. Imports that resolve above the components root stay the consumer's own runtime.
+
 ## 1.0.0-preview.7
 
 ### Minor Changes
