@@ -13,7 +13,6 @@
       "Bash(npx *)",
       "Bash(pnpm *)",
       "Bash(powershell *)",
-      "Bash(sonar-scanner*)",
       "Bash(start pnpm *)",
       "Bash(where git)",
       "TaskCreate",

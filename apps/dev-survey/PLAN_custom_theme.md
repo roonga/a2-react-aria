@@ -192,12 +192,6 @@ Files: `apps/dev-survey/tests/theme.spec.ts` (new)
 - [ ] `pnpm --filter @a2ra/core exec tsc --noEmit` — zero type errors (core not changed)
 - [ ] `pnpm --filter @a2ra/cli exec tsc --noEmit` — zero type errors (cli not changed)
 - [ ] `pnpm build:registry && git diff --exit-code registry` — registry unchanged
-- [ ] SonarQube gate: OK, zero new violations
-
-  ```powershell
-  $env:SONAR_TOKEN = "<your-sonar-token>"
-  docker compose -f docker-compose.sonarqube.yml run --rm scanner
-  ```
 
 ## Definition of done
 

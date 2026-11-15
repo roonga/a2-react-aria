@@ -31,10 +31,7 @@
 		"typedoc": "typedoc",
 		"changeset": "changeset",
 		"version-packages": "changeset version",
-		"release": "pnpm build && changeset publish",
-		"sonar:start": "docker compose -f docker-compose.sonarqube.yml up -d",
-		"sonar:stop": "docker compose -f docker-compose.sonarqube.yml down",
-		"sonar:scan": "docker compose -f docker-compose.sonarqube.yml run --rm scanner"
+		"release": "pnpm build && changeset publish"
 	},
 	"devDependencies": {
 		"@a2ra/cli": "workspace:*",
