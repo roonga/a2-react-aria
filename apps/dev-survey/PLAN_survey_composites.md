@@ -411,12 +411,6 @@ All checks must be green before the plan is considered done.
 - [ ] `pnpm --filter @a2ra/core exec tsc --noEmit` — zero type errors (core not touched; verify unchanged)
 - [ ] `pnpm --filter @a2ra/cli exec tsc --noEmit` — zero type errors (cli not touched; verify unchanged)
 - [ ] `pnpm build:registry && git diff --exit-code registry` — registry snapshots up to date (no core changes expected)
-- [ ] SonarQube gate: OK, zero new violations
-
-  ```powershell
-  $env:SONAR_TOKEN = "<your-sonarqube-token>"
-  docker compose -f docker-compose.sonarqube.yml run --rm scanner
-  ```
 
 ## Definition of done
 

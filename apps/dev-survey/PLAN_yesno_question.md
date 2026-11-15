@@ -144,12 +144,6 @@ if it does not exist).
 - [ ] `pnpm --filter @a2ra/core exec tsc --noEmit` — zero type errors (core not changed,
   but run to confirm no cross-package regressions)
 - [ ] `pnpm build:registry && git diff --exit-code registry` — registry unchanged
-- [ ] SonarQube gate: OK, zero new violations
-
-  ```powershell
-  $env:SONAR_TOKEN = "<your-sonar-token>"
-  docker compose -f docker-compose.sonarqube.yml run --rm scanner
-  ```
 
 ## Definition of done
 

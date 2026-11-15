@@ -131,11 +131,6 @@ Minimum coverage for renderer or logic changes:
 Tests live in `packages/core/src/__tests__/`. Add to an existing file when the scope is narrow;
 create a new `<feature>.test.ts(x)` file when the feature warrants its own describe block.
 
-## Package changes: run SonarQube scan before opening a PR
-
-Any change to `packages/core` or `packages/cli` must be scanned with SonarQube before the
-PR is opened. Fix all new issues before requesting review.
-
 ## Accessibility
 
 React Aria Components handle WCAG compliance by default. Work with it, not around it.

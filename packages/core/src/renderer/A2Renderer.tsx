@@ -75,7 +75,7 @@ function resolveChildren(
 	if (Array.isArray(children)) {
 		return children.map((child, i) => (
 			// biome-ignore lint/suspicious/noArrayIndexKey: A2UI JSON has no stable IDs; position is the key
-			<A2RendererInner key={i} node={child} registry={registry} fallback={fallback} depth={depth} /> // NOSONAR
+			<A2RendererInner key={i} node={child} registry={registry} fallback={fallback} depth={depth} />
 		))
 	}
 	return <A2RendererInner node={children} registry={registry} fallback={fallback} depth={depth} />
@@ -152,7 +152,7 @@ export function A2Renderer({ node, nodes, registry, fallback, onAction }: A2Rend
 		if (!nodes.length) return null
 		inner = nodes.map((n, i) => (
 			// biome-ignore lint/suspicious/noArrayIndexKey: A2UI nodes have no stable IDs
-			<A2RendererInner key={i} node={n as A2Node} registry={reg} fallback={fallback} /> // NOSONAR
+			<A2RendererInner key={i} node={n as A2Node} registry={reg} fallback={fallback} />
 		))
 	} else if (node === undefined) {
 		return null
